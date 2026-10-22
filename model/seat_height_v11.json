@@ -1,0 +1,471 @@
+{
+ "none": [
+  {
+   "h": 0.4,
+   "effort": 0.585,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.704,
+   "hip": 0.78,
+   "hand": 0.0
+  },
+  {
+   "h": 0.42,
+   "effort": 0.585,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.684,
+   "hip": 0.78,
+   "hand": 0.0
+  },
+  {
+   "h": 0.44,
+   "effort": 0.568,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.711,
+   "hip": 0.729,
+   "hand": 0.0
+  },
+  {
+   "h": 0.46,
+   "effort": 0.547,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.682,
+   "hip": 0.729,
+   "hand": 0.0
+  },
+  {
+   "h": 0.48,
+   "effort": 0.547,
+   "trunk": 50,
+   "shank": 25,
+   "knee": 0.675,
+   "hip": 0.729,
+   "hand": 0.0
+  },
+  {
+   "h": 0.5,
+   "effort": 0.532,
+   "trunk": 45,
+   "shank": 30,
+   "knee": 0.665,
+   "hip": 0.673,
+   "hand": 0.0
+  },
+  {
+   "h": 0.52,
+   "effort": 0.525,
+   "trunk": 45,
+   "shank": 25,
+   "knee": 0.656,
+   "hip": 0.673,
+   "hand": 0.0
+  },
+  {
+   "h": 0.54,
+   "effort": 0.505,
+   "trunk": 45,
+   "shank": 25,
+   "knee": 0.609,
+   "hip": 0.673,
+   "hand": 0.0
+  },
+  {
+   "h": 0.56,
+   "effort": 0.494,
+   "trunk": 40,
+   "shank": 25,
+   "knee": 0.618,
+   "hip": 0.612,
+   "hand": 0.0
+  },
+  {
+   "h": 0.58,
+   "effort": 0.478,
+   "trunk": 40,
+   "shank": 20,
+   "knee": 0.598,
+   "hip": 0.612,
+   "hand": 0.0
+  },
+  {
+   "h": 0.6,
+   "effort": 0.459,
+   "trunk": 40,
+   "shank": 15,
+   "knee": 0.568,
+   "hip": 0.612,
+   "hand": 0.0
+  },
+  {
+   "h": 0.62,
+   "effort": 0.422,
+   "trunk": 35,
+   "shank": 20,
+   "knee": 0.528,
+   "hip": 0.546,
+   "hand": 0.0
+  },
+  {
+   "h": 0.64,
+   "effort": 0.41,
+   "trunk": 35,
+   "shank": 15,
+   "knee": 0.489,
+   "hip": 0.546,
+   "hand": 0.0
+  },
+  {
+   "h": 0.66,
+   "effort": 0.374,
+   "trunk": 30,
+   "shank": 15,
+   "knee": 0.468,
+   "hip": 0.476,
+   "hand": 0.0
+  },
+  {
+   "h": 0.68,
+   "effort": 0.357,
+   "trunk": 30,
+   "shank": 10,
+   "knee": 0.403,
+   "hip": 0.476,
+   "hand": 0.0
+  },
+  {
+   "h": 0.7,
+   "effort": 0.357,
+   "trunk": 30,
+   "shank": 5,
+   "knee": 0.311,
+   "hip": 0.476,
+   "hand": 0.0
+  }
+ ],
+ "bar25": [
+  {
+   "h": 0.4,
+   "effort": 0.4,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.5,
+   "hip": 0.533,
+   "hand": 24.9
+  },
+  {
+   "h": 0.42,
+   "effort": 0.389,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.486,
+   "hip": 0.518,
+   "hand": 24.8
+  },
+  {
+   "h": 0.44,
+   "effort": 0.377,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.471,
+   "hip": 0.502,
+   "hand": 24.7
+  },
+  {
+   "h": 0.46,
+   "effort": 0.364,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.455,
+   "hip": 0.485,
+   "hand": 24.6
+  },
+  {
+   "h": 0.48,
+   "effort": 0.349,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.437,
+   "hip": 0.466,
+   "hand": 24.8
+  },
+  {
+   "h": 0.5,
+   "effort": 0.334,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.418,
+   "hip": 0.445,
+   "hand": 24.7
+  },
+  {
+   "h": 0.52,
+   "effort": 0.331,
+   "trunk": 50,
+   "shank": 25,
+   "knee": 0.413,
+   "hip": 0.441,
+   "hand": 24.7
+  },
+  {
+   "h": 0.54,
+   "effort": 0.314,
+   "trunk": 50,
+   "shank": 25,
+   "knee": 0.393,
+   "hip": 0.419,
+   "hand": 24.6
+  },
+  {
+   "h": 0.56,
+   "effort": 0.297,
+   "trunk": 50,
+   "shank": 25,
+   "knee": 0.371,
+   "hip": 0.396,
+   "hand": 24.5
+  },
+  {
+   "h": 0.58,
+   "effort": 0.291,
+   "trunk": 50,
+   "shank": 20,
+   "knee": 0.363,
+   "hip": 0.387,
+   "hand": 24.5
+  },
+  {
+   "h": 0.6,
+   "effort": 0.277,
+   "trunk": 55,
+   "shank": 20,
+   "knee": 0.346,
+   "hip": 0.369,
+   "hand": 24.7
+  },
+  {
+   "h": 0.62,
+   "effort": 0.258,
+   "trunk": 55,
+   "shank": 20,
+   "knee": 0.322,
+   "hip": 0.344,
+   "hand": 24.8
+  },
+  {
+   "h": 0.64,
+   "effort": 0.249,
+   "trunk": 55,
+   "shank": 15,
+   "knee": 0.311,
+   "hip": 0.332,
+   "hand": 24.7
+  },
+  {
+   "h": 0.66,
+   "effort": 0.233,
+   "trunk": 0,
+   "shank": 15,
+   "knee": 0.291,
+   "hip": 0.31,
+   "hand": 20.1
+  },
+  {
+   "h": 0.68,
+   "effort": 0.214,
+   "trunk": 0,
+   "shank": 10,
+   "knee": 0.267,
+   "hip": 0.285,
+   "hand": 18.5
+  },
+  {
+   "h": 0.7,
+   "effort": 0.18,
+   "trunk": 0,
+   "shank": -10,
+   "knee": 0.225,
+   "hip": 0.24,
+   "hand": 15.8
+  }
+ ],
+ "barweak": [
+  {
+   "h": 0.4,
+   "effort": 0.445,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.556,
+   "hip": 0.594,
+   "hand": 18.9
+  },
+  {
+   "h": 0.42,
+   "effort": 0.428,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.535,
+   "hip": 0.571,
+   "hand": 19.7
+  },
+  {
+   "h": 0.44,
+   "effort": 0.409,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.511,
+   "hip": 0.545,
+   "hand": 20.6
+  },
+  {
+   "h": 0.46,
+   "effort": 0.401,
+   "trunk": 50,
+   "shank": 30,
+   "knee": 0.501,
+   "hip": 0.534,
+   "hand": 19.8
+  },
+  {
+   "h": 0.48,
+   "effort": 0.384,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.48,
+   "hip": 0.512,
+   "hand": 20.1
+  },
+  {
+   "h": 0.5,
+   "effort": 0.364,
+   "trunk": 55,
+   "shank": 30,
+   "knee": 0.455,
+   "hip": 0.485,
+   "hand": 20.9
+  },
+  {
+   "h": 0.52,
+   "effort": 0.359,
+   "trunk": 55,
+   "shank": 25,
+   "knee": 0.449,
+   "hip": 0.479,
+   "hand": 21.1
+  },
+  {
+   "h": 0.54,
+   "effort": 0.353,
+   "trunk": 55,
+   "shank": 25,
+   "knee": 0.441,
+   "hip": 0.47,
+   "hand": 20.1
+  },
+  {
+   "h": 0.56,
+   "effort": 0.341,
+   "trunk": 60,
+   "shank": 25,
+   "knee": 0.426,
+   "hip": 0.455,
+   "hand": 20.5
+  },
+  {
+   "h": 0.58,
+   "effort": 0.334,
+   "trunk": 60,
+   "shank": 20,
+   "knee": 0.417,
+   "hip": 0.445,
+   "hand": 20.8
+  },
+  {
+   "h": 0.6,
+   "effort": 0.315,
+   "trunk": 60,
+   "shank": 20,
+   "knee": 0.394,
+   "hip": 0.42,
+   "hand": 21.2
+  },
+  {
+   "h": 0.62,
+   "effort": 0.297,
+   "trunk": 0,
+   "shank": 20,
+   "knee": 0.371,
+   "hip": 0.395,
+   "hand": 21.2
+  },
+  {
+   "h": 0.64,
+   "effort": 0.282,
+   "trunk": 0,
+   "shank": 15,
+   "knee": 0.352,
+   "hip": 0.376,
+   "hand": 20.3
+  },
+  {
+   "h": 0.66,
+   "effort": 0.251,
+   "trunk": 0,
+   "shank": 15,
+   "knee": 0.314,
+   "hip": 0.335,
+   "hand": 18.2
+  },
+  {
+   "h": 0.68,
+   "effort": 0.231,
+   "trunk": 0,
+   "shank": 10,
+   "knee": 0.288,
+   "hip": 0.307,
+   "hand": 16.7
+  },
+  {
+   "h": 0.7,
+   "effort": 0.203,
+   "trunk": 0,
+   "shank": 5,
+   "knee": 0.253,
+   "hip": 0.27,
+   "hand": 14.8
+  }
+ ],
+ "sens": {
+  "base": {
+   "sum": -0.355,
+   "eff": -0.361,
+   "ratio": 1.55
+  },
+  "heel unconstrained": {
+   "sum": -0.516,
+   "eff": -0.484,
+   "ratio": 2.06
+  },
+  "feet not tucked (shank<=10)": {
+   "note": "infeasible at 0.42",
+   "b": 0.403
+  },
+  "hip_above 0.06": {
+   "sum": -0.279,
+   "eff": -0.277,
+   "ratio": 1.39
+  },
+  "hip_above 0.12": {
+   "sum": -0.424,
+   "eff": -0.399,
+   "ratio": 1.74
+  },
+  "75kg 1.72m": {
+   "sum": -0.228,
+   "eff": -0.216,
+   "ratio": 1.29
+  }
+ }
+}

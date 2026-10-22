@@ -1,0 +1,830 @@
+<nav class="top" aria-label="章节"><div class="in">
+  <a href="#p1">一 · 问题</a><a href="#map">全景</a><a href="#chain">证据链</a><a href="#dilemma">床高两难</a><a href="#existing">现有方案</a>
+  <a href="#p2">二 · 选择</a><a href="#p3">三 · 两个方案</a><a href="#compare">方案对比</a><a href="#explorerA">甲 · 扶手模型</a><a href="#height">抬多高</a><a href="#risk">风险</a><a href="#improve">缺点与改进</a><a href="#p4">四 · 下一步</a><a href="#sources">来源</a>
+</div></nav>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">ME5412 Robotics for Healthcare · 小组 proposal · 2026-10-22</div>
+  <h1>夜间起身：从床沿到站稳</h1>
+  <p class="statement">我们关注还能独立生活、但腿部力量和平衡已经下降的老人。他们夜里起床（多半因为夜尿）时，要在<b>昏暗</b>中、<b>刚醒</b>的状态下，从床沿坐姿站起来，再迈出第一步。这一段里叠着三件事：看不清支撑物在哪；腿的力量不够，而床越低站起来越难；站起的瞬间可能头晕。</p>
+  <p class="oneline">两个候选方案：组里最初想到的「动态扶手」，以及在它基础上发展出来的「床边起身台」。我们推荐后者：它不只让手里有东西扶，还直接减轻腿的负担。</p>
+  <nav class="route" aria-label="页面结构">
+    <a href="#p1" class="stable"><span class="k">第一部分 · 稳定</span><span class="v">问题是什么</span><span class="d">环节、原因、证据链、现有方案。不随方案改变。</span></a>
+    <a href="#p2"><span class="k">第二部分</span><span class="v">为什么这样设计</span><span class="d">力从哪来、打在哪里、放在哪里、站起后怎么走。</span></a>
+    <a href="#p3"><span class="k">第三部分 · 待确认</span><span class="v">两个候选方案</span><span class="d">动态扶手 vs 床边起身台：演示、对比、模型、风险、缺点。</span></a>
+    <a href="#p4"><span class="k">第四部分</span><span class="v">下一步</span><span class="d">五个研究问题、时间表、待决定事项。</span></a>
+  </nav>
+</header>
+
+<!-- ================= PART 1 ================= -->
+<div class="part" id="p1"><span class="pk">第一部分</span><h2>问题是什么</h2><p>这一部分是对问题本身的分析，不管最后选哪个方案都成立，可以直接用在展示的问题陈述里。</p><span class="badge">稳定</span></div>
+
+<section id="scope">
+  <div class="sec-head"><div class="eyebrow">范围与人群</div><h2>我们解决哪一段，为谁解决</h2></div>
+  <div class="scope3">
+    <div class="in-scope"><div class="k">重点解决</div><div class="v">坐在床沿 → 站稳 → 第一步</div><p>摸到并握住支撑、坐稳停一下、坐→站、站稳、交接到助行器。</p></div>
+    <div><div class="k">兼容，不做重点</div><div class="v">躺 → 坐、挪到床沿</div><p>两个方案在这一段都提供扶点（见方案演示），但不额外助力。</p></div>
+    <div><div class="k">不在范围</div><div class="v">走到卫生间、如厕、回床</div><p>在展示里说明边界，留作后续工作。</p></div>
+  </div>
+  <div class="card" style="display:grid;gap:6px;max-width:900px">
+    <h3>目标人群：两个条件同时满足</h3>
+    <p style="font-size:14.5px">① 借助支撑能自己站起来（光靠腿可能不行）；② 站起来以后，用助行器或拐杖能自己走。也就是居家、夜里独自起床的老人。</p>
+    <p style="font-size:14px;color:var(--ink2)">不包括：连助行器也走不了的人（他们夜里不应该独自下床，需要床边便椅或照护者），以及需要移位机的人。</p>
+  </div>
+</section>
+
+<section id="map">
+  <div class="sec-head">
+    <div class="eyebrow">问题全景</div>
+    <h2>八个环节 × 七类原因</h2>
+    <p class="lead">按时间顺序把起身拆成八个环节，再看每个环节里哪些原因在起作用。点一个格子或环节名，说明框里会显示解释。浅黄色的列是重点范围。</p>
+  </div>
+  <div class="matrix-wrap">
+    <div>
+      <div class="scroll-x"><table class="mx" id="mx"></table></div>
+      <div class="mx-legend"><span><i class="dot d2"></i>主要问题</span><span><i class="dot d1"></i>次要问题</span><span><i class="sw"></i>重点范围（环节 3–7）</span></div>
+    </div>
+    <aside class="panel" id="mpanel" aria-live="polite"></aside>
+  </div>
+</section>
+
+<section id="chain">
+  <div class="sec-head">
+    <div class="eyebrow">证据链</div>
+    <h2>沿着起身过程，一环扣一环</h2>
+    <p class="lead">从“为什么是夜里”到“现有办法为什么不够”，每一环写明：问题是什么，哪些证据支撑它，所以推出了什么。点证据可以看它的局限；红色虚线框是目前还缺的证据。</p>
+  </div>
+  <div class="tagkey"><span class="pill fact">事实</span><span class="pill assoc">关联≠因果</span><span class="pill model">本组模型</span><span class="pill infer">推断</span><span class="pill bad">证据缺口</span></div>
+  <div class="spine" id="spine"></div>
+</section>
+
+<section id="dilemma">
+  <div class="sec-head">
+    <div class="eyebrow">关键矛盾</div>
+    <h2>床高本身就是一个两难</h2>
+    <p class="lead">证据链第 5 环推出：起身的起点有多高，是一个可以设计的变量。但坐着和站起来，对床高的要求正好相反。</p>
+  </div>
+  <div class="grid3">
+    <div class="card ev"><span class="pill fact">指南</span><div class="num">坐着：要低</div><p>坐在床沿时，双脚应平踩地面、膝约 90°；床太高，脚就踩不实。</p><p class="lim">NCOA 的居家防跌建议，属于指南，不是试验证据。按“脚平踩、膝约 90°”换算，1.55–1.60 m 的老人大约是 0.40–0.45 m（按人体尺寸推算）。<span class="c" data-c="ncoa"></span></p></div>
+    <div class="card ev"><span class="pill fact">文献</span><div class="num">站起：要高</div><p>12 名 56–90 岁老人从 38 cm 的床上离床，髋部力矩为 58 cm 时的约 1.8 倍，一半人需要明显协助；有跌倒史的老人在低床上起身行走慢得多（6.3 s 对 3.7 s）。</p><p class="lim">医院病床、样本小。<span class="c" data-c="merryweather"></span><span class="c" data-c="christman"></span></p></div>
+    <div class="card ev"><span class="pill amber">矛盾</span><div class="num">固定床高只能顾一头</div><p>升降护理床能两头都顾，但要换整张床。起身台只在起身的那一刻把骨盆抬高，平时床照旧。</p><p class="lim">前提是这户人家不打算换床；如果愿意换升降床，那是更简单的答案（见“为什么不直接把床调高”）。</p></div>
+  </div>
+</section>
+
+<section id="existing">
+  <div class="sec-head">
+    <div class="eyebrow">现有方案</div>
+    <h2>现有产品各管哪几段</h2>
+    <p class="lead">列和上面的全景图一一对应。在坐→站、站稳、交接这几列，现有产品要么支撑位置不理想，要么需要老人自己按按钮、扳把手，要么只提醒、不支撑。</p>
+  </div>
+  <div class="scroll-x"><table class="cov" id="cov"></table></div>
+  <p class="cov-note"><span class="g"></span> 提供支撑　<span class="g P"></span> 部分（位置不理想，或需要老人自己操作）　<span class="g R"></span> 演示中由他人遥控　<span class="g N"></span> 只照明或提醒　— 不涉及。本组一行是<strong>设计目标</strong>，不是已验证的结果。</p>
+  <details class="fold">
+    <summary><span class="st">现有技术检索明细</span><span class="sd">床或座面抬升、床加把手、根据受力控制抬升：每一项的出处和与我们的差别</span></summary>
+    <div class="body"><div class="scroll-x"><table class="t" id="prior-t"></table></div></div>
+  </details>
+</section>
+
+<!-- ================= PART 2 ================= -->
+<div class="part" id="p2"><span class="pk">第二部分</span><h2>为什么这样设计</h2><p>同一个问题可以有很多解法。这里是决定方案形态的四个关键选择；组里如果想改方案，从这里开始讨论。</p></div>
+
+<section id="decisions">
+  <div class="sec-head"><div class="eyebrow">设计逻辑</div><h2>四个关键选择：两个方案各自怎么选</h2><p class="lead">表格最左边的标签表示这一行是哪个方案的选择：<span class="pill tagA">甲</span> 是动态扶手，<span class="pill tagB">乙</span> 是床边起身台。</p></div>
+  <div class="dec" id="dec"></div>
+</section>
+
+<!-- ================= PART 3 ================= -->
+<div class="part" id="p3"><span class="pk">第三部分</span><h2>两个候选方案：动态扶手 vs 床边起身台</h2><p><b>方案甲 · 动态扶手</b>是组里最初的想法：扶手装在床上，平时当床栏；老人坐到床沿后轻推一下，扶手带着手转到工作位置，一用力就锁死。<b>方案乙 · 床边起身台</b>是在比较“力从哪来”之后发展出来的：床不改，床前放一个起身台。老人坐在床沿、脚踩台架的踏板，往前挪到与床齐平的座板上；座板升高并前倾，把骨盆送高；L 形扶手跟着一起升，站直后仍在手边。下面先看两个方案怎么用，再并排比较。</p><span class="badge">推荐方案乙，待组内确认</span></div>
+
+<section id="concept">
+  <div class="sec-head"><div class="eyebrow">方案演示</div><h2>一次夜间起身，两个方案各自怎么做</h2>
+    <p class="lead">先选方案，再点步骤或按“播放”。这是从床侧面看的示意图（老人面朝右），尺寸是初定目标值。</p>
+  <div class="seg" id="scheme" role="group" aria-label="选择方案" style="grid-template-columns:1fr 1fr;max-width:460px"><button data-s="A" aria-pressed="false">方案甲 · 动态扶手</button><button data-s="B" aria-pressed="true">方案乙 · 床边起身台</button></div></div>
+  <div class="tabs" id="tabs" role="group" aria-label="起身步骤"></div>
+  <div class="stepper">
+    <div class="scene"><svg id="scene" viewBox="0 0 640 470" role="img" aria-label="床、起身台、扶手、助行器和老人的侧视示意图，右上角为俯视图"></svg>
+      <div class="ctrlrow" style="padding:4px 6px 2px"><button id="play">▶ 播放全过程</button><span class="muted" style="font-size:12.5px" id="sceneKey">橙色 = 可动座板；黄点 = 传感器</span></div>
+    </div>
+    <div class="card statepanel" id="spanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="sec-head"><div class="eyebrow">方案对比</div><h2>动态扶手和起身台，差在哪里</h2>
+    <p class="lead">两个方案都让“手边一直有支撑”，区别在站起那一下：动态扶手只能提供反作用力，帮多少取决于手臂力量；起身台把骨盆抬高，直接减轻腿的负担。我们不知道哪种“手臂弱”的表示最接近真实老人，所以四种都算。</p></div>
+  <div class="two">
+    <div class="card chart"><div class="legend" id="cmpLegend"></div><svg id="cmpchart" viewBox="0 0 640 340" role="img" aria-label="四种手臂假设下，撑床垫、方案甲、方案乙的 effort 柱状图"></svg></div>
+    <div class="card readout">
+      <h3>怎么读这张图</h3>
+      <p style="font-size:14px">effort 是最吃力的关节用掉了自己最大力量的几成，越低越轻松。“撑床垫”是老人在 0.42 m 的低床上双手撑床垫；实心柱把床垫当成刚性的（对床垫有利），虚框是软床垫（手上最多 15% 体重）。每个方案的扶手都放在它自己最省力的位置。</p>
+      <p style="font-size:14px"><b>方案乙</b>在四组里都最低：比撑硬床垫低 12–30%，比方案甲低 24–33%。</p>
+      <p style="font-size:14px"><b>方案甲</b>和撑硬床垫差不多或略差：向前抓扶手主要靠肩发力，撑在髋旁的床垫用的是伸直的手臂。床垫软的时候，甲才明显更好。</p>
+      <p style="font-size:14px"><b>不依赖手臂的部分</b>：不用手时，座高从 0.42 m 到 0.60 m，effort 从 0.59 降到 0.46（−22%）。</p>
+      <p style="font-size:13px;color:var(--ink2)">旧版用“手上最多 10% 体重”代表手臂弱。在这个假设下，扶手放在哪里结果都一样，比较不出方案甲和床垫的差别，所以弃用。</p>
+    </div>
+  </div>
+  <div class="scroll-x"><table class="t" id="cmpT"></table></div>
+</section>
+
+<section id="explorerA">
+  <div class="sec-head"><div class="eyebrow">方案甲 · 模型</div><h2>扶手放在哪里，站起来最省力</h2>
+    <p class="lead">点击或拖动图中任意位置放置扶手，看老人怎么用力、哪个关节最吃力。颜色越深越费力。可以切换手臂强弱，也可以切换成床沿扶手（单手或双手）来比较。床高统一为 0.42 m。</p></div>
+  <div class="explorer">
+    <div class="stage">
+      <canvas id="cv" aria-label="坐站侧视图：点击放置扶手"></canvas>
+      <div class="cv-foot"><span class="ramp">省力 <i></i> 费力</span><label class="chk"><input type="checkbox" id="heat" checked> 热力图</label><span>侧视，单位 m；60 kg、1.60 m 老人模型</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="seg" id="armSeg" role="group" aria-label="手臂力量" style="grid-template-columns:1fr 1fr">
+        <button data-a="strong" aria-pressed="true">手臂有力<br><span style="font-size:11.5px;opacity:.75">手上 ≤ 30% 体重</span></button>
+        <button data-a="weak" aria-pressed="false">手臂弱<br><span style="font-size:11.5px;opacity:.75">肩肘力量 ×0.5</span></button>
+      </div>
+      <div class="seg" role="group" aria-label="扶手类型">
+        <button id="mFront" aria-pressed="true">身前<br><span style="font-size:11.5px;opacity:.75">双手</span></button>
+        <button id="mSide2" aria-pressed="false">床沿扶手<br><span style="font-size:11.5px;opacity:.75">双手</span></button>
+        <button id="mSide1" aria-pressed="false">床沿扶手<br><span style="font-size:11.5px;opacity:.75">单手</span></button>
+      </div>
+      <div id="sideCtl" hidden><label for="hSlider" class="note">扶手高度 <span class="mono" id="hVal"></span> m</label><input type="range" id="hSlider"></div>
+      <div><h4>当前位置的 EFFORT</h4><div class="bigv" id="eff">–</div></div>
+      <div class="bars" id="cmpBars"></div>
+      <div><h4>各关节用掉的力量比例</h4><div class="bars" id="joints" style="margin-top:6px"></div></div>
+      <p class="note" id="msg"></p>
+    </div>
+  </div>
+  <div class="card" style="max-width:900px"><p style="font-size:14.5px"><b>这张图说明了方案甲的天花板：</b>同样手数时，身前扶手和床沿扶手差别不大；最好的扶手位置也只和撑硬床垫差不多，手臂弱时还略差，因为向前抓扶手主要靠肩发力，而撑在髋旁的床垫用的是伸直的手臂。扶手的价值主要在“站直以后手边还有东西”，而不是“站起那一下更省力”。</p></div>
+  <details class="fold"><summary><span class="st">这个模型的局限</span><span class="sd">展示时被追问要能说清</span></summary>
+    <div class="body"><ul style="margin:0;padding-left:20px;color:var(--ink2);display:grid;gap:4px;font-size:14px">
+      <li>2D 侧视、准静态，只分析离座那一瞬间；床沿扶手在人的侧面，只能投影到侧视图上粗略处理。</li>
+      <li>“手臂弱”用肩、肘力量打五折表示，手上最多仍可承担 30% 体重。旧版用“手上最多 10% 体重”，那个假设下扶手放在哪里结果都一样，已弃用。</li>
+      <li>床垫被当成刚性的，所以“撑床垫”被算得偏好。</li>
+    </ul></div></details>
+</section>
+
+<section id="height">
+  <div class="sec-head"><div class="eyebrow">方案乙 · 模型</div><h2>台面抬多高，站起来能省多少力</h2>
+    <p class="lead">拖动滑块，或者把鼠标移到图上。三条线：不用手；双手扶身前横杆，按两种手臂假设（手上最多 25% 体重 / 肩肘力量打五折）。横杆在每个座高都放在最省力的位置（高出座面 0.25–0.45 m）。脚可以往回收，但不能收进升降机构下面（脚跟至少在髋前 8 cm）。基线是 0.42 m 的低床。</p></div>
+  <div class="two">
+    <div class="card chart" style="position:relative">
+      <div class="legend"><span><i style="background:var(--s1)"></i>不用手</span><span><i style="background:var(--s2)"></i>扶横杆 · 上限 25%</span><span><i style="background:var(--s3)"></i>扶横杆 · 肩肘 ×0.5</span><span><i style="background:var(--amber);height:10px;width:10px;border-radius:50%"></i>当前高度</span></div>
+      <svg id="hchart" viewBox="0 0 640 340" role="img" aria-label="effort 随座面高度变化的折线图"></svg>
+      <div class="tip" id="htip" hidden></div>
+    </div>
+    <div class="card readout">
+      <label for="hs" class="muted" style="font-size:13px">座面高度 <span class="mono" id="hv"></span> m</label>
+      <input type="range" id="hs" min="0" max="13" step="1" value="10">
+      <div><div class="muted" style="font-size:12.5px">不用手时的 effort，与 0.42 m 相比</div><div class="big" id="hcmp"></div></div>
+      <div class="rrow" id="hrows"></div>
+      <p style="font-size:13px;color:var(--ink2)">effort：最吃力的关节用掉了自己最大力量的几成。</p>
+    </div>
+  </div>
+  <div class="grid3">
+    <div class="card ev"><span class="pill model">本组模型</span><div class="num">−22%</div><p>座面从 0.42 m 抬到 0.60 m，不用手时 effort 从 0.59 降到 0.46。这部分不依赖手臂力量。</p><p class="lim">换不同设定（坐姿参数、体型、脚能否收进座下）为 −14% 到 −30%。脚完全收不回时，0.42 m 不用手站不起来，0.60 m 可以。</p></div>
+    <div class="card ev"><span class="pill model">本组模型</span><div class="num">0.39 → 0.27</div><p>手上最多 25% 体重时：0.42 m 撑硬床垫 0.39，起身台扶横杆 0.27（−30%）。肩肘力量打五折时 0.36 → 0.32（−12%）。</p><p class="lim">25% 的依据：起身困难的老年女性（11 人）用扶手时，双手合力峰值约 159 N，对 60–65 kg 的人约为体重的 25%（体重原文未报告）。<span class="c" data-c="alexander"></span></p></div>
+    <div class="card ev"><span class="pill fact">老人实测</span><div class="num">48.2 → 27.5 N·m</div><p>12 名 56–90 岁老人，床高从 38 cm 换到 58 cm，离床时髋部力矩明显下降；一半人无法在没有明显协助的情况下从 38 cm 的床上站起。方向与模型一致。</p><p class="lim">力矩为静态建模估算，完成离床分析的只有 6 人。<span class="c" data-c="merryweather"></span></p></div>
+  </div>
+  <details class="fold">
+    <summary><span class="st">模型的简化与局限</span><span class="sd">展示时被追问要能说清</span></summary>
+    <div class="body"><ul style="margin:0;padding-left:20px;color:var(--ink2);display:grid;gap:4px;font-size:14px">
+      <li>2D 侧视、准静态，只分析离座那一瞬间。曲线呈台阶状，是因为躯干前倾角按 5° 一档离散求解。</li>
+      <li>模型偏好把脚往回收。床边：脚跟最多伸进床沿下 5 cm；起身台：脚跟至少在髋前 8 cm（升降机构在髋下方，座板前缘下方是空的）。在 0.60 m 时这个限制起作用，小腿前倾最多约 15–20°。如果脚完全收不回（小腿前倾 ≤ 10°），起身台仍比撑硬床垫低 12–28%。</li>
+      <li>座面在模型里是水平的。离座那一刻座面已经不受力，所以前倾只通过改变髋的位置起作用；要评估前倾，需要做离座前（座面仍受力）阶段的模型（RQ1）。</li>
+      <li>和文献只能说“方向一致”：Yoshioka 2014 测的是 8 名年轻人，40 cm 对 60 cm 时力矩为 1.7 倍；模型不用手时 0.42 对 0.60 m 的膝 + 髋力矩之和为 1.19–1.41 倍。<span class="c" data-c="yosh2014"></span></li>
+      <li>“手臂弱”有两种表示（手力上限、肩肘力量打折），结果不同，所以对比图四种都给出。</li>
+      <li>关节力量是假设值；降幅（%）对力量假设不敏感，effort 的绝对值敏感。</li>
+    </ul></div>
+  </details>
+</section>
+
+<section id="delta">
+  <div class="sec-head"><div class="eyebrow">差别</div><h2>为什么不直接用现成的东西</h2>
+    <p class="lead">座面抬升、床加扶手、根据扶手受力控制座面，这些单独看都有先例（见第一部分的检索明细）。老师最可能问的几个问题，我们这样回答：</p></div>
+  <div class="grid2">
+    <div class="card ev"><span class="pill amber">问 · 两个方案</span><div class="num" style="font-size:18px">为什么不直接把床调高？</div><p>坐在床沿时，脚要能平踩、膝约 90°，对 1.55–1.60 m 的老人约是 0.40–0.45 m；站起来更省力的高度却在 0.55–0.60 m。固定的床高只能照顾一头。升降护理床可以两头都顾，但要换整张床（例如 EZ Lift 约 2,200 美元）。起身台只在起身的那一刻把骨盆抬高，平时床照旧。如果用户愿意换升降床，那是更简单的答案；我们针对的是不换床的家庭。<span class="c" data-c="ncoa"></span><span class="c" data-c="ezlift"></span></p></div>
+    <div class="card ev"><span class="pill amber">问 · 方案甲</span><div class="num" style="font-size:18px">为什么不用 SuperBar 或可摆出的床栏？</div><p>SuperBar 固定在身前，躺着时不在手边，而且一直挡在床前；可摆出的床栏要老人自己去扳。动态扶手不用找锁扣：轻推就转、一用力就锁，转动由电机辅助。但这个差别依赖一个还没有证据的假设：老人夜里做不好手动解锁和扳动。<span class="c" data-c="superbar"></span></p></div>
+    <div class="card ev"><span class="pill amber">问 · 方案乙</span><div class="num" style="font-size:18px">为什么不在床沿放一个 120 美元的气弹簧座垫？</div><p>厂商说明它为带扶手的椅子设计；放在床垫上是否稳定，是我们的推断。它的气弹簧在人开始起身时才释放，所以卸不了载的人得不到帮助，而且没有扶手。起身台是主动推，只在“坐正 + 握住横杆 + 踩实踏板”时启动，扶手随座板升。<span class="c" data-c="upeasy"></span></p></div>
+    <div class="card ev"><span class="pill amber">问 · 方案乙</span><div class="num" style="font-size:18px">为什么不用电动升降躺椅或如厕抬升座？</div><p>安大略省的审查记录了 3 起死亡：都是痴呆老人，用遥控器把躺椅升到站立位置后，在无人目击时摔倒；报告把风险归于个人和环境因素，“站起后手边没有支撑”是我们的推断。电动如厕抬升座和我们最像（抬骨盆、扶手随座面升），但用在马桶上、靠开关启动。起身台用在床边，由受力互锁启动，异常时降平。<span class="c" data-c="liftchair"></span><span class="c" data-c="us6360382"></span></p></div>
+  </div>
+  <div class="card delta"><h3>方案乙能诚实宣称的差别（一个组合，而不是某一项“首创”）</h3><ol>
+    <li><strong>不换床</strong>：床前独立台架，座板与床齐平；台架靠住床，人站在踏板上压住台架，不依赖床垫形状。</li>
+    <li><strong>起身后支撑不中断</strong>：L 形扶手和座板一起升，针对升降躺椅“抬起后无支撑”的问题。电动如厕抬升座也做到了这一点，展示时要说明它是最接近的同类。<span class="c" data-c="us6360382"></span></li>
+    <li><strong>受力驱动的主动抬升，异常即降平</strong>：现有的离床传感都用来报警；我们用座板、横杆、踏板的受力决定什么时候抬，并定义了中止后的安全状态。注意：Panasonic 的椅子专利已有“扶手受力 + 座面卸载才升高”的规则，其实施例还把机器人换成了测力手杖，展示时要注明。<span class="c" data-c="us10022284"></span></li>
+    <li><strong>脚先碰到台架</strong>：扶手不伸出踏板和底座的范围，夜里走动时脚先碰到踏板斜边。这借用了无障碍规范的思路（ABA §307：墙挂突出物伸出不超过 10 cm，立柱式不超过 30 cm，因为手杖只探得到低处）；它是针对公共设施的规范，不约束住宅。<span class="c" data-c="aba"></span></li>
+  </ol></div>
+</section>
+
+<section id="risk">
+  <div class="sec-head"><div class="eyebrow">安全</div><h2>两个方案可能怎么出事，我们怎么防</h2>
+    <p class="lead">会动、会对人施力的装置，在夜里、无人看护时使用，安全论证必须排在功能前面。“可能性”是初步估计。下面先给方案乙的控制状态，再列失效模式。</p></div>
+  <div class="card" style="max-width:900px;display:grid;gap:8px"><h3>方案乙的控制状态</h3><div class="flow"><span>待机</span><i>→</i><span>已坐上</span><i>→</i><span>准备<small>坐正 + 双手横杆 + 双脚踏板，持续 2 s</small></span><i>→</i><span>抬升<small>限速、限力的主动推</small></span><i>→</i><span>到顶<small>人已离座</small></span><i>→</i><span>复位<small>座板、踏板都无负载一段时间</small></span></div><p style="font-size:14px">任何状态下出现异常（双手离开横杆、座板负载突变、偏向一侧、超时、断电）→ <b>缓慢降平</b>：先把前倾回到水平，再降回床面高度。抬升不跟着卸载走，所以卸不了载的人也能被送高；停在高处不算安全状态，因为头晕发软的人会从斜面上滑下来。</p></div>
+  <div class="scroll-x"><table class="t" id="fmea"></table></div>
+  <p style="font-size:13.5px;color:var(--ink2);max-width:900px">可能相关的标准（待确认）：辅助产品通用要求 EN 12182；家用电气医疗设备 IEC 60601-1-11；个人护理机器人 ISO 13482。床栏强制标准 ASTM F3186-17（CPSC 2023）只在设计中出现床栏时才相关。<span class="c" data-c="cpsc"></span></p>
+</section>
+
+<section id="improve">
+  <div class="sec-head"><div class="eyebrow">方案乙 · 已知缺点与改进方向</div><h2>起身台还有哪些毛病，怎么补</h2>
+    <p class="lead">先把起身台方案做完整，再找它的缺点。下面三个改进方向各自补掉一部分缺点，也带来新的问题，可以单独采用，也可以组合（例如 A + B）。W5 靠前倾角上限和防滑座板处理（RQ1、RQ5），W6 靠“为什么不用现成的”这一节的讲法处理。</p></div>
+  <div class="scroll-x"><table class="t" id="weak"></table></div>
+  <div class="grid3" id="alts"></div>
+</section>
+
+<!-- ================= PART 4 ================= -->
+<div class="part" id="p4"><span class="pk">第四部分</span><h2>下一步</h2><p>到 11 月 3 日要回答的五个问题。每个问题都写明它决定什么，以及一个能尽早推翻它的检验（kill test）。点开看具体做法。</p></div>
+
+<section id="plan">
+  <div class="rq-list" id="rqs"></div>
+  <div class="scroll-x"><div class="gantt" id="gantt"></div></div>
+</section>
+
+<section id="decide">
+  <div class="sec-head"><div class="eyebrow">组内讨论</div><h2>需要大家定下来的事</h2><p class="lead">勾选只保存在你自己的浏览器里，不会同步给组员。</p></div>
+  <div class="todo" id="todo"></div>
+</section>
+
+<section id="sources">
+  <div class="sec-head"><div class="eyebrow">来源</div><h2>参考资料</h2></div>
+  <ol class="src" id="srcs"></ol>
+</section>
+<footer>模型：bedexit_model（Python，scipy 线性规划）。现有技术检索见项目文档 claude/prior-art-bed-exit-assist.md。截至 2026-10-22。</footer>
+</div>
+
+<script type="application/json" id="hdata">__HDATA__</script>
+<script type="application/json" id="xdata">__XDATA__</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NS="http://www.w3.org/2000/svg";
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ================= sources (keyed) ================= */
+const SRC={
+ pesonen:["Pesonen et al. 2020, The Impact of Nocturia on Falls and Fractures: A Systematic Review and Meta-Analysis, J Urol","https://uroluts.uroweb.org/publication/the-impact-of-nocturia-on-falls-and-fractures-a-systematic-review-and-meta-analysis/"],
+ mol:["Mol et al. 2019, Orthostatic Hypotension and Falls in Older Adults: A Systematic Review and Meta-analysis, JAMDA","https://research.vu.nl/en/publications/orthostatic-hypotension-and-falls-in-older-adults-a-systematic-re/"],
+ saedon:["Saedon et al., The Prevalence of Orthostatic Hypotension: A Systematic Review and Meta-Analysis, J Gerontol A","https://eprints.um.edu.my/25203/"],
+ hignett:["Hignett, Sands, Youde, Griffiths 2010, inpatient fall locations (England & Wales)","https://healthdesign.org/sites/default/files/article-pdfs/Hignett_Sands_Youde_Griffiths-2010-CHD-KPS.pdf"],
+ shorr:["Shorr et al. 2012, bed alarm cluster randomized trial (UF News summary)","https://archive.news.ufl.edu/articles/2012/11/bed-alarms-not-proven-to-prevent-patient-falls-in-hospitals-uf-researchers-say.html"],
+ robinovitch:["Robinovitch et al. 2013, video capture of falls in long-term care (2 Minute Medicine summary)","https://www.2minutemedicine.com/video-surveillance-sheds-light-on-causes-of-falls-in-the-elderly/"],
+ handleanywhere:["Bolli, Bonato, Asada, Handle Anywhere: A Mobile Robot Arm for Providing Bodily Support to Elderly Persons","https://arxiv.org/pdf/2209.15169"],
+ bolli2023:["Bolli & Asada, A Data-Driven Approach to Positioning Grab Bars in the Sagittal Plane for Elderly Persons","https://arxiv.org/pdf/2306.05343"],
+ yosh2014:["Yoshioka et al. 2014, Peak hip and knee joint moments during a sit-to-stand movement are invariant to the change of seat height within the range of low to normal seat height, BioMed Eng OnLine","https://link.springer.com/doi/10.1186/1475-925x-13-27"],
+ christman:["Christman et al. 2015, Analysis of the influence of hospital bed height on kinematic parameters associated with patient falls during egress, Procedia Manufacturing 3","https://stacks.cdc.gov/view/cdc/230760/cdc_230760_DS1.pdf"],
+ merryweather:["Merryweather et al. 2015, Effects of bed height on the biomechanics of hospital bed entry and egress, Work 52","https://stacks.cdc.gov/view/cdc/231426/cdc_231426_DS1.pdf"],
+ kit:["Ackermann, Sloot, Mombaur 2026, Active robotic assistance for standing and sitting: experimental evaluation of handle trajectories, JNER","https://publikationen.bibliothek.kit.edu/1000190346"],
+ cpsc:["CPSC 2023, New Federal Mandatory Safety Standard for Adult Portable Bed Rails","https://www.cpsc.gov/Newsroom/News-Releases/2023/CPSC-Issues-New-Federal-Mandatory-Safety-Standard-for-Adult-Portable-Bed-Rails"],
+ stander:["Stander EZ Adjust Bed Rail（产品页）","https://stander.com/pages/8000-ez-adjust-bed-rail-support"],
+ smartrail:["HealthCraft Smart-Rail（产品页）","https://medicsmobility.ca/product/healthcraft-smart-rail-srs-s/"],
+ arcorail:["Arcorail Rotating Bedside Handrail（产品页）","https://www.vitalitymedical.com/alimed-arcorail-rotating-bedside-handrail-rotates-360-degrees.html"],
+ superbar:["HealthCraft SuperPole with SuperBar（产品页）","https://www.1800wheelchair.com/product/superbar"],
+ rehastage:["US10272005 (Rehastage), Bedside assistant and its attachment to a bed","https://patents.google.com/patent/US10272005B2/en"],
+ smartcaregiver:["Smart Caregiver Bed Exit Alarm（产品页）","https://smartcaregiver.com/collections/bed-alarms-for-elderly-care/products/bed-exit-alarm-with-monitor"],
+ aladin:["Wissner-Bosserhoff Aladin Smart Care（产品页）","https://www.wi-bo.com/en/products/smart-care/aladin"],
+ francebed:["France Bed, 離床支援マルチポジションベッド 新闻稿（2020-05-22）","https://www.francebed.co.jp/release_pdf/marupoji_200522.pdf"],
+ ezlift:["EZ Lift Sleep-to-Stand Bed（产品页）","https://ezliftbed.com/products/ez-lift-sleep-to-stand-bed"],
+ us9265677:["US9265677, Hospital chair beds with stowable stand-assist supports","https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9265677"],
+ us4905329:["US4905329, Inflatable support for aiding a patient to rise from a seated position","https://patents.justia.com/patent/4905329"],
+ mangar:["Mangar Raiser Lifting Cushion（产品页）","https://www.joerns.com/product/mangar-raiser-lifting-cushion/"],
+ panasonic:["US9962305 (Panasonic), Living support system and living support method","https://patents.google.com/patent/US9962305"],
+ wibo:["US10869795 (Wissner-Bosserhoff), Bed with mechanism for assisting an occupant to stand up","https://patents.google.com/patent/US10869795"],
+ upeasy:["UpEasy Seat Assist（产品页）","https://www.1800wheelchair.com/product/upeasy-seat-assist"],
+ us10022284:["US10022284 (Panasonic), Life assistance system for assisting user in act of standing up","https://patents.google.com/patent/US10022284"],
+ us8640285:["US8640285 (Hill-Rom), Hospital bed seat section articulation for chair egress","https://patents.justia.com/patent/8640285"],
+ liftchair:["College of Occupational Therapists of Ontario, Response to coroner's report: deaths from power recliner lift chairs (2022)","https://coto.org/resources/college-response-to-the-coroner-s-report-deaths-from-power-recliner-lift-chairs-2022"],
+ aba:["US Access Board, ABA Chapter 3: Protruding Objects (§307)","https://www.access-board.gov/aba/guides/chapter-3-protruding-objects/"],
+ ncoa:["National Council on Aging, Bedroom Safety Tips for Older Adults (2026)","https://www.ncoa.org/article/bedroom-safety-guide/"],
+ alexander:["Schultz, Alexander, Ashton-Miller 1992, Biomechanical analyses of rising from a chair, J Biomech 25(12)（手力数据引自 Alexander et al. 1991）","https://deepblue.lib.umich.edu/bitstream/2027.42/29713/1/0000047.pdf"],
+ us6360382:["US6360382 (Karding), Powered toilet seat lift","https://patents.google.com/patent/US6360382"],
+};
+const KEYS=Object.keys(SRC);
+const cite=ks=>(ks||"").split(" ").filter(Boolean).map(k=>{const i=KEYS.indexOf(k);return i<0?"":`<a href="${SRC[k][1]}" target="_blank" rel="noopener">[${i+1}]</a>`}).join("");
+$("#srcs").innerHTML=KEYS.map(k=>`<li><a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a></li>`).join("");
+const TAG={fact:"事实",assoc:"关联≠因果",model:"本组模型",infer:"推断/待验证"};
+
+/* ================= PART 1: matrix ================= */
+const STAGES=[
+ {n:"躺→坐",d:"翻身、撑起",scope:"compat",what:"老人通常先侧翻，再一手拉扶手、一手撑床坐起来。",fail:"平躺直接坐起时，髋部需要的力量超过腿的重量能压住的范围，腿会翘起来，所以几乎都要借手。",stance:"方案甲：收起的扶手就是床栏，拉着它翻身坐起。方案乙：起身台的侧扶手紧贴床沿、比床面高约 0.22 m，拉着它坐起。两个方案在这一段都不额外助力。"},
+ {n:"挪到床沿",d:"转身、放腿",scope:"compat",what:"转身把腿放到床下，臀部往外挪到床沿。",fail:"软床垫边缘会塌陷，挪过头会滑出床沿。",stance:"方案甲：扶着收起的扶手挪到床沿。方案乙：扶着侧扶手坐到床沿，双脚落在台架踏板上，再往前挪约 25 cm 坐上座板（座板与床齐平）。"},
+ {n:"摸到并握住支撑",d:"在暗处",scope:"core",what:"坐在床沿，在黑暗中找扶手、开关或拖鞋。",fail:"伸手方向一偏，重心就跟着偏出脚的支撑范围。",stance:"两个方案的支撑都在固定、可预测的位置：甲收在床边当床栏；乙是起身台的 L 形扶手。乙的踏板和底座让脚先碰到台架。"},
+ {n:"坐稳、停一下",d:"脚踩实",scope:"core",what:"双脚踩地，坐稳几秒再站。",fail:"尿急或刚醒时容易跳过这一步，把头晕带到站起之后。",stance:"方案甲：握住锁定的扶手坐一会儿。方案乙：坐正、双手握住横杆、双脚踩实踏板并持续约 2 秒，才允许抬升；这也给血压留出调整时间。"},
+ {n:"坐→站",d:"离座",scope:"core",what:"躯干前倾，把重心移到脚上方，再伸膝伸髋站起。",fail:"腿力不足、床又低时，前倾不够就发力，会坐回床上或向后倒。",stance:"方案甲：扶手锁死，人自己站起。方案乙（核心）：座板升高约 18 cm 并前倾约 15°，把骨盆送高；座板很短，脚可以收到它前缘下方。"},
+ {n:"站稳",d:"站起后数秒",scope:"core",what:"膝、髋伸直，重心稳定在双脚之间。",fail:"起立后血压下降导致头晕；双手撑床垫的支撑这时已经够不着。",stance:"两个方案站直后扶手都在手边。乙：人站在踏板上，手上的力是人和台架之间的内力，台架不会被拉翻。"},
+ {n:"第一步 / 交接",d:"接助行器",scope:"core",what:"松开扶手迈出第一步，或换手到助行器、拐杖。",fail:"一只手离开支撑的瞬间最不稳。",stance:"交接给老人自己的助行器。乙：助行器停在前横杆开口的一侧。"},
+ {n:"走到卫生间、回床",d:"",scope:"out",what:"走廊行走、如厕、回到床上。",fail:"照明不足、地面湿滑、耐力不足。",stance:"不在范围：展示时说明边界。回床可以按相反顺序使用起身台，留作后续工作。"}
+];
+const CAUSES=["暗 + 视觉/感知弱","腿部肌力不足","手脚配合 / 用力方向","起身头晕 · 刚醒 · 药物","尿急、动作赶","环境：床沿 · 床高 · 地面","装置自身的风险"];
+const S=[[1,1,2,0,1,1,2,2],[2,1,0,0,2,1,1,1],[1,1,1,0,2,2,2,1],[0,0,1,2,2,2,2,1],[1,1,1,2,2,1,1,1],[0,1,0,2,2,1,2,2],[1,1,1,0,1,0,2,1]];
+const NOTE={
+ "0-0":["躺着时找扶手主要靠记忆和触觉，问题不大。","infer"],"0-1":["看不清床沿在哪，往外挪时可能挪过头。","infer"],
+ "0-2":["坐在床沿、在黑暗中伸手摸扶手或开关，伸手方向一偏，重心就跟着偏出脚的支撑范围。“天黑”这条线就是在这里变成跌倒的。","infer"],
+ "0-4":["看不清前方时，人往往不敢充分前倾，坐→站就更依赖腿的力量。","infer"],"0-5":["视觉是站立平衡的输入之一；暗处站稳更依赖脚底和关节的本体感觉。","infer"],
+ "0-6":["看不清第一步落在哪、助行器和拖鞋在哪。","infer"],"0-7":["走廊和卫生间的照明（不在范围）。","infer"],
+ "1-0":["平躺直接坐起时，髋部需要的力量超过腿的重量能压住的范围，所以老人通常先侧翻再用手撑。","model"],"1-1":["挪动臀部需要手撑床面。","infer"],
+ "1-4":["坐→站对膝、髋伸肌的要求最高。模型中不用手时，最吃力的关节用掉约 55–58% 的力量；腿再弱 40%，就接近做不到。","model"],
+ "1-5":["刚站起时膝还没完全伸直，力量不足会往下沉。","infer"],"1-6":["第一步时有一瞬间是单腿支撑。","infer"],"1-7":["行走耐力（不在范围）。","infer"],
+ "2-0":["拉扶手和翻身的时机要配合。","infer"],"2-1":["转身放腿时，手要同时撑住床面。","infer"],"2-2":["坐着伸手会带动躯干，进而带动重心。","infer"],
+ "2-4":["手的发力要和躯干前倾配合：前倾不够就发力，结果是坐回床上或向后倒。","infer"],
+ "2-5":["站起后手要从“撑”切换成“扶”；双手撑床垫的支撑这时已经够不着，太早松手就失去支撑。","infer"],
+ "2-6":["从把手换到助行器时，有一只手离开支撑的瞬间。","infer"],"2-7":["行走中的协调（不在范围）。","infer"],
+ "3-2":["刚醒时反应慢，伸手不准。","infer"],
+ "3-3":["坐起后先停一下，可以给血压调整的时间；跳过这一步，会把头晕带到站起之后。体位性低血压在社区老人中约占 22%，与跌倒的合并 OR 为 1.73（统计关联，未调整）。","assoc"],
+ "3-4":["起立的瞬间，血压下降最明显。具体时间窗待查。","infer"],"3-5":["站起后几秒到几分钟内可能头晕、眼前发黑。","infer"],
+ "3-6":["头晕时迈第一步，风险最高。","infer"],"3-7":["行走中的头晕（不在范围）。","infer"],
+ "4-0":["着急起来，动作更快更猛。","infer"],"4-1":["同上。","infer"],"4-2":["急着找东西，伸手更快更不准。","infer"],
+ "4-3":["尿急会让人跳过“坐一会儿”。夜尿与跌倒相关：RR 1.20（跌倒合并 5 项纵向研究），作为原因的证据很弱。","assoc"],
+ "4-4":["急着站起，前倾和发力的时机更容易出错。","infer"],"4-5":["没站稳就想走。","infer"],"4-6":["第一步迈得急。","infer"],"4-7":["赶路（不在范围）。","infer"],
+ "5-1":["软床垫的边缘会塌陷，往外挪时容易滑出去。","infer"],"5-3":["床沿太软、床太低或太高，都会让人坐不稳、脚踩不实。","infer"],
+ "5-4":["床高直接改变起身难度。12 名 56–90 岁老人：床高 38 cm 对比 58 cm，离床时髋部力矩为 48.2 对 27.5 N·m，一半人从 38 cm 的床上无法在没有明显协助的情况下站起。","fact"],
+ "5-5":["地面滑。","infer"],"5-6":["拖鞋、袜子、地毯边、床边杂物。","infer"],"5-7":["通道照明与地面（不在范围）。","infer"],
+ "6-0":["床栏和床垫之间的缝隙有夹困风险。CPSC 自 2023 年起强制要求成人便携床栏符合 ASTM F3186-17。","fact"],"6-1":["挪动时手脚可能卡进缝隙。","fact"],
+ "6-2":["突然亮灯会刺眼，甚至吓到人。","infer"],"6-4":["会动的座面在人身上施力时，时机不对就会把人推出去，或者让人向前滑出。设计规则：互锁，只在条件满足时动；出现异常就缓慢降平，而不是停在高处；限制前倾角。","infer"],
+ "6-6":["床前的台架会占用通道；如果扶手伸出太多，可能撞到人。","infer"],"6-7":["误报和报警疲劳（不在范围）。","infer"]
+};
+const SCOPE={core:["重点","amber"],compat:["兼容","fact"],out:["不在范围","infer"]};
+(function(){
+  let h='<thead><tr><th></th>';
+  STAGES.forEach((s,j)=>{h+=`<th${s.scope==="core"?' class="scopecol"':''} scope="col"><button data-stage="${j}"><span class="n">${j+1}</span>${s.n}</button></th>`});
+  h+='</tr></thead><tbody>';
+  CAUSES.forEach((c,i)=>{h+=`<tr><th scope="row">${c}</th>`;STAGES.forEach((s,j)=>{const v=S[i][j];
+    h+=`<td${s.scope==="core"?' class="scopecol"':''}>${v?`<button class="cellbtn" data-cell="${i}-${j}" aria-pressed="false" aria-label="${c} × ${s.n}"><i class="dot d${v}"></i></button>`:''}</td>`});h+='</tr>'});
+  $("#mx").innerHTML=h+'</tbody>';
+})();
+function showStage(j){const s=STAGES[j],[lab,cl]=SCOPE[s.scope];const main=CAUSES.filter((c,i)=>S[i][j]===2);
+  $("#mpanel").innerHTML=`<div class="crumb">环节 ${j+1} / 8</div><h3>${s.n}${s.d?`<span class="muted" style="font-weight:400;font-size:14px">（${s.d}）</span>`:''}</h3><span class="pill ${cl}">${lab}</span>
+   <p><strong>发生什么：</strong>${s.what}</p><p><strong>怎么出错：</strong>${s.fail}</p><p><strong>主要原因：</strong>${main.join("、")||"无"}</p><p><strong>当前方案：</strong>${s.stance}</p>`}
+function showCell(key){const [i,j]=key.split("-").map(Number),s=STAGES[j],[lab,cl]=SCOPE[s.scope],n=NOTE[key]||["这一环节中的次要因素。","infer"];
+  $("#mpanel").innerHTML=`<div class="crumb">环节 ${j+1}「${s.n}」 × 原因</div><h3>${CAUSES[i]}</h3>
+   <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill ${cl}">${lab}</span><span class="pill">${S[i][j]===2?"主要问题":"次要问题"}</span><span class="pill ${n[1]}">${TAG[n[1]]}</span></div>
+   <p>${n[0]}</p><p class="muted" style="font-size:13px">点环节名可以查看这个环节的整体情况。</p>`}
+$("#mx").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll('#mx [aria-pressed="true"]').forEach(x=>x.setAttribute("aria-pressed","false"));
+  if(b.dataset.cell){b.setAttribute("aria-pressed","true");showCell(b.dataset.cell)}else showStage(+b.dataset.stage)});
+showStage(4);
+
+/* evidence chain */
+const SP=[
+ {st:"起因",q:"为什么是夜里？",p:"夜尿让老人在一天中状态最差的时候起床：刚醒、光线暗、身边没人。",cell:null,ch:[
+   {t:"assoc",n:"RR 1.20",c:"有夜尿的人，跌倒风险约高 20%。",l:"跌倒合并只有 5 项纵向研究；作为“原因”的证据确定性很低。",s:"pesonen"}],
+  link:"所以问题集中在“夜里从床上起来”这一段。"},
+ {st:"地点",q:"在哪里最容易出事？",p:"床边是跌倒最常发生的地点之一。",cell:null,ch:[
+   {t:"fact",n:"最常见：床边",c:"住院跌倒报告中，最常见的地点是床边，其次是卫生间。",l:"来自英格兰和威尔士约 21.6 万份住院事故报告，不限于无人目击，也不是居家数据。",s:"hignett"},
+   {t:"gap",n:"缺口",c:"居家老人夜间跌倒发生在哪个环节，目前没有找到直接数据。",l:"需要补充；如果数据显示多数发生在走路途中，聚焦要往后移。",s:""}],
+  link:"所以把范围收窄到床边：从坐在床沿，到迈出第一步。"},
+ {st:"环节 3 · 摸到并握住支撑",q:"看不清会怎样？",p:"坐在软床沿上，在暗处伸手找扶手、开关或拖鞋，伸手会带动重心，偏出双脚的支撑范围。",cell:"0-2",ch:[
+   {t:"fact",n:"41%",c:"养老院录像中，跌倒最常见的原因是“重心转移不当”。",l:"间接证据：录像来自公共区域，最常见的活动是向前走（24%），不是起身。",s:"robinovitch"},
+   {t:"infer",n:"机制",c:"在黑暗中伸手摸索，是重心转移不当的一种典型情形。",l:"合理推断，没有直接数据。",s:""}],
+  link:"所以支撑物应该在一个可预测、伸手就到的位置，最好不需要去找。"},
+ {st:"环节 4 · 坐稳、停一下",q:"为什么要先停一下？",p:"站起的瞬间血压可能下降；尿急又会让人跳过这个停顿。",cell:"3-3",ch:[
+   {t:"fact",n:"22%",c:"社区老人中约 22% 有体位性低血压（站起时血压下降）。",l:"研究之间差异很大（I² > 90%）。",s:"saedon"},
+   {t:"assoc",n:"OR 1.73",c:"有体位性低血压的老人更常发生跌倒。",l:"未调整的合并结果，包括横断面研究。",s:"mol"},
+   {t:"infer",n:"尿急",c:"尿急会让人跳过“坐一会儿”。",l:"推断，没有数据。",s:""}],
+  link:"所以“停一下”值得被设计进流程，而不是靠老人自觉。"},
+ {st:"环节 5 · 坐→站",q:"为什么站不起来？",p:"腿力不足时，床越低，站起所需的力矩越大，只能靠更大的前倾或借手。",cell:"5-4",ch:[
+   {t:"fact",n:"一半人",c:"12 名 56–90 岁老人：从 38 cm 的床上，一半人无法在没有明显协助的情况下站起；离床髋部力矩 48.2 N·m，58 cm 床为 27.5 N·m。",l:"力矩为静态建模估算；完成离床分析的只有 6 人。",s:"merryweather"},
+   {t:"fact",n:"6.3 s vs 3.7 s",c:"65 名有跌倒史的老人：低床时完成起身行走用时 6.3 秒，高床 3.7 秒；作者认为低床在离床时可能加重跌倒风险。",l:"医院病床；床高按小腿长度的 95%、110%、125% 设定。",s:"christman"},
+   {t:"fact",n:"1.7×",c:"座高 40 cm 时，髋膝峰值力矩是 60 cm 时的 1.7 倍。",l:"8 名健康年轻人；40 cm 以下变化不明显。",s:"yosh2014"},
+   {t:"model",n:"−22%",c:"座面从 0.42 m 抬到 0.60 m，不用手时 effort（最吃力关节用掉的力量比例）从 0.59 降到 0.46。",l:"不同建模设定下为 −14% 到 −30%；脚完全收不回时，0.42 m 不用手站不起来，0.60 m 可以。",s:""}],
+  link:"所以“起身的起点有多高”是一个可以设计的变量。"},
+ {st:"环节 6 · 站稳",q:"站起来之后为什么还会倒？",p:"头晕最可能出现在站起后的几秒到几分钟；而双手撑床垫的支撑，这时已经够不着了。",cell:"2-5",ch:[
+   {t:"infer",n:"站直后够不着",c:"站直时肩高约 1.3 m、臂长约 0.62 m，不弯腰就够不到约 0.45 m 高的床垫。",l:"按人体尺寸推算；人可以边起身边松手，所以支撑是“逐渐失去”，没有实测。",s:""},
+   {t:"fact",n:"座面 +0.25–0.38 m",c:"8 名老人（平均 86 岁）坐在约 0.46 m 高的椅子上，自己选择的身前把手高度为 0.71–0.84 m，即高出座面约 0.25–0.38 m。",l:"样本很小，只测了坐→站；座面变高时要按“高出座面”换算。",s:"bolli2023"}],
+  link:"所以站直以后，手边仍然需要一个够得着的支撑。"},
+ {st:"环节 7 · 第一步 / 交接",q:"站起来以后怎么走？",p:"目标人群能用助行器行走，难的是站起来；一只手离开支撑的瞬间最不稳。",cell:"2-6",ch:[
+   {t:"gap",n:"待补文献",c:"坐→站对膝、髋的要求比平地行走高得多。",l:"生物力学的一般认识，需要找一篇具体文献来引用。",s:""}],
+  link:"所以模块只负责到站稳为止，然后把人交接给他自己的助行器。"},
+ {st:"现有对策",q:"现有办法为什么不够？",p:"报警只通知别人、不提供支撑；床栏本身有夹困风险；会动的把手把负担转到手上；手动装置要老人自己去操作。",cell:null,ch:[
+   {t:"fact",n:"×36 → 无效",c:"推广床报警后使用率提高约 36 倍，但跌倒率和受伤率都没有下降。",l:"单家医院的整群随机试验，原本就有其他防跌措施。",s:"shorr"},
+   {t:"fact",n:"284 起",c:"2003–2021 年与成人便携床栏相关的夹困死亡；CPSC 自 2023 年起强制执行 ASTM F3186-17。",l:"美国数据。",s:"cpsc"},
+   {t:"fact",n:"3 起死亡",c:"电动升降躺椅：认知衰退的老人用遥控器把自己升起，站起后无人目击时摔倒致死。",l:"加拿大的审查记录；没有说明椅子型号与机理细节。",s:"liftchair"},
+   {t:"fact",n:"60% 体重",c:"会动的把手能减轻腿的负担，但双手的竖直力最高到体重的 60%。",l:"15 名健康年轻人。",s:"kit"},
+   {t:"gap",n:"假设",c:"老人夜里不会去手动扳扶手、按按钮，于是装置停在折中位置，或者干脆不用。",l:"没有数据，是“自动触发”的前提；可以找辅助器具弃用率方面的文献。",s:""}],
+  link:null}
+];
+const TG={fact:"事实",assoc:"关联≠因果",model:"本组模型",infer:"推断",gap:"证据缺口"};
+$("#spine").innerHTML=SP.map((nd,i)=>`<div class="node${nd.cell?"":" ctx"}">
+  <div class="nh"><span class="stg">${nd.st}</span>${nd.cell?`<button class="tomx" data-cell="${nd.cell}">在全景图中查看 ↑</button>`:""}</div>
+  <h3>${nd.q}</h3><p class="np">${nd.p}</p>
+  <div class="chips">${nd.ch.map(c=>`<details class="chip ${c.t==="gap"?"gap":""}"><summary><span class="pill ${c.t==="gap"?"bad":c.t}">${TG[c.t]}</span><span class="n">${c.n}</span><span class="cc">${c.c}</span></summary><p class="cl">局限：${c.l}${c.s?" "+cite(c.s):""}</p></details>`).join("")}</div>
+ </div>${nd.link?`<div class="link"><span aria-hidden="true">↓</span> ${nd.link}</div>`:""}`).join("");
+$("#spine").addEventListener("click",e=>{const b=e.target.closest(".tomx");if(!b)return;
+  document.querySelectorAll('#mx [aria-pressed="true"]').forEach(x=>x.setAttribute("aria-pressed","false"));
+  const c=document.querySelector(`#mx [data-cell="${b.dataset.cell}"]`);if(c)c.setAttribute("aria-pressed","true");showCell(b.dataset.cell);
+  $("#map").scrollIntoView({behavior:"smooth",block:"start"})});
+
+/* coverage */
+const G={S:'<span class="g" title="提供支撑"></span>',P:'<span class="g P" title="部分"></span>',R:'<span class="g R" title="演示中由他人遥控"></span>',N:'<span class="g N" title="只照明或提醒"></span>',"-":'<span class="muted">—</span>'};
+const COV=[
+ ["固定床沿扶手","Stander EZ Adjust 等","stander","SSPPPP--"],
+ ["可摆出 / 旋转扶手","Smart-Rail、Arcorail：需手动扳动","smartrail arcorail","SSPPPPP-"],
+ ["落地杆 + 身前横把手","HealthCraft SuperBar，每 45° 自动锁定","superbar","SSPSSSP-"],
+ ["整床：座面抬起帮助站立","France Bed（日本）、EZ Lift（美国）：需按按钮","francebed","SP-PP---"],
+ ["座垫式助起","UpEasy（气弹簧，无需按钮）、Mangar（充气）：主要用于椅子","upeasy mangar","---PP---"],
+ ["电动升降躺椅","遥控抬起；抬起后手边没有支撑","liftchair","---PP---"],
+ ["床垫离床报警","Smart Caregiver","smartcaregiver","-N-NN---"],
+ ["智能夜灯 / 监测","Aladin Smart Care","aladin","-NN---NN"],
+ ["把手机器人（研究）","Handle Anywhere：位置由算法给出，演示中由远程护工摆位","handleanywhere","RRRRRRR-"],
+ ["本组方案甲（目标）","动态扶手：收起即床栏；轻推后转到工作角度，一用力就锁；不抬升","","SSSSPSP-"],
+ ["本组方案乙（目标）","床边起身台：侧扶手兼作一小段床栏；往前挪上座板；座板升高前倾，L 形扶手随升","","PSSSSSP-"]
+];
+(function(){let h='<thead><tr><th style="text-align:left">方案</th>'+STAGES.map((s,j)=>`<th${s.scope==="core"?' class="scopecol"':''}><span class="mono muted">${j+1}</span><br>${s.n}</th>`).join("")+'</tr></thead><tbody>';
+ COV.forEach((r,k)=>{h+=`<tr${k===COV.length-2?' class="ours"':''}><th>${r[0]} ${r[2]?cite(r[2]):""}<small>${r[1]}</small></th>`+r[3].split("").map((c,j)=>`<td${STAGES[j].scope==="core"?' class="scopecol"':''}>${G[c]}</td>`).join("")+'</tr>'});
+ $("#cov").innerHTML=h+'</tbody>';})();
+const PRIOR=[
+ ["France Bed 离床支援多姿态床（2020）","日本居家护理产品","床变成椅子，座面抬起帮助站立","一键按钮","要换整张护理床（日本可用护理保险租赁）","francebed"],
+ ["EZ Lift Sleep-to-Stand","美国居家产品，约 2,200 美元","一键把人“抬到接近站立”","遥控器","整张床；机构未公开","ezlift"],
+ ["UpEasy Seat Assist","产品，约 120 美元","气弹簧座垫，开始起身时自动顶起，可抬约 70% 体重","无按钮、无电","为带扶手的椅子设计；没有扶手，也不管人是否扶稳","upeasy"],
+ ["电动升降躺椅","产品","遥控让整张椅子前倾抬起","遥控器","抬起后手边无支撑；有死亡记录","liftchair"],
+ ["Chair-egress 医院床（Hill-Rom）","医院","床变成椅子，座面段绕脚端转轴把后端抬起（egress boost）","按钮或触摸屏","医院设备；没有扶手，也不判断患者状态","us8640285"],
+ ["椅式床 + 可收起的站立支撑","医院 / 专利","椅式床两侧的支撑可手动或自动升起，顶端是把手","专利只写“可由传感器电子控制”，没有具体规则","医院椅式床；没有座面抬升","us9265677"],
+ ["电动如厕抬升座","产品 / 专利（如 US6360382）","座面升高并后高前低倾斜；扶手随座面升、保持水平","开关或脚踏，由用户或照护者操作","最接近的同类：同样“抬骨盆 + 扶手不离手”；差别在用在床边、要从床上挪过来、由受力互锁启动","us6360382"],
+ ["可充气抬升座垫","居家产品 / 1990 年专利","座垫充气把人抬起；专利写明可用于床","手动开关","没有扶手、没有互锁","us4905329"],
+ ["Panasonic 起身辅助系统","专利（椅子 + 机器人）","扶手受力且座面卸载后，座面升高；有实施例检测到动作就自动开始；实施例 17 把机器人换成测力手杖或肘托","扶手、座面测力","椅子，不在床边；“不用机器人”不构成差别","us10022284"],
+ ["Panasonic 生活支援系统","专利（椅子 + 机器人）","根据扶手拉力，按比例控制椅面前倾速度","扶手和座面测力","同上","panasonic"],
+ ["Wissner-Bosserhoff","专利","用户坐在床沿，用把手上的开关控制床高","开关","需要老人主动操作","wibo"],
+ ["SuperBar、Rehastage 把手","产品 / 专利","身前锁定的横把手；或随人起身向外摆的棘轮把手","无","只有扶手，没有座面助力","superbar rehastage"]
+];
+$("#prior-t").innerHTML=`<thead><tr><th>方案</th><th>类型</th><th>怎么帮人站起</th><th>触发 / 传感</th><th>和我们的差别</th></tr></thead><tbody>`+
+ PRIOR.map(r=>`<tr><th>${r[0]} ${cite(r[5])}</th><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join("")+`</tbody>`;
+
+/* ================= PART 2 ================= */
+const DEC=[
+ {q:"选择 1：起身的力从哪来？",cols:["方案","力从哪来","对老人的要求","夜间独自使用"],rows:[
+   ["","静止扶手（现有）","老人自己","手臂和握力要够","安全，但帮助的上限是老人手臂的力量"],
+   ["A","轻推即转、承重即锁的扶手","老人自己","手臂和握力要够","不用找锁扣；一用力就锁死"],
+   ["","会动的把手（KIT 类）","装置，经过手传入","握力要承受最高约 60% 体重","握着时移动、拉着人走，风险高"],
+   ["B","座面抬升 + 手扶平衡","装置，经过骨盆传入","手主要扶稳；不用手时也能降约 22%","互锁：坐正、握住、踩实才抬；出现异常就缓慢降平"]],
+  why:"<b>方案甲</b>让老人自己出力，扶手只负责待在对的位置：简单、安全，但帮多少取决于手臂力量；模型里它和撑硬床垫差不多。<b>方案乙</b>把助力改走骨盆：在我们试过的四种手臂假设下，effort 都比撑硬床垫低 12–30%；其中不依赖手臂的那部分（座高本身）约 −22%。"},
+ {q:"选择 2：助力打在身体哪里？",cols:["接口","典型做法","适合本人群？","两个方案怎么用"],rows:[
+   ["AB","手","扶手、把手","适合，作为借力或平衡","甲：唯一的接口，靠手借力；乙：辅助，负责平衡和“允许开始”"],
+   ["B","骨盆 / 臀部","座面抬升、座面前倾","适合，作为主助力","乙：主助力。不需要握力，座高效应有老人实测支持"],
+   ["","躯干 / 胸","胸垫、吊带","否","属于移位机，需要护工在场"],
+   ["","膝","膝挡","否","通常配合护工使用"],
+   ["","腿","外骨骼","否","夜里来不及穿戴"]],
+  why:"<b>方案甲</b>只用手，手臂弱的人帮助有限。<b>方案乙</b>让手和骨盆分工：骨盆负责“推上去”，手负责“扶稳”和“授权”。"},
+ {q:"选择 3：要不要抬升？抬升的部件放在哪里？",cols:["做法","床垫依赖","要不要挪动","站起后的支撑","主要风险"],rows:[
+   ["A","不抬升，只让扶手换位","扶手固定在床架上，不改床垫","不用","扶手仍在身前","扶手移动时碰到人；站起那一下帮得不多"],
+   ["","改造床沿（床垫下加模块）","普通床垫形成不了台阶，可能做不出来","不用","需另加扶手","床垫变形、夹缝"],
+   ["","床上放座垫（UpEasy 类）","为带扶手的椅子设计，放在床上是否稳定未知","不用","没有","抬起后无支撑"],
+   ["","电动升降躺椅","不涉及","要从床走到椅子","没有","有死亡记录"],
+   ["B","床边起身台","不依赖：自带硬座板","坐在床沿往前挪约 25 cm，脚一直踩在踏板上","L 形扶手随座板升","挪动时坐空、离开踏板后被拉翻、占地"]],
+  why:"<b>方案甲</b>不做抬升，所以没有床垫和挪动的问题，代价是不减轻腿的负担。<b>方案乙</b>用一个独立台架，同时解决“床垫做不出台阶”和“站起后没有支撑”；人站在台架的踏板上，台架靠人的体重压住。代价是多一次往前挪、多占地方（见“已知缺点”）。"},
+ {q:"选择 4：站起来以后怎么走？",cols:["做法","说明"],rows:[
+   ["","扶手延伸成行走支撑","固定在床或台架上的装置跟不着人走，会把方案做成大杂烩"],
+   ["AB","交接给老人自己的助行器","目标人群能用助行器走，难在站起来（坐→站比平地行走要求更高，待补文献）"],
+   ["","连助行器也走不了的人","不在目标人群内：夜里不应独自下床"]],
+  why:"两个方案都只负责到“站稳”为止，然后交接给老人自己的助行器。"}
+];
+const tagHtml=t=>(t.includes("A")?'<span class="pill tagA">甲</span>':'')+(t.includes("B")?'<span class="pill tagB">乙</span>':'');
+$("#dec").innerHTML=DEC.map(d=>`<div class="card"><div class="q"><h3>${d.q}</h3></div>
+ <div class="scroll-x"><table class="t"><thead><tr><th style="width:68px"></th>${d.cols.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
+ ${d.rows.map(r=>{const t=r[0],cls=t.includes("B")?"pick":t.includes("A")?"pickA":"";return `<tr class="${cls}"><td class="tg">${tagHtml(t)}</td>${r.slice(1).map((c,j)=>j===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`}).join("")}</tbody></table></div><p class="why">${d.why}</p></div>`).join("");
+
+/* ================= PART 3: stepper (tweened) ================= */
+const svg=$("#scene");const SX=x=>300+x*290,SZ=z=>440-z*240;
+const fillPose=p=>Object.assign({E2:p.E,W2:p.W},p);
+const POSE={
+ lie:fillPose({S:[-0.80,0.54],H:[-0.42,0.52],K:[-0.22,0.60],A:[-0.04,0.50],T:[-0.01,0.58],E:[-0.62,0.50],W:[-0.47,0.50]}),
+ BsitIn:fillPose({S:[-0.36,0.97],H:[-0.38,0.51],K:[0.01,0.50],A:[0.40,0.48],T:[0.44,0.55],E:[-0.17,0.74],W:[0.06,0.64]}),
+ Bedge:fillPose({S:[-0.12,0.97],H:[-0.15,0.51],K:[0.24,0.46],A:[0.24,0.062],T:[0.41,0.02],E:[-0.05,0.72],W:[0.10,0.64]}),
+ Bscoot:fillPose({S:[0.17,0.97],H:[0.12,0.51],K:[0.51,0.46],A:[0.51,0.062],T:[0.68,0.02],E:[0.22,0.70],W:[0.36,0.64]}),
+ Bready:fillPose({S:[0.28,0.94],H:[0.12,0.51],K:[0.45,0.40],A:[0.28,0.062],T:[0.45,0.02],E:[0.42,0.72],W:[0.62,0.77]}),
+ Brise:fillPose({S:[0.384,1.068],H:[0.12,0.69],K:[0.42,0.43],A:[0.28,0.062],T:[0.45,0.02],E:[0.47,0.90],W:[0.62,0.95]}),
+ Bstand:{S:[0.31,1.309],H:[0.28,0.848],K:[0.30,0.456],A:[0.28,0.062],T:[0.45,0.02],E:[0.48,1.08],W:[0.62,0.95],E2:[0.50,1.05],W2:[0.74,0.84]},
+ AsitIn:fillPose({S:[-0.36,0.97],H:[-0.38,0.51],K:[0.01,0.50],A:[0.02,0.11],T:[0.14,0.06],E:[-0.17,0.94],W:[0.03,0.80]}),
+ Asit:fillPose({S:[-0.12,0.97],H:[-0.15,0.51],K:[0.24,0.46],A:[0.16,0.062],T:[0.33,0.02],E:[-0.06,0.84],W:[0.03,0.80]}),
+ Aswing:fillPose({S:[-0.04,0.96],H:[-0.15,0.51],K:[0.24,0.46],A:[0.16,0.062],T:[0.33,0.02],E:[0.12,0.84],W:[0.39,0.80]}),
+ Aready:fillPose({S:[0.06,0.92],H:[-0.15,0.51],K:[0.24,0.46],A:[0.14,0.062],T:[0.31,0.02],E:[0.22,0.78],W:[0.39,0.80]}),
+ Arise:fillPose({S:[0.24,0.95],H:[-0.04,0.60],K:[0.26,0.47],A:[0.14,0.062],T:[0.31,0.02],E:[0.10,0.76],W:[0.39,0.80]}),
+ Astand:{S:[0.15,1.309],H:[0.13,0.848],K:[0.15,0.456],A:[0.13,0.062],T:[0.30,0.02],E:[0.30,1.04],W:[0.39,0.80],E2:[0.40,1.06],W2:[0.60,0.84]}
+};
+POSE.lie=fillPose(POSE.lie);
+const STATES_B=[
+ {k:"睡眠",R:[0,0],pose:"lie",light:0,sens:[],user:"侧躺在床上。",dev:"床不改造（约 0.42 m）。起身台放在床前：座板与床面齐平、紧贴床沿；人站的踏板铺在地上；L 形扶手在一侧。",check:"不动作。",fail:"夜里走动时，脚先碰到踏板的斜边和底座；扶手不伸出底座范围。"},
+ {k:"翻身坐起",R:[0,0],pose:"BsitIn",light:1,sens:[],user:"侧身，拉着侧扶手靠床的一端翻身坐起，腿越过座板放下。",dev:"不动。侧扶手紧贴床沿、比床面高约 0.22 m，相当于一小段床栏。",check:"不动作。",fail:"拉扶手的力主要朝向床，由床顶住；侧向拉力靠台架自重（约 30 kg 时可承受约 129 N）和与床腿的绑带。"},
+ {k:"坐到床沿，脚踩踏板",R:[0,0],pose:"Bedge",light:1,sens:["feet"],user:"坐到床沿，双脚落在台架的踏板上，手扶侧扶手。",dev:"不动。座板只有约 18 cm 深，小腿可以从它前面放下。",check:"踏板测到双脚承重（之后的互锁要用）。",fail:"踏板边缘做成斜坡、夜灯照亮踏板，防止绊脚。"},
+ {k:"往前挪，坐上座板",R:[0,0],pose:"Bscoot",light:1,sens:["seat","feet"],user:"像挪到椅子前沿那样，一点一点往前挪约 25 cm，坐到座板上，脚跟着往前挪。",dev:"不动。座板后缘有唇边压在床垫上，和床垫齐平、没有缝。",check:"座板承重达到坐姿体重的大部分，判定为“已坐上”。",fail:"往后的力由床顶住，台架不会被推开。挪动距离约为平时挪到椅子前沿的 2 倍，目标人群能不能做到要先测（RQ4）。"},
+ {k:"收脚、握住横杆、停一下",R:[0,0],pose:"Bready",light:1,sens:["seat","bar","feet"],user:"把脚往回收到座板前缘下方，双手握住前横杆，坐着停一会儿（也给血压调整的时间）。",dev:"等待，不抬升。",check:"进入“准备”需要同时满足：座板承重、左右差不超限（静坐时判断）、双手在横杆上、双脚踏板承重，并持续约 2 秒。阈值见 RQ3。",fail:"任何一个条件不满足，就不进入抬升。"},
+ {k:"抬升：座板升高前倾",R:[0.18,15],pose:"Brise",light:1,sens:["seat","bar","feet"],user:"身体前倾，开始发力站起。",dev:"座板主动升高约 18 cm、前倾约 15°，座面到约 0.60 m。L 形扶手跟着一起升，横杆始终高出座面约 0.35 m。抬升按设定的速度和力上限走完行程：人卸载得早就提前离座；卸不了载，也照样被送高。",check:"抬升中，双手离开横杆，或座板负载异常（往回坐、偏向一侧），立即转为“缓慢降平”：先回到水平，再降回床面高度。",fail:"断电时机构自锁，可以手动缓降。前倾角上限 15°。"},
+ {k:"站稳 · 交接",R:[0.18,15],pose:"Bstand",light:1,sens:["bar","feet"],user:"站直，扶着横杆站稳几秒，再换手到停在横杆开口一侧的助行器。",dev:"横杆仍在手边。人站在踏板上，手上的力是人和台架之间的内力，台架不会被拉翻。",check:"踏板和座板都没有负载、并持续一段时间后，座板才降回与床齐平。",fail:"人离开踏板后再拉横杆：台架自重约 30 kg 时可承受约 164 N 水平拉力；另加床腿绑带。"}
+];
+const STATES_A=[
+ {k:"睡眠",grip:"stow",hold:0,pose:"lie",light:0,sens:[],user:"侧躺在床上。",dev:"扶手收着：摆臂沿着床边，当一根普通床栏用。",check:"不动作。",fail:"—"},
+ {k:"翻身坐起",grip:"stow",hold:1,pose:"AsitIn",light:1,sens:["grip"],user:"侧身，拉着收起的扶手（也就是床栏）翻身坐起。",dev:"扶手收着，当床栏用；拉得再用力也不会转。",check:"收起状态下，向下或向内的大力只当作扶床栏，不触发转动。",fail:"—"},
+ {k:"挪到床沿",grip:"stow",hold:1,pose:"Asit",light:1,sens:["grip"],user:"扶着扶手，把臀部挪到床沿，双脚落地。",dev:"不动。",check:"—",fail:"—"},
+ {k:"轻推，扶手转到位",grip:"work",hold:1,pose:"Aswing",light:1,sens:["grip"],user:"手不松开，朝外轻轻一推。",dev:"扶手识别到轻推（水平方向、力小于约 20 N），低速转到工作角度（向内约 25°，由 RQ4 确定），把手一起带到位，然后锁定。",check:"只在轻推时转。转动中，手一用力（向下压或拉超过阈值）或遇到阻挡，立即停止并锁死；扭矩很小，老人一抵抗就停。",fail:"转动时可能扫到膝或俯身的头：转动只在手推时发生、低速限扭矩、遇阻即停。断电时离合脱开，可以用手推着转；承重时机械自锁。"},
+ {k:"握住，停一下",grip:"work",hold:1,pose:"Aready",light:1,sens:["grip"],user:"双手握住扶手，脚踩实，坐着停一会儿。",dev:"已锁定。",check:"扶手受力。",fail:"锁止失效：采用机械自锁（如棘轮）。"},
+ {k:"坐→站",grip:"work",hold:1,pose:"Arise",light:1,sens:["grip"],user:"身体前倾，自己发力站起来，手拉着扶手。",dev:"扶手锁死，只提供反作用力，不抬人。",check:"—",fail:"模型：effort 0.37–0.43（四种手臂假设），和撑硬床垫相当或略差；床垫软时才明显更好。这一下帮得不多。"},
+ {k:"站稳 · 交接",grip:"work",hold:1,pose:"Astand",light:1,sens:["grip"],user:"站直，扶手仍在手边；换手到助行器，迈出第一步。",dev:"人离开一段时间后，扶手转回床边收起。",check:"扶手没有负载，并持续一段时间。",fail:"展开的扶手可能挡路；超时收回。"}
+];
+let scheme="B",cur=0,shown=null,raf=0,playing=false,playToken=0;
+const ST=()=>scheme==="A"?STATES_A:STATES_B;
+const PSI={stow:-90,work:25,front:25};
+const paramsOf=s=>({pose:POSE[s.pose],R:s.R||[0,0],light:s.light,ps:PSI[s.grip||"front"],hold:s.hold||0,ikw:s.pose==="lie"?0:1});
+const lp=(a,b,t)=>a+(b-a)*t, lp2=(a,b,t)=>[lp(a[0],b[0],t),lp(a[1],b[1],t)];
+function mix(a,b,t){const p={};for(const k in b.pose)p[k]=lp2(a.pose[k],b.pose[k],t);
+  return {pose:p,R:lp2(a.R,b.R,t),light:lp(a.light,b.light,t),ps:lp(a.ps,b.ps,t),hold:lp(a.hold,b.hold,t),ikw:lp(a.ikw,b.ikw,t)}}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const reduceMotion=(()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}})();
+function el(tag,attrs,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;svg.appendChild(e);return e}
+const pts=a=>a.map(p=>SX(p[0])+","+SZ(p[1])).join(" ");
+const LEN={T:0.461,TH:0.392,SH:0.394,U:0.298,F:0.32};
+const nrm=v=>{const n=Math.hypot(v[0],v[1])||1;return [v[0]/n,v[1]/n]};
+function ik(a,b,l1,l2,hint){let d=[b[0]-a[0],b[1]-a[1]],L=Math.hypot(d[0],d[1])||1e-6;const mx=l1+l2-0.002,mn=Math.abs(l1-l2)+0.002;
+  if(L>mx||L<mn){const u=nrm(d),c=L>mx?mx:mn;b=[a[0]+u[0]*c,a[1]+u[1]*c];d=[b[0]-a[0],b[1]-a[1]];L=c}
+  const x=(l1*l1-l2*l2+L*L)/(2*L),h=Math.sqrt(Math.max(0,l1*l1-x*x)),u=[d[0]/L,d[1]/L],n=[-u[1],u[0]];
+  const p1=[a[0]+u[0]*x+n[0]*h,a[1]+u[1]*x+n[1]*h],p2=[a[0]+u[0]*x-n[0]*h,a[1]+u[1]*x-n[1]*h],dd=p=>Math.hypot(p[0]-hint[0],p[1]-hint[1]);
+  return {j:dd(p1)<=dd(p2)?p1:p2,e:b}}
+function solve(q,w){if(!(w>0.001))return q;const o=Object.assign({},q);
+  const t=nrm([q.S[0]-q.H[0],q.S[1]-q.H[1]]);o.S=lp2(q.S,[q.H[0]+t[0]*LEN.T,q.H[1]+t[1]*LEN.T],w);
+  const k=ik(q.H,q.A,LEN.TH,LEN.SH,q.K);o.K=lp2(q.K,k.j,w);o.A=lp2(q.A,k.e,w);o.T=[q.T[0]+o.A[0]-q.A[0],q.T[1]+o.A[1]-q.A[1]];
+  const a1=ik(o.S,q.W,LEN.U,LEN.F,q.E);o.E=lp2(q.E,a1.j,w);o.W=lp2(q.W,a1.e,w);
+  const a2=ik(o.S,q.W2,LEN.U,LEN.F,q.E2);o.E2=lp2(q.E2,a2.j,w);o.W2=lp2(q.W2,a2.e,w);return o}
+function figure(P){const ink=css("--ink"),surf=css("--surface"),q=solve(P.pose,P.ikw==null?1:P.ikw);
+  const L=(p,w)=>el("polyline",{points:pts(p),stroke:ink,"stroke-width":w,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"});
+  L([q.S,q.H,q.K,q.A,q.T],6);
+  const dx=q.S[0]-q.H[0],dz=q.S[1]-q.H[1],n=Math.hypot(dx,dz)||1,hc=[q.S[0]+dx/n*0.12,q.S[1]+dz/n*0.12];
+  el("circle",{cx:SX(hc[0]),cy:SZ(hc[1]),r:16,fill:surf,stroke:ink,"stroke-width":4});
+  L([q.S,q.E,q.W],4);
+  if(Math.hypot(q.W2[0]-q.W[0],q.W2[1]-q.W[1])>0.02)L([q.S,q.E2,q.W2],3);}
+function sensors(list,sp){const amber=css("--amber"),ink=css("--ink");list.forEach(k=>{const p=sp[k];if(p)el("circle",{cx:SX(p[0]),cy:SZ(p[1]),r:5.5,fill:amber,stroke:ink,"stroke-width":1.5})})}
+function base(P){const muted=css("--muted");svg.innerHTML="";
+  el("line",{x1:0,y1:SZ(0),x2:640,y2:SZ(0),stroke:muted,"stroke-width":1.5});
+  if(P.light>0.01)el("ellipse",{cx:SX(0.75),cy:SZ(0)+2,rx:90,ry:9,fill:css("--amber"),opacity:(0.22*P.light).toFixed(3)});
+  el("rect",{x:SX(-1),y:SZ(0.27),width:SX(0)-SX(-1),height:SZ(0)-SZ(0.27),fill:css("--bedc"),rx:4});
+  el("rect",{x:SX(-1),y:SZ(0.42),width:SX(0)-SX(-1),height:SZ(0.27)-SZ(0.42),fill:css("--matc"),rx:6});}
+function walker(wx){const muted=css("--muted");el("path",{d:`M${SX(wx)} ${SZ(0)} L${SX(wx+0.05)} ${SZ(0.82)} L${SX(wx+0.2)} ${SZ(0.82)} L${SX(wx+0.23)} ${SZ(0)}`,stroke:muted,"stroke-width":3,fill:"none"});
+  el("text",{x:SX(wx+0.25),y:SZ(0.03),fill:muted,"font-size":12},"助行器");}
+function drawB(P,i){base(P);const ink=css("--ink"),muted=css("--muted"),edge=css("--edgec"),surf=css("--surface"),line=css("--line"),amber=css("--amber"),bedc=css("--bedc");
+  el("text",{x:SX(-0.95),y:SZ(0.12),fill:muted,"font-size":13},"床（不改造，床面 0.42 m）");
+  const L=P.R[0],tn=Math.tan(P.R[1]*Math.PI/180),h0=0.42+L,zr=h0+0.12*tn,zf=h0-0.06*tn,zs=0.64+L,zb=0.77+L,t=0.045;
+  el("line",{x1:SX(0.62),y1:SZ(0.03),x2:SX(0.62),y2:SZ(0.50),stroke:ink,"stroke-width":8,opacity:.3});
+  el("line",{x1:SX(0.62),y1:SZ(0.45),x2:SX(0.62),y2:SZ(zb),stroke:ink,"stroke-width":4,opacity:.55});
+  el("line",{x1:SX(0.0),y1:SZ(zs),x2:SX(0.62),y2:SZ(zs),stroke:ink,"stroke-width":4,"stroke-linecap":"round",opacity:.45});
+  el("polygon",{points:pts([[0,0],[0.78,0],[0.74,0.025],[0,0.025]]),fill:bedc});
+  el("rect",{x:SX(0.0),y:SZ(0.30),width:SX(0.16)-SX(0),height:SZ(0.025)-SZ(0.30),fill:bedc,rx:3});
+  el("rect",{x:SX(0.05),y:SZ(h0-0.05),width:SX(0.11)-SX(0.05),height:Math.max(0,SZ(0.30)-SZ(h0-0.05)),fill:bedc});
+  el("polygon",{points:pts([[-0.03,zr],[0,zr],[0.18,zf],[0.18,zf-t],[0,zr-t],[-0.03,zr-0.012]]),fill:edge});
+  el("text",{x:SX(0.012),y:SZ(0.17),fill:muted,"font-size":11.5},"起身台");
+  el("text",{x:SX(0.53),y:SZ(0.06),fill:muted,"font-size":11.5},"踏板");
+  walker(0.67);figure(P);
+  el("circle",{cx:SX(0.62),cy:SZ(zb),r:7,fill:ink});
+  el("text",{x:16,y:26,fill:ink,"font-size":12.5},"L 形扶手：侧边段 + 前横杆，随座板一起升");
+  el("text",{x:16,y:46,fill:muted,"font-size":11.5,"font-family":css("--font-mono")},"座面 "+h0.toFixed(2)+" m · 前倾 "+P.R[1].toFixed(0)+"° · 床面 0.42 m");
+  if(i>=0)sensors(STATES_B[i].sens,{seat:[0.09,h0+0.012],bar:[0.62,zb+0.035],feet:[0.40,0.035]});
+  const TX=u=>510+u*125,TY=v=>94+v*125;
+  el("rect",{x:452,y:6,width:182,height:170,rx:8,fill:surf,stroke:line,"stroke-width":1});
+  el("text",{x:596,y:24,fill:muted,"font-size":11.5},"俯视");
+  el("rect",{x:TX(-0.38),y:TY(-0.6),width:TX(0)-TX(-0.38),height:TY(0.3)-TY(-0.6),fill:css("--matc"),rx:4});
+  el("text",{x:TX(-0.34),y:TY(-0.45),fill:muted,"font-size":10.5},"床");
+  el("rect",{x:TX(0),y:TY(-0.28),width:TX(0.78)-TX(0),height:TY(0.28)-TY(-0.28),fill:bedc,rx:3});
+  el("rect",{x:TX(0),y:TY(-0.22),width:TX(0.18)-TX(0),height:TY(0.22)-TY(-0.22),fill:edge,rx:2});
+  el("polyline",{points:[[0,-0.28],[0.62,-0.28],[0.62,0.12]].map(p=>TX(p[0])+","+TY(p[1])).join(" "),fill:"none",stroke:ink,"stroke-width":4,"stroke-linecap":"round","stroke-linejoin":"round"});
+  el("path",{d:`M${TX(0.58)} ${TY(0.47)} L${TX(0.58)} ${TY(0.31)} L${TX(0.78)} ${TY(0.31)} L${TX(0.78)} ${TY(0.47)}`,fill:"none",stroke:muted,"stroke-width":2});
+  el("text",{x:TX(0.47),y:TY(0.56),fill:muted,"font-size":10},"助行器");
+  if(P.pose.S[1]<0.75){el("line",{x1:TX(-0.2),y1:TY(-0.5),x2:TX(-0.2),y2:TY(0.22),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(-0.2),cy:TY(-0.54),r:7,fill:surf,stroke:ink,"stroke-width":2.5})}
+  else{const hu=P.pose.H[0];el("line",{x1:TX(hu),y1:TY(0),x2:TX(Math.max(hu+0.2,P.pose.K[0]+0.05)),y2:TY(0),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(hu-0.02),cy:TY(0),r:8,fill:surf,stroke:ink,"stroke-width":2.5})}
+  el("path",{d:`M${TX(-0.15)} ${TY(0.19)} L${TX(0.10)} ${TY(0.19)}`,stroke:amber,"stroke-width":2,"stroke-dasharray":"4 3",fill:"none"});
+  el("path",{d:`M${TX(0.10)} ${TY(0.19)} l-7 -4 l0 8 z`,fill:amber});
+  el("text",{x:TX(-0.37),y:TY(0.42),fill:muted,"font-size":10},"往前挪约 25 cm");
+}
+function drawA(P,i){base(P);const ink=css("--ink"),muted=css("--muted"),amber=css("--amber"),surf=css("--surface"),line=css("--line");
+  el("text",{x:SX(-0.95),y:SZ(0.12),fill:muted,"font-size":13},"床（床沿 0.42 m）");
+  el("line",{x1:SX(0.03),y1:SZ(0.27),x2:SX(0.03),y2:SZ(0.80),stroke:ink,"stroke-width":5,"stroke-linecap":"round",opacity:.5});
+  const ps=P.ps*Math.PI/180,AL=0.40,gx=0.03+AL*Math.cos(ps),grip=[gx,0.80];
+  if(Math.cos(ps)>0.03)el("line",{x1:SX(0.03),y1:SZ(0.80),x2:SX(gx),y2:SZ(0.80),stroke:ink,"stroke-width":5,"stroke-linecap":"round"});
+  el("circle",{cx:SX(grip[0]),cy:SZ(grip[1]),r:8,fill:amber,stroke:surf,"stroke-width":3});
+  el("text",{x:16,y:26,fill:ink,"font-size":12.5},P.ps<-45?"扶手收起（沿床边，当床栏用）":"扶手在工作角度（向内约 25°）");
+  walker(0.55);
+  const q=Object.assign({},P.pose,{W:lp2(P.pose.W,grip,P.hold)});figure(Object.assign({},P,{pose:q}));
+  if(i>=0)sensors(STATES_A[i].sens,{grip:grip});
+  // top-view inset
+  const TX=u=>522+u*140,TY=v=>146+v*140;
+  el("rect",{x:462,y:8,width:172,height:196,rx:8,fill:surf,stroke:line,"stroke-width":1});
+  el("text",{x:590,y:28,fill:muted,"font-size":12},"俯视");
+  el("rect",{x:TX(-0.38),y:TY(-0.72),width:TX(0)-TX(-0.38),height:TY(0.25)-TY(-0.72),fill:css("--matc"),rx:4});
+  el("text",{x:TX(-0.34),y:TY(-0.55),fill:muted,"font-size":10.5},"床");
+  el("line",{x1:TX(0),y1:TY(-0.72),x2:TX(0),y2:TY(0.25),stroke:muted,"stroke-width":1,"stroke-dasharray":"3 3"});
+  const lying=P.pose.S[1]<0.75;
+  if(lying){el("line",{x1:TX(-0.2),y1:TY(-0.62),x2:TX(-0.2),y2:TY(0.18),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(-0.2),cy:TY(-0.66),r:7,fill:surf,stroke:ink,"stroke-width":2.5})}
+  else{const hu=Math.min(-0.04,P.pose.H[0]);el("line",{x1:TX(hu),y1:TY(0),x2:TX(Math.max(hu+0.2,P.pose.K[0]+0.05)),y2:TY(0),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(hu-0.02),cy:TY(0),r:8,fill:surf,stroke:ink,"stroke-width":2.5})}
+  const pv=[0.03,-0.24],a0=-90*Math.PI/180,a1=25*Math.PI/180,tp=a=>[pv[0]+AL*Math.cos(a),pv[1]+AL*Math.sin(a)],s0=tp(a0),s1=tp(a1),tip=tp(ps);
+  el("path",{d:`M${TX(s0[0])} ${TY(s0[1])} A ${AL*140} ${AL*140} 0 0 1 ${TX(s1[0])} ${TY(s1[1])}`,fill:"none",stroke:amber,"stroke-width":1.5,"stroke-dasharray":"4 3",opacity:.8});
+  el("line",{x1:TX(pv[0]),y1:TY(pv[1]),x2:TX(tip[0]),y2:TY(tip[1]),stroke:ink,"stroke-width":5,"stroke-linecap":"round"});
+  el("circle",{cx:TX(pv[0]),cy:TY(pv[1]),r:5,fill:ink});
+  el("circle",{cx:TX(tip[0]),cy:TY(tip[1]),r:5.5,fill:amber,stroke:surf,"stroke-width":2});
+  el("text",{x:470,y:197,fill:muted,"font-size":11},"轻推后绕立柱转约 115°");
+}
+function render(P,i){(scheme==="A"?drawA:drawB)(P,i);shown=P}
+function panel(i){const s=ST()[i];document.querySelectorAll("#tabs button").forEach((b,k)=>b.setAttribute("aria-pressed",String(k===i)));
+  $("#spanel").innerHTML=`<div class="muted" style="font-size:12.5px">${scheme==="A"?"方案甲":"方案乙"} · 第 ${i+1} 步 / 共 ${ST().length} 步</div><h3>${s.k}</h3><dl class="kv"><dt>老人</dt><dd>${s.user}</dd><dt>${scheme==="A"?"扶手":"起身台"}</dt><dd>${s.dev}</dd><dt>判断依据</dt><dd>${s.check}</dd><dt>失效时</dt><dd>${s.fail}</dd></dl>`}
+function tweenTo(i,dur){return new Promise(res=>{cancelAnimationFrame(raf);const to=paramsOf(ST()[i]),from=shown||to;
+  if(reduceMotion||dur<=0||from===to){render(to,i);res();return}
+  const t0=performance.now();const step=now=>{const t=Math.min(1,(now-t0)/dur);render(mix(from,to,ease(t)),t<1?-1:i);if(t<1)raf=requestAnimationFrame(step);else{render(to,i);res()}};raf=requestAnimationFrame(step)})}
+function setState(i,dur){cur=i;panel(i);return tweenTo(i,dur==null?600:dur)}
+function buildTabs(){$("#tabs").innerHTML=ST().map((s,i)=>`<button aria-pressed="false"><span class="num">${i+1}</span>${s.k}</button>`).join("")}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function stop(){playing=false;playToken++;$("#play").textContent="▶ 播放全过程"}
+async function play(){const tok=++playToken;playing=true;$("#play").textContent="❚❚ 暂停";
+  await setState(0,700);for(let i=1;i<ST().length;i++){await wait(1000);if(tok!==playToken)return;await setState(i,1700);if(tok!==playToken)return}
+  await wait(800);if(tok===playToken)stop()}
+buildTabs();
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stop();setState([...b.parentNode.children].indexOf(b))});
+$("#play").onclick=()=>{if(playing)stop();else play()};
+setState(5,0);
+$("#scheme").addEventListener("click",e=>{const btn=e.target.closest("button");if(!btn)return;stop();scheme=btn.dataset.s;shown=null;
+  document.querySelectorAll("#scheme button").forEach(x=>x.setAttribute("aria-pressed",String(x===btn)));
+  $("#sceneKey").textContent=scheme==="A"?"轻推扶手才会转；黄点 = 传感器":"橙色 = 可动座板；黄点 = 传感器";buildTabs();setState(scheme==="A"?3:5,0)});
+
+/* scheme comparison */
+const CMP={"none042": 0.585, "none060": 0.459, "groups": [["手力上限 25%", "按老人实测", {"mr": 0.389, "ms": 0.458, "A": 0.388, "B": 0.273}], ["肩肘力量 ×0.5", "手力上限 30%", {"mr": 0.357, "ms": 0.458, "A": 0.412, "B": 0.315}], ["肩肘力量 ×0.35", "手力上限 30%", {"mr": 0.4, "ms": 0.462, "A": 0.432, "B": 0.321}], ["手臂正常", "手力上限 30%", {"mr": 0.35, "ms": 0.458, "A": 0.374, "B": 0.252}]]};
+(function(){const svgc=$("#cmpchart"),W=640,H=340,m={l:52,r:96,t:22,b:62};
+  const bars=[["撑床垫（实心 = 硬，虚框 = 软）","mr","--muted"],["方案甲：动态扶手","A","--s1"],["方案乙：起身台","B","--amber"]];
+  $("#cmpLegend").innerHTML=bars.map(b=>`<span><i style="background:var(${b[2]});height:10px;width:10px"></i>${b[0]}</span>`).join("");
+  const ymax=0.65,py=v=>m.t+(ymax-v)/ymax*(H-m.t-m.b);const ng=CMP.groups.length,gw=(W-m.l-m.r)/ng,bw=32,gap=7;
+  function draw(){svgc.innerHTML="";const g=(t,a,c)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(c!=null)e.textContent=c;svgc.appendChild(e);return e};
+    const muted=css("--muted"),ink2=css("--ink2"),ln=css("--line"),ink=css("--ink");
+    for(let v=0;v<=0.61;v+=0.2){g("line",{x1:m.l,x2:W-m.r,y1:py(v),y2:py(v),stroke:ln});g("text",{x:m.l-8,y:py(v)+4,"text-anchor":"end","font-size":12,fill:muted,"font-family":css("--font-mono")},v.toFixed(1))}
+    [[CMP.none042,"0.42 m"],[CMP.none060,"0.60 m"]].forEach(([v,lab])=>{g("line",{x1:m.l,x2:W-m.r+6,y1:py(v),y2:py(v),stroke:muted,"stroke-dasharray":"5 4"});
+      g("text",{x:W-m.r+10,y:py(v)-3,"font-size":11.5,fill:ink2},"不用手");g("text",{x:W-m.r+10,y:py(v)+12,"font-size":11,fill:ink2,"font-family":css("--font-mono")},lab+" "+v.toFixed(2))});
+    CMP.groups.forEach(([lab,sub,d],gi)=>{const x0=m.l+gi*gw+(gw-(3*bw+2*gap))/2;
+      bars.forEach(([bl,bk,c],bi)=>{const v=d[bk],x=x0+bi*(bw+gap);
+        if(bk==="mr")g("rect",{x:x+1,y:py(d.ms),width:bw-2,height:py(v)-py(d.ms),fill:"none",stroke:muted,"stroke-dasharray":"3 3","stroke-width":1.5,rx:3});
+        g("rect",{x:x,y:py(v),width:bw,height:py(0)-py(v),fill:css(c),rx:4});
+        if(bk==="mr"){g("text",{x:x+bw/2,y:py(d.ms)-5,"text-anchor":"middle","font-size":11,fill:muted,"font-family":css("--font-mono")},d.ms.toFixed(2));
+          g("text",{x:x+bw/2,y:py(v)+15,"text-anchor":"middle","font-size":11,fill:css("--surface"),"font-family":css("--font-mono")},v.toFixed(2))}
+        else g("text",{x:x+bw/2,y:py(v)-5,"text-anchor":"middle","font-size":11.5,fill:ink,"font-family":css("--font-mono")},v.toFixed(2))});
+      g("text",{x:m.l+gi*gw+gw/2,y:H-m.b+20,"text-anchor":"middle","font-size":12.5,fill:ink},lab);
+      g("text",{x:m.l+gi*gw+gw/2,y:H-m.b+37,"text-anchor":"middle","font-size":11.5,fill:muted},sub)});
+    g("text",{x:14,y:m.t+6,"font-size":12.5,fill:ink2,transform:`rotate(-90 14 ${m.t+6})`,"text-anchor":"end"},"effort（越低越省力）");}
+  draw();window.__cmpDraw=draw;
+  const rows=[
+   ["核心思路","扶手装在床上，平时当床栏；坐到床沿后轻推一下，扶手带着手转到工作角度（约 0.8 m 高），一用力就锁死","床前起身台：坐在床沿、脚踩踏板，往前挪上与床齐平的短座板；座板升高并前倾，把骨盆送高；L 形扶手随座板升"],
+   ["解决什么","支撑一直在手边：找得到，站直后也够得着","同左，并且直接减轻腿的负担"],
+   ["站起那一下（模型 effort）","0.37–0.43（四种手臂假设）；和撑硬床垫相当或略差","0.25–0.32；比撑硬床垫低 12–30%，比方案甲低 24–33%"],
+   ["对手臂的要求","帮多少，取决于手臂力量","不用手时也降约 22%（座高本身）；手再帮一部分"],
+   ["要不要挪动","不用","要：坐在床沿往前挪约 25 cm，脚一直踩在踏板上（改进方向 A 可以免掉）"],
+   ["运动部件与传感","1 个：扶手摆动；只需扶手测力","座板升高 + 前倾（目标一个驱动），扶手随升；座板、横杆、踏板测力"],
+   ["床的依赖","要固定在床架上","不依赖；台架靠住床，人站在踏板上压住台架"],
+   ["占地","小","约 0.56 × 0.78 m（含踏板）"],
+   ["主要风险","转动时扫到膝或头、夹手、展开后挡路","抬升时机、中止后怎么降、往前挪时坐空、离开踏板后被拉翻"],
+   ["最接近的现有产品","SuperBar（身前固定横把手）、Smart-Rail（手动摆出）、Rehastage（被动跟随）","电动如厕抬升座（抬骨盆 + 扶手随升）、升降躺椅、UpEasy、升降护理床"],
+   ["差别靠什么","“轻推即转、承重即锁”的交互，依赖“老人夜里做不好手动解锁和扳动”的假设，目前没有证据","组合差别：不换床 + 站起后支撑不中断 + 受力互锁的主动抬升、异常即降平"],
+   ["12 天工作量","小：一个摆动机构 + 简单传感","大：座板机构 + 互锁 + 倾翻计算"],
+   ["结论","实现简单，但站起那一下帮得不多","<b>推荐</b>：模型在四种手臂假设下都最省力；代价是多一次往前挪、机构更复杂"]];
+  $("#cmpT").innerHTML=`<thead><tr><th>维度</th><th>方案甲 · 动态扶手</th><th>方案乙 · 床边起身台</th></tr></thead><tbody>`+rows.map((r,i)=>`<tr${i===rows.length-1?' class="pick"':''}><th>${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")+`</tbody>`;
+})();
+
+/* scheme A explorer */
+(function(){
+const D=JSON.parse($("#xdata").textContent);
+const RAMP=["#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#184f95","#0d366b"];
+const hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+function rc(v){const t=Math.max(0,Math.min(1,(v-0.3)/0.4))*(RAMP.length-1),i=Math.floor(t),f=t-i;if(i>=RAMP.length-1)return RAMP[RAMP.length-1];const a=hx(RAMP[i]),b=hx(RAMP[i+1]);return `rgb(${a.map((x,k)=>Math.round(x+(b[k]-x)*f)).join(",")})`}
+const cv=$("#cv"),ctx=cv.getContext("2d"),Wd={x0:-0.75,x1:1.0,z0:0,z1:1.40};
+let arm="strong",mode="front",ix=14,iz=8,ih=0,showHeat=true,scale=1;
+const front=()=>D["front_"+arm],side=n=>D[`side${n}_${arm}`];
+const bestOf=a=>a.reduce((m,d,k)=>d&&(m<0||d[0]<a[m][0])?k:m,-1);
+function size(){const w=cv.clientWidth;if(!w)return;const h=Math.round(w*(Wd.z1-Wd.z0)/(Wd.x1-Wd.x0)),dpr=window.devicePixelRatio||1;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+"px";ctx.setTransform(dpr,0,0,dpr,0,0);scale=w/(Wd.x1-Wd.x0);draw()}
+const X=x=>(x-Wd.x0)*scale,Y=z=>(Wd.z1-z)*scale;
+const curD=()=>mode==="front"?front()[iz][ix]:side(mode==="side2"?2:1)[ih];
+const handleP=()=>mode==="front"?[D.xs[ix],D.zs[iz]]:[0.03,D.side_h[ih]];
+function line(p,c,w){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();p.forEach((q,k)=>k?ctx.lineTo(X(q[0]),Y(q[1])):ctx.moveTo(X(q[0]),Y(q[1])));ctx.stroke()}
+function draw(){const w=cv.clientWidth,h=cv.clientHeight;if(!w)return;ctx.clearRect(0,0,w,h);ctx.fillStyle=css("--surface");ctx.fillRect(0,0,w,h);
+  const ink=css("--ink"),muted=css("--muted"),amber=css("--amber");
+  if(mode==="front"&&showHeat){const dx=0.05*scale;front().forEach((r,i)=>r.forEach((d,j)=>{if(!d)return;ctx.globalAlpha=.82;ctx.fillStyle=rc(d[0]);ctx.fillRect(X(D.xs[j])-dx/2,Y(D.zs[i])-dx/2,dx+.6,dx+.6)}));ctx.globalAlpha=1}
+  ctx.fillStyle=css("--line");ctx.fillRect(X(-1),Y(0.42),X(0)-X(-1),Y(0)-Y(0.42));
+  ctx.fillStyle=muted;ctx.font="12px "+css("--font-body");ctx.fillText("床 0.42 m",X(-0.6),Y(0.2));line([[Wd.x0,0],[Wd.x1,0]],muted,1.5);
+  ctx.font="11px "+css("--font-mono");for(let z=0.5;z<1.3;z+=0.25)ctx.fillText(z.toFixed(2)+" m",4,Y(z)+4);
+  if(mode!=="front"){ctx.globalAlpha=.5;line([[0.03,0.55],[0.03,1.2]],muted,6);ctx.globalAlpha=1;ctx.fillStyle=css("--ink2");ctx.font="12px "+css("--font-body");ctx.fillText("床沿扶手在身体侧面（投影）",X(0.06),Y(1.27))}
+  const d=curD(),P=handleP(),st=d?d[10]:15,g=D.geo[String(st)],e=g.edge_x,rel=p=>[p[0]-e,p[1]];
+  const H=rel(g.Hp),K=rel(g.K),A=rel(g.A),th=(d?d[1]:55)*Math.PI/180,S=[H[0]+D.L.tr*Math.sin(th),H[1]+D.L.tr*Math.cos(th)];
+  line([[g.heel-e,0.005],[g.toe-e,0.005]],ink,4);line([S,H,K,A],ink,5);
+  ctx.beginPath();ctx.fillStyle=css("--surface");ctx.strokeStyle=ink;ctx.lineWidth=4;ctx.arc(X(S[0]+0.12*Math.sin(th)),Y(S[1]+0.12*Math.cos(th)),0.075*scale,0,Math.PI*2);ctx.fill();ctx.stroke();
+  if(d){line([S,[d[2],d[3]],P],ink,4);const k=0.0012,tip=[P[0]+d[4]*k,P[1]+d[5]*k];if(Math.hypot(d[4],d[5])>5){line([P,tip],amber,3);const ang=Math.atan2(-(tip[1]-P[1]),tip[0]-P[0]);ctx.fillStyle=amber;ctx.beginPath();ctx.moveTo(X(tip[0]),Y(tip[1]));ctx.lineTo(X(tip[0])-9*Math.cos(ang-.45),Y(tip[1])-9*Math.sin(ang-.45));ctx.lineTo(X(tip[0])-9*Math.cos(ang+.45),Y(tip[1])-9*Math.sin(ang+.45));ctx.closePath();ctx.fill()}}
+  ctx.beginPath();ctx.arc(X(P[0]),Y(P[1]),8,0,Math.PI*2);ctx.fillStyle=amber;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=css("--surface");ctx.stroke()}
+const bar=(l,v,c)=>`<div class="bar ${c||""}"><span>${l}</span><span class="track"><span class="fill" style="width:${Math.max(0,Math.min(1,v))*100}%"></span></span><span class="val">${v.toFixed(2)}</span></div>`;
+function readout(){const d=curD(),r=D.ref,s2=side(2),s1=side(1);
+  const refs=bar("不用手",r.none_042)+bar("双手撑床垫",r[arm].mattress_042)+bar("床沿扶手·双手",s2[bestOf(s2)][0])+bar("床沿扶手·单手",s1[bestOf(s1)][0]);
+  if(!d){$("#eff").textContent="–";$("#cmpBars").innerHTML=refs;$("#joints").innerHTML="";$("#msg").innerHTML='<span class="warn">这个位置够不到，或会碰到腿和床。</span>';draw();return}
+  $("#eff").textContent=d[0].toFixed(2);$("#cmpBars").innerHTML=refs+bar("当前位置",d[0],"cur");
+  const two=mode!=="side1";$("#joints").innerHTML=bar("髋",Math.abs(d[6]))+bar("膝",Math.abs(d[7]))+bar(two?"肩（双手）":"肩（单手）",Math.abs(d[8]))+bar(two?"肘（双手）":"肘（单手）",Math.abs(d[9]));
+  const F=Math.hypot(d[4],d[5]),worst=["髋","膝","肩","肘"][[d[6],d[7],d[8],d[9]].map(Math.abs).reduce((m,v,k,a)=>v>a[m]?k:m,0)];
+  $("#msg").innerHTML=`手上的力 ${F.toFixed(0)} N（${(F/D.BW*100).toFixed(0)}% 体重），躯干前倾 ${d[1]}°；此时最吃力的是${worst}。橙色箭头是扶手作用在手上的力。`;draw()}
+function pick(ev){if(mode!=="front")return;const r=cv.getBoundingClientRect(),x=Wd.x0+(ev.clientX-r.left)/scale,z=Wd.z1-(ev.clientY-r.top)/scale;
+  ix=Math.max(0,Math.min(D.xs.length-1,Math.round((x-D.xs[0])/0.05)));iz=Math.max(0,Math.min(D.zs.length-1,Math.round((z-D.zs[0])/0.05)));readout()}
+let drag=false;cv.addEventListener("pointerdown",e=>{drag=true;cv.setPointerCapture(e.pointerId);pick(e)});cv.addEventListener("pointermove",e=>{if(drag)pick(e)});cv.addEventListener("pointerup",()=>drag=false);
+const hsl=$("#hSlider");hsl.min=0;hsl.max=D.side_h.length-1;hsl.step=1;const setH=()=>{$("#hVal").textContent=D.side_h[ih].toFixed(3)};
+hsl.addEventListener("input",()=>{ih=+hsl.value;setH();readout()});
+function setMode(m){mode=m;[["mFront","front"],["mSide2","side2"],["mSide1","side1"]].forEach(([id,k])=>$("#"+id).setAttribute("aria-pressed",String(k===m)));$("#sideCtl").hidden=m==="front";
+  if(m!=="front"){ih=bestOf(side(m==="side2"?2:1));hsl.value=ih;setH()}readout()}
+$("#mFront").onclick=()=>setMode("front");$("#mSide2").onclick=()=>setMode("side2");$("#mSide1").onclick=()=>setMode("side1");
+$("#armSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;arm=b.dataset.a;document.querySelectorAll("#armSeg button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));setMode(mode)});
+$("#heat").addEventListener("change",e=>{showHeat=e.target.checked;draw()});
+window.addEventListener("resize",size);window.__expDraw=draw;size();readout();
+})();
+
+/* height chart */
+const HD=JSON.parse($("#hdata").textContent);const hc=$("#hchart"),W=640,Hh=340,m={l:52,r:18,t:16,b:44},hmin=0.40,hmax=0.66,ymin=0.15,ymax=0.65;
+const px=h=>m.l+(h-hmin)/(hmax-hmin)*(W-m.l-m.r),py=v=>m.t+(ymax-v)/(ymax-ymin)*(Hh-m.t-m.b);
+const SER=[["none","--s1","不用手"],["bar25","--s2","扶横杆 · 上限 25%"],["barweak","--s3","扶横杆 · 肩肘 ×0.5"]];
+const BI=1; // index of 0.42 m
+function hdraw(idx){hc.innerHTML="";const ink2=css("--ink2"),muted=css("--muted"),ln=css("--line");
+  const g=(t,a,c)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(c!=null)e.textContent=c;hc.appendChild(e);return e};
+  for(let v=0.2;v<=0.61;v+=0.1){g("line",{x1:m.l,x2:W-m.r,y1:py(v),y2:py(v),stroke:ln,"stroke-width":1});g("text",{x:m.l-8,y:py(v)+4,"text-anchor":"end","font-size":12,fill:muted,"font-family":css("--font-mono")},v.toFixed(1))}
+  for(let h=0.40;h<=0.661;h+=0.04)g("text",{x:px(h),y:Hh-m.b+18,"text-anchor":"middle","font-size":12,fill:muted,"font-family":css("--font-mono")},h.toFixed(2));
+  g("text",{x:(m.l+W-m.r)/2,y:Hh-6,"text-anchor":"middle","font-size":12.5,fill:ink2},"座面高度（m）");
+  g("text",{x:14,y:m.t+8,"font-size":12.5,fill:ink2,transform:`rotate(-90 14 ${m.t+8})`,"text-anchor":"end"},"effort");
+  g("rect",{x:px(0.41),y:m.t,width:px(0.43)-px(0.41),height:Hh-m.t-m.b,fill:ln,opacity:.6});g("text",{x:px(0.42),y:m.t+12,"text-anchor":"middle","font-size":11.5,fill:muted},"低床");
+  g("rect",{x:px(0.59),y:m.t,width:px(0.61)-px(0.59),height:Hh-m.t-m.b,fill:css("--scope")});g("text",{x:px(0.60),y:m.t+12,"text-anchor":"middle","font-size":11.5,fill:css("--amber-ink")},"抬升目标");
+  SER.forEach(([k,c,lab],si)=>{const col=css(c);g("polyline",{points:HD[k].map(d=>px(d.h)+","+py(d.effort)).join(" "),fill:"none",stroke:col,"stroke-width":2.2,"stroke-linejoin":"round"});
+    const L=HD[k][HD[k].length-1];g("text",{x:W-m.r-2,y:py(L.effort)+(si===2?-10:si===1?16:-10),"text-anchor":"end","font-size":12,fill:ink2},lab);
+    const d=HD[k][idx];g("circle",{cx:px(d.h),cy:py(d.effort),r:6,fill:col,stroke:css("--surface"),"stroke-width":2})});
+  g("line",{x1:px(HD.none[idx].h),x2:px(HD.none[idx].h),y1:m.t,y2:Hh-m.b,stroke:css("--amber"),"stroke-width":1.5,"stroke-dasharray":"4 3"})}
+function hread(idx){const n=HD.none[idx],mm=HD.bar25[idx],hh=HD.barweak[idx],n0=HD.none[BI];$("#hv").textContent=n.h.toFixed(2);
+  const pc=((n.effort/n0.effort-1)*100).toFixed(0);
+  $("#hcmp").textContent=(pc>0?"+":"")+pc+"%";
+  $("#hrows").innerHTML=`<span>不用手 · effort</span><span class="v">${n.effort.toFixed(2)}</span><span>扶横杆 · 上限 25%</span><span class="v">${mm.effort.toFixed(2)}</span><span>扶横杆 · 肩肘 ×0.5</span><span class="v">${hh.effort.toFixed(2)}</span><span>不用手 · 躯干前倾</span><span class="v">${n.trunk}°</span><span>不用手 · 小腿前倾</span><span class="v">${n.shank}°</span>`;hdraw(idx)}
+const hs=$("#hs");hs.max=HD.none.length-1;hs.value=10;hs.addEventListener("input",()=>hread(+hs.value));hread(+hs.value);
+hc.addEventListener("pointermove",e=>{const r=hc.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W;let idx=Math.round((hmin+(x-m.l)/(W-m.l-m.r)*(hmax-hmin)-0.40)/0.02);idx=Math.max(0,Math.min(HD.none.length-1,idx));
+  if(+hs.value!==idx){hs.value=idx;hread(idx)}const tip=$("#htip");tip.hidden=false;tip.style.left=(px(HD.none[idx].h)/W*r.width+10)+"px";tip.style.top=(py(HD.barweak[idx].effort)/Hh*r.height+40)+"px";
+  tip.textContent=`${HD.none[idx].h.toFixed(2)} m · 不用手 ${HD.none[idx].effort.toFixed(2)} · 上限 25% ${HD.bar25[idx].effort.toFixed(2)} · 肩肘 ×0.5 ${HD.barweak[idx].effort.toFixed(2)}`});
+hc.addEventListener("pointerleave",()=>{$("#htip").hidden=true});
+
+/* fmea */
+const FM=[
+ ["B","还没准备好就开始抬升","被向前推、失去平衡","高","中","“准备”需座板承重 + 双手在横杆 + 双脚踏板承重，持续 2 秒；低速"],
+ ["B","抬升中松手、头晕发软或往回坐","停在高处斜面上滑落","高","中","中止即缓慢降平（先回水平再下降），不停在高处；侧扶手和横杆在两侧和前方挡"],
+ ["B","用户卸不了载","抬升不起作用","中","中","抬升是主动推（限速、限力），不跟随卸载"],
+ ["B","没坐正（偏向一侧）","侧滑","高","中","静坐时左右受力差超限就不进入“准备”；侧扶手一侧挡住"],
+ ["B","座板前倾让人向前滑","滑落","高","中","前倾 ≤ 15°、防滑面、双脚踏板承重才动"],
+ ["B","往前挪时坐空，从床和座板之间滑下","跌倒","高","中","座板后缘唇边压在床垫上、与床垫齐平；侧扶手全程可扶；挪动可行性先测（RQ4）"],
+ ["B","台架被拉翻","人和台架一起倒","高","中（待计算）","站在踏板上时手力是内力；离开踏板后，自重约 30 kg 可承受约 164 N 水平拉力；加床腿绑带；倾翻计算（RQ2）"],
+ ["B","升降机构的夹点","夹手、夹腿","中","中","软罩、间隙校核；机构在座板下方、脚的后面"],
+ ["B","他人（伴侣、孩子、宠物）触发或被夹","意外动作","中","低","“准备”需三类条件同时满足"],
+ ["B","踏板边缘、台架占用通道","绊倒","中","中","踏板斜边、夜灯照亮踏板；扶手不伸出底座范围"],
+ ["AB","认知障碍用户","不理解装置，在错误时机使用","高","—","列为不适用人群，或需照护者在场"],
+ ["B","只能用一只手（如偏瘫）","互锁条件永远不满足","中","—","单手模式待定（RQ3）"],
+ ["AB","断电或电池故障","乙停在高位；甲转不动","中","低","乙：自锁 + 手动缓降；甲：离合脱开可手推"],
+ ["A","扶手转动时扫到膝或俯身的头","碰撞、惊吓","中","中","只在手推时转、低速限扭矩、遇阻即停；转动范围在膝前方约 0.8 m 高"],
+ ["A","转动中人突然用力","扶手在手下移动","高","低","受力超过阈值立即锁死；机械棘轮"],
+ ["A","收起时当床栏用，与床垫之间有缝","夹困","高","低","按 ASTM F3186-17 的间隙要求设计"],
+ ["A","展开后挡路","碰撞、绊倒","中","中","人离开后超时自动收回"]
+];
+$("#fmea").innerHTML=`<thead><tr><th style="width:68px">方案</th><th>可能的失效</th><th>后果</th><th>严重度</th><th>可能性（初估）</th><th>对策（待验证）</th></tr></thead><tbody>`+FM.map(r=>`<tr><td class="tg">${tagHtml(r[0])}</td><th>${r[1]}</th><td>${r[2]}</td><td><span class="pill ${r[3]==="高"?"bad":"amber"}">${r[3]}</span></td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join("")+`</tbody>`;
+const WEAK=[
+ ["W1","仍要往前挪约 25 cm：约为平时挪到椅子前沿的 2 倍，目标人群能否做到未知"],
+ ["W2","占地：约 0.56 × 0.78 m（含踏板），放在床前会占用下床通道"],
+ ["W3","动作序列长：坐到床沿、挪、收脚、停顿、抬升加起来估计 15–20 秒（待测），和尿急冲突"],
+ ["W4","机构：座板升高 + 前倾 + 扶手随升，夹点和故障点多"],
+ ["W5","座板前倾有向前滑出的风险"],
+ ["W6","和电动如厕抬升座、升降躺椅、升降护理床的差别需要讲清楚"]
+];
+$("#weak").innerHTML=`<thead><tr><th>编号</th><th>缺点</th><th>A 托板式</th><th>B 单驱动连杆</th><th>C 门控被动助力</th></tr></thead><tbody>`+
+ WEAK.map((w,i)=>{const fx={A:[0,1],B:[2,3],C:[2,3]};const c=k=>fx[k].includes(i)?'<span class="pill model">改善</span>':'<span class="muted">—</span>';return `<tr><th>${w[0]}</th><td>${w[1]}</td><td>${c("A")}</td><td>${c("B")}</td><td>${c("C")}</td></tr>`}).join("")+`</tbody>`;
+const ALTS=[
+ {k:"A 托板式：不用挪",d:"一块硬质托板平时铺在床沿的床垫上（或者折起来当床栏），由床前的台架支撑，台架底座伸进床底。老人坐在床沿，就等于坐在托板上，抬升直接从床沿开始。",fix:"W1 不用挪动；W2 床前只剩扶手和窄底座；床压住底座，更不容易翻。",nw:"床下要有约 10–15 cm 的空隙（箱式床不行）；睡觉时托板是否硌人；托板的收放机构。"},
+ {k:"B 单驱动连杆",d:"用一个电机加一套四连杆，让座板沿设计好的轨迹同时升高和前倾；扶手装在同一个滑架上一起升。",fix:"W3 动作更连贯；W4 只有一个驱动和一条轨迹，夹点和故障点更少。",nw:"轨迹固定，不能按人调整；需要做连杆的运动学优化，这正好适合用 SolidWorks 展示。"},
+ {k:"C 门控被动助力",d:"用气弹簧储能（像 UpEasy：坐下时压缩，起身时释放），电子部分只负责“锁”：握住 + 踩实才解锁，阻尼器限速。",fix:"W3 抬升速度跟着人起身走；W4 没有电机；断电时保持锁定；成本低。",nw:"气弹簧在人开始起身时才释放，卸不了载的人得不到帮助（这正是 UpEasy 的局限），和“主动推”的原则冲突；助力大小按体重预设；太轻的人可能压不回弹簧。"}
+];
+$("#alts").innerHTML=ALTS.map(a=>`<div class="card ev"><h3>${a.k}</h3><p>${a.d}</p><p><b>补上：</b>${a.fix}</p><p class="lim">新问题：${a.nw}</p></div>`).join("");
+
+/* inline cite spans */
+document.querySelectorAll(".c[data-c]").forEach(sp=>{sp.innerHTML=" "+cite(sp.dataset.c)});
+
+/* ================= PART 4 ================= */
+const RQ=[
+ {id:"RQ1",t:"台面要抬多高、倾多少？",why:"决定行程、前倾角和“能省多少力”这个核心数字。",how:"离座那一刻座面不受力，所以要加一个离座前（座面仍受力）阶段的模型，才能评估前倾；同时检查座板前缘和大腿的间隙。把 Merryweather 2015（老人，38 vs 58 cm）作为主要对照；给出 0.42 → 0.60 m 的降幅范围（目前 −14% 到 −30%）。",kill:"如果要靠超过约 20° 的前倾或超过 25 cm 的抬升才有效果（滑出风险太大），就改用只抬平、不前倾的方案。",out:"座高、前倾 → 力矩曲线；抬升和前倾的目标值",d:"10/23–10/26"},
+ {id:"RQ2",t:"起身台机构选哪种？",why:"决定能不能做出来、占多大地方，是 CAD 和 FEA 的主体。",how:"座板升高 + 前倾用单驱动四连杆（改进方向 B），扶手装在同一滑架上。比较项：动作时间、夹点、断电行为、成本。做 SolidWorks CAD；FEA 载荷工况：1.5 倍体重压在座板 + 横杆水平力约 180 N。倾翻按三种工况算：人站在踏板上、人离开踏板后拉横杆、坐在床沿侧拉侧扶手。",kill:"如果台架在约 0.56 × 0.78 m 内、离开踏板时承受不了约 150 N 的水平拉力，又不能绑床腿，就改用改进方向 A（底座伸进床底）。",out:"决策矩阵、CAD、FEA、倾覆计算",d:"10/24–10/31"},
+ {id:"RQ3",t:"互锁和控制规则怎么定？",why:"决定安全论证和整个动作序列要多久。",how:"细化状态机：待机 → 已坐上 → 准备 → 抬升（限速限力主动推）→ 到顶 → 复位，任何异常 → 缓慢降平。阈值用坐姿静力学和组员自测（体重秤 + 手机）初定，并说明健康学生不能代表 86 岁老人；估算总耗时；讨论单手模式。",kill:"如果整个序列超过约 15 秒、而且没办法缩短，就要正面回应“尿急”这个问题（例如改进方向 C）。",out:"状态机图、阈值表、时间线",d:"10/26–10/31"},
+ {id:"RQ4",t:"往前挪约 25 cm 可行吗？扶手放哪？",why:"挪动是起身台新增的一步，也是最可能被追问的一步。",how:"组员负重或穿护膝模拟，从 0.42 m 床沿往前挪到座板上，记录挪了几次、手用了多少力；座板唇边与床垫的搭接。侧扶手 = 座面 +0.22 m，横杆 = 座面 +0.35 m（Bolli 2023：老人自选高出座面 0.25–0.38 m）；助行器停在横杆开口一侧。",kill:"如果连模拟用户都挪得很吃力，就改用改进方向 A（托板式，不用挪）。",out:"搭接方案、扶手布置图",d:"10/23–10/28"},
+ {id:"RQ5",t:"安全论证够不够？",why:"会动、会施力的装置，Q&A 一定会被追问安全。",how:"按本页表格完善两个方案的失效模式分析，补上可能性和检测方式；确认适用标准（EN 12182、IEC 60601-1-11、ISO 13482）；明确不适用人群。",kill:"如果某个高严重度的失效找不到可行对策，就收缩功能（例如取消前倾）。",out:"失效模式分析表、标准清单、适用人群说明",d:"10/27–10/31"}
+];
+$("#rqs").innerHTML=RQ.map(r=>`<details class="fold rqd"><summary><span class="id">${r.id}</span><span class="st">${r.t}</span><span class="sd mono">${r.d}</span><span class="sd" style="flex-basis:100%">Kill test：${r.kill}</span></summary>
+ <div class="body"><dl class="kv" style="grid-template-columns:88px minmax(0,1fr)"><dt>它决定什么</dt><dd>${r.why}</dd><dt>怎么做</dt><dd>${r.how}</dd><dt>产出</dt><dd>${r.out}</dd></dl></div></details>`).join("");
+(function(){const days=[],start=new Date(2026,9,22);for(let k=0;k<13;k++){const d=new Date(start);d.setDate(start.getDate()+k);days.push(d)}
+  const wk=["日","一","二","三","四","五","六"],di=(mo,d)=>days.findIndex(x=>x.getMonth()===mo-1&&x.getDate()===d);
+  const lanes=[["RQ1 抬多高",10,23,10,26,""],["RQ2 机构 CAD/FEA",10,24,10,31,""],["RQ3 互锁与控制",10,26,10,31,""],["RQ4 挪动与扶手",10,23,10,28,""],["RQ5 安全",10,27,10,31,""],["整合 slides、彩排",10,30,11,2,"int"]];
+  const g=$("#gantt");g.style.gridTemplateColumns=`150px repeat(${days.length},minmax(44px,1fr))`;
+  let h='<div></div>'+days.map(d=>`<div class="hd">${d.getMonth()+1}/${d.getDate()}<br>${wk[d.getDay()]}</div>`).join("");
+  lanes.forEach((l,r)=>{const row=r+2;h+=`<div class="lane" style="grid-row:${row};grid-column:1">${l[0]}</div>`;for(let c=0;c<days.length;c++)h+=`<div class="cell" style="grid-row:${row};grid-column:${c+2}"></div>`;
+    h+=`<div class="gbar ${l[5]}" style="grid-row:${row};grid-column:${di(l[1],l[2])+2}/${di(l[3],l[4])+3}">${l[0].split(" ")[0]}</div>`});
+  const last=lanes.length+1;h+=`<div class="today" style="grid-row:2/${last+1};grid-column:${di(10,22)+2}"></div><div class="ms" style="grid-row:2/${last+1};grid-column:${di(10,27)+2}"><span>10/27 consultation</span></div><div class="ms" style="grid-row:2/${last+1};grid-column:${di(11,3)+2}"><span>11/3 提交 + 展示</span></div>`;
+  g.innerHTML=h})();
+const TODO=[
+ ["选方案甲（动态扶手）还是方案乙（床边起身台）","推荐乙；甲实现简单，但站起那一下帮得不多。乙还可以结合改进方向 A、B、C。"],
+ ["座板动作：齐平 → 升高约 18 cm 并前倾","前倾角上限多少？需要离座前阶段的模型（RQ1）"],
+ ["扶手：单侧 L 形（侧边 + 前横杆）还是两侧","单侧留出开口给助行器交接；两侧更稳但要从前面出来。"],
+ ["目标人群表述","“不换床的家庭；座高带来的帮助不依赖手臂力量”；不适用：认知障碍、需要移位机的人；偏瘫（单手）是否纳入？"],
+ ["床的适配范围","床高 0.40–0.50 m；床前约 0.8 m 空间；床下空隙（改进方向 A 需要）；单人床还是双人床。"],
+ ["“不换床”这个前提","愿意换升降护理床的家庭不是我们的用户；展示时要正面说明。"],
+ ["每个 RQ 的负责人",""],
+ ["10/27 consultation 带去什么","建议：问题全景、证据链、床高两难、两个方案演示、四种手臂假设的对比、“为什么不直接调高床”、控制状态和失效模式表。"]
+];
+let saved={};try{saved=JSON.parse(localStorage.getItem("bedexit-v5-todo")||"{}")}catch(e){}
+$("#todo").innerHTML=TODO.map((t,k)=>`<label for="td${k}"><input type="checkbox" id="td${k}" ${saved[k]?"checked":""}><span>${t[0]}${t[1]?`<small>${t[1]}</small>`:""}</span></label>`).join("");
+$("#todo").addEventListener("change",e=>{saved[e.target.id.slice(2)]=e.target.checked;try{localStorage.setItem("bedexit-v5-todo",JSON.stringify(saved))}catch(err){}});
+
+const redraw=()=>{shown&&render(shown,cur);hdraw(+hs.value);window.__cmpDraw&&window.__cmpDraw();window.__expDraw&&window.__expDraw()};
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redraw)}catch(e){}
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>

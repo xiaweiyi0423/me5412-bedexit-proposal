@@ -1,0 +1,6 @@
+{
+ "on_plate": "hand forces internal; stable while combined COM is over the base",
+ "off_plate_forward_pull_N": 164,
+ "sit_up_lateral_pull_N": 129,
+ "v9_mass_needed_177N_kg": 58
+}

@@ -1,0 +1,13 @@
+{
+ "none_042": 0.585,
+ "weak": {
+  "mattress_042": 0.493,
+  "handleA_042": 0.493,
+  "stationB_060": 0.328
+ },
+ "strong": {
+  "mattress_042": 0.35,
+  "handleA_042": 0.373,
+  "stationB_060": 0.321
+ }
+}

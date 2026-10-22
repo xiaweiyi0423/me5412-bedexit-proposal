@@ -1,0 +1,624 @@
+{
+ "P1 cap25": {
+  "bed042_mattress": {
+   "effort": 0.389,
+   "shank": 30,
+   "trunk": 35,
+   "hand": 24.9
+  },
+  "bed055_mattress": {
+   "effort": 0.338,
+   "shank": 20,
+   "trunk": 30,
+   "hand": 21.7
+  },
+  "bed058_mattress": {
+   "effort": 0.294,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 24.3
+  },
+  "bed055_handle": {
+   "effort": 0.314,
+   "shank": 20,
+   "trunk": 35,
+   "hand": 24.9
+  },
+  "bed058_handle": {
+   "effort": 0.291,
+   "shank": 20,
+   "trunk": 50,
+   "hand": 24.5
+  },
+  "A042_drawn": {
+   "effort": 0.389,
+   "shank": 30,
+   "trunk": 55,
+   "hand": 24.9
+  },
+  "B60_x50_z35": {
+   "effort": 0.301,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 20.0
+  },
+  "B60_x50_z40": {
+   "effort": 0.282,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 23.0
+  },
+  "B60_x55_z35": {
+   "effort": 0.281,
+   "shank": 20,
+   "trunk": 55,
+   "hand": 23.7
+  },
+  "B60_x55_z40": {
+   "effort": 0.277,
+   "shank": 20,
+   "trunk": 55,
+   "hand": 24.7
+  },
+  "B60_x60_z35": {
+   "effort": 0.279,
+   "shank": 20,
+   "trunk": 65,
+   "hand": 24.8
+  },
+  "B60_x60_z40": {
+   "effort": 0.277,
+   "shank": 20,
+   "trunk": 60,
+   "hand": 24.7
+  },
+  "B64_x50_z35": {
+   "effort": 0.27,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 22.9
+  },
+  "B64_x50_z40": {
+   "effort": 0.262,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 22.5
+  },
+  "B64_x55_z35": {
+   "effort": 0.267,
+   "shank": 15,
+   "trunk": 55,
+   "hand": 22.0
+  },
+  "B64_x55_z40": {
+   "effort": 0.249,
+   "shank": 15,
+   "trunk": 55,
+   "hand": 24.7
+  },
+  "B64_x60_z35": {
+   "effort": 0.255,
+   "shank": 15,
+   "trunk": 65,
+   "hand": 24.6
+  },
+  "B64_x60_z40": {
+   "effort": 0.258,
+   "shank": 15,
+   "trunk": 65,
+   "hand": 24.8
+  },
+  "B66_x50_z35": {
+   "effort": 0.24,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.4
+  },
+  "B66_x50_z40": {
+   "effort": 0.234,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.1
+  },
+  "B66_x55_z35": {
+   "effort": 0.239,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.3
+  },
+  "B66_x55_z40": {
+   "effort": 0.233,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.1
+  },
+  "B66_x60_z35": {
+   "effort": 0.248,
+   "shank": 15,
+   "trunk": 70,
+   "hand": 24.5
+  },
+  "B66_x60_z40": {
+   "effort": 0.241,
+   "shank": 15,
+   "trunk": 65,
+   "hand": 24.6
+  }
+ },
+ "P2 arm x0.5": {
+  "bed042_mattress": {
+   "effort": 0.357,
+   "shank": 30,
+   "trunk": 30,
+   "hand": 28.3
+  },
+  "bed055_mattress": {
+   "effort": 0.318,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 26.4
+  },
+  "bed058_mattress": {
+   "effort": 0.303,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 24.0
+  },
+  "bed055_handle": {
+   "effort": 0.351,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 20.2
+  },
+  "bed058_handle": {
+   "effort": 0.33,
+   "shank": 20,
+   "trunk": 80,
+   "hand": 22.6
+  },
+  "A042_drawn": {
+   "effort": 0.424,
+   "shank": 30,
+   "trunk": 55,
+   "hand": 19.6
+  },
+  "B60_x50_z35": {
+   "effort": 0.367,
+   "shank": 20,
+   "trunk": 20,
+   "hand": 12.7
+  },
+  "B60_x50_z40": {
+   "effort": 0.347,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 14.7
+  },
+  "B60_x55_z35": {
+   "effort": 0.336,
+   "shank": 20,
+   "trunk": 0,
+   "hand": 23.6
+  },
+  "B60_x55_z40": {
+   "effort": 0.315,
+   "shank": 20,
+   "trunk": 60,
+   "hand": 21.2
+  },
+  "B60_x60_z35": {
+   "effort": 0.332,
+   "shank": 20,
+   "trunk": 75,
+   "hand": 21.2
+  },
+  "B60_x60_z40": {
+   "effort": 0.332,
+   "shank": 20,
+   "trunk": 5,
+   "hand": 20.3
+  },
+  "B64_x50_z35": {
+   "effort": 0.322,
+   "shank": 15,
+   "trunk": 15,
+   "hand": 12.4
+  },
+  "B64_x50_z40": {
+   "effort": 0.314,
+   "shank": 15,
+   "trunk": 15,
+   "hand": 12.7
+  },
+  "B64_x55_z35": {
+   "effort": 0.289,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.8
+  },
+  "B64_x55_z40": {
+   "effort": 0.282,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.3
+  },
+  "B64_x60_z35": {
+   "effort": 0.299,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 17.7
+  },
+  "B64_x60_z40": {
+   "effort": 0.292,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 17.5
+  },
+  "B66_x50_z35": {
+   "effort": 0.291,
+   "shank": 15,
+   "trunk": 10,
+   "hand": 12.7
+  },
+  "B66_x50_z40": {
+   "effort": 0.287,
+   "shank": 15,
+   "trunk": 15,
+   "hand": 11.0
+  },
+  "B66_x55_z35": {
+   "effort": 0.257,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 18.5
+  },
+  "B66_x55_z40": {
+   "effort": 0.251,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 18.2
+  },
+  "B66_x60_z35": {
+   "effort": 0.268,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 15.5
+  },
+  "B66_x60_z40": {
+   "effort": 0.263,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 15.5
+  }
+ },
+ "P3 arm x0.35": {
+  "bed042_mattress": {
+   "effort": 0.4,
+   "shank": 30,
+   "trunk": 35,
+   "hand": 22.6
+  },
+  "bed055_mattress": {
+   "effort": 0.351,
+   "shank": 20,
+   "trunk": 30,
+   "hand": 20.6
+  },
+  "bed058_mattress": {
+   "effort": 0.34,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 21.7
+  },
+  "bed055_handle": {
+   "effort": 0.377,
+   "shank": 20,
+   "trunk": 60,
+   "hand": 18.2
+  },
+  "bed058_handle": {
+   "effort": 0.346,
+   "shank": 20,
+   "trunk": 0,
+   "hand": 23.7
+  },
+  "A042_drawn": {
+   "effort": 0.443,
+   "shank": 30,
+   "trunk": 55,
+   "hand": 16.9
+  },
+  "B60_x50_z35": {
+   "effort": 0.383,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 9.3
+  },
+  "B60_x50_z40": {
+   "effort": 0.373,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 10.1
+  },
+  "B60_x55_z35": {
+   "effort": 0.341,
+   "shank": 20,
+   "trunk": 0,
+   "hand": 23.2
+  },
+  "B60_x55_z40": {
+   "effort": 0.347,
+   "shank": 20,
+   "trunk": 65,
+   "hand": 19.3
+  },
+  "B60_x60_z35": {
+   "effort": 0.349,
+   "shank": 20,
+   "trunk": 5,
+   "hand": 19.7
+  },
+  "B60_x60_z40": {
+   "effort": 0.34,
+   "shank": 20,
+   "trunk": 5,
+   "hand": 19.4
+  },
+  "B64_x50_z35": {
+   "effort": 0.34,
+   "shank": 15,
+   "trunk": 20,
+   "hand": 9.1
+  },
+  "B64_x50_z40": {
+   "effort": 0.333,
+   "shank": 15,
+   "trunk": 20,
+   "hand": 9.6
+  },
+  "B64_x55_z35": {
+   "effort": 0.296,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.1
+  },
+  "B64_x55_z40": {
+   "effort": 0.317,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 18.7
+  },
+  "B64_x60_z35": {
+   "effort": 0.306,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 16.9
+  },
+  "B64_x60_z40": {
+   "effort": 0.3,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 16.7
+  },
+  "B66_x50_z35": {
+   "effort": 0.311,
+   "shank": 15,
+   "trunk": 20,
+   "hand": 7.5
+  },
+  "B66_x50_z40": {
+   "effort": 0.305,
+   "shank": 15,
+   "trunk": 20,
+   "hand": 8.2
+  },
+  "B66_x55_z35": {
+   "effort": 0.263,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 17.9
+  },
+  "B66_x55_z40": {
+   "effort": 0.276,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 17.0
+  },
+  "B66_x60_z35": {
+   "effort": 0.275,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 14.8
+  },
+  "B66_x60_z40": {
+   "effort": 0.27,
+   "shank": 15,
+   "trunk": 5,
+   "hand": 14.8
+  }
+ },
+ "strong cap30": {
+  "bed042_mattress": {
+   "effort": 0.35,
+   "shank": 30,
+   "trunk": 30,
+   "hand": 29.4
+  },
+  "bed055_mattress": {
+   "effort": 0.299,
+   "shank": 20,
+   "trunk": 25,
+   "hand": 27.5
+  },
+  "bed058_mattress": {
+   "effort": 0.278,
+   "shank": 20,
+   "trunk": 20,
+   "hand": 29.7
+  },
+  "bed055_handle": {
+   "effort": 0.292,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 28.1
+  },
+  "bed058_handle": {
+   "effort": 0.266,
+   "shank": 20,
+   "trunk": 55,
+   "hand": 28.2
+  },
+  "A042_drawn": {
+   "effort": 0.373,
+   "shank": 30,
+   "trunk": 55,
+   "hand": 27.3
+  },
+  "B60_x50_z35": {
+   "effort": 0.301,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 20.0
+  },
+  "B60_x50_z40": {
+   "effort": 0.282,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 23.0
+  },
+  "B60_x55_z35": {
+   "effort": 0.281,
+   "shank": 20,
+   "trunk": 55,
+   "hand": 23.7
+  },
+  "B60_x55_z40": {
+   "effort": 0.257,
+   "shank": 20,
+   "trunk": 55,
+   "hand": 27.0
+  },
+  "B60_x60_z35": {
+   "effort": 0.257,
+   "shank": 20,
+   "trunk": 65,
+   "hand": 27.3
+  },
+  "B60_x60_z40": {
+   "effort": 0.263,
+   "shank": 20,
+   "trunk": 60,
+   "hand": 26.4
+  },
+  "B64_x50_z35": {
+   "effort": 0.27,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 22.9
+  },
+  "B64_x50_z40": {
+   "effort": 0.262,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 22.5
+  },
+  "B64_x55_z35": {
+   "effort": 0.267,
+   "shank": 15,
+   "trunk": 55,
+   "hand": 22.0
+  },
+  "B64_x55_z40": {
+   "effort": 0.246,
+   "shank": 15,
+   "trunk": 60,
+   "hand": 26.2
+  },
+  "B64_x60_z35": {
+   "effort": 0.251,
+   "shank": 15,
+   "trunk": 70,
+   "hand": 25.9
+  },
+  "B64_x60_z40": {
+   "effort": 0.252,
+   "shank": 15,
+   "trunk": 65,
+   "hand": 25.4
+  },
+  "B66_x50_z35": {
+   "effort": 0.24,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.4
+  },
+  "B66_x50_z40": {
+   "effort": 0.234,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.1
+  },
+  "B66_x55_z35": {
+   "effort": 0.239,
+   "shank": 15,
+   "trunk": 0,
+   "hand": 20.3
+  },
+  "B66_x55_z40": {
+   "effort": 0.221,
+   "shank": 15,
+   "trunk": 60,
+   "hand": 27.0
+  },
+  "B66_x60_z35": {
+   "effort": 0.232,
+   "shank": 15,
+   "trunk": 70,
+   "hand": 26.5
+  },
+  "B66_x60_z40": {
+   "effort": 0.238,
+   "shank": 10,
+   "trunk": 65,
+   "hand": 25.7
+  }
+ },
+ "none": {
+  "none42": {
+   "effort": 0.585,
+   "shank": 30,
+   "trunk": 55,
+   "hand": 0.0
+  },
+  "none55": {
+   "effort": 0.505,
+   "shank": 20,
+   "trunk": 45,
+   "hand": 0.0
+  },
+  "none57": {
+   "effort": 0.478,
+   "shank": 20,
+   "trunk": 40,
+   "hand": 0.0
+  },
+  "none60": {
+   "effort": 0.459,
+   "shank": 15,
+   "trunk": 40,
+   "hand": 0.0
+  },
+  "none64": {
+   "effort": 0.41,
+   "shank": 15,
+   "trunk": 35,
+   "hand": 0.0
+  },
+  "none66": {
+   "effort": 0.374,
+   "shank": 15,
+   "trunk": 30,
+   "hand": 0.0
+  }
+ }
+}

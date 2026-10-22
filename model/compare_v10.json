@@ -1,0 +1,322 @@
+{
+ "none": {
+  "0.42": {
+   "effort": 0.585,
+   "shank": 30,
+   "trunk": 55,
+   "hand": 0.0,
+   "grip": null,
+   "heel_ahead_of_hip": 0.12
+  },
+  "0.5": {
+   "effort": 0.532,
+   "shank": 30,
+   "trunk": 45,
+   "hand": 0.0,
+   "grip": null,
+   "heel_ahead_of_hip": 0.087
+  },
+  "0.55": {
+   "effort": 0.505,
+   "shank": 25,
+   "trunk": 45,
+   "hand": 0.0,
+   "grip": null,
+   "heel_ahead_of_hip": 0.097
+  },
+  "0.6": {
+   "effort": 0.459,
+   "shank": 15,
+   "trunk": 40,
+   "hand": 0.0,
+   "grip": null,
+   "heel_ahead_of_hip": 0.141
+  }
+ },
+ "proxies": {
+  "P1 cap25": {
+   "mattress_rigid": {
+    "effort": 0.389,
+    "shank": 30,
+    "trunk": 35,
+    "hand": 24.9,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "mattress_soft": {
+    "effort": 0.458,
+    "shank": 30,
+    "trunk": 40,
+    "hand": 15.0,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "A_handle_042": {
+    "effort": 0.388,
+    "shank": 30,
+    "trunk": 70,
+    "hand": 24.6,
+    "grip": [
+     0.6,
+     0.3
+    ],
+    "heel_ahead_of_hip": 0.12
+   },
+   "B_bar_060": {
+    "effort": 0.273,
+    "shank": 20,
+    "trunk": 45,
+    "hand": 24.5,
+    "grip": [
+     0.5,
+     0.45
+    ],
+    "heel_ahead_of_hip": 0.1
+   }
+  },
+  "P2 arm x0.5": {
+   "mattress_rigid": {
+    "effort": 0.357,
+    "shank": 30,
+    "trunk": 30,
+    "hand": 28.3,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "mattress_soft": {
+    "effort": 0.458,
+    "shank": 30,
+    "trunk": 40,
+    "hand": 15.0,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "A_handle_042": {
+    "effort": 0.412,
+    "shank": 30,
+    "trunk": 65,
+    "hand": 21.5,
+    "grip": [
+     0.6,
+     0.3
+    ],
+    "heel_ahead_of_hip": 0.12
+   },
+   "B_bar_060": {
+    "effort": 0.315,
+    "shank": 20,
+    "trunk": 60,
+    "hand": 21.2,
+    "grip": [
+     0.55,
+     0.4
+    ],
+    "heel_ahead_of_hip": 0.1
+   }
+  },
+  "P3 arm x0.35": {
+   "mattress_rigid": {
+    "effort": 0.4,
+    "shank": 30,
+    "trunk": 35,
+    "hand": 22.6,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "mattress_soft": {
+    "effort": 0.462,
+    "shank": 30,
+    "trunk": 40,
+    "hand": 14.9,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "A_handle_042": {
+    "effort": 0.432,
+    "shank": 30,
+    "trunk": 70,
+    "hand": 18.1,
+    "grip": [
+     0.6,
+     0.3
+    ],
+    "heel_ahead_of_hip": 0.12
+   },
+   "B_bar_060": {
+    "effort": 0.321,
+    "shank": 20,
+    "trunk": 0,
+    "hand": 22.0,
+    "grip": [
+     0.6,
+     0.45
+    ],
+    "heel_ahead_of_hip": 0.1
+   }
+  },
+  "strong cap30": {
+   "mattress_rigid": {
+    "effort": 0.35,
+    "shank": 30,
+    "trunk": 30,
+    "hand": 29.4,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "mattress_soft": {
+    "effort": 0.458,
+    "shank": 30,
+    "trunk": 40,
+    "hand": 15.0,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "A_handle_042": {
+    "effort": 0.374,
+    "shank": 25,
+    "trunk": 55,
+    "hand": 29.6,
+    "grip": [
+     0.55,
+     0.35
+    ],
+    "heel_ahead_of_hip": 0.154
+   },
+   "B_bar_060": {
+    "effort": 0.252,
+    "shank": 20,
+    "trunk": 70,
+    "hand": 28.0,
+    "grip": [
+     0.6,
+     0.3
+    ],
+    "heel_ahead_of_hip": 0.1
+   }
+  },
+  "old cap10": {
+   "mattress_rigid": {
+    "effort": 0.493,
+    "shank": 30,
+    "trunk": 45,
+    "hand": 10.0,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "mattress_soft": {
+    "effort": 0.493,
+    "shank": 30,
+    "trunk": 45,
+    "hand": 10.0,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.12
+   },
+   "A_handle_042": {
+    "effort": 0.493,
+    "shank": 30,
+    "trunk": 60,
+    "hand": 10.0,
+    "grip": [
+     0.7,
+     0.35
+    ],
+    "heel_ahead_of_hip": 0.12
+   },
+   "B_bar_060": {
+    "effort": 0.37,
+    "shank": 20,
+    "trunk": 35,
+    "hand": 9.9,
+    "grip": [
+     0.4,
+     0.35
+    ],
+    "heel_ahead_of_hip": 0.1
+   }
+  }
+ },
+ "feet_blocked": {
+  "P1 cap25": {
+   "none_042": null,
+   "none_060": {
+    "effort": 0.547,
+    "shank": 10,
+    "trunk": 50,
+    "hand": 0.0,
+    "grip": null,
+    "heel_ahead_of_hip": 0.181
+   },
+   "mattress_rigid": {
+    "effort": 0.404,
+    "shank": 10,
+    "trunk": 35,
+    "hand": 24.5,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.258
+   },
+   "A_handle_042": {
+    "effort": 0.416,
+    "shank": 10,
+    "trunk": 55,
+    "hand": 24.5,
+    "grip": [
+     0.55,
+     0.4
+    ],
+    "heel_ahead_of_hip": 0.258
+   },
+   "B_bar_060": {
+    "effort": 0.289,
+    "shank": 10,
+    "trunk": 50,
+    "hand": 24.4,
+    "grip": [
+     0.55,
+     0.4
+    ],
+    "heel_ahead_of_hip": 0.181
+   }
+  },
+  "P2 arm x0.5": {
+   "none_042": null,
+   "none_060": {
+    "effort": 0.547,
+    "shank": 10,
+    "trunk": 50,
+    "hand": 0.0,
+    "grip": null,
+    "heel_ahead_of_hip": 0.181
+   },
+   "mattress_rigid": {
+    "effort": 0.374,
+    "shank": 10,
+    "trunk": 30,
+    "hand": 29.5,
+    "grip": "beside hip",
+    "heel_ahead_of_hip": 0.258
+   },
+   "A_handle_042": {
+    "effort": 0.438,
+    "shank": 10,
+    "trunk": 70,
+    "hand": 21.6,
+    "grip": [
+     0.6,
+     0.25
+    ],
+    "heel_ahead_of_hip": 0.258
+   },
+   "B_bar_060": {
+    "effort": 0.33,
+    "shank": 10,
+    "trunk": 80,
+    "hand": 22.6,
+    "grip": [
+     0.6,
+     0.25
+    ],
+    "heel_ahead_of_hip": 0.181
+   }
+  }
+ }
+}

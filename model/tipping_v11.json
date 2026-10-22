@@ -1,0 +1,9 @@
+{
+ "design_load_N": 177,
+ "mass_needed_forward_kg(plate0.80,bar1.06)": 34.8,
+ "mass_needed_lateral_kg(halfw0.33,rail0.64)": 35.0,
+ "mass_needed_lateral_kg(halfw0.33,rail0.88 raised)": 48.1,
+ "chosen_mass_kg": 35,
+ "capacity_forward_N(35kg)": 178,
+ "capacity_lateral_N(35kg,rail0.64)": 177
+}

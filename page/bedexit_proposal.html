@@ -1,0 +1,1150 @@
+<title>夜间起身：从床沿到站稳</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (≈760px) + full-width bands (concept stepper, chart, tables); sticky section nav. Nightlight amber on night indigo. */
+:root{
+  --bg:#f3f4f7; --surface:#ffffff; --ink:#151b2c; --ink2:#4b5368; --muted:#868da0; --line:#dde1ea;
+  --night:#2c3b6b; --amber:#b86e0c; --amber-ink:#8c5200; --scope:#fbf0dc; --scope-line:#ecd2a6;
+  --fact:#2a6fc9; --assoc:#7a56c2; --model:#0f8a6a; --infer:#a8640a; --bad:#b4352f;
+  --s1:#2a78d6; --s2:#eb6834;
+  --bedc:#d7dbe5; --matc:#e9ecf3; --edgec:#f2c27a;
+  --font-display:"Noto Serif SC","Songti SC","STSong",serif;
+  --font-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d111d; --surface:#151b2b; --ink:#e8ebf3; --ink2:#b3b9ca; --muted:#7f869a; --line:#273049;
+  --night:#9fb2ec; --amber:#f0a63c; --amber-ink:#f5b968; --scope:#2a2416; --scope-line:#5a4826;
+  --fact:#6aa5f0; --assoc:#ab90ea; --model:#3cc49c; --infer:#e9a64a; --bad:#ef7a72;
+  --s1:#3987e5; --s2:#d95926; --bedc:#2c3550; --matc:#36405e; --edgec:#8a6224; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d111d; --surface:#151b2b; --ink:#e8ebf3; --ink2:#b3b9ca; --muted:#7f869a; --line:#273049;
+  --night:#9fb2ec; --amber:#f0a63c; --amber-ink:#f5b968; --scope:#2a2416; --scope-line:#5a4826;
+  --fact:#6aa5f0; --assoc:#ab90ea; --model:#3cc49c; --infer:#e9a64a; --bad:#ef7a72;
+  --s1:#3987e5; --s2:#d95926; --bedc:#2c3550; --matc:#36405e; --edgec:#8a6224; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15.5px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1100px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.3;margin:0}
+h1{font-size:clamp(28px,4.6vw,44px);letter-spacing:.01em}
+h2{font-size:clamp(22px,3vw,28px)}
+h3{font-size:16.5px;font-family:var(--font-body);font-weight:700}
+p{margin:0}
+a{color:var(--night)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12.5px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.muted{color:var(--muted)}
+section{padding-block:56px 8px;display:grid;gap:22px;scroll-margin-top:64px}
+section>*,header.hero>*,.two>*,.stepper>*{min-width:0}
+.sec-head{display:grid;gap:8px}
+.lead{color:var(--ink2);max-width:780px}
+.scroll-x{overflow-x:auto;min-width:0}
+.pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid currentColor;line-height:1.6;white-space:nowrap}
+.pill.fact{color:var(--fact)} .pill.assoc{color:var(--assoc)} .pill.model{color:var(--model)} .pill.infer{color:var(--infer)} .pill.bad{color:var(--bad)} .pill.amber{color:var(--amber-ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+
+nav.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px))}
+nav.top .in{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+nav.top a{flex:none;text-decoration:none;color:var(--ink2);font-size:13.5px;padding:5px 10px;border-radius:999px}
+nav.top a:hover,nav.top a:focus-visible{background:var(--surface);color:var(--ink);outline:none}
+
+header.hero{padding-block:40px 8px;display:grid;gap:16px}
+.statement{font-size:17.5px;line-height:1.85;max-width:800px}
+.statement b{color:var(--amber-ink)}
+.oneline{border-left:3px solid var(--amber);padding:4px 0 4px 16px;font-family:var(--font-display);font-size:19px;max-width:800px}
+
+/* stepper */
+.stepper{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.stepper{grid-template-columns:1fr}}
+.scene{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px}
+.scene svg{width:100%;height:auto;display:block}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;line-height:1.4}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.tabs .num{font-family:var(--font-mono);margin-right:4px;opacity:.7}
+.statepanel{display:grid;gap:12px}
+.statepanel h3{font-size:19px;font-family:var(--font-display)}
+.kv{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px 12px;font-size:14.5px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.ctrlrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ctrlrow button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer}
+.ctrlrow button:focus-visible{outline:2px solid var(--amber)}
+
+/* decision cards */
+.dec{display:grid;gap:14px}
+.dec .card{display:grid;gap:10px}
+.dec .q{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+table.t{border-collapse:collapse;width:100%;font-size:14px;min-width:620px}
+table.t th,table.t td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.t thead th{font-weight:500;color:var(--ink2);font-size:13px}
+table.t tr.pick td,table.t tr.pick th{background:var(--scope)}
+table.t tr.pick th{box-shadow:inset 3px 0 0 var(--amber)}
+.why{font-size:14.5px;max-width:860px}
+.why b{color:var(--amber-ink)}
+
+/* chart */
+.two{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:4px 4px 8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px}
+.readout{display:grid;gap:12px}
+.big{font-family:var(--font-mono);font-size:22px;line-height:1.25}
+.rrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;font-size:14px}
+.rrow .v{font-family:var(--font-mono);text-align:right}
+input[type=range]{width:100%;accent-color:var(--amber)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-110%);font-family:var(--font-mono)}
+
+/* misc */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.grid3{grid-template-columns:1fr}}
+.ev .num{font-family:var(--font-mono);font-size:22px}
+.ev{display:grid;gap:6px;align-content:start}
+.ev .pill,.statepanel .pill{justify-self:start}
+.ev p{font-size:14px}
+.ev .lim{font-size:13px;color:var(--ink2);border-top:1px dashed var(--line);padding-top:6px}
+.fix{display:grid;gap:8px}
+.fix li{font-size:14.5px}
+.fix ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.delta{display:grid;gap:8px;max-width:860px}
+.delta ol{margin:0;padding-left:22px;display:grid;gap:6px}
+.rq-list{display:grid;gap:12px}
+.rq{display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 16px}
+.rq .id{font-family:var(--font-mono);font-size:21px;color:var(--amber-ink);grid-row:span 2}
+.rq dl{display:grid;grid-template-columns:88px minmax(0,1fr);gap:6px 12px;margin:6px 0 0;font-size:14px}
+.rq dt{color:var(--muted)} .rq dd{margin:0}
+.rq .kill{color:var(--amber-ink)}
+@media (max-width:600px){.rq{grid-template-columns:1fr}.rq .id{grid-row:auto}.rq dl{grid-template-columns:1fr}}
+.gantt{display:grid;min-width:760px;font-size:12.5px}
+.gantt .hd{color:var(--muted);text-align:center;padding-bottom:6px;font-family:var(--font-mono);line-height:1.3}
+.gantt .lane{padding:6px 10px 6px 0;white-space:nowrap;border-top:1px solid var(--line)}
+.gantt .cell{border-top:1px solid var(--line);border-left:1px dashed var(--line)}
+.gantt .gbar{align-self:center;height:20px;border-radius:5px;background:color-mix(in srgb,var(--night) 75%,transparent);color:#fff;font-size:11.5px;padding:0 8px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;margin:6px 2px}
+.gantt .gbar.int{background:var(--amber);color:#1b1205}
+.gantt .ms{align-self:stretch;border-left:2px solid var(--amber);position:relative;pointer-events:none}
+.gantt .ms span{position:absolute;top:-2px;left:4px;font-size:11.5px;color:var(--amber-ink);white-space:nowrap;background:var(--bg);padding:0 3px}
+.gantt .today{border-left:2px dotted var(--muted);align-self:stretch;pointer-events:none}
+.todo{display:grid;gap:8px;max-width:860px}
+.todo label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;cursor:pointer;font-size:14.5px}
+.todo input{margin-top:5px;accent-color:var(--amber);width:16px;height:16px}
+.todo small{display:block;color:var(--ink2);font-size:13px}
+ol.src{font-size:13.5px;color:var(--ink2);padding-left:22px;display:grid;gap:4px;max-width:920px}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.anim{transition:all .45s ease}}
+/* ---- v3 additions: parts, folds, matrix, chains, coverage, explorer ---- */
+.route{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;align-items:stretch;margin-top:6px}
+.route a{display:grid;gap:4px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:12px 14px;position:relative;min-width:0}
+.route a:first-child{border-radius:var(--r) 0 0 var(--r)}
+.route a:last-child{border-radius:0 var(--r) var(--r) 0}
+.route a+a{border-left:none}
+.route a .k{font-size:12px;color:var(--muted);letter-spacing:.06em}
+.route a .v{font-weight:700;font-size:15px}
+.route a .d{font-size:13px;color:var(--ink2);line-height:1.55}
+.route a.stable{background:var(--scope)}
+.route a:hover,.route a:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;z-index:1}
+@media (max-width:820px){.route{grid-template-columns:1fr 1fr}.route a{border-radius:0!important;border-left:1px solid var(--line)!important}}
+.part{padding-block:64px 0;display:grid;gap:6px;scroll-margin-top:64px;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.part .pk{font-family:var(--font-mono);font-size:13px;color:var(--amber-ink);letter-spacing:.06em}
+.part h2{font-size:clamp(26px,3.6vw,34px)}
+.part p{color:var(--ink2);max-width:820px}
+.part .badge{justify-self:start;font-size:12.5px;padding:2px 10px;border-radius:999px;background:var(--scope);color:var(--amber-ink);border:1px solid var(--scope-line)}
+section h2{font-size:clamp(20px,2.6vw,25px)}
+details.fold{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+details.fold>summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"▸";color:var(--amber-ink);font-size:13px;transition:transform .15s}
+details.fold[open]>summary::before{transform:rotate(90deg)}
+details.fold>summary .st{font-weight:700}
+details.fold>summary .sd{font-size:13.5px;color:var(--ink2)}
+details.fold>summary:focus-visible{outline:2px solid var(--amber);border-radius:var(--r)}
+details.fold>.body{padding:4px 18px 18px;display:grid;gap:14px}
+.scope3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.scope3>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.scope3 .k{font-size:12.5px;letter-spacing:.06em;color:var(--muted)}
+.scope3 .in-scope{background:var(--scope);border-color:var(--scope-line)}
+.scope3 .v{font-weight:700;margin-top:2px}
+.scope3 p{font-size:14px;color:var(--ink2);margin-top:4px}
+@media (max-width:720px){.scope3{grid-template-columns:1fr}}
+.matrix-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.matrix-wrap>*{min-width:0}
+@media (max-width:900px){.matrix-wrap{grid-template-columns:1fr}}
+table.mx{border-collapse:separate;border-spacing:0;min-width:740px;width:100%;font-size:13.5px}
+table.mx th,table.mx td{padding:0;text-align:center}
+table.mx thead th{min-width:70px;vertical-align:bottom;padding:6px 4px 8px;font-weight:500;color:var(--ink2);line-height:1.35}
+table.mx thead th button{all:unset;cursor:pointer;display:block;padding:4px 2px;border-radius:6px}
+table.mx thead th button:focus-visible{outline:2px solid var(--amber)}
+table.mx thead th .n{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);display:block}
+table.mx tbody th{text-align:left;font-weight:500;padding:6px 10px 6px 0;white-space:nowrap;position:sticky;left:0;background:var(--bg);z-index:1}
+table.mx td{height:44px;border-top:1px solid var(--line)}
+table.mx tbody tr:first-child td{border-top:none}
+table.mx .scopecol{background:var(--scope)}
+.cellbtn{all:unset;cursor:pointer;width:100%;height:100%;display:grid;place-items:center;border-radius:6px}
+.cellbtn:hover{background:color-mix(in srgb,var(--amber) 12%,transparent)}
+.cellbtn:focus-visible{outline:2px solid var(--amber)}
+.cellbtn[aria-pressed="true"]{background:color-mix(in srgb,var(--amber) 22%,transparent)}
+.dot{border-radius:50%;background:var(--night);display:inline-block}
+.dot.d2{width:16px;height:16px}.dot.d1{width:8px;height:8px;opacity:.55}
+.mx-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--ink2);align-items:center;margin-top:10px}
+.mx-legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--scope);border:1px solid var(--scope-line)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:10px;position:sticky;top:64px;min-width:0}
+.panel .crumb{font-size:12.5px;color:var(--muted)}
+.panel h3{font-size:18px}
+.panel .pill{justify-self:start}
+.chains{display:grid;gap:14px}
+.chain{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;gap:12px}
+.chain .t{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.steps{display:flex;align-items:stretch;flex-wrap:wrap;row-gap:10px}
+.step{flex:1 1 170px;min-width:0;background:var(--bg);border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.6;display:grid;gap:4px;align-content:start}
+.step .pill{justify-self:start}
+.step.end{background:color-mix(in srgb,var(--amber) 14%,var(--surface))}
+.arrow{flex:none;width:26px;display:grid;place-items:center;color:var(--muted);font-size:18px}
+@media (max-width:720px){.steps{flex-direction:column}.arrow{width:auto;height:18px;transform:rotate(90deg)}}
+.chain .where{font-size:13px;color:var(--ink2)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+table.cov{border-collapse:collapse;min-width:780px;width:100%;font-size:13.5px}
+table.cov th,table.cov td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:center}
+table.cov thead th{font-weight:500;color:var(--ink2);line-height:1.35;vertical-align:bottom}
+table.cov tbody th{text-align:left;font-weight:500;min-width:180px}
+table.cov tbody th small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+table.cov .scopecol{background:var(--scope)}
+table.cov tr.ours th,table.cov tr.ours td{border-top:2px solid var(--amber)}
+.g{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-1px;border:2px solid var(--night);background:var(--night)}
+.g.P{background:linear-gradient(90deg,var(--night) 50%,transparent 50%)}
+.g.N{background:transparent;border-color:var(--muted)}
+.g.R{background:transparent;border-color:var(--assoc);border-radius:2px;transform:rotate(45deg) scale(.85)}
+.cov-note{font-size:13.5px;color:var(--ink2);max-width:860px}
+.explorer{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.explorer>*{min-width:0}
+@media (max-width:900px){.explorer{grid-template-columns:1fr}}
+.stage{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:10px}
+canvas#cv{width:100%;display:block;touch-action:none;cursor:crosshair;border-radius:6px}
+.cv-foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted);padding:6px 4px 0}
+.ramp{display:inline-flex;align-items:center;gap:6px}
+.ramp i{display:inline-block;width:110px;height:10px;border-radius:3px;background:linear-gradient(90deg,#cde2fb,#9ec5f4,#6da7ec,#3987e5,#256abf,#184f95,#0d366b)}
+.ctrl{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-radius:8px;padding:3px;gap:3px}
+.seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--ink2);padding:7px 4px;border-radius:6px;cursor:pointer;line-height:1.35}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--amber)}
+.bigv{font-family:var(--font-mono);font-size:38px;line-height:1}
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:110px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:13px}
+.bar .track{height:9px;background:var(--surface);border-radius:5px;position:relative;overflow:hidden}
+.bar .fill{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--muted)}
+.bar.cur .fill{background:var(--amber)}
+.bar .val{font-family:var(--font-mono);text-align:right}
+.ctrl h4{margin:0;font-size:12.5px;letter-spacing:.06em;color:var(--muted);font-weight:500}
+.note{font-size:13px;color:var(--ink2)}
+.warn{font-size:13px;color:var(--amber-ink)}
+label.chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink2)}
+.verdict{border-left:3px solid var(--bad);padding:6px 0 6px 14px;font-size:14.5px;max-width:860px}
+.rqd>summary .st{font-family:var(--font-body)}
+.rqd>summary .id{font-family:var(--font-mono);color:var(--amber-ink)}
+/* ---- v4: evidence spine ---- */
+.tagkey{display:flex;gap:8px;flex-wrap:wrap}
+.spine{position:relative;padding-left:30px;display:grid}
+.spine::before{content:"";position:absolute;left:10px;top:14px;bottom:14px;width:2px;background:var(--line)}
+.node{position:relative;display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.node::before{content:"";position:absolute;left:-26px;top:17px;width:12px;height:12px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px var(--bg)}
+.node.ctx::before{background:var(--muted)}
+.node .nh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.node .stg{font-size:12.5px;letter-spacing:.06em;color:var(--amber-ink);font-weight:500}
+.node.ctx .stg{color:var(--muted)}
+.node h3{font-family:var(--font-display);font-size:18px}
+.node .np{font-size:14.5px;color:var(--ink2);max-width:820px}
+.tomx{font:inherit;font-size:12.5px;background:none;border:0;color:var(--night);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.tomx:focus-visible{outline:2px solid var(--amber)}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.chip{border:1px solid var(--line);border-radius:8px;background:var(--bg);min-width:0}
+.chip>summary{list-style:none;cursor:pointer;padding:9px 11px;display:grid;gap:3px}
+.chip>summary::-webkit-details-marker{display:none}
+.chip>summary .pill{justify-self:start}
+.chip .n{font-family:var(--font-mono);font-size:18px;line-height:1.3}
+.chip .cc{font-size:13.5px;line-height:1.55}
+.chip .cl{font-size:12.5px;color:var(--ink2);padding:0 11px 10px;border-top:1px dashed var(--line);padding-top:7px;margin:0 0 0}
+.chip[open]{background:var(--surface)}
+.chip>summary:focus-visible{outline:2px solid var(--amber);border-radius:8px}
+.chip.gap{border:1.5px dashed var(--bad);background:transparent}
+.link{padding:10px 0 10px 2px;font-size:14px;color:var(--ink);font-weight:500;position:relative}
+.link span{color:var(--amber-ink);margin-right:4px}
+
+:root{--s3:#1baf7a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--s3:#199e70}}
+:root[data-theme="dark"]{--s3:#199e70}
+#alts .ev h3{font-size:16px}
+#alts .ev p{font-size:14px}
+#scheme{margin-top:4px}
+#cmpLegend i{border-radius:3px}
+.pill.tagA{color:var(--s1);margin-right:4px}
+.pill.tagB{color:var(--amber-ink);margin-right:4px}
+table.t td.tg{white-space:nowrap;width:68px}
+table.t tr.pickA td,table.t tr.pickA th{background:color-mix(in srgb,var(--s1) 9%,var(--surface))}
+table.t tr.pickA td.tg{box-shadow:inset 3px 0 0 var(--s1)}
+table.t tr.pick td.tg{box-shadow:inset 3px 0 0 var(--amber)}
+table.t tr.pick th{box-shadow:none}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span{border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:13.5px;background:var(--surface);display:grid}
+.flow small{font-size:11.5px;color:var(--muted)}
+.flow i{font-style:normal;color:var(--muted)}
+
+</style>
+<nav class="top" aria-label="章节"><div class="in">
+  <a href="#p1">一 · 问题</a><a href="#map">全景</a><a href="#chain">证据链</a><a href="#dilemma">床高两难</a><a href="#existing">现有方案</a>
+  <a href="#p2">二 · 选择</a><a href="#p3">三 · 两个方案</a><a href="#compare">方案对比</a><a href="#explorerA">甲 · 扶手模型</a><a href="#height">抬多高</a><a href="#risk">风险</a><a href="#improve">缺点与改进</a><a href="#p4">四 · 下一步</a><a href="#sources">来源</a>
+</div></nav>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">ME5412 Robotics for Healthcare · 小组 proposal · 2026-10-22</div>
+  <h1>夜间起身：从床沿到站稳</h1>
+  <p class="statement">我们关注还能独立生活、但腿部力量和平衡已经下降的老人。他们夜里起床（多半因为夜尿）时，要在<b>昏暗</b>中、<b>刚醒</b>的状态下，从床沿坐姿站起来，再迈出第一步。这一段里叠着三件事：看不清支撑物在哪；腿的力量不够，而床越低站起来越难；站起的瞬间可能头晕。</p>
+  <p class="oneline">两个候选方案：组里最初想到的「动态扶手」，以及在它基础上发展出来的「床边起身台」。我们推荐后者：它不只让手里有东西扶，还直接减轻腿的负担。</p>
+  <nav class="route" aria-label="页面结构">
+    <a href="#p1" class="stable"><span class="k">第一部分 · 稳定</span><span class="v">问题是什么</span><span class="d">环节、原因、证据链、现有方案。不随方案改变。</span></a>
+    <a href="#p2"><span class="k">第二部分</span><span class="v">为什么这样设计</span><span class="d">力从哪来、打在哪里、放在哪里、站起后怎么走。</span></a>
+    <a href="#p3"><span class="k">第三部分 · 待确认</span><span class="v">两个候选方案</span><span class="d">动态扶手 vs 床边起身台：演示、对比、模型、风险、缺点。</span></a>
+    <a href="#p4"><span class="k">第四部分</span><span class="v">下一步</span><span class="d">五个研究问题、时间表、待决定事项。</span></a>
+  </nav>
+</header>
+
+<!-- ================= PART 1 ================= -->
+<div class="part" id="p1"><span class="pk">第一部分</span><h2>问题是什么</h2><p>这一部分是对问题本身的分析，不管最后选哪个方案都成立，可以直接用在展示的问题陈述里。</p><span class="badge">稳定</span></div>
+
+<section id="scope">
+  <div class="sec-head"><div class="eyebrow">范围与人群</div><h2>我们解决哪一段，为谁解决</h2></div>
+  <div class="scope3">
+    <div class="in-scope"><div class="k">重点解决</div><div class="v">坐在床沿 → 站稳 → 第一步</div><p>摸到并握住支撑、坐稳停一下、坐→站、站稳、交接到助行器。</p></div>
+    <div><div class="k">兼容，不做重点</div><div class="v">躺 → 坐、挪到床沿</div><p>两个方案在这一段都提供扶点（见方案演示），但不额外助力。</p></div>
+    <div><div class="k">不在范围</div><div class="v">走到卫生间、如厕、回床</div><p>在展示里说明边界，留作后续工作。</p></div>
+  </div>
+  <div class="card" style="display:grid;gap:6px;max-width:900px">
+    <h3>目标人群：两个条件同时满足</h3>
+    <p style="font-size:14.5px">① 借助支撑能自己站起来（光靠腿可能不行）；② 站起来以后，用助行器或拐杖能自己走。也就是居家、夜里独自起床的老人。</p>
+    <p style="font-size:14px;color:var(--ink2)">不包括：连助行器也走不了的人（他们夜里不应该独自下床，需要床边便椅或照护者），以及需要移位机的人。</p>
+  </div>
+</section>
+
+<section id="map">
+  <div class="sec-head">
+    <div class="eyebrow">问题全景</div>
+    <h2>八个环节 × 七类原因</h2>
+    <p class="lead">按时间顺序把起身拆成八个环节，再看每个环节里哪些原因在起作用。点一个格子或环节名，说明框里会显示解释。浅黄色的列是重点范围。</p>
+  </div>
+  <div class="matrix-wrap">
+    <div>
+      <div class="scroll-x"><table class="mx" id="mx"></table></div>
+      <div class="mx-legend"><span><i class="dot d2"></i>主要问题</span><span><i class="dot d1"></i>次要问题</span><span><i class="sw"></i>重点范围（环节 3–7）</span></div>
+    </div>
+    <aside class="panel" id="mpanel" aria-live="polite"></aside>
+  </div>
+</section>
+
+<section id="chain">
+  <div class="sec-head">
+    <div class="eyebrow">证据链</div>
+    <h2>沿着起身过程，一环扣一环</h2>
+    <p class="lead">从“为什么是夜里”到“现有办法为什么不够”，每一环写明：问题是什么，哪些证据支撑它，所以推出了什么。点证据可以看它的局限；红色虚线框是目前还缺的证据。</p>
+  </div>
+  <div class="tagkey"><span class="pill fact">事实</span><span class="pill assoc">关联≠因果</span><span class="pill model">本组模型</span><span class="pill infer">推断</span><span class="pill bad">证据缺口</span></div>
+  <div class="spine" id="spine"></div>
+</section>
+
+<section id="dilemma">
+  <div class="sec-head">
+    <div class="eyebrow">关键矛盾</div>
+    <h2>床高本身就是一个两难</h2>
+    <p class="lead">证据链第 5 环推出：起身的起点越高越省力。但床一直都在那个高度，坐着、上床、睡觉也得用它。</p>
+  </div>
+  <div class="grid3">
+    <div class="card ev"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill fact">指南</span><span class="pill infer">推断</span></div><div class="num">坐着、睡着：要低</div><p>NCOA 建议床面离地约 20–23 英寸（0.51–0.58 m），并给出经验法则：坐在床沿时双脚平踩、膝约 90°；床太高，脚踩不实。另外，床越高，万一睡着时滚下床，落差越大：床面从 0.42 m 到 0.58 m，落差多约 38%。</p><p class="lim">指南，不是试验证据。按“脚平踩、膝约 90°”换算，1.50–1.60 m 的老人约是 0.40–0.45 m，低于 NCOA 的通用范围（我们的推算）。低床能否减少受伤没有被证实：Cochrane 2012 只收录一项医院试验（18 个病房，22,036 名患者），因跌倒受伤的比率无显著差别（RR 1.35，95% CI 0.68–2.68），而且用上低床的患者不到一半；滚下床主要见于认知受损的人。<span class="c" data-c="ncoa"></span><span class="c" data-c="cochrane"></span></p></div>
+    <div class="card ev"><span class="pill fact">文献</span><div class="num">站起：越高越省力</div><p>12 名 56–90 岁老人：38 cm 对 58 cm，离床时髋部力矩约 1.8 倍，一半人从 38 cm 站不起来；上床（坐下）时 58 cm 也更省力。有跌倒史的老人在低床上起身行走慢得多（6.3 s 对 3.7 s）。</p><p class="lim">医院病床、样本小。没有找到研究显示床“太高”带来危害。<span class="c" data-c="merryweather"></span><span class="c" data-c="christman"></span></p></div>
+    <div class="card ev"><span class="pill infer">推断</span><div class="num">固定床只能停在折中高度</div><p>床可以用床脚垫抬到约 0.55–0.58 m。这是最便宜的对手，模型里它已经拿到大部分好处。但为了坐着脚踩实、万一滚下床落差小，固定床不能再高；起身台只在起身那一刻升到 0.66 m，这是固定床做不到的。</p><p class="lim">“床再高就不行”只有指南和人体尺寸推算支持，没有实测。</p></div>
+  </div>
+</section>
+
+<section id="existing">
+  <div class="sec-head">
+    <div class="eyebrow">现有方案</div>
+    <h2>现有产品各管哪几段</h2>
+    <p class="lead">列和上面的全景图一一对应。在坐→站这一列，现有家用产品要么只给扶手（帮多少取决于手臂），要么能抬人但需要按按钮、站起后手边没有支撑，要么只提醒、不支撑。</p>
+  </div>
+  <div class="scroll-x"><table class="cov" id="cov"></table></div>
+  <p class="cov-note"><span class="g"></span> 提供支撑　<span class="g P"></span> 部分（位置不理想，或需要老人自己操作）　<span class="g R"></span> 演示中由他人遥控　<span class="g N"></span> 只照明或提醒　— 不涉及。本组一行是<strong>设计目标</strong>，不是已验证的结果。</p>
+  <details class="fold">
+    <summary><span class="st">现有技术检索明细</span><span class="sd">床或座面抬升、床加把手、根据受力控制抬升：每一项的出处和与我们的差别</span></summary>
+    <div class="body"><div class="scroll-x"><table class="t" id="prior-t"></table></div></div>
+  </details>
+</section>
+
+<!-- ================= PART 2 ================= -->
+<div class="part" id="p2"><span class="pk">第二部分</span><h2>为什么这样设计</h2><p>同一个问题可以有很多解法。这里是决定方案形态的四个关键选择；组里如果想改方案，从这里开始讨论。</p></div>
+
+<section id="decisions">
+  <div class="sec-head"><div class="eyebrow">设计逻辑</div><h2>四个关键选择：两个方案各自怎么选</h2><p class="lead">表格最左边的标签表示这一行是哪个方案的选择：<span class="pill tagA">甲</span> 是动态扶手，<span class="pill tagB">乙</span> 是床边起身台。</p></div>
+  <div class="dec" id="dec"></div>
+</section>
+
+<!-- ================= PART 3 ================= -->
+<div class="part" id="p3"><span class="pk">第三部分</span><h2>两个候选方案：动态扶手 vs 床边起身台</h2><p><b>方案甲 · 动态扶手</b>是组里最初的想法：扶手装在床上，平时当床栏；老人坐到床沿后轻推一下，扶手带着手转到工作位置，一用力就锁死。<b>方案乙 · 床边起身台</b>是在比较“力从哪来”之后发展出来的：床不改，床前放一个起身台。老人坐在床沿、脚踩台架的踏板，往前挪到与床齐平的短座板上；按下横杆上的“起”键后，座板升高到 0.66 m 并前倾，把骨盆送到固定床设不到的高度；L 形扶手跟着一起升，站直后仍在手边。下面先看两个方案怎么用，再并排比较。</p><span class="badge">推荐方案乙，待组内确认</span></div>
+
+<section id="concept">
+  <div class="sec-head"><div class="eyebrow">方案演示</div><h2>一次夜间起身，两个方案各自怎么做</h2>
+    <p class="lead">先选方案，再点步骤或按“播放”。这是从床侧面看的示意图（老人面朝右），尺寸是初定目标值。</p>
+  <div class="seg" id="scheme" role="group" aria-label="选择方案" style="grid-template-columns:1fr 1fr;max-width:460px"><button data-s="A" aria-pressed="false">方案甲 · 动态扶手</button><button data-s="B" aria-pressed="true">方案乙 · 床边起身台</button></div></div>
+  <div class="tabs" id="tabs" role="group" aria-label="起身步骤"></div>
+  <div class="stepper">
+    <div class="scene"><svg id="scene" viewBox="0 0 640 470" role="img" aria-label="床、起身台、扶手、助行器和老人的侧视示意图，右上角为俯视图"></svg>
+      <div class="ctrlrow" style="padding:4px 6px 2px"><button id="play">▶ 播放全过程</button><span class="muted" style="font-size:12.5px" id="sceneKey">橙色 = 可动座板；黄点 = 传感器</span></div>
+    </div>
+    <div class="card statepanel" id="spanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="sec-head"><div class="eyebrow">方案对比</div><h2>和低床、抬高床相比，两个方案各省多少力</h2>
+    <p class="lead">对比对象有两个：现状（0.42 m 低床，双手撑床垫），以及最便宜的对手（用床脚垫把床抬到 0.58 m，再装床边扶手）。我们不知道哪种“手臂弱”的表示最接近真实老人，所以四种都算。两个方案的扶手都按动画里的实际位置计算；抬高床的扶手取它最省力的位置（对它有利）。</p></div>
+  <div class="two">
+    <div class="card chart"><div class="legend" id="cmpLegend"></div><svg id="cmpchart" viewBox="0 0 640 340" role="img" aria-label="四种手臂假设下，低床、抬高床、方案甲、方案乙的 effort 柱状图"></svg></div>
+    <div class="card readout">
+      <h3>怎么读这张图</h3>
+      <p style="font-size:14px">effort 是最吃力的关节用掉了自己最大力量的几成，越低越轻松。床垫都按刚性计算，对两种床的基线有利。</p>
+      <p style="font-size:14px"><b>方案乙（升到 0.66 m）</b>在四组里都最低：比抬高到 0.58 m 的床低 17–20%，比低床撑床垫低 30–40%，比方案甲低 38–41%。</p>
+      <p style="font-size:14px"><b>如果乙只升到 0.60 m</b>，就和抬高床差不多（−5% 到 +4%）。所以抬升目标必须超过固定床能设的高度，这是起身台存在的理由。</p>
+      <p style="font-size:14px"><b>方案甲</b>（扶手在动画里的工作位置）和撑低床床垫差不多或更差：向前抓扶手主要靠肩发力，撑在髋旁的床垫用的是伸直的手臂。</p>
+    </div>
+  </div>
+  <div class="scroll-x"><table class="t" id="cmpT"></table></div>
+</section>
+
+<section id="explorerA">
+  <div class="sec-head"><div class="eyebrow">方案甲 · 模型</div><h2>扶手放在哪里，站起来最省力</h2>
+    <p class="lead">点击或拖动图中任意位置放置扶手，看老人怎么用力、哪个关节最吃力。颜色越深越费力。可以切换手臂强弱，也可以切换成床沿扶手（单手或双手）来比较。床高统一为 0.42 m。</p></div>
+  <div class="explorer">
+    <div class="stage">
+      <canvas id="cv" aria-label="坐站侧视图：点击放置扶手"></canvas>
+      <div class="cv-foot"><span class="ramp">省力 <i></i> 费力</span><label class="chk"><input type="checkbox" id="heat" checked> 热力图</label><span>侧视，单位 m；60 kg、1.60 m 老人模型</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="seg" id="armSeg" role="group" aria-label="手臂力量" style="grid-template-columns:1fr 1fr">
+        <button data-a="strong" aria-pressed="true">手臂有力<br><span style="font-size:11.5px;opacity:.75">手上 ≤ 30% 体重</span></button>
+        <button data-a="weak" aria-pressed="false">手臂弱<br><span style="font-size:11.5px;opacity:.75">肩肘力量 ×0.5</span></button>
+      </div>
+      <div class="seg" role="group" aria-label="扶手类型">
+        <button id="mFront" aria-pressed="true">身前<br><span style="font-size:11.5px;opacity:.75">双手</span></button>
+        <button id="mSide2" aria-pressed="false">床沿扶手<br><span style="font-size:11.5px;opacity:.75">双手</span></button>
+        <button id="mSide1" aria-pressed="false">床沿扶手<br><span style="font-size:11.5px;opacity:.75">单手</span></button>
+      </div>
+      <div id="sideCtl" hidden><label for="hSlider" class="note">扶手高度 <span class="mono" id="hVal"></span> m</label><input type="range" id="hSlider"></div>
+      <div><h4>当前位置的 EFFORT</h4><div class="bigv" id="eff">–</div></div>
+      <div class="bars" id="cmpBars"></div>
+      <div><h4>各关节用掉的力量比例</h4><div class="bars" id="joints" style="margin-top:6px"></div></div>
+      <p class="note" id="msg"></p>
+    </div>
+  </div>
+  <div class="card" style="max-width:900px"><p style="font-size:14.5px"><b>这张图说明了方案甲的天花板：</b>同样手数时，身前扶手和床沿扶手差别不大。扶手高度限制在老人自选的范围内（高出座面 0.25–0.45 m，图中两条虚线之间）时，最好的位置也只和撑硬床垫差不多。把扶手放到肩高附近（1.2 m 以上），模型会算出更省力，但那是向上拉的姿势，模型没有考虑握力和肩部安全。扶手的价值主要在“站直以后手边还有东西”，而不是“站起那一下更省力”。</p></div>
+  <details class="fold"><summary><span class="st">这个模型的局限</span><span class="sd">展示时被追问要能说清</span></summary>
+    <div class="body"><ul style="margin:0;padding-left:20px;color:var(--ink2);display:grid;gap:4px;font-size:14px">
+      <li>2D 侧视、准静态，只分析离座那一瞬间；床沿扶手在人的侧面，只能投影到侧视图上粗略处理。</li>
+      <li>“手臂弱”用肩、肘力量打五折表示，手上最多仍可承担 30% 体重。旧版用“手上最多 10% 体重”，那个假设下扶手放在哪里结果都一样，已弃用。</li>
+      <li>床垫被当成刚性的，所以“撑床垫”被算得偏好。</li>
+    </ul></div></details>
+</section>
+
+<section id="height">
+  <div class="sec-head"><div class="eyebrow">方案乙 · 模型</div><h2>座板抬多高，站起来能省多少力</h2>
+    <p class="lead">拖动滑块，或者把鼠标移到图上。三条线：不用手；双手扶身前横杆，按两种手臂假设（手上最多 25% 体重 / 肩肘力量打五折）。横杆按设计位置计算：髋前 0.55 m、高出座面 0.40 m。脚可以往回收，但不能收进升降机构下面（脚跟至少在髋前 8 cm）。灰带是固定床能设的上限（约 0.58 m），黄带是抬升目标（0.66 m）。</p></div>
+  <div class="two">
+    <div class="card chart" style="position:relative">
+      <div class="legend"><span><i style="background:var(--s1)"></i>不用手</span><span><i style="background:var(--s2)"></i>扶横杆 · 上限 25%</span><span><i style="background:var(--s3)"></i>扶横杆 · 肩肘 ×0.5</span><span><i style="background:var(--amber);height:10px;width:10px;border-radius:50%"></i>当前高度</span></div>
+      <svg id="hchart" viewBox="0 0 640 340" role="img" aria-label="effort 随座面高度变化的折线图"></svg>
+      <div class="tip" id="htip" hidden></div>
+    </div>
+    <div class="card readout">
+      <label for="hs" class="muted" style="font-size:13px">座面高度 <span class="mono" id="hv"></span> m</label>
+      <input type="range" id="hs" min="0" max="15" step="1" value="13">
+      <div><div class="muted" style="font-size:12.5px">不用手时的 effort，与 0.42 m 相比</div><div class="big" id="hcmp"></div></div>
+      <div class="rrow" id="hrows"></div>
+      <p style="font-size:13px;color:var(--ink2)">effort：最吃力的关节用掉了自己最大力量的几成。</p>
+    </div>
+  </div>
+  <div class="grid3">
+    <div class="card ev"><span class="pill model">本组模型</span><div class="num">−22%</div><p>不用手时，座面 0.66 m 比抬到 0.58 m 的床再省 22%（effort 0.48 → 0.37）；比 0.42 m 的低床省 36%。这部分不依赖手臂力量。</p><p class="lim">0.42 → 0.66 m 的降幅，换不同设定（坐姿参数、体型、脚能否收进座下）为 −22% 到 −48%。</p></div>
+    <div class="card ev"><span class="pill model">本组模型</span><div class="num">0.29 → 0.23</div><p>手上最多 25% 体重时：抬高到 0.58 m 的床（配最好的扶手）0.29，起身台 0.66 m 0.23（-20%）。肩肘力量打五折时 0.30 → 0.25（-17%）。</p><p class="lim">25% 是个代理值：起身困难的老年女性（11 人）推扶手时，双手合力峰值约 159 N，对 60–65 kg 的人约为体重的 25%（体重原文未报告）；推扶手和拉横杆不完全一样。<span class="c" data-c="alexander"></span></p></div>
+    <div class="card ev"><span class="pill fact">老人实测</span><div class="num">48.2 → 27.5 N·m</div><p>12 名 56–90 岁老人，床高从 38 cm 换到 58 cm，离床时髋部力矩明显下降；一半人无法在没有明显协助的情况下从 38 cm 的床上站起。方向与模型一致。</p><p class="lim">力矩为静态建模估算，完成离床分析的只有 6 人。<span class="c" data-c="merryweather"></span></p></div>
+  </div>
+  <details class="fold">
+    <summary><span class="st">模型的简化与局限</span><span class="sd">展示时被追问要能说清</span></summary>
+    <div class="body"><ul style="margin:0;padding-left:20px;color:var(--ink2);display:grid;gap:4px;font-size:14px">
+      <li>2D 侧视、准静态，只分析离座那一瞬间。曲线呈台阶状，是因为躯干前倾角按 5° 一档离散求解。</li>
+      <li>模型偏好把脚往回收。床边：脚跟最多伸进床沿下 5 cm；起身台：脚跟至少在髋前 8 cm（升降机构在座板下方）。在高座面时这个限制起作用，小腿前倾最多约 15°。</li>
+      <li>座板前缘必须在髋关节正下方或更靠后：0.66 m 时大腿下倾约 50°，前缘每往前 2 cm，就多顶进大腿约 2 cm（按大腿半厚 6 cm 估算）。所以座板只有约 14 cm 深、前缘圆角，人坐在它的前沿上。</li>
+      <li>座面在模型里是水平的。离座那一刻座面已经不受力，所以前倾只通过改变髋的位置起作用；要评估前倾，需要做离座前（座面仍受力）阶段的模型（RQ1）。</li>
+      <li>和文献只能说“方向一致”：Yoshioka 2014 的 1.7 倍是单个关节（髋或膝）的峰值力矩比；模型给出的是膝 + 髋之和的比值，0.42 对 0.66 m 为 1.29–2.06 倍，口径不同。<span class="c" data-c="yosh2014"></span></li>
+      <li>“手臂弱”有两种表示（手力上限、肩肘力量打折），结果不同，所以对比图四种都给出。</li>
+      <li>关节力量是假设值；降幅对膝、髋力量的比例不敏感（比例改 ±30%，不用手时的降幅变化约 3 个百分点），effort 的绝对值敏感。</li>
+    </ul></div>
+  </details>
+</section>
+
+<section id="delta">
+  <div class="sec-head"><div class="eyebrow">差别</div><h2>为什么不直接用现成的东西</h2>
+    <p class="lead">座面抬升、床加扶手、根据扶手受力控制座面，这些单独看都有先例（见第一部分的检索明细）。老师最可能问的几个问题，我们这样回答：</p></div>
+  <div class="grid2">
+    <div class="card ev"><span class="pill amber">问 · 两个方案</span><div class="num" style="font-size:18px">为什么不直接把床调高？</div><p>这是最便宜、也最强的对手：用床脚垫把床抬到 0.55–0.58 m，再装一根床边扶手。模型里，它在离座那一刻已经拿到大部分好处：起身台如果只升到 0.60 m，和它差不多（−5% 到 +4%）。所以起身台必须升到固定床设不到的高度：0.66 m 时，比 0.58 m 的床再省 17–20%（四种手臂假设），不用手时省 22%。能接受 0.58 m 的床、而且这样就站得起来的人，不需要起身台。次要理由（推断）：抬高床整夜停在 0.58 m，万一滚下床，落差多约 38%；起身台让床整夜保持低位，只在人醒着、握住横杆、踩着踏板的几秒内升高。低床减少受伤的效果目前没有被证实，所以这一条不当主论点。<span class="c" data-c="ncoa"></span><span class="c" data-c="cochrane"></span></p></div>
+    <div class="card ev"><span class="pill amber">问 · 方案甲</span><div class="num" style="font-size:18px">为什么不用 SuperBar 或可摆出的床栏？</div><p>SuperBar 固定在身前，躺着时不在手边，而且一直挡在床前；可摆出的床栏要老人自己去扳。动态扶手不用找锁扣：轻推就转、一用力就锁，转动由电机辅助。但这个差别依赖一个还没有证据的假设：老人夜里做不好手动解锁和扳动。<span class="c" data-c="superbar"></span></p></div>
+    <div class="card ev"><span class="pill amber">问 · 方案乙</span><div class="num" style="font-size:18px">为什么不在床沿放一个 120 美元的气弹簧座垫？</div><p>UpEasy 的抬升力按体重预设、没有扶手，厂商说明它为带扶手的椅子设计；放在床上是否稳定是我们的推断。起身台的推力上限按用户设定，只在按下“起”键且握住、踩实时启动，扶手随座板升，而且能升到 0.66 m。<span class="c" data-c="upeasy"></span></p></div>
+    <div class="card ev"><span class="pill amber">问 · 方案乙</span><div class="num" style="font-size:18px">和升降躺椅、抬升座有什么不同？</div><p>安大略省审查记录的 3 起升降躺椅死亡，都是痴呆老人用遥控器把自己升起后，在无人目击时摔倒；起身台同样有这个风险，所以认知障碍列为不适用。家具旁抬升座（1997 年专利）和电动如厕抬升座和我们最像：抬骨盆、扶手在旁，但都靠开关。起身台的差别在于用在床边、受力互锁、推力上限，以及出事后“回水平再降”的逻辑。<span class="c" data-c="liftchair"></span><span class="c" data-c="us5619762"></span><span class="c" data-c="us6360382"></span></p></div>
+  </div>
+  <div class="card delta"><h3>方案乙能诚实宣称的差别（一个组合，而不是某一项“首创”）</h3><ol>
+    <li><strong>不换床，只在起身那一刻升到固定床设不到的高度</strong>：平时床照旧，坐着、上床、睡觉都在低位；起身时座面到 0.66 m。这是它比“抬高床 + 扶手”多出来的部分。</li>
+    <li><strong>受力互锁 + 推力上限 + 定义好的安全状态</strong>：按“起”键并且握住、踩实才动；推力上限约为体重一半，不会把人整个推起来；抬升中出事就回水平再降，离座后座板保持水平接住人。注意：Panasonic 的椅子专利已有“扶手受力 + 座面卸载才升高”、座面前倾前移、测力手杖等实施例，展示时要注明。<span class="c" data-c="us10022284"></span></li>
+    <li><strong>站起后支撑不中断</strong>：L 形扶手和座板一起升。如厕抬升座和家具旁抬升座也做到了这一点，所以这一条只算组合的一部分。</li>
+  </ol></div>
+</section>
+
+<section id="risk">
+  <div class="sec-head"><div class="eyebrow">安全</div><h2>两个方案可能怎么出事，我们怎么防</h2>
+    <p class="lead">会动、会对人施力的装置，在夜里、无人看护时使用，安全论证必须排在功能前面。“可能性”是初步估计。下面先给方案乙的控制状态，再列失效模式。</p></div>
+  <div class="card" style="max-width:900px;display:grid;gap:8px"><h3>方案乙的控制状态</h3>
+    <div class="flow"><span>待机</span><i>→</i><span>已坐上</span><i>→</i><span>静坐<small>想坐多久都行，不会自己抬</small></span><i>→</i><span>按“起”键<small>+ 座板承重、双手横杆、双脚踏板、左右均衡</small></span><i>→</i><span>抬升<small>3 cm/s，推力 ≤ 约 0.5 × 体重</small></span><i>→</i><span>离座<small>座板回水平、保持高度</small></span><i>→</i><span>复位<small>座板、踏板都无负载一段时间</small></span></div>
+    <p style="font-size:14px"><b>抬升中出事</b>（松开按键或双手离开横杆、往回坐、左右失衡、脚离开踏板）→ 停止，先回水平，再以约 2 cm/s 降回床面；人是坐着的，手随横杆慢慢下来。<b>离座以后</b>：坐回去，座板已经是平的，接住人、不动；双手离开横杆去扶助行器，不触发任何动作。<b>断电</b>：自锁，可手动缓降。</p>
+    <p style="font-size:14px">推力上限约为体重的一半：人自己必须承担一部分体重，座板才升得动。卸不了载的人不会被硬推起来，他们本来就不在目标人群里，这也避开了升降躺椅“把人整个推起来”的风险。夹手、夹腿另外靠间隙设计和边缘触感开关防护。</p>
+  </div>
+  <div class="scroll-x"><table class="t" id="fmea"></table></div>
+  <p style="font-size:13.5px;color:var(--ink2);max-width:900px">可能相关的标准（待确认）：辅助产品通用要求 EN 12182；家用电气医疗设备 IEC 60601-1-11；个人护理机器人 ISO 13482。乙的侧扶手紧贴床沿、被用来拉着坐起，可能落入成人便携床栏的强制标准（美国 16 CFR 1270 / ASTM F3186-17）范围，需要核对。<span class="c" data-c="cpsc"></span></p>
+</section>
+
+<section id="improve">
+  <div class="sec-head"><div class="eyebrow">方案乙 · 已知缺点与改进方向</div><h2>起身台还有哪些毛病，怎么补</h2>
+    <p class="lead">先把起身台方案做完整，再找它的缺点。定型：乙采用单驱动四连杆（方向 B）；托板式（方向 A）只作为挪动测试失败时的备选；门控被动助力（方向 C）和“推力上限 + 按键启动”的控制思路冲突，不采用。W5 靠低挡边、前倾角上限和防滑座板处理（RQ1、RQ5），W6 靠“为什么不直接把床调高”的讲法和目标人群的界定处理。</p></div>
+  <div class="scroll-x"><table class="t" id="weak"></table></div>
+  <div class="grid3" id="alts"></div>
+</section>
+
+<!-- ================= PART 4 ================= -->
+<div class="part" id="p4"><span class="pk">第四部分</span><h2>下一步</h2><p>到 11 月 3 日要回答的五个问题。每个问题都写明它决定什么，以及一个能尽早推翻它的检验（kill test）。点开看具体做法。</p></div>
+
+<section id="plan">
+  <div class="rq-list" id="rqs"></div>
+  <div class="scroll-x"><div class="gantt" id="gantt"></div></div>
+</section>
+
+<section id="decide">
+  <div class="sec-head"><div class="eyebrow">组内讨论</div><h2>需要大家定下来的事</h2><p class="lead">勾选只保存在你自己的浏览器里，不会同步给组员。</p></div>
+  <div class="todo" id="todo"></div>
+</section>
+
+<section id="sources">
+  <div class="sec-head"><div class="eyebrow">来源</div><h2>参考资料</h2></div>
+  <ol class="src" id="srcs"></ol>
+</section>
+<footer>模型：bedexit_model（Python，scipy 线性规划）。现有技术检索见项目文档 claude/prior-art-bed-exit-assist.md。截至 2026-10-22。</footer>
+</div>
+
+<script type="application/json" id="hdata">{"none":[{"h":0.4,"effort":0.585,"trunk":55,"shank":30,"knee":0.704,"hip":0.78,"hand":0.0},{"h":0.42,"effort":0.585,"trunk":55,"shank":30,"knee":0.684,"hip":0.78,"hand":0.0},{"h":0.44,"effort":0.568,"trunk":50,"shank":30,"knee":0.711,"hip":0.729,"hand":0.0},{"h":0.46,"effort":0.547,"trunk":50,"shank":30,"knee":0.682,"hip":0.729,"hand":0.0},{"h":0.48,"effort":0.547,"trunk":50,"shank":25,"knee":0.675,"hip":0.729,"hand":0.0},{"h":0.5,"effort":0.532,"trunk":45,"shank":30,"knee":0.665,"hip":0.673,"hand":0.0},{"h":0.52,"effort":0.525,"trunk":45,"shank":25,"knee":0.656,"hip":0.673,"hand":0.0},{"h":0.54,"effort":0.505,"trunk":45,"shank":25,"knee":0.609,"hip":0.673,"hand":0.0},{"h":0.56,"effort":0.494,"trunk":40,"shank":25,"knee":0.618,"hip":0.612,"hand":0.0},{"h":0.58,"effort":0.478,"trunk":40,"shank":20,"knee":0.598,"hip":0.612,"hand":0.0},{"h":0.6,"effort":0.459,"trunk":40,"shank":15,"knee":0.568,"hip":0.612,"hand":0.0},{"h":0.62,"effort":0.422,"trunk":35,"shank":20,"knee":0.528,"hip":0.546,"hand":0.0},{"h":0.64,"effort":0.41,"trunk":35,"shank":15,"knee":0.489,"hip":0.546,"hand":0.0},{"h":0.66,"effort":0.374,"trunk":30,"shank":15,"knee":0.468,"hip":0.476,"hand":0.0},{"h":0.68,"effort":0.357,"trunk":30,"shank":10,"knee":0.403,"hip":0.476,"hand":0.0},{"h":0.7,"effort":0.357,"trunk":30,"shank":5,"knee":0.311,"hip":0.476,"hand":0.0}],"bar25":[{"h":0.4,"effort":0.4,"trunk":55,"shank":30,"knee":0.5,"hip":0.533,"hand":24.9},{"h":0.42,"effort":0.389,"trunk":55,"shank":30,"knee":0.486,"hip":0.518,"hand":24.8},{"h":0.44,"effort":0.377,"trunk":55,"shank":30,"knee":0.471,"hip":0.502,"hand":24.7},{"h":0.46,"effort":0.364,"trunk":55,"shank":30,"knee":0.455,"hip":0.485,"hand":24.6},{"h":0.48,"effort":0.349,"trunk":50,"shank":30,"knee":0.437,"hip":0.466,"hand":24.8},{"h":0.5,"effort":0.334,"trunk":50,"shank":30,"knee":0.418,"hip":0.445,"hand":24.7},{"h":0.52,"effort":0.331,"trunk":50,"shank":25,"knee":0.413,"hip":0.441,"hand":24.7},{"h":0.54,"effort":0.314,"trunk":50,"shank":25,"knee":0.393,"hip":0.419,"hand":24.6},{"h":0.56,"effort":0.297,"trunk":50,"shank":25,"knee":0.371,"hip":0.396,"hand":24.5},{"h":0.58,"effort":0.291,"trunk":50,"shank":20,"knee":0.363,"hip":0.387,"hand":24.5},{"h":0.6,"effort":0.277,"trunk":55,"shank":20,"knee":0.346,"hip":0.369,"hand":24.7},{"h":0.62,"effort":0.258,"trunk":55,"shank":20,"knee":0.322,"hip":0.344,"hand":24.8},{"h":0.64,"effort":0.249,"trunk":55,"shank":15,"knee":0.311,"hip":0.332,"hand":24.7},{"h":0.66,"effort":0.233,"trunk":0,"shank":15,"knee":0.291,"hip":0.31,"hand":20.1},{"h":0.68,"effort":0.214,"trunk":0,"shank":10,"knee":0.267,"hip":0.285,"hand":18.5},{"h":0.7,"effort":0.18,"trunk":0,"shank":-10,"knee":0.225,"hip":0.24,"hand":15.8}],"barweak":[{"h":0.4,"effort":0.445,"trunk":50,"shank":30,"knee":0.556,"hip":0.594,"hand":18.9},{"h":0.42,"effort":0.428,"trunk":50,"shank":30,"knee":0.535,"hip":0.571,"hand":19.7},{"h":0.44,"effort":0.409,"trunk":50,"shank":30,"knee":0.511,"hip":0.545,"hand":20.6},{"h":0.46,"effort":0.401,"trunk":50,"shank":30,"knee":0.501,"hip":0.534,"hand":19.8},{"h":0.48,"effort":0.384,"trunk":55,"shank":30,"knee":0.48,"hip":0.512,"hand":20.1},{"h":0.5,"effort":0.364,"trunk":55,"shank":30,"knee":0.455,"hip":0.485,"hand":20.9},{"h":0.52,"effort":0.359,"trunk":55,"shank":25,"knee":0.449,"hip":0.479,"hand":21.1},{"h":0.54,"effort":0.353,"trunk":55,"shank":25,"knee":0.441,"hip":0.47,"hand":20.1},{"h":0.56,"effort":0.341,"trunk":60,"shank":25,"knee":0.426,"hip":0.455,"hand":20.5},{"h":0.58,"effort":0.334,"trunk":60,"shank":20,"knee":0.417,"hip":0.445,"hand":20.8},{"h":0.6,"effort":0.315,"trunk":60,"shank":20,"knee":0.394,"hip":0.42,"hand":21.2},{"h":0.62,"effort":0.297,"trunk":0,"shank":20,"knee":0.371,"hip":0.395,"hand":21.2},{"h":0.64,"effort":0.282,"trunk":0,"shank":15,"knee":0.352,"hip":0.376,"hand":20.3},{"h":0.66,"effort":0.251,"trunk":0,"shank":15,"knee":0.314,"hip":0.335,"hand":18.2},{"h":0.68,"effort":0.231,"trunk":0,"shank":10,"knee":0.288,"hip":0.307,"hand":16.7},{"h":0.7,"effort":0.203,"trunk":0,"shank":5,"knee":0.253,"hip":0.27,"hand":14.8}]}</script>
+<script type="application/json" id="xdata">{"xs":[-0.3,-0.25,-0.2,-0.15,-0.1,-0.05,-0.0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9],"zs":[0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,1.05,1.1,1.15,1.2,1.25,1.3],"side_h":[0.55,0.575,0.6,0.625,0.65,0.675,0.7,0.725,0.75,0.775,0.8,0.825,0.85,0.875,0.9,0.925,0.95,0.975,1.0,1.025,1.05,1.075,1.1,1.125,1.15,1.175,1.2],"BW":589,"geo":{"5":{"A":[0.0,0.062],"K":[0.034,0.455],"Hp":[-0.354,0.51],"heel":-0.061,"toe":0.182,"edge_x":-0.204},"10":{"A":[0.0,0.062],"K":[0.068,0.45],"Hp":[-0.319,0.51],"heel":-0.061,"toe":0.182,"edge_x":-0.169},"15":{"A":[0.0,0.062],"K":[0.102,0.443],"Hp":[-0.284,0.51],"heel":-0.061,"toe":0.182,"edge_x":-0.134},"20":{"A":[0.0,0.062],"K":[0.135,0.432],"Hp":[-0.25,0.51],"heel":-0.061,"toe":0.182,"edge_x":-0.1},"25":{"A":[0.0,0.062],"K":[0.166,0.419],"Hp":[-0.215,0.51],"heel":-0.061,"toe":0.182,"edge_x":-0.065},"30":{"A":[0.0,0.062],"K":[0.197,0.403],"Hp":[-0.18,0.51],"heel":-0.061,"toe":0.182,"edge_x":-0.03}},"L":{"tr":0.461},"front_strong":[[null,null,null,null,null,null,null,null,null,null,null,null,null,[0.482,70,0.043,0.491,1,69,0.482,0.482,0.152,0.482,30],[0.455,80,0.08,0.394,111,61,0.455,0.455,0.455,0.405,30],[0.458,80,0.135,0.345,109,59,0.458,0.458,0.458,0.234,30],[0.46,80,0.192,0.314,108,57,0.46,0.46,0.46,0.124,30],[0.462,80,0.247,0.298,106,56,0.462,0.462,0.462,0.062,30],[0.464,80,0.299,0.292,105,55,0.464,0.464,0.464,0.037,30],[0.466,80,0.347,0.296,104,54,0.466,0.466,0.466,0.042,30],[0.467,80,0.394,0.306,102,53,0.467,0.467,0.467,0.071,30],[0.469,80,0.439,0.325,101,52,0.469,0.469,0.469,0.123,30],[0.47,80,0.484,0.353,100,51,0.47,0.47,0.47,0.201,30],[0.472,80,0.53,0.397,100,50,0.472,0.472,0.472,0.32,30],null],[null,null,null,null,null,null,null,null,null,null,null,null,[0.475,75,0.003,0.57,-43,88,0.475,0.475,0.009,0.475,30],[0.479,65,0.037,0.517,55,56,0.479,0.479,0.342,0.479,30],[0.435,80,0.086,0.387,110,77,0.435,0.435,0.393,0.363,30],[0.439,80,0.152,0.334,111,73,0.439,0.439,0.408,0.142,30],[0.442,80,0.214,0.306,112,70,0.442,0.442,0.42,0.008,30],[0.445,80,0.27,0.294,113,68,0.445,0.445,0.432,0.047,30],[0.448,80,0.321,0.293,114,65,0.448,0.448,0.442,0.068,30],[0.451,80,0.368,0.299,114,63,0.451,0.451,0.451,0.063,30],[0.454,80,0.411,0.312,112,61,0.454,0.454,0.454,0.03,30],[0.457,80,0.452,0.332,110,59,0.457,0.457,0.457,0.024,30],[0.459,80,0.493,0.36,108,58,0.459,0.459,0.459,0.112,30],[0.462,80,0.534,0.401,106,56,0.462,0.462,0.462,0.236,30],[0.466,80,0.582,0.484,97,55,0.466,0.466,0.447,0.466,30]],[null,null,null,null,null,null,null,null,null,null,null,[0.467,70,-0.014,0.68,-14,86,0.467,0.467,0.048,0.467,30],[0.482,70,-0.006,0.595,-11,73,0.482,0.482,0.1,0.482,30],[0.468,60,0.032,0.537,89,56,0.468,0.468,0.451,0.468,30],[0.424,75,0.093,0.411,108,87,0.424,0.424,0.388,0.365,30],[0.422,80,0.188,0.316,107,89,0.422,0.422,0.341,0.005,30],[0.427,80,0.253,0.297,108,85,0.427,0.427,0.36,0.089,30],[0.431,80,0.306,0.292,109,81,0.431,0.431,0.377,0.13,30],[0.435,80,0.353,0.297,110,77,0.435,0.435,0.393,0.139,30],[0.439,80,0.395,0.307,111,74,0.439,0.439,0.407,0.126,30],[0.442,80,0.434,0.322,112,71,0.442,0.442,0.42,0.096,30],[0.445,80,0.471,0.344,113,68,0.445,0.445,0.431,0.048,30],[0.448,80,0.507,0.372,114,66,0.448,0.448,0.441,0.027,30],[0.45,80,0.542,0.412,114,64,0.45,0.45,0.449,0.154,30],[0.453,80,0.581,0.481,112,62,0.453,0.453,0.453,0.373,30]],[null,null,null,null,null,null,null,null,null,null,null,[0.484,60,-0.042,0.68,28,60,0.484,0.484,0.19,0.484,30],[0.474,55,-0.016,0.603,80,54,0.474,0.474,0.393,0.474,30],[0.458,60,0.03,0.539,79,67,0.458,0.458,0.38,0.458,30],[0.416,70,0.103,0.431,105,94,0.416,0.416,0.383,0.321,30],[0.411,75,0.203,0.346,133,100,0.411,0.411,0.379,0.12,25],[0.41,80,0.31,0.292,133,101,0.41,0.41,0.321,0.365,25],[0.416,80,0.354,0.297,135,95,0.416,0.416,0.346,0.378,25],[0.422,80,0.393,0.306,137,90,0.422,0.422,0.369,0.364,25],[0.427,80,0.428,0.32,138,85,0.427,0.427,0.388,0.33,25],[0.432,80,0.461,0.337,110,80,0.432,0.432,0.38,0.152,30],[0.436,80,0.493,0.36,110,77,0.436,0.436,0.395,0.097,30],[0.439,80,0.523,0.389,111,74,0.439,0.439,0.407,0.024,30],[0.442,80,0.554,0.429,112,71,0.442,0.442,0.418,0.099,30],[0.445,80,0.585,0.493,113,69,0.445,0.445,0.428,0.308,30]],[[0.452,35,-0.183,0.898,0,94,0.452,0.452,0.452,0.195,30],[0.437,35,-0.182,0.913,4,106,0.437,0.437,0.437,0.103,30],[0.479,45,-0.113,0.908,-36,83,0.479,0.479,0.479,0.358,30],[0.529,20,-0.285,0.89,-9,173,0.2,0.529,0.363,0.529,30],[0.4,35,-0.183,0.909,6,164,0.333,0.4,0.4,0.4,30],[0.402,40,-0.148,0.904,-2,166,0.332,0.402,0.402,0.402,30],[0.406,45,-0.115,0.899,-12,171,0.322,0.406,0.406,0.406,30],[0.42,50,-0.082,0.891,-21,173,0.31,0.42,0.375,0.42,30],[0.44,55,-0.05,0.883,-29,173,0.296,0.44,0.319,0.44,30],[0.447,60,-0.018,0.873,8,97,0.447,0.447,0.001,0.447,30],[0.487,55,-0.07,0.772,36,55,0.487,0.487,0.189,0.487,30],[0.478,50,-0.062,0.671,81,50,0.478,0.478,0.366,0.478,30],[0.458,50,-0.02,0.609,104,60,0.458,0.458,0.458,0.445,30],[0.436,60,0.038,0.531,121,90,0.436,0.435,0.436,0.436,20],[0.41,65,0.119,0.447,104,100,0.41,0.41,0.378,0.235,30],[0.4,70,0.221,0.377,130,110,0.4,0.4,0.38,0.145,25],[0.394,80,0.382,0.303,100,114,0.394,0.394,0.237,0.371,30],[0.403,80,0.41,0.312,102,106,0.403,0.403,0.27,0.343,30],[0.41,80,0.438,0.324,104,99,0.41,0.41,0.298,0.306,30],[0.414,80,0.464,0.339,134,97,0.414,0.414,0.336,0.402,25],[0.419,80,0.49,0.358,136,92,0.419,0.419,0.358,0.338,25],[0.424,80,0.516,0.382,138,88,0.424,0.424,0.376,0.26,25],[0.429,80,0.542,0.411,139,84,0.429,0.429,0.393,0.162,25],[0.432,80,0.567,0.451,140,81,0.432,0.432,0.407,0.034,25],[0.436,80,0.592,0.514,141,78,0.436,0.436,0.42,0.221,25]],[[0.495,45,-0.113,0.909,-42,71,0.495,0.495,0.495,0.456,30],[0.527,55,-0.044,0.895,-70,53,0.527,0.527,0.36,0.527,30],[0.574,70,0.049,0.851,-102,23,0.574,0.574,0.008,0.482,30],null,[0.801,10,-0.347,0.854,30,105,0.08,0.801,0.205,0.801,30],[0.64,25,-0.251,0.899,-9,139,0.177,0.64,0.115,0.64,30],[0.556,35,-0.182,0.913,-27,162,0.213,0.556,0.274,0.556,30],[0.549,40,-0.149,0.901,100,-14,0.549,0.549,0.456,0.549,30],[0.511,45,-0.118,0.884,65,27,0.511,0.511,0.272,0.511,30],[0.493,50,-0.089,0.863,44,48,0.493,0.493,0.186,0.493,30],[0.478,40,-0.113,0.717,117,40,0.478,0.478,0.478,0.451,30],[0.459,45,-0.07,0.667,103,59,0.459,0.459,0.418,0.459,30],[0.44,50,-0.017,0.606,98,77,0.44,0.44,0.393,0.44,30],[0.415,55,0.052,0.534,105,95,0.415,0.415,0.4,0.344,30],[0.404,60,0.14,0.464,121,108,0.404,0.404,0.404,0.062,25],[0.383,70,0.295,0.37,119,126,0.383,0.383,0.294,0.331,25],[0.387,75,0.393,0.348,98,120,0.387,0.387,0.246,0.379,30],[0.396,75,0.418,0.358,101,112,0.396,0.396,0.282,0.34,30],[0.398,80,0.483,0.352,101,110,0.398,0.398,0.253,0.391,30],[0.406,75,0.468,0.387,132,105,0.406,0.406,0.358,0.374,25],[0.407,80,0.52,0.385,132,103,0.407,0.407,0.312,0.391,25],[0.413,80,0.54,0.409,134,98,0.413,0.413,0.334,0.302,25],[0.418,80,0.56,0.438,136,93,0.418,0.418,0.354,0.196,25],[0.423,80,0.58,0.479,137,89,0.423,0.423,0.371,0.059,25],[0.427,80,0.598,0.544,138,86,0.427,0.427,0.386,0.205,25]],[[0.521,55,-0.045,0.894,-71,57,0.521,0.521,0.38,0.521,30],[0.541,65,0.021,0.871,-96,48,0.541,0.541,0.215,0.541,30],[0.578,80,0.101,0.808,-115,64,0.578,0.475,0.134,0.578,30],null,[0.781,0,-0.4,0.81,169,45,0.148,0.781,0.774,0.781,30],[0.692,15,-0.318,0.876,158,2,0.339,0.692,0.692,0.692,30],[0.61,25,-0.251,0.898,146,-15,0.464,0.61,0.61,0.61,30],[0.544,30,-0.216,0.878,139,-7,0.512,0.544,0.54,0.544,30],[0.508,35,-0.181,0.853,115,16,0.508,0.508,0.421,0.508,30],[0.479,35,-0.161,0.775,122,39,0.475,0.479,0.447,0.479,30],[0.463,40,-0.119,0.728,104,56,0.463,0.463,0.379,0.463,30],[0.449,40,-0.067,0.655,115,78,0.417,0.449,0.449,0.429,30],[0.429,45,-0.003,0.598,109,83,0.429,0.429,0.405,0.281,30],[0.414,50,0.074,0.538,105,96,0.414,0.414,0.384,0.163,30],[0.399,55,0.164,0.483,121,113,0.399,0.399,0.399,0.053,25],[0.379,65,0.313,0.411,115,130,0.379,0.379,0.295,0.358,25],[0.383,70,0.403,0.395,96,124,0.383,0.383,0.253,0.383,30],[0.392,70,0.424,0.406,99,116,0.392,0.392,0.291,0.34,30],[0.393,75,0.486,0.401,100,115,0.393,0.393,0.268,0.379,30],[0.396,80,0.534,0.402,100,112,0.396,0.396,0.243,0.385,30],[0.4,75,0.521,0.435,130,109,0.4,0.4,0.338,0.358,25],[0.403,80,0.562,0.441,131,107,0.403,0.403,0.294,0.336,25],[0.409,80,0.577,0.471,133,102,0.409,0.409,0.316,0.219,25],[0.414,80,0.591,0.512,134,97,0.414,0.414,0.336,0.07,25],[0.419,80,0.601,0.585,136,93,0.419,0.419,0.354,0.232,25]],[[0.521,60,-0.01,0.886,-83,61,0.521,0.521,0.326,0.521,30],[0.537,70,0.052,0.855,-99,52,0.537,0.537,0.118,0.465,30],null,null,null,[0.657,5,-0.364,0.814,165,55,0.242,0.657,0.65,0.657,30],[0.584,15,-0.306,0.843,160,33,0.366,0.584,0.584,0.584,30],[0.518,25,-0.247,0.869,159,12,0.505,0.518,0.518,0.518,25],[0.505,25,-0.218,0.787,146,53,0.427,0.505,0.505,0.505,25],[0.463,30,-0.17,0.748,142,55,0.463,0.463,0.463,0.371,25],[0.433,35,-0.116,0.699,131,82,0.433,0.433,0.433,0.423,25],[0.443,35,-0.05,0.64,132,75,0.443,0.443,0.443,0.11,25],[0.424,40,0.021,0.593,125,92,0.424,0.424,0.424,0.064,25],[0.408,45,0.102,0.547,122,105,0.408,0.408,0.408,0.036,25],[0.379,55,0.233,0.477,115,130,0.379,0.379,0.327,0.244,25],[0.379,60,0.329,0.454,110,131,0.379,0.379,0.294,0.379,25],[0.382,65,0.409,0.443,93,125,0.382,0.382,0.257,0.382,30],[0.389,65,0.428,0.454,99,118,0.389,0.389,0.299,0.34,30],[0.389,65,0.448,0.468,124,120,0.389,0.389,0.359,0.389,25],[0.391,75,0.534,0.452,99,117,0.391,0.391,0.261,0.366,30],[0.392,75,0.546,0.469,125,118,0.392,0.392,0.294,0.392,25],[0.393,80,0.58,0.479,128,116,0.393,0.393,0.257,0.357,25],[0.399,80,0.59,0.509,130,110,0.399,0.399,0.281,0.228,25],[0.405,80,0.599,0.552,132,105,0.405,0.405,0.303,0.062,25],null],[[0.512,65,0.014,0.861,-96,72,0.512,0.512,0.311,0.508,30],[0.531,75,0.069,0.823,-98,57,0.531,0.531,0.023,0.342,30],null,null,null,[0.593,5,-0.369,0.823,159,68,0.274,0.593,0.533,0.593,30],[0.55,10,-0.32,0.802,153,74,0.307,0.55,0.516,0.55,30],[0.516,15,-0.269,0.777,153,82,0.344,0.516,0.513,0.516,25],[0.477,20,-0.215,0.746,155,68,0.412,0.477,0.477,0.251,25],[0.447,25,-0.157,0.709,145,82,0.414,0.447,0.447,0.217,25],[0.421,30,-0.09,0.665,137,96,0.41,0.421,0.421,0.155,25],[0.4,35,-0.014,0.619,130,110,0.399,0.4,0.4,0.054,25],[0.388,40,0.073,0.575,124,121,0.388,0.388,0.377,0.073,25],[0.382,45,0.166,0.538,118,127,0.382,0.382,0.348,0.205,25],[0.373,55,0.318,0.491,90,134,0.373,0.373,0.23,0.373,30],[0.38,55,0.341,0.499,97,126,0.38,0.38,0.28,0.348,30],[0.383,55,0.364,0.51,117,127,0.383,0.383,0.346,0.383,25],[0.387,60,0.429,0.504,98,120,0.387,0.387,0.304,0.339,30],[0.386,60,0.448,0.519,122,123,0.386,0.386,0.368,0.368,25],[0.386,65,0.499,0.518,122,123,0.386,0.386,0.344,0.372,25],[0.386,80,0.588,0.5,98,121,0.386,0.386,0.206,0.359,30],[0.386,80,0.593,0.521,122,123,0.386,0.386,0.221,0.351,25],[0.391,80,0.599,0.551,127,118,0.391,0.391,0.248,0.219,25],[0.4,75,0.592,0.611,130,110,0.4,0.4,0.335,0.01,25],null],[[0.499,65,0.019,0.869,-94,82,0.499,0.499,0.34,0.499,30],[0.513,75,0.069,0.823,-96,72,0.513,0.513,0.082,0.335,30],null,null,null,null,[0.538,5,-0.301,0.741,147,98,0.264,0.538,0.458,0.266,30],[0.506,10,-0.243,0.722,140,104,0.284,0.506,0.453,0.245,30],[0.472,15,-0.182,0.699,154,81,0.388,0.472,0.417,0.086,25],[0.441,20,-0.116,0.672,144,101,0.375,0.441,0.419,0.046,25],[0.417,25,-0.045,0.644,145,100,0.417,0.417,0.389,0.179,20],[0.401,30,0.032,0.615,131,114,0.388,0.401,0.375,0.178,25],[0.388,35,0.114,0.59,124,121,0.388,0.388,0.352,0.255,25],[0.376,45,0.247,0.547,95,130,0.376,0.376,0.244,0.352,30],[0.382,45,0.275,0.555,113,132,0.373,0.382,0.32,0.382,25],[0.382,50,0.348,0.547,97,125,0.382,0.382,0.277,0.376,30],[0.385,55,0.413,0.542,91,124,0.385,0.385,0.261,0.385,30],[0.386,60,0.469,0.54,89,124,0.386,0.386,0.252,0.386,30],[0.384,65,0.516,0.541,90,125,0.384,0.384,0.248,0.384,30],[0.38,70,0.554,0.545,95,127,0.38,0.38,0.242,0.38,30],[0.378,80,0.598,0.547,96,128,0.378,0.378,0.177,0.364,30],[0.381,80,0.601,0.567,116,129,0.381,0.381,0.189,0.326,25],[0.387,75,0.592,0.607,123,122,0.387,0.387,0.278,0.154,25],[0.396,70,0.58,0.678,129,113,0.396,0.396,0.363,0.136,25],null],[[0.483,65,0.018,0.867,-93,95,0.483,0.483,0.389,0.483,30],[0.493,75,0.056,0.807,-104,122,0.493,0.412,0.443,0.493,30],[0.487,80,0.108,0.814,-101,117,0.487,0.43,0.281,0.487,30],null,null,null,[0.54,0,-0.239,0.687,147,98,0.263,0.54,0.366,0.229,30],[0.508,5,-0.183,0.681,141,104,0.283,0.508,0.375,0.205,30],[0.47,10,-0.124,0.671,154,82,0.387,0.47,0.328,0.413,25],[0.441,15,-0.061,0.659,144,101,0.375,0.441,0.352,0.34,25],[0.417,20,0.006,0.645,145,100,0.417,0.417,0.329,0.417,20],[0.383,30,0.109,0.613,119,126,0.383,0.383,0.279,0.376,25],[0.39,30,0.147,0.619,125,120,0.387,0.39,0.326,0.39,25],[0.393,35,0.218,0.609,117,128,0.37,0.393,0.326,0.393,25],[0.389,35,0.245,0.62,126,119,0.389,0.389,0.361,0.388,25],[0.387,45,0.351,0.596,96,120,0.387,0.387,0.264,0.387,30],[0.386,50,0.41,0.593,92,122,0.386,0.386,0.26,0.386,30],[0.383,55,0.463,0.592,91,125,0.383,0.383,0.26,0.383,30],[0.379,60,0.508,0.594,94,128,0.379,0.379,0.262,0.379,30],[0.377,65,0.545,0.598,96,129,0.377,0.377,0.256,0.351,30],[0.375,75,0.591,0.599,95,131,0.375,0.375,0.199,0.329,30],[0.378,75,0.593,0.621,113,132,0.378,0.378,0.218,0.267,25],[0.385,70,0.581,0.667,121,124,0.385,0.385,0.304,0.078,25],[0.393,65,0.558,0.768,128,116,0.393,0.393,0.386,0.366,25],null],[null,null,null,null,null,null,null,[0.509,0,-0.114,0.675,142,103,0.282,0.509,0.286,0.501,30],[0.455,10,-0.049,0.667,124,121,0.303,0.455,0.279,0.392,30],[0.437,15,0.013,0.661,118,127,0.31,0.437,0.286,0.385,30],[0.422,20,0.078,0.654,113,132,0.316,0.422,0.289,0.394,30],[0.41,25,0.145,0.648,108,137,0.319,0.41,0.29,0.41,30],[0.411,30,0.212,0.642,101,144,0.306,0.411,0.299,0.411,30],[0.41,30,0.232,0.653,106,112,0.379,0.41,0.262,0.41,30],[0.401,35,0.292,0.649,104,125,0.358,0.401,0.296,0.401,30],[0.394,40,0.35,0.646,96,115,0.394,0.394,0.245,0.394,30],[0.387,45,0.404,0.645,95,121,0.387,0.387,0.257,0.387,30],[0.38,50,0.453,0.645,96,127,0.38,0.38,0.268,0.38,30],[0.377,55,0.497,0.647,96,129,0.377,0.377,0.27,0.355,30],[0.37,65,0.559,0.643,94,136,0.37,0.37,0.227,0.367,30],[0.368,75,0.592,0.649,93,137,0.368,0.368,0.173,0.308,30],[0.376,70,0.58,0.679,111,134,0.376,0.376,0.243,0.201,25],[0.383,65,0.564,0.734,119,126,0.383,0.383,0.325,0.026,25],null,null],[null,null,null,null,null,null,null,[0.492,5,-0.016,0.687,102,142,0.233,0.492,0.214,0.492,30],[0.465,45,0.42,1.006,2,83,0.465,0.465,0.22,0.465,30],[0.464,45,0.461,0.923,6,83,0.464,0.464,0.19,0.464,30],[0.456,15,0.11,0.693,108,137,0.275,0.456,0.285,0.456,30],[0.445,20,0.166,0.691,104,141,0.28,0.445,0.297,0.445,30],[0.432,20,0.183,0.702,116,129,0.311,0.432,0.324,0.432,30],[0.42,25,0.237,0.701,112,132,0.32,0.42,0.326,0.42,30],[0.41,30,0.291,0.699,108,132,0.332,0.41,0.319,0.41,30],[0.398,35,0.344,0.698,98,111,0.398,0.398,0.223,0.398,30],[0.385,35,0.356,0.714,121,124,0.385,0.385,0.326,0.384,25],[0.382,40,0.404,0.715,118,127,0.382,0.382,0.33,0.35,25],[0.372,55,0.513,0.692,92,134,0.372,0.372,0.238,0.372,30],[0.362,65,0.565,0.692,92,142,0.362,0.362,0.2,0.362,30],[0.366,70,0.578,0.704,93,139,0.366,0.366,0.193,0.254,30],[0.375,65,0.563,0.74,110,135,0.375,0.375,0.263,0.119,25],[0.383,60,0.536,0.819,118,126,0.383,0.383,0.342,0.237,25],null,null],[[0.413,0,-0.052,1.252,93,100,0.413,0.413,0.413,0.059,30],[0.408,5,0.005,1.244,78,108,0.408,0.408,0.408,0.191,30],null,null,null,null,[0.452,30,0.318,1.089,32,85,0.452,0.452,0.299,0.452,30],[0.46,35,0.37,1.04,22,81,0.46,0.46,0.268,0.46,30],[0.463,35,0.405,0.952,26,78,0.463,0.463,0.234,0.463,30],[0.462,40,0.439,0.914,18,81,0.462,0.462,0.199,0.462,30],[0.457,45,0.47,0.879,12,86,0.457,0.457,0.159,0.457,30],[0.45,55,0.511,0.865,0,96,0.45,0.45,0.104,0.45,30],[0.441,60,0.533,0.83,1,103,0.441,0.441,0.059,0.441,30],[0.429,20,0.235,0.751,114,131,0.311,0.429,0.312,0.429,30],[0.415,25,0.285,0.752,109,122,0.347,0.415,0.271,0.415,30],[0.396,25,0.297,0.769,126,119,0.383,0.396,0.297,0.396,25],[0.387,30,0.344,0.771,123,122,0.387,0.387,0.306,0.357,25],[0.375,45,0.459,0.743,94,131,0.375,0.375,0.233,0.375,30],[0.368,55,0.523,0.739,88,139,0.368,0.368,0.208,0.368,30],[0.356,65,0.563,0.742,90,148,0.356,0.356,0.176,0.335,30],[0.365,65,0.56,0.762,93,140,0.365,0.365,0.211,0.185,30],[0.374,60,0.538,0.81,109,135,0.374,0.374,0.28,0.007,25],null,null,null],[[0.448,5,-0.019,1.252,84,74,0.448,0.448,0.448,0.09,30],[0.44,5,0.045,1.223,83,81,0.44,0.44,0.44,0.206,30],[0.431,10,0.102,1.207,67,92,0.431,0.431,0.431,0.348,30],[0.431,15,0.159,1.185,56,95,0.431,0.431,0.413,0.431,30],[0.442,20,0.215,1.156,48,89,0.442,0.442,0.381,0.442,30],[0.452,25,0.269,1.123,39,84,0.452,0.452,0.348,0.452,30],[0.459,30,0.32,1.086,30,81,0.459,0.459,0.314,0.459,30],[0.463,35,0.366,1.047,21,80,0.463,0.463,0.278,0.463,30],[0.463,40,0.406,1.008,13,82,0.463,0.463,0.238,0.463,30],[0.46,45,0.442,0.969,7,86,0.46,0.46,0.195,0.46,30],[0.455,50,0.473,0.932,3,91,0.455,0.455,0.15,0.455,30],[0.447,55,0.498,0.898,1,98,0.447,0.447,0.104,0.447,30],[0.439,55,0.512,0.861,9,102,0.439,0.439,0.074,0.439,30],[0.428,60,0.531,0.836,11,111,0.428,0.428,0.032,0.428,30],[0.413,15,0.237,0.825,132,113,0.378,0.413,0.241,0.413,25],[0.395,20,0.282,0.828,128,114,0.395,0.395,0.246,0.373,25],[0.381,30,0.362,0.811,117,128,0.381,0.381,0.265,0.367,25],[0.371,40,0.437,0.801,106,139,0.371,0.371,0.25,0.369,25],[0.359,55,0.525,0.789,88,146,0.359,0.359,0.186,0.359,30],[0.356,60,0.541,0.799,91,147,0.356,0.356,0.191,0.261,30],[0.366,60,0.534,0.826,93,139,0.366,0.366,0.225,0.093,30],null,null,null,null],[[0.473,5,0.006,1.243,88,52,0.473,0.473,0.473,0.078,30],[0.463,10,0.059,1.232,70,65,0.463,0.463,0.463,0.218,30],[0.454,15,0.113,1.216,54,78,0.454,0.454,0.454,0.348,30],[0.445,15,0.169,1.176,55,84,0.445,0.445,0.44,0.445,30],[0.452,20,0.22,1.151,46,81,0.452,0.452,0.403,0.452,30],[0.458,25,0.269,1.123,37,79,0.458,0.458,0.366,0.458,30],[0.462,30,0.315,1.092,28,78,0.462,0.462,0.327,0.462,30],[0.463,35,0.357,1.06,20,80,0.463,0.463,0.286,0.463,30],[0.462,40,0.395,1.026,12,83,0.462,0.462,0.243,0.462,30],[0.458,45,0.429,0.993,7,88,0.458,0.458,0.197,0.458,30],[0.453,45,0.45,0.951,12,90,0.453,0.453,0.169,0.453,30],[0.445,50,0.476,0.924,10,98,0.445,0.445,0.122,0.445,30],[0.435,55,0.498,0.899,10,106,0.435,0.435,0.078,0.435,30],[0.426,55,0.509,0.872,18,110,0.426,0.426,0.046,0.426,30],[0.408,15,0.253,0.866,124,120,0.37,0.408,0.204,0.408,25],[0.387,20,0.296,0.87,123,122,0.387,0.387,0.213,0.369,25],[0.376,30,0.373,0.856,111,134,0.376,0.376,0.228,0.361,25],[0.363,45,0.473,0.839,88,142,0.363,0.363,0.18,0.363,30],[0.352,60,0.53,0.838,80,154,0.352,0.352,0.129,0.317,30],[0.358,55,0.512,0.861,91,146,0.358,0.358,0.203,0.165,30],[0.371,50,0.478,0.919,106,139,0.371,0.371,0.268,0.098,25],null,null,null,null],[[0.499,5,0.018,1.238,92,30,0.499,0.499,0.499,0.04,30],[0.483,10,0.069,1.227,71,48,0.483,0.483,0.483,0.196,30],[0.469,15,0.12,1.212,54,65,0.469,0.469,0.469,0.335,30],[0.455,20,0.17,1.192,40,80,0.455,0.455,0.453,0.455,30],[0.459,20,0.217,1.155,44,76,0.459,0.459,0.424,0.459,30],[0.462,25,0.262,1.131,35,76,0.462,0.462,0.382,0.462,30],[0.463,30,0.305,1.104,26,78,0.463,0.463,0.339,0.463,30],[0.463,35,0.345,1.076,19,80,0.463,0.463,0.294,0.463,30],[0.459,40,0.381,1.046,12,85,0.459,0.459,0.248,0.459,30],[0.456,40,0.406,1.008,16,86,0.456,0.456,0.22,0.456,30],[0.449,45,0.435,0.983,12,93,0.449,0.449,0.173,0.449,30],[0.443,45,0.45,0.951,18,96,0.443,0.443,0.142,0.443,30],[0.432,50,0.473,0.931,18,105,0.432,0.432,0.096,0.432,30],[0.416,5,0.185,0.926,133,112,0.378,0.416,0.099,0.416,25],[0.398,10,0.226,0.932,129,112,0.398,0.398,0.112,0.364,25],[0.382,20,0.304,0.915,117,128,0.382,0.382,0.178,0.347,25],[0.365,35,0.412,0.892,93,139,0.365,0.365,0.165,0.363,30],[0.352,50,0.49,0.886,81,154,0.352,0.352,0.131,0.352,30],[0.352,55,0.499,0.896,82,153,0.352,0.352,0.142,0.223,30],[0.361,50,0.472,0.934,92,143,0.361,0.361,0.21,0.024,30],null,null,null,null,null],[[0.525,5,0.02,1.237,96,7,0.525,0.525,0.525,0.015,30],[0.503,10,0.069,1.227,73,32,0.503,0.503,0.503,0.163,30],[0.483,15,0.118,1.213,54,54,0.483,0.483,0.483,0.313,30],[0.464,20,0.165,1.195,39,74,0.464,0.464,0.464,0.444,30],[0.463,20,0.208,1.163,42,73,0.463,0.463,0.443,0.463,30],[0.464,25,0.251,1.142,33,75,0.464,0.464,0.396,0.464,30],[0.463,30,0.292,1.119,25,78,0.463,0.463,0.349,0.463,30],[0.461,35,0.329,1.093,18,82,0.461,0.461,0.301,0.461,30],[0.459,35,0.357,1.06,21,83,0.459,0.459,0.275,0.459,30],[0.452,40,0.388,1.036,16,89,0.452,0.452,0.226,0.452,30],[0.448,40,0.407,1.006,21,92,0.448,0.448,0.197,0.448,30],[0.437,45,0.432,0.987,19,101,0.437,0.437,0.148,0.437,30],[0.429,0,0.148,0.969,129,116,0.358,0.429,0.031,0.429,25],[0.395,5,0.188,0.974,129,115,0.393,0.395,0.036,0.395,25],[0.38,15,0.267,0.959,116,129,0.38,0.38,0.11,0.38,25],[0.369,25,0.342,0.949,104,141,0.369,0.369,0.142,0.366,25],[0.356,40,0.435,0.937,83,150,0.356,0.356,0.121,0.356,30],[0.351,50,0.469,0.941,77,155,0.351,0.351,0.111,0.258,30],[0.355,45,0.44,0.973,90,148,0.355,0.355,0.182,0.071,30],null,null,null,null,null,null],[[0.548,5,0.014,1.24,39,89,0.348,0.548,0.548,0.548,30],[0.522,10,0.062,1.23,75,16,0.522,0.522,0.522,0.128,30],[0.496,15,0.109,1.218,55,43,0.496,0.496,0.496,0.288,30],[0.486,15,0.151,1.191,43,75,0.437,0.486,0.486,0.486,30],[0.466,20,0.194,1.175,40,72,0.466,0.466,0.459,0.466,30],[0.465,25,0.236,1.156,32,75,0.465,0.465,0.408,0.465,30],[0.462,30,0.274,1.135,24,79,0.462,0.462,0.358,0.462,30],[0.461,30,0.304,1.105,27,79,0.461,0.461,0.334,0.461,30],[0.455,35,0.337,1.085,21,86,0.455,0.455,0.282,0.455,30],[0.451,35,0.359,1.057,25,88,0.451,0.451,0.255,0.451,30],[0.441,40,0.386,1.039,21,97,0.441,0.441,0.203,0.441,30],[0.435,40,0.4,1.018,27,101,0.435,0.435,0.171,0.435,30],[0.398,0,0.143,1.021,127,118,0.384,0.398,0.05,0.398,25],[0.387,10,0.225,1.006,113,131,0.37,0.387,0.051,0.387,25],[0.375,20,0.3,0.996,102,143,0.36,0.375,0.096,0.375,25],[0.354,30,0.366,0.991,90,149,0.354,0.354,0.106,0.342,30],[0.35,45,0.432,0.987,74,157,0.35,0.35,0.076,0.278,30],[0.353,40,0.401,1.017,88,151,0.353,0.353,0.147,0.091,30],null,null,null,null,null,null,null]],"side1_strong":[[0.468,50,-0.074,0.83,-4,98,0.431,0.468,0.468,0.468,30],[0.466,50,-0.07,0.857,-3,99,0.43,0.466,0.466,0.466,30],[0.462,50,-0.064,0.884,-2,100,0.429,0.462,0.462,0.462,30],[0.514,45,-0.096,0.896,-14,110,0.366,0.514,0.514,0.514,30],[0.58,40,-0.129,0.903,-31,122,0.289,0.58,0.58,0.58,30],[0.637,35,-0.163,0.903,75,-23,0.506,0.637,0.637,0.637,30],[0.651,30,-0.197,0.894,86,-15,0.467,0.651,0.651,0.651,30],[0.66,25,-0.228,0.875,95,-3,0.423,0.66,0.66,0.66,30],[0.632,25,-0.231,0.895,102,-7,0.453,0.632,0.632,0.632,30],[0.632,20,-0.257,0.858,109,15,0.398,0.632,0.632,0.632,30],[0.64,15,-0.269,0.811,110,41,0.329,0.64,0.64,0.64,30],[0.63,10,-0.263,0.763,154,-13,0.435,0.63,0.63,0.63,30],[0.577,10,-0.253,0.755,153,9,0.434,0.577,0.577,0.577,30],[0.587,5,-0.222,0.715,147,44,0.347,0.587,0.587,0.587,30],[0.553,5,-0.197,0.705,139,68,0.327,0.553,0.553,0.553,30],[0.598,0,-0.158,0.693,129,89,0.241,0.598,0.598,0.598,30],[0.59,0,-0.124,0.694,117,110,0.209,0.59,0.59,0.59,30],[0.593,0,-0.087,0.7,104,129,0.169,0.593,0.593,0.593,30],[0.607,0,-0.049,0.712,89,147,0.124,0.607,0.607,0.607,30],[0.493,35,0.326,1.068,33,51,0.493,0.493,0.401,0.493,30],[0.497,35,0.329,1.065,32,48,0.497,0.497,0.414,0.497,30],[0.501,35,0.329,1.064,31,46,0.501,0.501,0.428,0.501,30],[0.503,35,0.327,1.066,30,44,0.503,0.503,0.44,0.503,30],[0.505,35,0.324,1.07,29,42,0.505,0.505,0.452,0.505,30],[0.507,35,0.319,1.075,28,41,0.507,0.507,0.464,0.507,30],[0.508,35,0.314,1.081,27,41,0.508,0.508,0.475,0.508,30],[0.522,30,0.302,1.077,35,37,0.499,0.522,0.522,0.522,30]],"side2_strong":[[0.384,50,-0.074,0.83,-8,169,0.346,0.384,0.384,0.384,30],[0.382,50,-0.07,0.857,-7,170,0.344,0.382,0.382,0.382,30],[0.377,50,-0.064,0.884,-5,171,0.344,0.377,0.377,0.377,30],[0.439,45,-0.096,0.896,-16,173,0.289,0.439,0.345,0.439,30],[0.513,40,-0.129,0.903,-28,173,0.227,0.513,0.303,0.513,30],[0.563,35,-0.163,0.903,128,-33,0.563,0.563,0.551,0.563,30],[0.555,30,-0.197,0.894,142,-20,0.53,0.555,0.555,0.555,30],[0.552,25,-0.228,0.875,144,6,0.47,0.552,0.526,0.552,30],[0.531,25,-0.231,0.895,162,-4,0.531,0.531,0.524,0.531,25],[0.513,20,-0.257,0.858,166,29,0.466,0.513,0.506,0.513,25],[0.511,15,-0.269,0.811,159,68,0.378,0.511,0.494,0.511,25],[0.516,10,-0.263,0.763,144,101,0.28,0.516,0.486,0.471,30],[0.499,10,-0.253,0.755,138,107,0.286,0.499,0.43,0.373,30],[0.52,5,-0.222,0.715,145,100,0.278,0.52,0.413,0.026,30],[0.502,5,-0.197,0.705,139,106,0.285,0.502,0.356,0.128,30],[0.521,0,-0.158,0.693,145,100,0.278,0.521,0.321,0.363,30],[0.504,0,-0.124,0.694,140,105,0.285,0.504,0.269,0.448,30],[0.497,0,-0.087,0.7,130,115,0.274,0.497,0.229,0.497,30],[0.506,0,-0.049,0.712,116,129,0.242,0.506,0.21,0.506,30],[0.45,35,0.326,1.068,23,89,0.45,0.45,0.274,0.45,30],[0.454,35,0.329,1.065,22,87,0.454,0.454,0.279,0.454,30],[0.455,30,0.327,1.038,34,82,0.455,0.455,0.282,0.455,30],[0.457,30,0.324,1.044,32,81,0.457,0.457,0.291,0.457,30],[0.458,30,0.32,1.051,31,81,0.458,0.458,0.299,0.458,30],[0.458,35,0.319,1.075,19,84,0.458,0.458,0.296,0.458,30],[0.458,35,0.314,1.081,19,84,0.458,0.458,0.3,0.458,30],[0.459,30,0.302,1.077,29,81,0.459,0.459,0.319,0.459,30]],"front_weak":[[null,null,null,null,null,null,null,null,null,null,null,null,null,[0.51,65,0.048,0.504,-83,72,0.51,0.505,0.51,0.51,30],[0.514,60,0.092,0.488,-1,43,0.514,0.514,0.245,0.514,30],[0.515,60,0.137,0.465,2,42,0.515,0.515,0.272,0.515,30],[0.514,60,0.184,0.45,29,38,0.514,0.508,0.514,0.514,30],[0.512,60,0.233,0.443,29,38,0.512,0.509,0.512,0.512,30],[0.513,60,0.283,0.445,30,38,0.513,0.507,0.513,0.513,30],[0.514,60,0.335,0.455,8,41,0.514,0.514,0.333,0.514,30],[0.514,60,0.39,0.478,6,41,0.514,0.514,0.316,0.514,30],[0.514,60,0.456,0.527,6,42,0.514,0.514,0.311,0.514,30],[0.511,65,0.506,0.527,-10,49,0.511,0.511,0.269,0.511,30],[0.535,75,0.534,0.452,-100,60,0.535,0.521,0.121,0.535,30],null],[null,null,null,null,null,null,null,null,null,null,null,null,[0.502,70,0.003,0.568,-87,78,0.502,0.502,0.362,0.502,30],[0.515,60,0.04,0.529,-2,43,0.515,0.515,0.231,0.515,30],[0.516,60,0.083,0.493,-2,42,0.516,0.516,0.244,0.516,30],[0.508,80,0.152,0.334,46,62,0.508,0.484,0.508,0.508,10],[0.5,80,0.214,0.306,37,63,0.5,0.486,0.5,0.5,15],[0.499,80,0.27,0.294,31,62,0.499,0.492,0.499,0.499,15],[0.502,80,0.321,0.293,27,61,0.502,0.495,0.502,0.502,15],[0.505,80,0.368,0.299,25,59,0.505,0.497,0.505,0.505,15],[0.51,80,0.411,0.312,25,57,0.51,0.498,0.51,0.51,15],[0.515,60,0.435,0.508,5,41,0.515,0.515,0.306,0.515,30],[0.519,65,0.484,0.5,-29,47,0.519,0.519,0.139,0.519,30],[0.52,70,0.536,0.511,-45,51,0.52,0.52,0.146,0.52,30],[0.545,80,0.582,0.484,-102,55,0.545,0.525,0.085,0.545,30]],[null,null,null,null,null,null,null,null,null,null,null,[0.487,70,-0.014,0.68,-48,79,0.487,0.487,0.073,0.487,30],[0.512,70,-0.006,0.595,-66,64,0.512,0.512,0.082,0.512,30],[0.515,55,0.034,0.548,38,32,0.515,0.515,0.515,0.438,30],[0.513,60,0.08,0.495,37,42,0.513,0.507,0.513,0.513,25],[0.471,80,0.188,0.316,45,77,0.471,0.471,0.471,0.471,20],[0.472,80,0.253,0.297,33,75,0.472,0.471,0.472,0.472,25],[0.477,80,0.306,0.292,27,71,0.477,0.464,0.477,0.477,30],[0.484,80,0.353,0.297,23,68,0.484,0.482,0.484,0.484,25],[0.491,80,0.395,0.307,22,64,0.491,0.47,0.491,0.491,30],[0.499,80,0.434,0.322,22,61,0.499,0.494,0.499,0.499,20],[0.506,80,0.471,0.344,23,58,0.506,0.5,0.506,0.506,15],[0.513,80,0.507,0.372,26,56,0.513,0.497,0.513,0.513,15],[0.514,65,0.545,0.597,-10,46,0.514,0.514,0.283,0.514,30],[0.548,80,0.581,0.481,66,48,0.548,0.438,0.548,0.548,25]],[null,null,null,null,null,null,null,null,null,null,null,[0.512,60,-0.042,0.68,-3,46,0.512,0.512,0.212,0.512,30],[0.511,55,-0.016,0.603,34,36,0.511,0.511,0.455,0.511,30],[0.506,55,0.03,0.552,41,39,0.506,0.506,0.506,0.464,30],[0.502,70,0.103,0.431,55,66,0.502,0.476,0.502,0.502,10],[0.461,75,0.203,0.346,41,80,0.461,0.448,0.461,0.461,30],[0.449,80,0.31,0.292,40,86,0.449,0.449,0.449,0.196,30],[0.46,80,0.354,0.297,30,79,0.46,0.46,0.46,0.294,30],[0.47,80,0.393,0.306,22,74,0.47,0.47,0.47,0.398,30],[0.478,80,0.428,0.32,17,69,0.478,0.476,0.478,0.478,30],[0.487,80,0.461,0.337,17,65,0.487,0.475,0.487,0.487,30],[0.496,80,0.493,0.36,19,62,0.496,0.487,0.496,0.496,25],[0.504,80,0.523,0.389,22,59,0.504,0.5,0.504,0.504,15],[0.513,80,0.554,0.429,29,56,0.513,0.494,0.513,0.513,15],[0.53,80,0.585,0.493,55,53,0.53,0.477,0.53,0.53,10]],[[0.457,35,-0.183,0.898,27,82,0.457,0.457,0.457,0.003,30],[0.443,35,-0.182,0.913,30,93,0.443,0.443,0.443,0.22,30],[0.489,45,-0.113,0.908,-8,66,0.489,0.489,0.489,0.288,30],[0.573,60,-0.01,0.888,-50,9,0.573,0.573,0.046,0.573,30],[0.505,35,-0.183,0.909,1,119,0.344,0.505,0.505,0.505,30],[0.494,40,-0.148,0.904,-5,118,0.36,0.494,0.494,0.494,30],[0.484,45,-0.115,0.899,-12,119,0.37,0.484,0.484,0.484,30],[0.479,50,-0.082,0.891,-21,124,0.372,0.479,0.479,0.479,30],[0.48,55,-0.05,0.883,-33,133,0.357,0.48,0.48,0.48,30],[0.477,60,-0.018,0.873,-7,76,0.477,0.477,0.0,0.477,30],[0.516,55,-0.07,0.772,17,37,0.516,0.516,0.296,0.516,30],[0.515,55,-0.058,0.689,22,37,0.515,0.515,0.348,0.515,30],[0.507,55,-0.02,0.609,30,41,0.507,0.507,0.401,0.507,30],[0.494,55,0.034,0.548,44,48,0.494,0.494,0.494,0.48,30],[0.48,65,0.119,0.447,49,70,0.48,0.476,0.48,0.48,20],[0.454,70,0.221,0.377,40,82,0.454,0.454,0.454,0.38,30],[0.421,80,0.382,0.303,64,102,0.421,0.421,0.421,0.353,30],[0.442,80,0.41,0.312,45,89,0.442,0.442,0.442,0.1,30],[0.458,80,0.438,0.324,32,80,0.458,0.458,0.458,0.115,30],[0.469,80,0.464,0.339,22,74,0.469,0.469,0.469,0.304,30],[0.478,80,0.49,0.358,15,68,0.478,0.478,0.478,0.451,30],[0.488,80,0.516,0.382,15,65,0.488,0.478,0.488,0.488,30],[0.497,80,0.542,0.411,19,61,0.497,0.496,0.497,0.497,20],[0.505,80,0.567,0.451,26,59,0.505,0.465,0.505,0.505,30],[0.519,80,0.592,0.514,51,57,0.519,0.48,0.519,0.519,10]],[[0.505,45,-0.113,0.909,-13,54,0.505,0.505,0.505,0.459,30],[0.542,55,-0.044,0.895,-38,31,0.542,0.542,0.213,0.542,30],[0.588,70,0.049,0.851,-80,5,0.588,0.588,0.248,0.588,30],null,[0.912,10,-0.347,0.854,38,48,0.105,0.912,0.529,0.912,30],[0.732,25,-0.251,0.899,-6,86,0.213,0.732,0.02,0.732,30],[0.628,35,-0.182,0.913,-28,115,0.256,0.628,0.363,0.628,30],[0.608,40,-0.149,0.901,55,-2,0.495,0.608,0.608,0.608,30],[0.552,45,-0.118,0.884,55,-1,0.546,0.552,0.552,0.552,30],[0.526,50,-0.089,0.863,31,25,0.526,0.526,0.35,0.526,30],[0.532,45,-0.107,0.742,59,12,0.532,0.532,0.532,0.283,30],[0.506,50,-0.068,0.684,47,37,0.506,0.506,0.453,0.506,30],[0.496,50,-0.017,0.606,54,43,0.496,0.496,0.496,0.394,30],[0.477,55,0.052,0.534,50,60,0.477,0.477,0.477,0.457,30],[0.463,60,0.14,0.464,47,72,0.463,0.463,0.463,0.376,30],[0.428,70,0.295,0.37,55,99,0.428,0.428,0.428,0.082,30],[0.42,75,0.393,0.348,60,104,0.42,0.42,0.42,0.355,30],[0.424,80,0.467,0.341,57,101,0.424,0.424,0.398,0.424,30],[0.439,80,0.483,0.352,68,95,0.439,0.434,0.439,0.439,25],[0.458,80,0.501,0.367,32,80,0.458,0.458,0.458,0.055,30],[0.471,80,0.52,0.385,21,73,0.471,0.471,0.471,0.293,30],[0.481,80,0.54,0.409,12,67,0.481,0.481,0.481,0.466,30],[0.49,80,0.56,0.438,16,64,0.49,0.49,0.49,0.49,25],[0.499,80,0.58,0.479,24,61,0.499,0.482,0.499,0.499,25],[0.51,80,0.598,0.544,52,62,0.51,0.479,0.51,0.51,10]],[[0.538,55,-0.045,0.894,-38,34,0.538,0.538,0.241,0.538,30],[0.562,65,0.021,0.871,-64,22,0.562,0.562,0.048,0.562,30],[0.579,80,0.101,0.808,-103,22,0.579,0.572,0.353,0.579,30],null,[0.95,0,-0.4,0.81,93,36,0.061,0.95,0.95,0.95,30],[0.821,15,-0.318,0.876,82,14,0.24,0.821,0.821,0.821,30],[0.721,25,-0.251,0.898,74,6,0.358,0.721,0.721,0.721,30],[0.659,30,-0.216,0.878,71,10,0.41,0.659,0.659,0.659,30],[0.561,40,-0.149,0.901,67,-1,0.529,0.561,0.561,0.561,30],[0.545,40,-0.148,0.817,68,19,0.497,0.545,0.545,0.545,30],[0.534,40,-0.119,0.728,73,6,0.534,0.534,0.534,0.006,30],[0.521,40,-0.067,0.655,74,16,0.521,0.521,0.521,0.091,30],[0.494,45,-0.003,0.598,65,41,0.494,0.494,0.494,0.107,30],[0.474,50,0.074,0.538,59,59,0.474,0.474,0.474,0.175,30],[0.46,55,0.164,0.483,55,73,0.46,0.46,0.46,0.119,30],[0.414,70,0.383,0.387,53,110,0.414,0.414,0.338,0.414,30],[0.419,70,0.403,0.395,60,105,0.419,0.419,0.419,0.388,30],[0.423,75,0.472,0.39,55,103,0.423,0.423,0.403,0.423,30],[0.426,80,0.524,0.389,54,100,0.426,0.426,0.397,0.426,30],[0.435,80,0.534,0.402,67,97,0.435,0.434,0.435,0.435,25],[0.451,80,0.547,0.419,82,92,0.451,0.42,0.451,0.451,25],[0.464,80,0.562,0.441,99,89,0.464,0.418,0.464,0.464,20],[0.476,80,0.577,0.471,124,89,0.476,0.422,0.476,0.476,5],[0.487,80,0.591,0.512,151,89,0.487,0.4,0.487,0.361,5],[0.499,80,0.601,0.585,153,84,0.499,0.399,0.499,0.205,5]],[[0.543,60,-0.01,0.886,-51,34,0.543,0.543,0.139,0.543,30],[0.555,75,0.063,0.816,-93,36,0.555,0.555,0.142,0.555,30],null,null,null,[0.842,5,-0.364,0.814,95,42,0.146,0.842,0.842,0.842,30],[0.752,15,-0.306,0.843,89,30,0.263,0.752,0.752,0.752,30],[0.655,25,-0.247,0.869,84,19,0.383,0.655,0.655,0.655,30],[0.646,25,-0.218,0.787,78,40,0.345,0.646,0.646,0.646,30],[0.574,30,-0.17,0.748,102,-30,0.562,0.574,0.574,0.574,30],[0.522,35,-0.116,0.699,88,12,0.522,0.522,0.522,0.202,30],[0.51,35,-0.05,0.64,89,22,0.51,0.51,0.51,0.298,30],[0.486,40,0.021,0.593,78,44,0.486,0.486,0.486,0.147,30],[0.468,80,0.598,0.548,-43,93,0.468,0.468,0.073,0.468,30],[0.432,55,0.233,0.477,63,93,0.432,0.432,0.432,0.169,30],[0.421,65,0.393,0.435,49,106,0.421,0.421,0.323,0.421,30],[0.42,65,0.409,0.443,60,104,0.42,0.42,0.414,0.42,30],[0.424,70,0.474,0.439,55,102,0.424,0.424,0.404,0.424,30],[0.424,75,0.524,0.439,54,102,0.424,0.424,0.406,0.424,30],[0.424,80,0.562,0.442,58,101,0.424,0.424,0.405,0.424,30],[0.431,80,0.57,0.457,74,99,0.431,0.427,0.431,0.431,25],[0.442,80,0.58,0.479,92,98,0.442,0.408,0.442,0.442,25],[0.45,80,0.59,0.509,120,99,0.45,0.424,0.45,0.45,5],[0.459,80,0.599,0.552,145,100,0.459,0.403,0.459,0.293,5],null],[[0.534,70,0.02,0.807,-86,51,0.534,0.534,0.132,0.534,30],[0.538,80,0.069,0.773,-99,51,0.538,0.538,0.167,0.399,30],null,null,null,[0.772,5,-0.369,0.823,105,49,0.189,0.772,0.772,0.772,30],[0.729,10,-0.32,0.802,97,53,0.224,0.729,0.729,0.729,30],[0.676,15,-0.269,0.777,132,-28,0.443,0.676,0.676,0.676,30],[0.606,20,-0.215,0.746,122,-12,0.477,0.606,0.606,0.606,30],[0.544,25,-0.157,0.709,113,4,0.502,0.544,0.544,0.544,30],[0.499,30,-0.09,0.665,103,27,0.499,0.499,0.499,0.411,30],[0.474,35,-0.014,0.619,90,51,0.474,0.474,0.474,0.262,30],[0.454,40,0.073,0.575,81,70,0.454,0.454,0.454,0.227,30],[0.439,45,0.166,0.538,75,84,0.439,0.439,0.439,0.272,30],[0.424,55,0.318,0.491,56,101,0.424,0.424,0.323,0.424,30],[0.424,55,0.341,0.499,65,99,0.424,0.424,0.413,0.424,30],[0.426,60,0.413,0.492,58,99,0.426,0.426,0.394,0.426,30],[0.426,65,0.473,0.489,55,101,0.426,0.426,0.398,0.426,30],[0.424,70,0.522,0.49,55,102,0.424,0.424,0.41,0.424,30],[0.421,75,0.56,0.493,59,103,0.421,0.421,0.419,0.421,30],[0.416,80,0.588,0.5,68,105,0.416,0.416,0.414,0.416,30],[0.423,80,0.593,0.521,88,105,0.423,0.412,0.423,0.423,25],[0.426,80,0.599,0.551,119,110,0.426,0.423,0.426,0.426,5],[0.475,75,0.592,0.611,143,102,0.475,0.382,0.475,0.178,5],null],[[0.516,70,0.016,0.799,-88,67,0.516,0.516,0.279,0.516,30],[0.519,80,0.055,0.753,-97,67,0.519,0.519,0.059,0.297,30],null,null,null,null,[0.659,5,-0.301,0.741,149,14,0.347,0.659,0.659,0.659,30],[0.613,10,-0.243,0.722,137,23,0.379,0.613,0.613,0.613,30],[0.569,15,-0.182,0.699,126,32,0.405,0.569,0.569,0.569,30],[0.528,20,-0.116,0.672,116,43,0.424,0.528,0.528,0.528,30],[0.493,25,-0.045,0.644,107,55,0.435,0.493,0.493,0.493,30],[0.466,30,0.032,0.615,98,67,0.437,0.466,0.466,0.466,30],[0.45,35,0.114,0.59,89,80,0.429,0.45,0.45,0.45,30],[0.44,45,0.247,0.547,71,118,0.359,0.44,0.44,0.44,30],[0.442,45,0.275,0.555,72,99,0.402,0.442,0.442,0.442,30],[0.438,50,0.348,0.547,60,89,0.438,0.438,0.348,0.438,30],[0.433,55,0.413,0.542,56,94,0.433,0.433,0.362,0.433,30],[0.429,60,0.469,0.54,55,98,0.429,0.429,0.385,0.429,30],[0.424,65,0.516,0.541,57,101,0.424,0.424,0.409,0.424,30],[0.42,75,0.578,0.538,54,105,0.42,0.42,0.376,0.42,30],[0.412,80,0.598,0.547,65,109,0.412,0.412,0.374,0.412,30],[0.403,80,0.601,0.567,87,114,0.403,0.393,0.403,0.403,30],[0.435,75,0.592,0.607,129,116,0.435,0.394,0.435,0.418,5],[0.48,70,0.58,0.678,37,69,0.48,0.474,0.48,0.48,25],null],[[0.518,65,0.018,0.867,-65,59,0.518,0.518,0.232,0.518,30],[0.501,75,0.056,0.807,-90,80,0.501,0.501,0.196,0.501,30],[0.504,80,0.108,0.814,-89,77,0.504,0.504,0.019,0.504,30],null,null,null,[0.609,0,-0.239,0.687,137,74,0.261,0.609,0.609,0.609,30],[0.586,5,-0.183,0.681,128,73,0.29,0.586,0.586,0.586,30],[0.562,10,-0.124,0.671,120,75,0.315,0.562,0.562,0.562,30],[0.537,15,-0.061,0.659,111,79,0.335,0.537,0.537,0.537,30],[0.515,20,0.006,0.645,102,84,0.349,0.515,0.515,0.515,30],[0.466,30,0.109,0.613,86,109,0.347,0.466,0.466,0.466,30],[0.469,35,0.19,0.6,76,118,0.331,0.469,0.469,0.469,30],[0.464,50,0.401,0.584,25,77,0.464,0.464,0.048,0.464,30],[0.457,55,0.457,0.585,22,84,0.457,0.457,0.095,0.457,30],[0.449,55,0.453,0.58,33,88,0.449,0.449,0.18,0.449,30],[0.441,55,0.456,0.583,44,91,0.441,0.441,0.268,0.441,30],[0.431,50,0.423,0.606,69,92,0.431,0.431,0.426,0.431,30],[0.424,60,0.508,0.594,59,100,0.424,0.424,0.404,0.424,30],[0.418,70,0.57,0.59,56,107,0.418,0.418,0.384,0.418,30],[0.406,75,0.591,0.599,69,113,0.406,0.406,0.395,0.406,30],[0.407,75,0.593,0.621,95,119,0.407,0.406,0.407,0.407,20],[0.448,70,0.581,0.667,128,117,0.448,0.378,0.448,0.297,5],[0.492,65,0.558,0.768,110,93,0.492,0.393,0.492,0.492,10],null],[null,null,null,null,null,null,null,[0.606,0,-0.114,0.675,112,112,0.191,0.606,0.606,0.606,30],[0.538,10,-0.049,0.667,101,119,0.246,0.538,0.538,0.538,30],[0.528,15,0.013,0.661,94,119,0.26,0.528,0.528,0.528,30],[0.504,55,0.51,0.869,-21,57,0.504,0.504,0.189,0.504,30],[0.493,55,0.525,0.786,-14,64,0.493,0.493,0.16,0.493,30],[0.481,50,0.473,0.681,7,68,0.481,0.481,0.11,0.481,30],[0.472,55,0.507,0.671,5,77,0.472,0.472,0.024,0.472,30],[0.462,70,0.58,0.685,-10,89,0.462,0.462,0.102,0.462,30],[0.453,70,0.58,0.658,1,93,0.453,0.453,0.141,0.453,30],[0.443,75,0.592,0.644,9,99,0.443,0.443,0.194,0.443,30],[0.435,75,0.593,0.633,21,103,0.435,0.435,0.231,0.435,30],[0.424,55,0.497,0.647,63,99,0.424,0.424,0.394,0.424,30],[0.414,65,0.559,0.643,61,109,0.414,0.414,0.391,0.414,30],[0.398,75,0.592,0.649,70,119,0.398,0.398,0.357,0.398,30],[0.41,70,0.58,0.679,107,126,0.41,0.379,0.41,0.41,20],[0.457,65,0.564,0.734,43,78,0.457,0.457,0.457,0.34,30],null,null],[null,null,null,null,null,null,null,[0.585,5,-0.016,0.687,75,156,0.131,0.585,0.516,0.585,30],[0.505,45,0.42,1.006,-1,51,0.505,0.505,0.334,0.505,30],[0.504,45,0.461,0.923,0,52,0.504,0.504,0.316,0.504,30],[0.499,45,0.473,0.834,4,54,0.499,0.499,0.279,0.499,30],[0.492,50,0.501,0.801,-2,62,0.492,0.492,0.193,0.492,30],[0.483,60,0.542,0.791,-14,73,0.483,0.483,0.046,0.483,30],[0.472,65,0.56,0.759,-13,81,0.472,0.472,0.04,0.472,30],[0.463,65,0.565,0.726,-3,86,0.463,0.463,0.075,0.463,30],[0.452,70,0.578,0.707,2,94,0.452,0.452,0.139,0.452,30],[0.443,70,0.58,0.69,12,98,0.443,0.443,0.177,0.443,30],[0.434,70,0.58,0.681,24,102,0.434,0.434,0.219,0.434,30],[0.422,50,0.482,0.703,68,99,0.422,0.422,0.384,0.422,30],[0.408,60,0.544,0.698,67,112,0.408,0.408,0.401,0.408,30],[0.386,70,0.578,0.704,78,126,0.386,0.386,0.381,0.386,30],[0.417,65,0.563,0.74,115,130,0.417,0.381,0.417,0.329,5],[0.453,60,0.536,0.819,56,83,0.453,0.44,0.453,0.453,30],null,null],[[0.571,0,-0.052,1.252,97,50,0.379,0.571,0.571,0.571,30],[0.544,5,0.005,1.244,93,45,0.419,0.544,0.544,0.544,30],null,null,null,null,[0.5,30,0.318,1.089,35,45,0.5,0.5,0.5,0.374,30],[0.499,35,0.37,1.04,22,50,0.499,0.499,0.461,0.499,30],[0.503,40,0.415,0.992,11,49,0.503,0.503,0.392,0.503,30],[0.503,45,0.452,0.946,1,53,0.503,0.503,0.313,0.503,30],[0.498,50,0.484,0.903,-6,58,0.498,0.498,0.224,0.498,30],[0.491,55,0.511,0.865,-11,66,0.491,0.491,0.129,0.491,30],[0.481,60,0.533,0.83,-12,74,0.481,0.481,0.032,0.481,30],[0.473,60,0.542,0.794,-5,79,0.473,0.473,0.005,0.473,30],[0.461,65,0.558,0.772,-2,87,0.461,0.461,0.077,0.461,30],[0.453,65,0.562,0.75,7,92,0.453,0.453,0.113,0.453,30],[0.433,15,0.248,0.852,139,81,0.433,0.433,0.433,0.433,25],[0.428,30,0.356,0.796,100,91,0.416,0.428,0.428,0.428,30],[0.416,45,0.464,0.76,76,102,0.416,0.416,0.386,0.416,30],[0.401,65,0.563,0.742,61,119,0.401,0.401,0.326,0.401,30],[0.383,65,0.56,0.762,92,136,0.383,0.375,0.383,0.383,25],[0.426,60,0.538,0.81,115,130,0.426,0.372,0.426,0.123,5],null,null,null],[[0.591,5,-0.019,1.252,91,24,0.426,0.591,0.591,0.591,30],[0.563,10,0.037,1.241,85,20,0.467,0.563,0.563,0.563,30],[0.575,10,0.102,1.207,87,10,0.479,0.575,0.575,0.575,30],[0.554,15,0.159,1.185,80,3,0.52,0.554,0.554,0.554,30],[0.54,20,0.215,1.156,67,3,0.54,0.54,0.54,0.381,30],[0.53,25,0.269,1.123,49,16,0.53,0.53,0.53,0.0,30],[0.515,30,0.32,1.086,33,33,0.515,0.515,0.515,0.288,30],[0.502,35,0.366,1.047,20,48,0.502,0.502,0.48,0.502,30],[0.503,40,0.406,1.008,10,49,0.503,0.503,0.399,0.503,30],[0.501,45,0.442,0.969,1,54,0.501,0.501,0.311,0.501,30],[0.496,50,0.473,0.932,-5,60,0.496,0.496,0.216,0.496,30],[0.488,55,0.498,0.898,-9,67,0.488,0.488,0.118,0.488,30],[0.481,55,0.512,0.861,-4,71,0.481,0.481,0.085,0.481,30],[0.47,60,0.531,0.836,-3,80,0.47,0.47,0.009,0.47,30],[0.462,60,0.538,0.811,4,85,0.462,0.462,0.042,0.462,30],[0.441,5,0.184,0.922,155,78,0.441,0.441,0.237,0.424,20],[0.419,15,0.259,0.889,136,93,0.419,0.419,0.419,0.395,25],[0.42,25,0.335,0.863,115,97,0.42,0.42,0.42,0.383,25],[0.406,40,0.441,0.822,87,107,0.406,0.406,0.406,0.378,30],[0.386,60,0.541,0.799,73,128,0.386,0.386,0.348,0.386,30],[0.386,60,0.534,0.826,103,142,0.386,0.349,0.386,0.278,25],null,null,null,null],[[0.632,5,0.006,1.243,90,3,0.437,0.632,0.632,0.632,30],[0.601,10,0.059,1.232,84,0,0.478,0.601,0.601,0.601,30],[0.573,15,0.113,1.216,77,-4,0.519,0.573,0.573,0.573,30],[0.55,20,0.167,1.194,67,-5,0.55,0.55,0.55,0.48,30],[0.538,25,0.219,1.169,48,10,0.538,0.538,0.538,0.1,30],[0.551,25,0.269,1.123,47,0,0.551,0.551,0.551,0.162,30],[0.528,30,0.315,1.092,31,23,0.528,0.528,0.528,0.212,30],[0.503,35,0.357,1.06,19,47,0.503,0.503,0.495,0.503,30],[0.503,40,0.395,1.026,10,50,0.503,0.503,0.404,0.503,30],[0.499,45,0.429,0.993,2,55,0.499,0.499,0.308,0.499,30],[0.496,45,0.45,0.951,5,57,0.496,0.496,0.282,0.496,30],[0.488,50,0.476,0.924,0,65,0.488,0.488,0.181,0.488,30],[0.478,55,0.498,0.899,-2,73,0.478,0.478,0.081,0.478,30],[0.471,55,0.509,0.872,4,78,0.471,0.471,0.042,0.471,30],[0.455,0,0.147,0.954,148,85,0.397,0.455,0.137,0.455,25],[0.426,10,0.225,0.923,137,106,0.379,0.426,0.426,0.426,25],[0.408,15,0.266,0.932,132,103,0.408,0.408,0.395,0.327,25],[0.404,30,0.377,0.881,99,111,0.39,0.404,0.404,0.404,30],[0.394,40,0.444,0.871,88,117,0.394,0.394,0.394,0.347,30],[0.371,55,0.512,0.861,94,146,0.371,0.36,0.371,0.371,25],[0.409,50,0.478,0.919,75,109,0.409,0.409,0.409,0.218,30],null,null,null,null],[[0.671,5,0.018,1.238,89,-14,0.444,0.671,0.671,0.671,30],[0.636,10,0.069,1.227,81,-16,0.486,0.636,0.636,0.636,30],[0.603,15,0.12,1.212,74,-18,0.527,0.603,0.603,0.603,30],[0.573,20,0.17,1.192,66,-21,0.566,0.573,0.573,0.573,30],[0.553,25,0.219,1.169,47,-2,0.553,0.553,0.553,0.181,30],[0.569,25,0.262,1.131,23,51,0.428,0.569,0.569,0.569,30],[0.537,30,0.305,1.104,21,49,0.466,0.537,0.537,0.537,30],[0.505,35,0.345,1.076,18,46,0.503,0.505,0.505,0.505,30],[0.502,40,0.381,1.046,10,51,0.502,0.502,0.408,0.502,30],[0.5,40,0.406,1.008,11,51,0.5,0.5,0.386,0.5,30],[0.494,45,0.435,0.983,5,59,0.494,0.494,0.282,0.494,30],[0.49,45,0.45,0.951,8,61,0.49,0.49,0.25,0.49,30],[0.479,50,0.473,0.931,6,71,0.479,0.479,0.144,0.479,30],[0.472,50,0.482,0.909,11,75,0.472,0.472,0.102,0.472,30],[0.427,0,0.146,1.006,150,91,0.427,0.427,0.02,0.379,20],[0.406,10,0.228,0.97,132,106,0.402,0.406,0.255,0.406,25],[0.395,20,0.305,0.946,119,120,0.386,0.395,0.395,0.395,25],[0.389,30,0.377,0.931,105,124,0.389,0.389,0.389,0.378,25],[0.37,45,0.464,0.91,87,137,0.37,0.37,0.37,0.348,30],[0.377,50,0.472,0.934,99,146,0.377,0.365,0.377,0.105,20],null,null,null,null,null],[[0.706,5,0.02,1.237,87,-30,0.449,0.706,0.706,0.706,30],[0.666,10,0.069,1.227,79,-30,0.492,0.666,0.666,0.666,30],[0.629,15,0.118,1.213,71,-31,0.534,0.629,0.629,0.629,30],[0.594,20,0.165,1.195,63,-32,0.574,0.594,0.594,0.594,30],[0.609,20,0.208,1.163,23,54,0.384,0.609,0.609,0.609,30],[0.575,25,0.251,1.142,21,51,0.424,0.575,0.575,0.575,30],[0.541,30,0.292,1.119,19,49,0.463,0.541,0.541,0.541,30],[0.508,35,0.329,1.093,17,47,0.5,0.508,0.508,0.508,30],[0.504,35,0.357,1.06,19,46,0.504,0.504,0.499,0.504,30],[0.499,40,0.388,1.036,12,53,0.499,0.499,0.39,0.499,30],[0.496,40,0.407,1.006,14,54,0.496,0.496,0.364,0.496,30],[0.486,45,0.432,0.987,9,64,0.486,0.486,0.252,0.486,30],[0.481,45,0.444,0.964,13,67,0.481,0.481,0.215,0.481,30],[0.46,0,0.146,1.004,130,115,0.33,0.46,0.197,0.46,25],[0.408,5,0.184,1.014,132,113,0.384,0.408,0.161,0.408,25],[0.395,10,0.221,1.027,129,114,0.395,0.395,0.221,0.234,25],[0.382,20,0.3,1.001,117,128,0.382,0.382,0.355,0.263,25],[0.368,35,0.401,0.967,100,144,0.366,0.368,0.368,0.368,25],[0.358,45,0.44,0.973,89,147,0.358,0.358,0.358,0.139,30],null,null,null,null,null,null],[[0.733,5,0.014,1.24,22,65,0.243,0.733,0.733,0.733,30],[0.694,10,0.062,1.23,78,-44,0.5,0.694,0.694,0.694,30],[0.652,15,0.109,1.218,70,-44,0.543,0.652,0.652,0.652,30],[0.651,15,0.151,1.191,23,56,0.339,0.651,0.651,0.651,30],[0.615,20,0.194,1.175,22,54,0.38,0.615,0.615,0.615,30],[0.579,25,0.236,1.156,20,52,0.42,0.579,0.579,0.579,30],[0.544,30,0.274,1.135,18,50,0.459,0.544,0.544,0.544,30],[0.538,30,0.304,1.105,20,48,0.466,0.538,0.538,0.538,30],[0.504,35,0.337,1.085,18,47,0.501,0.504,0.504,0.504,30],[0.502,35,0.359,1.057,20,48,0.502,0.502,0.487,0.502,30],[0.493,40,0.386,1.039,14,57,0.493,0.493,0.368,0.493,30],[0.489,40,0.4,1.018,17,59,0.489,0.489,0.338,0.489,30],[0.475,45,0.421,1.004,14,72,0.475,0.475,0.219,0.475,30],[0.404,0,0.132,1.066,132,110,0.395,0.404,0.091,0.404,25],[0.394,5,0.165,1.082,128,115,0.394,0.394,0.06,0.164,25],[0.381,15,0.252,1.049,116,129,0.381,0.381,0.224,0.26,25],[0.366,30,0.359,1.013,93,141,0.359,0.366,0.28,0.366,30],[0.353,40,0.401,1.017,88,151,0.353,0.353,0.295,0.181,30],null,null,null,null,null,null,null]],"side1_weak":[[0.511,55,-0.043,0.84,2,63,0.511,0.485,0.511,0.511,20],[0.512,55,-0.035,0.867,3,64,0.512,0.482,0.512,0.512,20],[0.511,50,-0.064,0.884,-3,65,0.468,0.511,0.511,0.511,30],[0.562,45,-0.096,0.896,-11,70,0.413,0.562,0.562,0.562,30],[0.624,40,-0.129,0.903,-21,75,0.349,0.624,0.624,0.624,30],[0.683,35,-0.163,0.903,35,-3,0.441,0.683,0.683,0.683,30],[0.719,30,-0.197,0.894,41,0,0.396,0.719,0.719,0.719,30],[0.753,25,-0.228,0.875,47,6,0.348,0.753,0.753,0.753,30],[0.737,25,-0.231,0.895,51,3,0.365,0.737,0.737,0.737,30],[0.762,20,-0.257,0.858,57,14,0.313,0.762,0.762,0.762,30],[0.789,15,-0.269,0.811,60,28,0.252,0.789,0.789,0.789,30],[0.798,10,-0.263,0.763,91,-7,0.305,0.798,0.798,0.798,30],[0.756,10,-0.253,0.755,94,6,0.312,0.756,0.756,0.756,30],[0.773,5,-0.222,0.715,94,29,0.242,0.773,0.773,0.773,30],[0.741,5,-0.197,0.705,91,46,0.234,0.741,0.741,0.741,30],[0.789,0,-0.158,0.693,85,61,0.158,0.789,0.789,0.789,30],[0.779,0,-0.124,0.694,78,75,0.139,0.779,0.779,0.779,30],[0.779,0,-0.087,0.7,69,89,0.113,0.779,0.779,0.779,30],[0.789,0,-0.049,0.712,59,100,0.082,0.789,0.789,0.789,30],[0.547,35,0.326,1.068,34,7,0.547,0.547,0.547,0.15,30],[0.555,35,0.329,1.065,33,0,0.555,0.555,0.555,0.26,30],[0.563,35,0.329,1.064,32,-6,0.563,0.563,0.563,0.365,30],[0.57,35,0.327,1.066,31,-11,0.57,0.57,0.57,0.461,30],[0.576,35,0.324,1.07,30,-16,0.576,0.576,0.576,0.546,30],[0.582,35,0.319,1.075,29,-19,0.579,0.582,0.582,0.582,30],[0.587,35,0.314,1.081,27,-21,0.579,0.587,0.587,0.587,30],[0.632,30,0.302,1.077,16,27,0.432,0.632,0.632,0.632,30]],"side2_weak":[[0.448,55,-0.043,0.84,2,116,0.448,0.421,0.448,0.448,15],[0.449,55,-0.035,0.867,5,118,0.449,0.415,0.449,0.449,15],[0.448,50,-0.064,0.884,-7,119,0.401,0.448,0.448,0.448,30],[0.503,45,-0.096,0.896,-21,130,0.333,0.503,0.503,0.503,30],[0.577,40,-0.129,0.903,-35,135,0.264,0.577,0.506,0.577,30],[0.639,35,-0.163,0.903,63,-2,0.462,0.639,0.639,0.639,30],[0.662,30,-0.197,0.894,72,4,0.421,0.662,0.662,0.662,30],[0.679,25,-0.228,0.875,81,13,0.376,0.679,0.679,0.679,30],[0.657,25,-0.231,0.895,87,10,0.401,0.657,0.657,0.657,30],[0.665,20,-0.257,0.858,93,28,0.348,0.665,0.665,0.665,30],[0.675,15,-0.269,0.811,96,50,0.284,0.675,0.675,0.675,30],[0.659,10,-0.263,0.763,145,-10,0.408,0.659,0.659,0.659,30],[0.606,10,-0.253,0.755,145,10,0.409,0.606,0.606,0.606,30],[0.601,5,-0.222,0.715,142,46,0.332,0.601,0.601,0.601,30],[0.562,5,-0.197,0.705,135,70,0.316,0.562,0.562,0.562,30],[0.591,0,-0.158,0.693,127,94,0.237,0.591,0.591,0.591,30],[0.577,0,-0.124,0.694,116,116,0.208,0.577,0.577,0.577,30],[0.574,0,-0.087,0.7,103,136,0.17,0.574,0.574,0.574,30],[0.592,0,-0.049,0.712,87,151,0.129,0.592,0.56,0.592,30],[0.49,35,0.326,1.068,24,56,0.49,0.49,0.452,0.49,30],[0.494,35,0.329,1.065,22,54,0.494,0.494,0.462,0.494,30],[0.496,35,0.329,1.064,22,52,0.496,0.496,0.472,0.496,30],[0.498,35,0.327,1.066,21,51,0.498,0.498,0.48,0.498,30],[0.499,35,0.324,1.07,20,50,0.499,0.499,0.488,0.499,30],[0.5,35,0.319,1.075,20,49,0.5,0.5,0.494,0.5,30],[0.501,35,0.314,1.081,19,49,0.501,0.501,0.501,0.501,30],[0.528,30,0.302,1.077,24,49,0.473,0.528,0.528,0.528,30]],"ref":{"none_042":0.585,"strong":{"mattress_042":0.35},"weak":{"mattress_042":0.357}}}</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NS="http://www.w3.org/2000/svg";
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ================= sources (keyed) ================= */
+const SRC={
+ pesonen:["Pesonen et al. 2020, The Impact of Nocturia on Falls and Fractures: A Systematic Review and Meta-Analysis, J Urol","https://uroluts.uroweb.org/publication/the-impact-of-nocturia-on-falls-and-fractures-a-systematic-review-and-meta-analysis/"],
+ mol:["Mol et al. 2019, Orthostatic Hypotension and Falls in Older Adults: A Systematic Review and Meta-analysis, JAMDA","https://research.vu.nl/en/publications/orthostatic-hypotension-and-falls-in-older-adults-a-systematic-re/"],
+ saedon:["Saedon et al. 2020, The Prevalence of Orthostatic Hypotension: A Systematic Review and Meta-Analysis, J Gerontol A","https://eprints.um.edu.my/25203/"],
+ hignett:["Hignett, Sands, Youde, Griffiths 2010, inpatient fall locations (England & Wales)","https://healthdesign.org/sites/default/files/article-pdfs/Hignett_Sands_Youde_Griffiths-2010-CHD-KPS.pdf"],
+ shorr:["Shorr et al. 2012, bed alarm cluster randomized trial (UF News summary)","https://archive.news.ufl.edu/articles/2012/11/bed-alarms-not-proven-to-prevent-patient-falls-in-hospitals-uf-researchers-say.html"],
+ robinovitch:["Robinovitch et al. 2013, video capture of falls in long-term care (2 Minute Medicine summary)","https://www.2minutemedicine.com/video-surveillance-sheds-light-on-causes-of-falls-in-the-elderly/"],
+ handleanywhere:["Bolli, Bonato, Asada, Handle Anywhere: A Mobile Robot Arm for Providing Bodily Support to Elderly Persons","https://arxiv.org/pdf/2209.15169"],
+ bolli2023:["Bolli & Asada, A Data-Driven Approach to Positioning Grab Bars in the Sagittal Plane for Elderly Persons","https://arxiv.org/pdf/2306.05343"],
+ yosh2014:["Yoshioka et al. 2014, Peak hip and knee joint moments during a sit-to-stand movement are invariant to the change of seat height within the range of low to normal seat height, BioMed Eng OnLine","https://link.springer.com/doi/10.1186/1475-925x-13-27"],
+ christman:["Christman et al. 2015, Analysis of the influence of hospital bed height on kinematic parameters associated with patient falls during egress, Procedia Manufacturing 3","https://stacks.cdc.gov/view/cdc/230760/cdc_230760_DS1.pdf"],
+ merryweather:["Merryweather et al. 2015, Effects of bed height on the biomechanics of hospital bed entry and egress, Work 52","https://stacks.cdc.gov/view/cdc/231426/cdc_231426_DS1.pdf"],
+ kit:["Ackermann, Sloot, Mombaur 2026, Active robotic assistance for standing and sitting: experimental evaluation of handle trajectories, JNER","https://publikationen.bibliothek.kit.edu/1000190346"],
+ cpsc:["CPSC 2023, New Federal Mandatory Safety Standard for Adult Portable Bed Rails","https://www.cpsc.gov/Newsroom/News-Releases/2023/CPSC-Issues-New-Federal-Mandatory-Safety-Standard-for-Adult-Portable-Bed-Rails"],
+ stander:["Stander EZ Adjust Bed Rail（产品页）","https://stander.com/pages/8000-ez-adjust-bed-rail-support"],
+ smartrail:["HealthCraft Smart-Rail（产品页）","https://medicsmobility.ca/product/healthcraft-smart-rail-srs-s/"],
+ arcorail:["Arcorail Rotating Bedside Handrail（产品页）","https://www.vitalitymedical.com/alimed-arcorail-rotating-bedside-handrail-rotates-360-degrees.html"],
+ superbar:["HealthCraft SuperPole with SuperBar（产品页）","https://www.1800wheelchair.com/product/superbar"],
+ rehastage:["US10272005 (Rehastage), Bedside assistant and its attachment to a bed","https://patents.google.com/patent/US10272005B2/en"],
+ smartcaregiver:["Smart Caregiver Bed Exit Alarm（产品页）","https://smartcaregiver.com/collections/bed-alarms-for-elderly-care/products/bed-exit-alarm-with-monitor"],
+ aladin:["Wissner-Bosserhoff Aladin Smart Care（产品页）","https://www.wi-bo.com/en/products/smart-care/aladin"],
+ francebed:["France Bed, 離床支援マルチポジションベッド 新闻稿（2020-05-22）","https://www.francebed.co.jp/release_pdf/marupoji_200522.pdf"],
+ ezlift:["EZ Lift Sleep-to-Stand Bed（产品页）","https://ezliftbed.com/products/ez-lift-sleep-to-stand-bed"],
+ us9265677:["US9265677, Hospital chair beds with stowable stand-assist supports","https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9265677"],
+ us4905329:["US4905329, Inflatable support for aiding a patient to rise from a seated position","https://patents.justia.com/patent/4905329"],
+ mangar:["Mangar Raiser Lifting Cushion（产品页）","https://www.joerns.com/product/mangar-raiser-lifting-cushion/"],
+ panasonic:["US9962305 (Panasonic), Living support system and living support method","https://patents.google.com/patent/US9962305"],
+ wibo:["US10869795 (Wissner-Bosserhoff), Bed with mechanism for assisting an occupant to stand up","https://patents.google.com/patent/US10869795"],
+ upeasy:["UpEasy Seat Assist（产品页）","https://www.1800wheelchair.com/product/upeasy-seat-assist"],
+ us10022284:["US10022284 (Panasonic), Life assistance system for assisting user in act of standing up","https://patents.google.com/patent/US10022284"],
+ us8640285:["US8640285 (Hill-Rom), Hospital bed seat section articulation for chair egress","https://patents.justia.com/patent/8640285"],
+ liftchair:["College of Occupational Therapists of Ontario, Response to coroner's report: deaths from power recliner lift chairs (2022)","https://coto.org/resources/college-response-to-the-coroner-s-report-deaths-from-power-recliner-lift-chairs-2022"],
+ ncoa:["National Council on Aging, Bedroom Safety Tips for Older Adults (2026)","https://www.ncoa.org/article/bedroom-safety-guide/"],
+ alexander:["Schultz, Alexander, Ashton-Miller 1992, Biomechanical analyses of rising from a chair, J Biomech 25(12)（手力数据引自 Alexander et al. 1991）","https://deepblue.lib.umich.edu/bitstream/2027.42/29713/1/0000047.pdf"],
+ us6360382:["US6360382 (Karding), Powered toilet seat lift","https://patents.google.com/patent/US6360382"],
+ us5619762:["US5619762 (Mein, 1997), Lift for assisting persons from a seated position","https://patents.google.com/patent/US5619762"],
+ us8556347:["US8556347 (Fu Burg, 2013), Sit/stand assist seat beside a toilet","https://patents.google.com/patent/US8556347"],
+ cochrane:["Anderson, Boshier, Hanna 2012, Interventions designed to prevent healthcare bed-related injuries in patients, Cochrane Database Syst Rev (CD008931)","https://www.cochrane.org/evidence/CD008931_interventions-designed-prevent-healthcare-bed-related-injuries-patients"],
+ ebar:["MIT News 2025, Eldercare robot helps people sit and stand, and catches them if they fall (E-BAR)","https://news.mit.edu/2025/eldercare-robot-helps-people-sit-stand-catches-them-fall-0513"],
+};
+const KEYS=Object.keys(SRC);
+const cite=ks=>(ks||"").split(" ").filter(Boolean).map(k=>{const i=KEYS.indexOf(k);return i<0?"":`<a href="${SRC[k][1]}" target="_blank" rel="noopener">[${i+1}]</a>`}).join("");
+$("#srcs").innerHTML=KEYS.map(k=>`<li><a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a></li>`).join("");
+const TAG={fact:"事实",assoc:"关联≠因果",model:"本组模型",infer:"推断/待验证"};
+
+/* ================= PART 1: matrix ================= */
+const STAGES=[
+ {n:"躺→坐",d:"翻身、撑起",scope:"compat",what:"老人通常先侧翻，再一手拉扶手、一手撑床坐起来。",fail:"平躺直接坐起时，髋部需要的力量超过腿的重量能压住的范围，腿会翘起来，所以几乎都要借手。",stance:"方案甲：收起的扶手就是床栏，拉着它翻身坐起。方案乙：起身台的侧扶手紧贴床沿、比床面高约 0.22 m，拉着它坐起（注意它和床垫之间的缝，见风险表）。两个方案在这一段都不额外助力。"},
+ {n:"挪到床沿",d:"转身、放腿",scope:"compat",what:"转身把腿放到床下，臀部往外挪到床沿。",fail:"软床垫边缘会塌陷，挪过头会滑出床沿。",stance:"方案甲：扶着收起的扶手挪到床沿。方案乙：扶着侧扶手坐到床沿，双脚落在台架踏板上，再往前挪约 25–30 cm 坐上座板（座板与床齐平）。"},
+ {n:"摸到并握住支撑",d:"在暗处",scope:"core",what:"坐在床沿，在黑暗中找扶手、开关或拖鞋。",fail:"伸手方向一偏，重心就跟着偏出脚的支撑范围。",stance:"两个方案的支撑都在固定、可预测的位置：甲收在床边当床栏；乙是起身台的 L 形扶手。乙的踏板和底座让脚先碰到台架。"},
+ {n:"坐稳、停一下",d:"脚踩实",scope:"core",what:"双脚踩地，坐稳几秒再站。",fail:"尿急或刚醒时容易跳过这一步，把头晕带到站起之后。",stance:"方案甲：握住锁定的扶手坐一会儿。方案乙：可以一直坐着，座板不会自己抬；准备好了，握住横杆按“起”键才开始。"},
+ {n:"坐→站",d:"离座",scope:"core",what:"躯干前倾，把重心移到脚上方，再伸膝伸髋站起。",fail:"腿力不足、床又低时，前倾不够就发力，会坐回床上或向后倒。",stance:"方案甲：扶手锁死，人自己站起。方案乙（核心）：座板升高约 24 cm（到 0.66 m）并前倾约 15°，把骨盆送高；座板前缘在髋关节正下方，不顶大腿；脚往回收到座板前缘前方约 8 cm。"},
+ {n:"站稳",d:"站起后数秒",scope:"core",what:"膝、髋伸直，重心稳定在双脚之间。",fail:"起立后血压下降导致头晕；双手撑床垫的支撑这时已经够不着。",stance:"两个方案站直后扶手都在手边。乙：离座后座板回到水平、保持高度，万一坐回去有平座面接住；人站在踏板上，手上的力是人和台架之间的内力。"},
+ {n:"第一步 / 交接",d:"接助行器",scope:"core",what:"松开扶手迈出第一步，或换手到助行器、拐杖。",fail:"一只手离开支撑的瞬间最不稳。",stance:"交接给老人自己的助行器。乙：助行器停在前横杆开口的一侧。"},
+ {n:"走到卫生间、回床",d:"",scope:"out",what:"走廊行走、如厕、回到床上。",fail:"照明不足、地面湿滑、耐力不足。",stance:"不在范围：展示时说明边界。乙的回床路径：座板齐平时坐上去，往后挪回床面；细节留作后续工作。"}
+];
+const CAUSES=["暗 + 视觉/感知弱","腿部肌力不足","手脚配合 / 用力方向","起身头晕 · 刚醒 · 药物","尿急、动作赶","环境：床沿 · 床高 · 地面","装置自身的风险"];
+const S=[[1,1,2,0,1,1,2,2],[2,1,0,0,2,1,1,1],[1,1,1,0,2,2,2,1],[0,0,1,2,2,2,2,1],[1,1,1,2,2,1,1,1],[0,1,0,2,2,1,2,2],[1,1,1,0,1,0,2,1]];
+const NOTE={
+ "0-0":["躺着时找扶手主要靠记忆和触觉，问题不大。","infer"],"0-1":["看不清床沿在哪，往外挪时可能挪过头。","infer"],
+ "0-2":["坐在床沿、在黑暗中伸手摸扶手或开关，伸手方向一偏，重心就跟着偏出脚的支撑范围。“天黑”这条线就是在这里变成跌倒的。","infer"],
+ "0-4":["看不清前方时，人往往不敢充分前倾，坐→站就更依赖腿的力量。","infer"],"0-5":["视觉是站立平衡的输入之一；暗处站稳更依赖脚底和关节的本体感觉。","infer"],
+ "0-6":["看不清第一步落在哪、助行器和拖鞋在哪。","infer"],"0-7":["走廊和卫生间的照明（不在范围）。","infer"],
+ "1-0":["平躺直接坐起时，髋部需要的力量超过腿的重量能压住的范围，所以老人通常先侧翻再用手撑。","model"],"1-1":["挪动臀部需要手撑床面。","infer"],
+ "1-4":["坐→站对膝、髋伸肌的要求最高。模型中不用手时，最吃力的关节用掉约 59% 的力量；腿再弱 40%，就接近做不到。","model"],
+ "1-5":["刚站起时膝还没完全伸直，力量不足会往下沉。","infer"],"1-6":["第一步时有一瞬间是单腿支撑。","infer"],"1-7":["行走耐力（不在范围）。","infer"],
+ "2-0":["拉扶手和翻身的时机要配合。","infer"],"2-1":["转身放腿时，手要同时撑住床面。","infer"],"2-2":["坐着伸手会带动躯干，进而带动重心。","infer"],
+ "2-4":["手的发力要和躯干前倾配合：前倾不够就发力，结果是坐回床上或向后倒。","infer"],
+ "2-5":["站起后手要从“撑”切换成“扶”；双手撑床垫的支撑这时已经够不着，太早松手就失去支撑。","infer"],
+ "2-6":["从把手换到助行器时，有一只手离开支撑的瞬间。","infer"],"2-7":["行走中的协调（不在范围）。","infer"],
+ "3-2":["刚醒时反应慢，伸手不准。","infer"],
+ "3-3":["坐起后先停一下，可以给血压调整的时间；跳过这一步，会把头晕带到站起之后。体位性低血压在社区老人中约占 22%，与跌倒的合并 OR 为 1.73（统计关联，未调整）。","assoc"],
+ "3-4":["起立的瞬间，血压下降最明显。具体时间窗待查。","infer"],"3-5":["站起后几秒到几分钟内可能头晕、眼前发黑。","infer"],
+ "3-6":["头晕时迈第一步，风险最高。","infer"],"3-7":["行走中的头晕（不在范围）。","infer"],
+ "4-0":["着急起来，动作更快更猛。","infer"],"4-1":["同上。","infer"],"4-2":["急着找东西，伸手更快更不准。","infer"],
+ "4-3":["尿急会让人跳过“坐一会儿”。夜尿与跌倒相关：RR 1.20（跌倒合并 5 项纵向研究），作为原因的证据很弱。","assoc"],
+ "4-4":["急着站起，前倾和发力的时机更容易出错。","infer"],"4-5":["没站稳就想走。","infer"],"4-6":["第一步迈得急。","infer"],"4-7":["赶路（不在范围）。","infer"],
+ "5-1":["软床垫的边缘会塌陷，往外挪时容易滑出去。","infer"],"5-3":["床沿太软、床太低或太高，都会让人坐不稳、脚踩不实。","infer"],
+ "5-4":["床高直接改变起身难度。12 名 56–90 岁老人：床高 38 cm 对比 58 cm，离床时髋部力矩为 48.2 对 27.5 N·m，一半人从 38 cm 的床上无法在没有明显协助的情况下站起。","fact"],
+ "5-5":["地面滑。","infer"],"5-6":["拖鞋、袜子、地毯边、床边杂物。","infer"],"5-7":["通道照明与地面（不在范围）。","infer"],
+ "6-0":["床栏和床垫之间的缝隙有夹困风险。CPSC 自 2023 年起强制要求成人便携床栏符合 ASTM F3186-17。","fact"],"6-1":["挪动时手脚可能卡进缝隙。","infer"],
+ "6-2":["突然亮灯会刺眼，甚至吓到人。","infer"],"6-4":["会动的座面在人身上施力时，时机不对就会把人推出去，或者让人向前滑出。设计规则：互锁，只在条件满足时动；出现异常就缓慢降平，而不是停在高处；限制前倾角。","infer"],
+ "6-6":["床前的台架会占用通道；如果扶手伸出太多，可能撞到人。","infer"],"6-7":["误报和报警疲劳（不在范围）。","infer"]
+};
+const SCOPE={core:["重点","amber"],compat:["兼容","fact"],out:["不在范围","infer"]};
+(function(){
+  let h='<thead><tr><th></th>';
+  STAGES.forEach((s,j)=>{h+=`<th${s.scope==="core"?' class="scopecol"':''} scope="col"><button data-stage="${j}"><span class="n">${j+1}</span>${s.n}</button></th>`});
+  h+='</tr></thead><tbody>';
+  CAUSES.forEach((c,i)=>{h+=`<tr><th scope="row">${c}</th>`;STAGES.forEach((s,j)=>{const v=S[i][j];
+    h+=`<td${s.scope==="core"?' class="scopecol"':''}>${v?`<button class="cellbtn" data-cell="${i}-${j}" aria-pressed="false" aria-label="${c} × ${s.n}"><i class="dot d${v}"></i></button>`:''}</td>`});h+='</tr>'});
+  $("#mx").innerHTML=h+'</tbody>';
+})();
+function showStage(j){const s=STAGES[j],[lab,cl]=SCOPE[s.scope];const main=CAUSES.filter((c,i)=>S[i][j]===2);
+  $("#mpanel").innerHTML=`<div class="crumb">环节 ${j+1} / 8</div><h3>${s.n}${s.d?`<span class="muted" style="font-weight:400;font-size:14px">（${s.d}）</span>`:''}</h3><span class="pill ${cl}">${lab}</span>
+   <p><strong>发生什么：</strong>${s.what}</p><p><strong>怎么出错：</strong>${s.fail}</p><p><strong>主要原因：</strong>${main.join("、")||"无"}</p><p><strong>当前方案：</strong>${s.stance}</p>`}
+function showCell(key){const [i,j]=key.split("-").map(Number),s=STAGES[j],[lab,cl]=SCOPE[s.scope],n=NOTE[key]||["这一环节中的次要因素。","infer"];
+  $("#mpanel").innerHTML=`<div class="crumb">环节 ${j+1}「${s.n}」 × 原因</div><h3>${CAUSES[i]}</h3>
+   <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill ${cl}">${lab}</span><span class="pill">${S[i][j]===2?"主要问题":"次要问题"}</span><span class="pill ${n[1]}">${TAG[n[1]]}</span></div>
+   <p>${n[0]}</p><p class="muted" style="font-size:13px">点环节名可以查看这个环节的整体情况。</p>`}
+$("#mx").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll('#mx [aria-pressed="true"]').forEach(x=>x.setAttribute("aria-pressed","false"));
+  if(b.dataset.cell){b.setAttribute("aria-pressed","true");showCell(b.dataset.cell)}else showStage(+b.dataset.stage)});
+showStage(4);
+
+/* evidence chain */
+const SP=[
+ {st:"起因",q:"为什么是夜里？",p:"夜尿让老人在一天中状态最差的时候起床：刚醒、光线暗、身边没人。",cell:null,ch:[
+   {t:"assoc",n:"RR 1.20",c:"有夜尿的人，跌倒风险约高 20%。",l:"跌倒合并只有 5 项纵向研究；作为“原因”的证据确定性很低。",s:"pesonen"}],
+  link:"所以问题集中在“夜里从床上起来”这一段。"},
+ {st:"地点",q:"在哪里最容易出事？",p:"床边是跌倒最常发生的地点之一。",cell:null,ch:[
+   {t:"fact",n:"最常见：床边",c:"住院跌倒报告中，最常见的地点是床边，其次是卫生间。",l:"来自英格兰和威尔士约 21.6 万份住院事故报告，不限于无人目击，也不是居家数据。",s:"hignett"},
+   {t:"gap",n:"缺口",c:"居家老人夜间跌倒发生在哪个环节，目前没有找到直接数据。",l:"需要补充；如果数据显示多数发生在走路途中，聚焦要往后移。",s:""}],
+  link:"所以把范围收窄到床边：从坐在床沿，到迈出第一步。"},
+ {st:"环节 3 · 摸到并握住支撑",q:"看不清会怎样？",p:"坐在软床沿上，在暗处伸手找扶手、开关或拖鞋，伸手会带动重心，偏出双脚的支撑范围。",cell:"0-2",ch:[
+   {t:"fact",n:"41%",c:"养老院录像中，跌倒最常见的原因是“重心转移不当”。",l:"间接证据：录像来自公共区域，最常见的活动是向前走（24%），不是起身。",s:"robinovitch"},
+   {t:"infer",n:"机制",c:"在黑暗中伸手摸索，是重心转移不当的一种典型情形。",l:"合理推断，没有直接数据。",s:""}],
+  link:"所以支撑物应该在一个可预测、伸手就到的位置，最好不需要去找。"},
+ {st:"环节 4 · 坐稳、停一下",q:"为什么要先停一下？",p:"站起的瞬间血压可能下降；尿急又会让人跳过这个停顿。",cell:"3-3",ch:[
+   {t:"fact",n:"22%",c:"社区老人中约 22% 有体位性低血压（站起时血压下降）。",l:"研究之间差异很大（I² > 90%）。",s:"saedon"},
+   {t:"assoc",n:"OR 1.73",c:"有体位性低血压的老人更常发生跌倒。",l:"未调整的合并结果，包括横断面研究。",s:"mol"},
+   {t:"infer",n:"尿急",c:"尿急会让人跳过“坐一会儿”。",l:"推断，没有数据。",s:""}],
+  link:"所以“停一下”值得被设计进流程，而不是靠老人自觉。"},
+ {st:"环节 5 · 坐→站",q:"为什么站不起来？",p:"腿力不足时，床越低，站起所需的力矩越大，只能靠更大的前倾或借手。",cell:"5-4",ch:[
+   {t:"fact",n:"一半人",c:"12 名 56–90 岁老人：从 38 cm 的床上，一半人无法在没有明显协助的情况下站起；离床髋部力矩 48.2 N·m，58 cm 床为 27.5 N·m。",l:"力矩为静态建模估算；完成离床分析的只有 6 人。",s:"merryweather"},
+   {t:"fact",n:"6.3 s vs 3.7 s",c:"65 名有跌倒史的老人：低床时完成起身行走用时 6.3 秒，高床 3.7 秒；作者认为低床在离床时可能加重跌倒风险。",l:"医院病床；床高按小腿长度的 95%、110%、125% 设定。",s:"christman"},
+   {t:"fact",n:"1.7×",c:"座高 40 cm 时，髋膝峰值力矩是 60 cm 时的 1.7 倍。",l:"8 名健康年轻人；40 cm 以下变化不明显。",s:"yosh2014"},
+   {t:"model",n:"−36%",c:"座面从 0.42 m 抬到 0.66 m，不用手时 effort（最吃力关节用掉的力量比例）从 0.58 降到 0.37；比抬到 0.58 m 的床还低 22%。",l:"不同建模设定下为 −22% 到 −48%（0.42 → 0.66 m）。",s:""}],
+  link:"所以“起身的起点有多高”是一个可以设计的变量。"},
+ {st:"环节 6 · 站稳",q:"站起来之后为什么还会倒？",p:"头晕最可能出现在站起后的几秒到几分钟；而双手撑床垫的支撑，这时已经够不着了。",cell:"2-5",ch:[
+   {t:"infer",n:"站直后够不着",c:"站直时肩高约 1.3 m、臂长约 0.62 m，不弯腰就够不到约 0.45 m 高的床垫。",l:"按人体尺寸推算；人可以边起身边松手，所以支撑是“逐渐失去”，没有实测。",s:""},
+   {t:"fact",n:"座面 +0.25–0.38 m",c:"9 名老人（平均 86 岁）参加，其中 8 人完成坐→站测试：坐在约 0.46 m 高的椅子上，自己选择的身前把手高度为 0.71–0.84 m，即高出座面约 0.25–0.38 m。",l:"样本很小，只测了坐→站；座面变高时要按“高出座面”换算。",s:"bolli2023"}],
+  link:"所以站直以后，手边仍然需要一个够得着的支撑。"},
+ {st:"环节 7 · 第一步 / 交接",q:"站起来以后怎么走？",p:"目标人群能用助行器行走，难的是站起来；一只手离开支撑的瞬间最不稳。",cell:"2-6",ch:[
+   {t:"gap",n:"待补文献",c:"坐→站对膝、髋的要求比平地行走高得多。",l:"生物力学的一般认识，需要找一篇具体文献来引用。",s:""}],
+  link:"所以模块只负责到站稳为止，然后把人交接给他自己的助行器。"},
+ {st:"现有对策",q:"现有办法为什么不够？",p:"报警只通知别人、不提供支撑；床栏本身有夹困风险；会动的把手把负担转到手上；手动装置要老人自己去操作。",cell:null,ch:[
+   {t:"fact",n:"×36 → 无效",c:"推广床报警后使用率提高约 36 倍，但跌倒率和受伤率都没有下降。",l:"单家医院的整群随机试验，原本就有其他防跌措施。",s:"shorr"},
+   {t:"fact",n:"284 起",c:"2003–2021 年与成人便携床栏相关的夹困死亡；CPSC 自 2023 年起强制执行 ASTM F3186-17。",l:"美国数据。",s:"cpsc"},
+   {t:"fact",n:"3 起死亡",c:"电动升降躺椅：认知衰退的老人用遥控器把自己升起，站起后无人目击时摔倒致死。",l:"加拿大的审查记录；没有说明椅子型号与机理细节。",s:"liftchair"},
+   {t:"fact",n:"60% 体重",c:"会动的把手能减轻腿的负担，但双手的竖直力最高到体重的 60%。",l:"15 名健康年轻人。",s:"kit"},
+   {t:"gap",n:"假设",c:"老人夜里不会去手动扳扶手、按按钮，于是装置停在折中位置，或者干脆不用。",l:"没有数据，是“自动触发”的前提；可以找辅助器具弃用率方面的文献。",s:""}],
+  link:null}
+];
+const TG={fact:"事实",assoc:"关联≠因果",model:"本组模型",infer:"推断",gap:"证据缺口"};
+$("#spine").innerHTML=SP.map((nd,i)=>`<div class="node${nd.cell?"":" ctx"}">
+  <div class="nh"><span class="stg">${nd.st}</span>${nd.cell?`<button class="tomx" data-cell="${nd.cell}">在全景图中查看 ↑</button>`:""}</div>
+  <h3>${nd.q}</h3><p class="np">${nd.p}</p>
+  <div class="chips">${nd.ch.map(c=>`<details class="chip ${c.t==="gap"?"gap":""}"><summary><span class="pill ${c.t==="gap"?"bad":c.t}">${TG[c.t]}</span><span class="n">${c.n}</span><span class="cc">${c.c}</span></summary><p class="cl">局限：${c.l}${c.s?" "+cite(c.s):""}</p></details>`).join("")}</div>
+ </div>${nd.link?`<div class="link"><span aria-hidden="true">↓</span> ${nd.link}</div>`:""}`).join("");
+$("#spine").addEventListener("click",e=>{const b=e.target.closest(".tomx");if(!b)return;
+  document.querySelectorAll('#mx [aria-pressed="true"]').forEach(x=>x.setAttribute("aria-pressed","false"));
+  const c=document.querySelector(`#mx [data-cell="${b.dataset.cell}"]`);if(c)c.setAttribute("aria-pressed","true");showCell(b.dataset.cell);
+  $("#map").scrollIntoView({behavior:"smooth",block:"start"})});
+
+/* coverage */
+const G={S:'<span class="g" title="提供支撑"></span>',P:'<span class="g P" title="部分"></span>',R:'<span class="g R" title="演示中由他人遥控"></span>',N:'<span class="g N" title="只照明或提醒"></span>',"-":'<span class="muted">—</span>'};
+const COV=[
+ ["固定床沿扶手","Stander EZ Adjust 等","stander","SSPPPP--"],
+ ["可摆出 / 旋转扶手","Smart-Rail、Arcorail：需手动扳动","smartrail arcorail","SSPPPPP-"],
+ ["落地杆 + 身前横把手","HealthCraft SuperBar，每 45° 自动锁定","superbar","SSPSSSP-"],
+ ["整床：座面抬起帮助站立","France Bed（日本）、EZ Lift（美国）：需按按钮","francebed","SP-PP---"],
+ ["座垫式助起","UpEasy（气弹簧，无需按钮）、Mangar（充气）：主要用于椅子","upeasy mangar","---PP---"],
+ ["电动升降躺椅","遥控抬起；抬起后手边没有支撑","liftchair","---PP---"],
+ ["床垫离床报警","Smart Caregiver","smartcaregiver","-N-NN---"],
+ ["智能夜灯 / 监测","Aladin Smart Care","aladin","-NN---NN"],
+ ["把手机器人（研究）","Handle Anywhere：位置由算法给出，演示中由远程护工摆位","handleanywhere","RRRRRRR-"],
+ ["本组方案甲（目标）","动态扶手：收起即床栏；轻推后转到工作角度，一用力就锁；不抬升","","SSSSPSP-"],
+ ["本组方案乙（目标）","床边起身台：侧扶手兼作一小段床栏；往前挪上座板；座板升高前倾，L 形扶手随升","","PSSSSSP-"]
+];
+(function(){let h='<thead><tr><th style="text-align:left">方案</th>'+STAGES.map((s,j)=>`<th${s.scope==="core"?' class="scopecol"':''}><span class="mono muted">${j+1}</span><br>${s.n}</th>`).join("")+'</tr></thead><tbody>';
+ COV.forEach((r,k)=>{h+=`<tr${k>=COV.length-2?' class="ours"':''}><th>${r[0]} ${r[2]?cite(r[2]):""}<small>${r[1]}</small></th>`+r[3].split("").map((c,j)=>`<td${STAGES[j].scope==="core"?' class="scopecol"':''}>${G[c]}</td>`).join("")+'</tr>'});
+ $("#cov").innerHTML=h+'</tbody>';})();
+const PRIOR=[
+ ["France Bed 离床支援多姿态床（2020）","日本居家护理产品","床变成椅子，座面抬起帮助站立","一键按钮","要换整张护理床（日本可用护理保险租赁）","francebed"],
+ ["EZ Lift Sleep-to-Stand","美国居家产品，约 2,200 美元","一键把人“抬到接近站立”","遥控器","整张床；机构未公开","ezlift"],
+ ["UpEasy Seat Assist","产品，约 120 美元","气弹簧座垫，开始起身时自动顶起；厂商称提供“70% lift”","无按钮、无电","为带扶手的椅子设计；没有扶手，也不管人是否扶稳","upeasy"],
+ ["电动升降躺椅","产品","遥控让整张椅子前倾抬起","遥控器","抬起后手边无支撑；有死亡记录","liftchair"],
+ ["Chair-egress 医院床（Hill-Rom）","医院","床变成椅子，座面段绕脚端转轴把后端抬起（egress boost）","按钮或触摸屏","医院设备；没有扶手，也不判断患者状态","us8640285"],
+ ["椅式床 + 可收起的站立支撑","医院 / 专利","椅式床两侧的支撑可手动或自动升起，顶端是把手","专利只写“可由传感器电子控制”，没有具体规则","医院椅式床；没有座面抬升","us9265677"],
+ ["电动如厕抬升座","产品 / 专利（如 US6360382）","座面升高并后高前低倾斜；扶手随座面升、保持水平","开关或脚踏，由用户或照护者操作","最接近的同类：同样“抬骨盆 + 扶手不离手”；差别在用在床边、要从床上挪过来、由受力互锁启动","us6360382"],
+ ["可充气抬升座垫","居家产品 / 1990 年专利","座垫充气把人抬起；专利写明可用于床","手动开关","没有扶手、没有互锁","us4905329"],
+ ["Panasonic 起身辅助系统","专利（椅子 + 机器人）","扶手受力且座面卸载后，座面升高；实施例 7 座面前倾并前移；实施例 9 检测到动作就自动开始；实施例 17 把机器人换成测力手杖或肘托","扶手、座面测力","椅子，不在床边；“不用机器人”不构成差别","us10022284"],
+ ["Panasonic 生活支援系统","专利（椅子 + 机器人）","根据扶手拉力，按比例控制椅面前倾速度","扶手和座面测力","同上","panasonic"],
+ ["Wissner-Bosserhoff","专利","用户坐在床沿，用把手上的开关控制床高","开关","需要老人主动操作","wibo"],
+ ["家具旁抬升座（1997）","专利","放在椅子或沙发旁，人挪到座上，螺杆把座面升到站立高度；立柱带扶手","手持开关","思路最接近乙（挪上去、抬起来、扶手在旁），但靠开关、没有互锁，不在床边","us5619762"],
+ ["马桶旁抬升前倾座","专利","放在马桶旁，座面升高并快速前倾，带扶手","开关","用在如厕，靠开关","us8556347"],
+ ["MIT E-BAR（2025）","研究机器人","可移动的扶杆机器人，帮人坐下、站起，摔倒时弹出气囊","机器人控制","整台移动机器人，成本和体积都大","ebar"],
+ ["SuperBar、Rehastage 把手","产品 / 专利","身前锁定的横把手；或随人起身向外摆的棘轮把手","无","只有扶手，没有座面助力","superbar rehastage"]
+];
+$("#prior-t").innerHTML=`<thead><tr><th>方案</th><th>类型</th><th>怎么帮人站起</th><th>触发 / 传感</th><th>和我们的差别</th></tr></thead><tbody>`+
+ PRIOR.map(r=>`<tr><th>${r[0]} ${cite(r[5])}</th><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join("")+`</tbody>`;
+
+/* ================= PART 2 ================= */
+const DEC=[
+ {q:"选择 1：起身的力从哪来？",cols:["方案","力从哪来","对老人的要求","夜间独自使用"],rows:[
+   ["","静止扶手（现有）","老人自己","手臂和握力要够","安全，但帮助的上限是老人手臂的力量"],
+   ["A","轻推即转、承重即锁的扶手","老人自己","手臂和握力要够","不用找锁扣；一用力就锁死"],
+   ["","会动的把手（KIT 类）","装置，经过手传入","握力要承受最高约 60% 体重","握着时移动、拉着人走，风险高"],
+   ["B","座面抬升 + 手扶平衡","装置，经过骨盆传入","要能自己承担一部分体重；手主要扶稳","按“起”键 + 握住 + 踩实才抬；推力有上限；出事就回水平再降"]],
+  why:"<b>方案甲</b>让老人自己出力，扶手只负责待在对的位置：简单、安全，但帮多少取决于手臂力量；模型里它和撑硬床垫差不多。<b>方案乙</b>把助力改走骨盆：升到 0.66 m 时，四种手臂假设下 effort 都比抬到 0.58 m 的床低 17–20%，不用手时低 22%。"},
+ {q:"选择 2：助力打在身体哪里？",cols:["接口","典型做法","适合本人群？","两个方案怎么用"],rows:[
+   ["AB","手","扶手、把手","适合，作为借力或平衡","甲：唯一的接口，靠手借力；乙：辅助，负责平衡和“允许开始”"],
+   ["B","骨盆 / 臀部","座面抬升、座面前倾","适合，作为主助力","乙：主助力。不需要握力，座高效应有老人实测支持"],
+   ["","躯干 / 胸","胸垫、吊带","否","属于移位机，需要护工在场"],
+   ["","膝","膝挡","否","通常配合护工使用"],
+   ["","腿","外骨骼","否","夜里来不及穿戴"]],
+  why:"<b>方案甲</b>只用手，手臂弱的人帮助有限。<b>方案乙</b>让手和骨盆分工：骨盆负责“推上去”，手负责“扶稳”和“授权”。"},
+ {q:"选择 3：要不要抬升？抬升的部件放在哪里？",cols:["做法","床垫依赖","要不要挪动","站起后的支撑","主要风险"],rows:[
+   ["A","不抬升，只让扶手换位","扶手固定在床架上，不改床垫","不用","扶手仍在身前","扶手移动时碰到人；站起那一下帮得不多"],
+   ["","改造床沿（床垫下加模块）","普通床垫形成不了台阶，可能做不出来","不用","需另加扶手","床垫变形、夹缝"],
+   ["","抬高床（床脚垫到 0.55–0.58 m）+ 扶手","不涉及","不用","需另加扶手","最便宜；但只能停在折中高度，坐着时矮个子脚踩不实；整夜都在高位，滚下床落差更大（推断）"],
+   ["","床上放座垫（UpEasy 类）","为带扶手的椅子设计，放在床上是否稳定未知","不用","没有","抬起后无支撑"],
+   ["","电动升降躺椅","不涉及","要从床走到椅子","没有","有死亡记录"],
+   ["B","床边起身台","不依赖：自带硬座板","坐在床沿往前挪约 25–30 cm，脚一直踩在踏板上","L 形扶手随座板升","挪动时坐空、窄座板侧向不稳、占地"]],
+  why:"<b>方案甲</b>不做抬升，所以没有床垫和挪动的问题，代价是不减轻腿的负担。<b>方案乙</b>用一个独立台架，同时解决“床垫做不出台阶”和“站起后没有支撑”；人站在台架的踏板上，台架靠人的体重压住。代价是多一次往前挪、多占地方（见“已知缺点”）。"},
+ {q:"选择 4：站起来以后怎么走？",cols:["做法","说明"],rows:[
+   ["","扶手延伸成行走支撑","固定在床或台架上的装置跟不着人走，会把方案做成大杂烩"],
+   ["AB","交接给老人自己的助行器","目标人群能用助行器走，难在站起来（坐→站比平地行走要求更高，待补文献）"],
+   ["","连助行器也走不了的人","不在目标人群内：夜里不应独自下床"]],
+  why:"两个方案都只负责到“站稳”为止，然后交接给老人自己的助行器。"}
+];
+const tagHtml=t=>(t.includes("A")?'<span class="pill tagA">甲</span>':'')+(t.includes("B")?'<span class="pill tagB">乙</span>':'');
+$("#dec").innerHTML=DEC.map(d=>`<div class="card"><div class="q"><h3>${d.q}</h3></div>
+ <div class="scroll-x"><table class="t"><thead><tr><th style="width:68px"></th>${d.cols.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
+ ${d.rows.map(r=>{const t=r[0],cls=t.includes("B")?"pick":t.includes("A")?"pickA":"";return `<tr class="${cls}"><td class="tg">${tagHtml(t)}</td>${r.slice(1).map((c,j)=>j===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`}).join("")}</tbody></table></div><p class="why">${d.why}</p></div>`).join("");
+
+/* ================= PART 3: stepper (tweened) ================= */
+const svg=$("#scene");const SX=x=>300+x*290,SZ=z=>440-z*240;
+const fillPose=p=>Object.assign({E2:p.E,W2:p.W},p);
+const POSE={
+ lie:fillPose({S:[-0.80,0.54],H:[-0.42,0.52],K:[-0.22,0.60],A:[-0.04,0.50],T:[-0.01,0.58],E:[-0.62,0.50],W:[-0.47,0.50]}),
+ BsitIn:fillPose({S:[-0.36,0.97],H:[-0.38,0.51],K:[0.01,0.50],A:[0.40,0.48],T:[0.44,0.55],E:[-0.17,0.74],W:[0.06,0.64]}),
+ Bedge:fillPose({S:[-0.12,0.97],H:[-0.15,0.51],K:[0.24,0.46],A:[0.24,0.062],T:[0.41,0.02],E:[-0.05,0.72],W:[0.10,0.64]}),
+ Bscoot:fillPose({S:[0.18,0.97],H:[0.13,0.51],K:[0.52,0.46],A:[0.52,0.062],T:[0.69,0.02],E:[0.22,0.70],W:[0.36,0.64]}),
+ Bready:fillPose({S:[0.28,0.94],H:[0.13,0.51],K:[0.46,0.40],A:[0.29,0.062],T:[0.46,0.02],E:[0.48,0.76],W:[0.69,0.82]}),
+ Brise:fillPose({S:[0.37,1.149],H:[0.14,0.75],K:[0.42,0.44],A:[0.29,0.062],T:[0.46,0.02],E:[0.52,0.98],W:[0.69,1.06]}),
+ Bstand:{S:[0.31,1.309],H:[0.29,0.848],K:[0.31,0.456],A:[0.29,0.062],T:[0.46,0.02],E:[0.50,1.10],W:[0.69,1.06],E2:[0.52,1.08],W2:[0.77,0.86]},
+ AsitIn:fillPose({S:[-0.36,0.97],H:[-0.38,0.51],K:[0.01,0.50],A:[0.02,0.11],T:[0.14,0.06],E:[-0.17,0.94],W:[0.03,0.80]}),
+ Asit:fillPose({S:[-0.12,0.97],H:[-0.15,0.51],K:[0.24,0.46],A:[0.16,0.062],T:[0.33,0.02],E:[-0.06,0.84],W:[0.03,0.80]}),
+ Aswing:fillPose({S:[-0.04,0.96],H:[-0.15,0.51],K:[0.24,0.46],A:[0.16,0.062],T:[0.33,0.02],E:[0.12,0.84],W:[0.39,0.80]}),
+ Aready:fillPose({S:[0.06,0.92],H:[-0.15,0.51],K:[0.24,0.46],A:[0.14,0.062],T:[0.31,0.02],E:[0.22,0.78],W:[0.39,0.80]}),
+ Arise:fillPose({S:[0.24,0.95],H:[-0.04,0.60],K:[0.26,0.47],A:[0.14,0.062],T:[0.31,0.02],E:[0.10,0.76],W:[0.39,0.80]}),
+ Astand:{S:[0.15,1.309],H:[0.13,0.848],K:[0.15,0.456],A:[0.13,0.062],T:[0.30,0.02],E:[0.30,1.04],W:[0.39,0.80],E2:[0.40,1.06],W2:[0.60,0.84]}
+};
+POSE.lie=fillPose(POSE.lie);
+const STATES_B=[
+ {k:"睡眠",R:[0,0],pose:"lie",light:0,sens:[],user:"侧躺在床上。",dev:"床不改造（约 0.42 m）。起身台放在床前：短座板与床面齐平、紧贴床沿；人站的薄踏板铺在地上；L 形扶手在一侧。",check:"不动作。",fail:"夜里走动时，脚先碰到踏板的斜边和底座；扶手不伸出底座范围。"},
+ {k:"翻身坐起",R:[0,0],pose:"BsitIn",light:1,sens:[],user:"侧身，拉着侧扶手靠床的一端翻身坐起，腿越过座板放下。",dev:"不动。侧扶手紧贴床沿、比床面高约 0.22 m，相当于一小段床栏。",check:"不动作。",fail:"拉扶手的力主要朝向床；侧向按 177 N 设计（台架约 35 kg、底座半宽 0.33 m）。扶手和床垫之间的缝按床栏夹困要求设计。"},
+ {k:"坐到床沿，脚踩踏板",R:[0,0],pose:"Bedge",light:1,sens:["feet"],user:"坐到床沿，双脚落在台架的踏板上，手扶侧扶手。",dev:"不动。座板只有约 14 cm 深，小腿可以从它前面放下。",check:"踏板测到双脚承重。",fail:"踏板厚度 ≤ 13 mm、四边斜坡，夜灯照亮踏板。"},
+ {k:"往前挪，坐上座板",R:[0,0],pose:"Bscoot",light:1,sens:["seat","feet"],user:"像挪到椅子前沿那样，一点一点往前挪约 25–30 cm，坐到座板上，脚跟着往前挪。",dev:"不动。座板后缘有唇边压在床垫上。坐在床沿时床垫边会下陷几厘米，所以挪上座板时可能有一个小台阶（待测）。",check:"座板承重达到坐姿体重的大部分，判定为“已坐上”。",fail:"往后的力由床顶住；带脚轮的床要先锁住。挪动对目标人群是否可行，要在 10/27 前用组员模拟测一次（RQ4）。"},
+ {k:"握住横杆，坐一会儿",R:[0,0],pose:"Bready",light:1,sens:["seat","bar","feet"],user:"把脚往回收，双手握住前横杆，想坐多久都可以。准备好了，按横杆上的“起”键。",dev:"等待。座板不会自己抬。",check:"按下“起”键时，还要同时满足：座板承重、左右差不超限、双手在横杆上、双脚踏板承重。",fail:"任何一个条件不满足，按键无效，指示灯提示哪一项没满足。"},
+ {k:"抬升：升高并前倾",R:[0.24,15],pose:"Brise",light:1,sens:["seat","bar","feet"],user:"身体前倾、自己也发力站起，座板同时把骨盆往上送。",dev:"座板以约 3 cm/s 升高 24 cm（到 0.66 m）、前倾约 15°，全程约 8 s。L 形扶手跟着升，横杆始终比座面高约 0.40 m、在髋前约 0.55 m。推力上限约为体重的一半：人自己必须承担一部分体重，座板才升得动，不会把人整个推起来。",check:"抬升中，松开按键或双手离开横杆、座板负载回升（往回坐）、左右失衡、脚离开踏板，任一出现就停止，先回到水平，再以约 2 cm/s 降回床面高度。",fail:"断电时机构自锁，可手动缓降。夹手、夹腿靠间隙设计和边缘触感开关防护，不依赖推力上限。"},
+ {k:"站稳 · 交接",R:[0.24,0],pose:"Bstand",light:1,sens:["bar","feet"],user:"站直，扶着横杆站稳几秒，再换手到停在横杆开口一侧的助行器。",dev:"离座后，座板回到水平、保持在 0.66 m：万一头晕坐回去，有一个平的座面接住。横杆不再移动。人站在踏板上，手上的力是人和台架之间的内力。",check:"这时双手离开横杆（换手到助行器）不触发任何动作。踏板和座板都没有负载一段时间后，座板才降回与床齐平。",fail:"人离开踏板后再拉横杆：台架约 35 kg、踏板长 0.80 m 时可承受约 178 N 水平拉力（设计载荷 177 N）。"}
+];
+const STATES_A=[
+ {k:"睡眠",grip:"stow",hold:0,pose:"lie",light:0,sens:[],user:"侧躺在床上。",dev:"扶手收着：摆臂沿着床边，当一根普通床栏用。",check:"不动作。",fail:"—"},
+ {k:"翻身坐起",grip:"stow",hold:1,pose:"AsitIn",light:1,sens:["grip"],user:"侧身，拉着收起的扶手（也就是床栏）翻身坐起。",dev:"扶手收着，当床栏用；拉得再用力也不会转。",check:"收起状态下，向下或向内的大力只当作扶床栏，不触发转动。",fail:"—"},
+ {k:"挪到床沿",grip:"stow",hold:1,pose:"Asit",light:1,sens:["grip"],user:"扶着扶手，把臀部挪到床沿，双脚落地。",dev:"不动。",check:"—",fail:"—"},
+ {k:"轻推，扶手转到位",grip:"work",hold:1,pose:"Aswing",light:1,sens:["grip"],user:"手不松开，朝外轻轻一推。",dev:"扶手识别到轻推（水平方向、力小于约 20 N），低速转到工作角度（向内约 25°，由 RQ4 确定），把手一起带到位，然后锁定。",check:"只在轻推时转。转动中，手一用力（向下压或拉超过阈值）或遇到阻挡，立即停止并锁死；扭矩很小，老人一抵抗就停。",fail:"转动时可能扫到膝或俯身的头：转动只在手推时发生、低速限扭矩、遇阻即停。断电时离合脱开，可以用手推着转；承重时机械自锁。"},
+ {k:"握住，停一下",grip:"work",hold:1,pose:"Aready",light:1,sens:["grip"],user:"双手握住扶手，脚踩实，坐着停一会儿。",dev:"已锁定。",check:"扶手受力。",fail:"锁止失效：采用机械自锁（如棘轮）。"},
+ {k:"坐→站",grip:"work",hold:1,pose:"Arise",light:1,sens:["grip"],user:"身体前倾，自己发力站起来，手拉着扶手。",dev:"扶手锁死，只提供反作用力，不抬人。",check:"—",fail:"模型（按动画里的扶手位置）：effort 0.37–0.44（四种手臂假设），和撑低床床垫差不多或更差。这一下帮得不多。"},
+ {k:"站稳 · 交接",grip:"work",hold:1,pose:"Astand",light:1,sens:["grip"],user:"站直，扶手仍在手边；换手到助行器，迈出第一步。",dev:"人离开一段时间后，扶手转回床边收起。",check:"扶手没有负载，并持续一段时间。",fail:"展开的扶手可能挡路；超时收回。"}
+];
+let scheme="B",cur=0,shown=null,raf=0,playing=false,playToken=0;
+const ST=()=>scheme==="A"?STATES_A:STATES_B;
+const PSI={stow:-90,work:25,front:25};
+const paramsOf=s=>({pose:POSE[s.pose],R:s.R||[0,0],light:s.light,ps:PSI[s.grip||"front"],hold:s.hold||0,ikw:s.pose==="lie"?0:1});
+const lp=(a,b,t)=>a+(b-a)*t, lp2=(a,b,t)=>[lp(a[0],b[0],t),lp(a[1],b[1],t)];
+function mix(a,b,t){const p={};for(const k in b.pose)p[k]=lp2(a.pose[k],b.pose[k],t);
+  return {pose:p,R:lp2(a.R,b.R,t),light:lp(a.light,b.light,t),ps:lp(a.ps,b.ps,t),hold:lp(a.hold,b.hold,t),ikw:lp(a.ikw,b.ikw,t)}}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const reduceMotion=(()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}})();
+function el(tag,attrs,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;svg.appendChild(e);return e}
+const pts=a=>a.map(p=>SX(p[0])+","+SZ(p[1])).join(" ");
+const LEN={T:0.461,TH:0.392,SH:0.394,U:0.298,F:0.32};
+const nrm=v=>{const n=Math.hypot(v[0],v[1])||1;return [v[0]/n,v[1]/n]};
+function ik(a,b,l1,l2,hint){let d=[b[0]-a[0],b[1]-a[1]],L=Math.hypot(d[0],d[1])||1e-6;const mx=l1+l2-0.002,mn=Math.abs(l1-l2)+0.002;
+  if(L>mx||L<mn){const u=nrm(d),c=L>mx?mx:mn;b=[a[0]+u[0]*c,a[1]+u[1]*c];d=[b[0]-a[0],b[1]-a[1]];L=c}
+  const x=(l1*l1-l2*l2+L*L)/(2*L),h=Math.sqrt(Math.max(0,l1*l1-x*x)),u=[d[0]/L,d[1]/L],n=[-u[1],u[0]];
+  const p1=[a[0]+u[0]*x+n[0]*h,a[1]+u[1]*x+n[1]*h],p2=[a[0]+u[0]*x-n[0]*h,a[1]+u[1]*x-n[1]*h],dd=p=>Math.hypot(p[0]-hint[0],p[1]-hint[1]);
+  return {j:dd(p1)<=dd(p2)?p1:p2,e:b}}
+function solve(q,w){if(!(w>0.001))return q;const o=Object.assign({},q);
+  const t=nrm([q.S[0]-q.H[0],q.S[1]-q.H[1]]);o.S=lp2(q.S,[q.H[0]+t[0]*LEN.T,q.H[1]+t[1]*LEN.T],w);
+  const k=ik(q.H,q.A,LEN.TH,LEN.SH,q.K);o.K=lp2(q.K,k.j,w);o.A=lp2(q.A,k.e,w);o.T=[q.T[0]+o.A[0]-q.A[0],q.T[1]+o.A[1]-q.A[1]];
+  const a1=ik(o.S,q.W,LEN.U,LEN.F,q.E);o.E=lp2(q.E,a1.j,w);o.W=lp2(q.W,a1.e,w);
+  const a2=ik(o.S,q.W2,LEN.U,LEN.F,q.E2);o.E2=lp2(q.E2,a2.j,w);o.W2=lp2(q.W2,a2.e,w);return o}
+function figure(P){const ink=css("--ink"),surf=css("--surface"),q=solve(P.pose,P.ikw==null?1:P.ikw);
+  const L=(p,w)=>el("polyline",{points:pts(p),stroke:ink,"stroke-width":w,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"});
+  L([q.S,q.H,q.K,q.A,q.T],6);
+  const dx=q.S[0]-q.H[0],dz=q.S[1]-q.H[1],n=Math.hypot(dx,dz)||1,hc=[q.S[0]+dx/n*0.12,q.S[1]+dz/n*0.12];
+  el("circle",{cx:SX(hc[0]),cy:SZ(hc[1]),r:16,fill:surf,stroke:ink,"stroke-width":4});
+  L([q.S,q.E,q.W],4);
+  if(Math.hypot(q.W2[0]-q.W[0],q.W2[1]-q.W[1])>0.02)L([q.S,q.E2,q.W2],3);}
+function sensors(list,sp){const amber=css("--amber"),ink=css("--ink");list.forEach(k=>{const p=sp[k];if(p)el("circle",{cx:SX(p[0]),cy:SZ(p[1]),r:5.5,fill:amber,stroke:ink,"stroke-width":1.5})})}
+function base(P){const muted=css("--muted");svg.innerHTML="";
+  el("line",{x1:0,y1:SZ(0),x2:640,y2:SZ(0),stroke:muted,"stroke-width":1.5});
+  if(P.light>0.01)el("ellipse",{cx:SX(0.75),cy:SZ(0)+2,rx:90,ry:9,fill:css("--amber"),opacity:(0.22*P.light).toFixed(3)});
+  el("rect",{x:SX(-1),y:SZ(0.27),width:SX(0)-SX(-1),height:SZ(0)-SZ(0.27),fill:css("--bedc"),rx:4});
+  el("rect",{x:SX(-1),y:SZ(0.42),width:SX(0)-SX(-1),height:SZ(0.27)-SZ(0.42),fill:css("--matc"),rx:6});}
+function walker(wx){const muted=css("--muted");el("path",{d:`M${SX(wx)} ${SZ(0)} L${SX(wx+0.05)} ${SZ(0.82)} L${SX(wx+0.2)} ${SZ(0.82)} L${SX(wx+0.23)} ${SZ(0)}`,stroke:muted,"stroke-width":3,fill:"none"});
+  el("text",{x:SX(wx+0.25),y:SZ(0.03),fill:muted,"font-size":12},"助行器");}
+function drawB(P,i){base(P);const ink=css("--ink"),muted=css("--muted"),edge=css("--edgec"),surf=css("--surface"),line=css("--line"),amber=css("--amber"),bedc=css("--bedc");
+  el("text",{x:SX(-0.95),y:SZ(0.12),fill:muted,"font-size":13},"床（不改造，床面 0.42 m）");
+  const L=P.R[0],tn=Math.tan(P.R[1]*Math.PI/180),h0=0.42+L,zr=h0+0.14*tn,zs=0.64+L,zb=0.82+L,t=0.045,BX=0.69;
+  el("line",{x1:SX(BX),y1:SZ(0.02),x2:SX(BX),y2:SZ(0.55),stroke:ink,"stroke-width":8,opacity:.3});
+  el("line",{x1:SX(BX),y1:SZ(0.5),x2:SX(BX),y2:SZ(zb),stroke:ink,"stroke-width":4,opacity:.55});
+  el("line",{x1:SX(0.0),y1:SZ(zs),x2:SX(BX),y2:SZ(zs),stroke:ink,"stroke-width":4,"stroke-linecap":"round",opacity:.45});
+  el("polygon",{points:pts([[0,0],[0.80,0],[0.77,0.013],[0,0.013]]),fill:bedc});
+  el("rect",{x:SX(0.0),y:SZ(0.30),width:SX(0.14)-SX(0),height:SZ(0.013)-SZ(0.30),fill:bedc,rx:3});
+  el("rect",{x:SX(0.04),y:SZ(h0-0.05),width:SX(0.10)-SX(0.04),height:Math.max(0,SZ(0.30)-SZ(h0-0.05)),fill:bedc});
+  el("polygon",{points:pts([[-0.03,zr],[0,zr],[0.13,h0+0.01*tn],[0.14,h0-0.012],[0.14,h0-t],[0,zr-t],[-0.03,zr-0.012]]),fill:edge});
+  el("text",{x:SX(0.005),y:SZ(0.17),fill:muted,"font-size":11},"起身台");
+  el("text",{x:SX(0.50),y:SZ(0.05),fill:muted,"font-size":11.5},"踏板");
+  walker(0.70);figure(P);
+  el("circle",{cx:SX(BX),cy:SZ(zb),r:7,fill:ink});
+  el("text",{x:16,y:26,fill:ink,"font-size":12.5},"L 形扶手：侧边段 + 前横杆，随座板一起升；横杆上有“起”键");
+  el("text",{x:16,y:46,fill:muted,"font-size":11.5,"font-family":css("--font-mono")},"座面 "+h0.toFixed(2)+" m · 前倾 "+P.R[1].toFixed(0)+"° · 床面 0.42 m");
+  if(i>=0)sensors(STATES_B[i].sens,{seat:[0.07,(zr+h0)/2+0.012],bar:[BX,zb+0.035],feet:[0.42,0.03]});
+  const TX=u=>510+u*125,TY=v=>94+v*125;
+  el("rect",{x:452,y:6,width:182,height:170,rx:8,fill:surf,stroke:line,"stroke-width":1});
+  el("text",{x:596,y:24,fill:muted,"font-size":11.5},"俯视");
+  el("rect",{x:TX(-0.38),y:TY(-0.6),width:TX(0)-TX(-0.38),height:TY(0.3)-TY(-0.6),fill:css("--matc"),rx:4});
+  el("text",{x:TX(-0.34),y:TY(-0.45),fill:muted,"font-size":10.5},"床");
+  el("rect",{x:TX(0),y:TY(-0.33),width:TX(0.80)-TX(0),height:TY(0.33)-TY(-0.33),fill:bedc,rx:3});
+  el("rect",{x:TX(0),y:TY(-0.22),width:TX(0.14)-TX(0),height:TY(0.22)-TY(-0.22),fill:edge,rx:2});
+  el("polyline",{points:[[0,-0.28],[BX,-0.28],[BX,0.12]].map(p=>TX(p[0])+","+TY(p[1])).join(" "),fill:"none",stroke:ink,"stroke-width":4,"stroke-linecap":"round","stroke-linejoin":"round"});
+  el("path",{d:`M${TX(0.58)} ${TY(0.52)} L${TX(0.58)} ${TY(0.36)} L${TX(0.78)} ${TY(0.36)} L${TX(0.78)} ${TY(0.52)}`,fill:"none",stroke:muted,"stroke-width":2});
+  el("text",{x:TX(0.55),y:TY(0.62),fill:muted,"font-size":10},"助行器");
+  if(P.pose.S[1]<0.75){el("line",{x1:TX(-0.2),y1:TY(-0.5),x2:TX(-0.2),y2:TY(0.22),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(-0.2),cy:TY(-0.54),r:7,fill:surf,stroke:ink,"stroke-width":2.5})}
+  else{const hu=P.pose.H[0];el("line",{x1:TX(hu),y1:TY(0),x2:TX(Math.max(hu+0.2,P.pose.K[0]+0.05)),y2:TY(0),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(hu-0.02),cy:TY(0),r:8,fill:surf,stroke:ink,"stroke-width":2.5})}
+  el("path",{d:`M${TX(-0.15)} ${TY(0.19)} L${TX(0.11)} ${TY(0.19)}`,stroke:amber,"stroke-width":2,"stroke-dasharray":"4 3",fill:"none"});
+  el("path",{d:`M${TX(0.11)} ${TY(0.19)} l-7 -4 l0 8 z`,fill:amber});
+  el("text",{x:TX(-0.37),y:TY(0.42),fill:muted,"font-size":10},"往前挪 25–30 cm");
+}
+function drawA(P,i){base(P);const ink=css("--ink"),muted=css("--muted"),amber=css("--amber"),surf=css("--surface"),line=css("--line");
+  el("text",{x:SX(-0.95),y:SZ(0.12),fill:muted,"font-size":13},"床（床沿 0.42 m）");
+  el("line",{x1:SX(0.03),y1:SZ(0.27),x2:SX(0.03),y2:SZ(0.80),stroke:ink,"stroke-width":5,"stroke-linecap":"round",opacity:.5});
+  const ps=P.ps*Math.PI/180,AL=0.40,gx=0.03+AL*Math.cos(ps),grip=[gx,0.80];
+  if(Math.cos(ps)>0.03)el("line",{x1:SX(0.03),y1:SZ(0.80),x2:SX(gx),y2:SZ(0.80),stroke:ink,"stroke-width":5,"stroke-linecap":"round"});
+  el("circle",{cx:SX(grip[0]),cy:SZ(grip[1]),r:8,fill:amber,stroke:surf,"stroke-width":3});
+  el("text",{x:16,y:26,fill:ink,"font-size":12.5},P.ps<-45?"扶手收起（沿床边，当床栏用）":"扶手在工作角度（向内约 25°）");
+  walker(0.55);
+  const q=Object.assign({},P.pose,{W:lp2(P.pose.W,grip,P.hold)});figure(Object.assign({},P,{pose:q}));
+  if(i>=0)sensors(STATES_A[i].sens,{grip:grip});
+  // top-view inset
+  const TX=u=>522+u*140,TY=v=>146+v*140;
+  el("rect",{x:462,y:8,width:172,height:196,rx:8,fill:surf,stroke:line,"stroke-width":1});
+  el("text",{x:590,y:28,fill:muted,"font-size":12},"俯视");
+  el("rect",{x:TX(-0.38),y:TY(-0.72),width:TX(0)-TX(-0.38),height:TY(0.25)-TY(-0.72),fill:css("--matc"),rx:4});
+  el("text",{x:TX(-0.34),y:TY(-0.55),fill:muted,"font-size":10.5},"床");
+  el("line",{x1:TX(0),y1:TY(-0.72),x2:TX(0),y2:TY(0.25),stroke:muted,"stroke-width":1,"stroke-dasharray":"3 3"});
+  const lying=P.pose.S[1]<0.75;
+  if(lying){el("line",{x1:TX(-0.2),y1:TY(-0.62),x2:TX(-0.2),y2:TY(0.18),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(-0.2),cy:TY(-0.66),r:7,fill:surf,stroke:ink,"stroke-width":2.5})}
+  else{const hu=Math.min(-0.04,P.pose.H[0]);el("line",{x1:TX(hu),y1:TY(0),x2:TX(Math.max(hu+0.2,P.pose.K[0]+0.05)),y2:TY(0),stroke:ink,"stroke-width":7,"stroke-linecap":"round"});el("circle",{cx:TX(hu-0.02),cy:TY(0),r:8,fill:surf,stroke:ink,"stroke-width":2.5})}
+  const pv=[0.03,-0.24],a0=-90*Math.PI/180,a1=25*Math.PI/180,tp=a=>[pv[0]+AL*Math.cos(a),pv[1]+AL*Math.sin(a)],s0=tp(a0),s1=tp(a1),tip=tp(ps);
+  el("path",{d:`M${TX(s0[0])} ${TY(s0[1])} A ${AL*140} ${AL*140} 0 0 1 ${TX(s1[0])} ${TY(s1[1])}`,fill:"none",stroke:amber,"stroke-width":1.5,"stroke-dasharray":"4 3",opacity:.8});
+  el("line",{x1:TX(pv[0]),y1:TY(pv[1]),x2:TX(tip[0]),y2:TY(tip[1]),stroke:ink,"stroke-width":5,"stroke-linecap":"round"});
+  el("circle",{cx:TX(pv[0]),cy:TY(pv[1]),r:5,fill:ink});
+  el("circle",{cx:TX(tip[0]),cy:TY(tip[1]),r:5.5,fill:amber,stroke:surf,"stroke-width":2});
+  el("text",{x:470,y:197,fill:muted,"font-size":11},"轻推后绕立柱转约 115°");
+}
+function render(P,i){(scheme==="A"?drawA:drawB)(P,i);shown=P}
+function panel(i){const s=ST()[i];document.querySelectorAll("#tabs button").forEach((b,k)=>b.setAttribute("aria-pressed",String(k===i)));
+  $("#spanel").innerHTML=`<div class="muted" style="font-size:12.5px">${scheme==="A"?"方案甲":"方案乙"} · 第 ${i+1} 步 / 共 ${ST().length} 步</div><h3>${s.k}</h3><dl class="kv"><dt>老人</dt><dd>${s.user}</dd><dt>${scheme==="A"?"扶手":"起身台"}</dt><dd>${s.dev}</dd><dt>判断依据</dt><dd>${s.check}</dd><dt>失效时</dt><dd>${s.fail}</dd></dl>`}
+function tweenTo(i,dur){return new Promise(res=>{cancelAnimationFrame(raf);const to=paramsOf(ST()[i]),from=shown||to;
+  if(reduceMotion||dur<=0||from===to){render(to,i);res();return}
+  const t0=performance.now();const step=now=>{const t=Math.min(1,(now-t0)/dur);render(mix(from,to,ease(t)),t<1?-1:i);if(t<1)raf=requestAnimationFrame(step);else{render(to,i);res()}};raf=requestAnimationFrame(step)})}
+function setState(i,dur){cur=i;panel(i);return tweenTo(i,dur==null?600:dur)}
+function buildTabs(){$("#tabs").innerHTML=ST().map((s,i)=>`<button aria-pressed="false"><span class="num">${i+1}</span>${s.k}</button>`).join("")}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function stop(){playing=false;playToken++;$("#play").textContent="▶ 播放全过程"}
+async function play(){const tok=++playToken;playing=true;$("#play").textContent="❚❚ 暂停";
+  await setState(0,700);for(let i=1;i<ST().length;i++){await wait(1000);if(tok!==playToken)return;await setState(i,1700);if(tok!==playToken)return}
+  await wait(800);if(tok===playToken)stop()}
+buildTabs();
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stop();setState([...b.parentNode.children].indexOf(b))});
+$("#play").onclick=()=>{if(playing)stop();else play()};
+setState(5,0);
+$("#scheme").addEventListener("click",e=>{const btn=e.target.closest("button");if(!btn)return;stop();scheme=btn.dataset.s;shown=null;
+  document.querySelectorAll("#scheme button").forEach(x=>x.setAttribute("aria-pressed",String(x===btn)));
+  $("#sceneKey").textContent=scheme==="A"?"轻推扶手才会转；黄点 = 传感器":"橙色 = 可动座板；黄点 = 传感器";buildTabs();setState(scheme==="A"?3:5,0)});
+
+/* scheme comparison */
+const CMP={"refs": [[0.585, "0.42 m"], [0.478, "0.58 m"], [0.374, "0.66 m"]], "groups": [["手力上限 25%", "按老人实测", {"low": 0.389, "rb": 0.291, "A": 0.389, "B": 0.233, "B60": 0.277}], ["肩肘力量 ×0.5", "手力上限 30%", {"low": 0.357, "rb": 0.303, "A": 0.424, "B": 0.251, "B60": 0.315}], ["肩肘力量 ×0.35", "手力上限 30%", {"low": 0.4, "rb": 0.34, "A": 0.443, "B": 0.276, "B60": 0.347}], ["手臂正常", "手力上限 30%", {"low": 0.35, "rb": 0.266, "A": 0.373, "B": 0.221, "B60": 0.257}]]};
+(function(){const svgc=$("#cmpchart"),W=640,H=340,m={l:52,r:96,t:22,b:62};
+  const bars=[["低床 0.42 m 撑床垫","low","--muted"],["抬高床 0.58 m + 扶手","rb","--s2"],["方案甲：动态扶手","A","--s1"],["方案乙：起身台 0.66 m","B","--amber"]];
+  $("#cmpLegend").innerHTML=bars.map(b=>`<span><i style="background:var(${b[2]});height:10px;width:10px"></i>${b[0]}</span>`).join("");
+  const ymax=0.65,py=v=>m.t+(ymax-v)/ymax*(H-m.t-m.b);const ng=CMP.groups.length,gw=(W-m.l-m.r)/ng,bw=24,gap=4;
+  function draw(){svgc.innerHTML="";const g=(t,a,c)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(c!=null)e.textContent=c;svgc.appendChild(e);return e};
+    const muted=css("--muted"),ink2=css("--ink2"),ln=css("--line"),ink=css("--ink");
+    for(let v=0;v<=0.61;v+=0.2){g("line",{x1:m.l,x2:W-m.r,y1:py(v),y2:py(v),stroke:ln});g("text",{x:m.l-8,y:py(v)+4,"text-anchor":"end","font-size":12,fill:muted,"font-family":css("--font-mono")},v.toFixed(1))}
+    g("text",{x:W-m.r+10,y:m.t-6,"font-size":11.5,fill:ink2},"不用手");
+    CMP.refs.forEach(([v,lab])=>{g("line",{x1:m.l,x2:W-m.r+6,y1:py(v),y2:py(v),stroke:muted,"stroke-dasharray":"5 4"});
+      g("text",{x:W-m.r+10,y:py(v)+4,"font-size":11,fill:ink2,"font-family":css("--font-mono")},lab+" "+v.toFixed(2))});
+    CMP.groups.forEach(([lab,sub,d],gi)=>{const x0=m.l+gi*gw+(gw-(4*bw+3*gap))/2;
+      bars.forEach(([bl,bk,c],bi)=>{const v=d[bk],x=x0+bi*(bw+gap);
+        g("rect",{x:x,y:py(v),width:bw,height:py(0)-py(v),fill:css(c),rx:3});
+        g("text",{x:x+bw/2,y:py(v)-5,"text-anchor":"middle","font-size":10.5,fill:ink,"font-family":css("--font-mono")},v.toFixed(2))});
+      g("text",{x:m.l+gi*gw+gw/2,y:H-m.b+20,"text-anchor":"middle","font-size":12.5,fill:ink},lab);
+      g("text",{x:m.l+gi*gw+gw/2,y:H-m.b+37,"text-anchor":"middle","font-size":11.5,fill:muted},sub)});
+    g("text",{x:14,y:m.t+6,"font-size":12.5,fill:ink2,transform:`rotate(-90 14 ${m.t+6})`,"text-anchor":"end"},"effort（越低越省力）");}
+  draw();window.__cmpDraw=draw;
+  const rows=[
+   ["核心思路","扶手装在床上，平时当床栏；坐到床沿后轻推一下，扶手带着手转到工作角度（约 0.8 m 高），一用力就锁死","床前起身台：坐在床沿、脚踩踏板，往前挪上与床齐平的短座板；按“起”键后座板升到 0.66 m 并前倾；L 形扶手随座板升"],
+   ["解决什么","支撑一直在手边：找得到，站直后也够得着","同左，并且把骨盆送到固定床设不到的高度"],
+   ["站起那一下（模型 effort）","0.37–0.44（四种手臂假设）；和撑低床床垫差不多或更差","0.22–0.28；比抬高到 0.58 m 的床低 17–20%"],
+   ["对用户的要求","帮多少，取决于手臂力量","要能自己承担一部分体重（推力上限约为体重一半）；不用手时比 0.58 m 的床低 22%"],
+   ["要不要挪动","不用","要：坐在床沿往前挪约 25–30 cm，脚一直踩在踏板上（改进方向 A 可以免掉）"],
+   ["运动部件与传感","1 个：扶手摆动；只需扶手测力","1 个驱动（四连杆：升高 + 前倾），扶手随升；座板、横杆、踏板测力 + “起”键"],
+   ["床的依赖","要固定在床架上","不依赖；台架靠住床，人站在踏板上压住台架"],
+   ["占地","小","约 0.66 × 0.80 m（含踏板）"],
+   ["主要风险","转动时扫到膝或头、夹手、展开后挡路","往前挪时坐空、窄座板侧向不稳、扶手旁的夹困缝、离开踏板后被拉翻"],
+   ["最接近的现有产品","SuperBar（身前固定横把手）、Smart-Rail（手动摆出）、Rehastage（被动跟随）","家具旁抬升座（US5619762）、电动如厕抬升座、升降躺椅、抬高床 + 扶手"],
+   ["差别靠什么","“轻推即转、承重即锁”的交互，依赖“老人夜里做不好手动解锁和扳动”的假设，目前没有证据","用在床边、不换床；升到固定床设不到的高度；受力互锁 + 推力上限 + 出事回水平再降"],
+   ["12 天工作量","小：一个摆动机构 + 简单传感","大：四连杆 + 状态机仿真 + 倾翻计算"],
+   ["结论","实现简单，但站起那一下帮得不多","<b>推荐</b>：四种手臂假设下都最省力；但比抬高床只多省 17–20%，需要讲清楚这部分值不值得一台机器"]];
+  $("#cmpT").innerHTML=`<thead><tr><th>维度</th><th>方案甲 · 动态扶手</th><th>方案乙 · 床边起身台</th></tr></thead><tbody>`+rows.map((r,i)=>`<tr${i===rows.length-1?' class="pick"':''}><th>${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")+`</tbody>`;
+})();
+
+/* scheme A explorer */
+(function(){
+const D=JSON.parse($("#xdata").textContent);
+const RAMP=["#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#184f95","#0d366b"];
+const hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+function rc(v){const t=Math.max(0,Math.min(1,(v-0.3)/0.4))*(RAMP.length-1),i=Math.floor(t),f=t-i;if(i>=RAMP.length-1)return RAMP[RAMP.length-1];const a=hx(RAMP[i]),b=hx(RAMP[i+1]);return `rgb(${a.map((x,k)=>Math.round(x+(b[k]-x)*f)).join(",")})`}
+const cv=$("#cv"),ctx=cv.getContext("2d"),Wd={x0:-0.75,x1:1.0,z0:0,z1:1.40};
+let arm="strong",mode="front",ix=14,iz=8,ih=0,showHeat=true,scale=1;
+const front=()=>D["front_"+arm],side=n=>D[`side${n}_${arm}`];
+const bestOf=a=>a.reduce((m,d,k)=>d&&(m<0||d[0]<a[m][0])?k:m,-1);
+function size(){const w=cv.clientWidth;if(!w)return;const h=Math.round(w*(Wd.z1-Wd.z0)/(Wd.x1-Wd.x0)),dpr=window.devicePixelRatio||1;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+"px";ctx.setTransform(dpr,0,0,dpr,0,0);scale=w/(Wd.x1-Wd.x0);draw()}
+const X=x=>(x-Wd.x0)*scale,Y=z=>(Wd.z1-z)*scale;
+const curD=()=>mode==="front"?front()[iz][ix]:side(mode==="side2"?2:1)[ih];
+const handleP=()=>mode==="front"?[D.xs[ix],D.zs[iz]]:[0.03,D.side_h[ih]];
+function line(p,c,w){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();p.forEach((q,k)=>k?ctx.lineTo(X(q[0]),Y(q[1])):ctx.moveTo(X(q[0]),Y(q[1])));ctx.stroke()}
+function draw(){const w=cv.clientWidth,h=cv.clientHeight;if(!w)return;ctx.clearRect(0,0,w,h);ctx.fillStyle=css("--surface");ctx.fillRect(0,0,w,h);
+  const ink=css("--ink"),muted=css("--muted"),amber=css("--amber");
+  if(mode==="front"&&showHeat){const dx=0.05*scale;front().forEach((r,i)=>r.forEach((d,j)=>{if(!d)return;ctx.globalAlpha=.82;ctx.fillStyle=rc(d[0]);ctx.fillRect(X(D.xs[j])-dx/2,Y(D.zs[i])-dx/2,dx+.6,dx+.6)}));ctx.globalAlpha=1}
+  ctx.fillStyle=css("--line");ctx.fillRect(X(-1),Y(0.42),X(0)-X(-1),Y(0)-Y(0.42));
+  ctx.fillStyle=muted;ctx.font="12px "+css("--font-body");ctx.fillText("床 0.42 m",X(-0.6),Y(0.2));line([[Wd.x0,0],[Wd.x1,0]],muted,1.5);
+  ctx.font="11px "+css("--font-mono");for(let z=0.5;z<1.3;z+=0.25)ctx.fillText(z.toFixed(2)+" m",4,Y(z)+4);
+  ctx.save();ctx.setLineDash([5,4]);[0.67,0.87].forEach(z=>line([[0,z],[Wd.x1,z]],muted,1.2));ctx.restore();ctx.fillStyle=muted;ctx.font="11px "+css("--font-body");ctx.fillText("老人自选扶手高度范围",X(0.45),Y(0.87)-5);
+  if(mode!=="front"){ctx.globalAlpha=.5;line([[0.03,0.55],[0.03,1.2]],muted,6);ctx.globalAlpha=1;ctx.fillStyle=css("--ink2");ctx.font="12px "+css("--font-body");ctx.fillText("床沿扶手在身体侧面（投影）",X(0.06),Y(1.27))}
+  const d=curD(),P=handleP(),st=d?d[10]:15,g=D.geo[String(st)],e=g.edge_x,rel=p=>[p[0]-e,p[1]];
+  const H=rel(g.Hp),K=rel(g.K),A=rel(g.A),th=(d?d[1]:55)*Math.PI/180,S=[H[0]+D.L.tr*Math.sin(th),H[1]+D.L.tr*Math.cos(th)];
+  line([[g.heel-e,0.005],[g.toe-e,0.005]],ink,4);line([S,H,K,A],ink,5);
+  ctx.beginPath();ctx.fillStyle=css("--surface");ctx.strokeStyle=ink;ctx.lineWidth=4;ctx.arc(X(S[0]+0.12*Math.sin(th)),Y(S[1]+0.12*Math.cos(th)),0.075*scale,0,Math.PI*2);ctx.fill();ctx.stroke();
+  if(d){line([S,[d[2],d[3]],P],ink,4);const k=0.0012,tip=[P[0]+d[4]*k,P[1]+d[5]*k];if(Math.hypot(d[4],d[5])>5){line([P,tip],amber,3);const ang=Math.atan2(-(tip[1]-P[1]),tip[0]-P[0]);ctx.fillStyle=amber;ctx.beginPath();ctx.moveTo(X(tip[0]),Y(tip[1]));ctx.lineTo(X(tip[0])-9*Math.cos(ang-.45),Y(tip[1])-9*Math.sin(ang-.45));ctx.lineTo(X(tip[0])-9*Math.cos(ang+.45),Y(tip[1])-9*Math.sin(ang+.45));ctx.closePath();ctx.fill()}}
+  ctx.beginPath();ctx.arc(X(P[0]),Y(P[1]),8,0,Math.PI*2);ctx.fillStyle=amber;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=css("--surface");ctx.stroke()}
+const bar=(l,v,c)=>`<div class="bar ${c||""}"><span>${l}</span><span class="track"><span class="fill" style="width:${Math.max(0,Math.min(1,v))*100}%"></span></span><span class="val">${v.toFixed(2)}</span></div>`;
+function readout(){const d=curD(),r=D.ref,s2=side(2),s1=side(1);
+  const refs=bar("不用手",r.none_042)+bar("双手撑床垫",r[arm].mattress_042)+bar("床沿扶手·双手",s2[bestOf(s2)][0])+bar("床沿扶手·单手",s1[bestOf(s1)][0]);
+  if(!d){$("#eff").textContent="–";$("#cmpBars").innerHTML=refs;$("#joints").innerHTML="";$("#msg").innerHTML='<span class="warn">这个位置够不到，或会碰到腿和床。</span>';draw();return}
+  $("#eff").textContent=d[0].toFixed(2);$("#cmpBars").innerHTML=refs+bar("当前位置",d[0],"cur");
+  const two=mode!=="side1";$("#joints").innerHTML=bar("髋",Math.abs(d[6]))+bar("膝",Math.abs(d[7]))+bar(two?"肩（双手）":"肩（单手）",Math.abs(d[8]))+bar(two?"肘（双手）":"肘（单手）",Math.abs(d[9]));
+  const F=Math.hypot(d[4],d[5]),worst=["髋","膝","肩","肘"][[d[6],d[7],d[8],d[9]].map(Math.abs).reduce((m,v,k,a)=>v>a[m]?k:m,0)];
+  $("#msg").innerHTML=`手上的力 ${F.toFixed(0)} N（${(F/D.BW*100).toFixed(0)}% 体重），躯干前倾 ${d[1]}°；此时最吃力的是${worst}。橙色箭头是扶手作用在手上的力。`;draw()}
+function pick(ev){if(mode!=="front")return;const r=cv.getBoundingClientRect(),x=Wd.x0+(ev.clientX-r.left)/scale,z=Wd.z1-(ev.clientY-r.top)/scale;
+  ix=Math.max(0,Math.min(D.xs.length-1,Math.round((x-D.xs[0])/0.05)));iz=Math.max(0,Math.min(D.zs.length-1,Math.round((z-D.zs[0])/0.05)));readout()}
+let drag=false;cv.addEventListener("pointerdown",e=>{drag=true;cv.setPointerCapture(e.pointerId);pick(e)});cv.addEventListener("pointermove",e=>{if(drag)pick(e)});cv.addEventListener("pointerup",()=>drag=false);
+const hsl=$("#hSlider");hsl.min=0;hsl.max=D.side_h.length-1;hsl.step=1;const setH=()=>{$("#hVal").textContent=D.side_h[ih].toFixed(3)};
+hsl.addEventListener("input",()=>{ih=+hsl.value;setH();readout()});
+function setMode(m){mode=m;[["mFront","front"],["mSide2","side2"],["mSide1","side1"]].forEach(([id,k])=>$("#"+id).setAttribute("aria-pressed",String(k===m)));$("#sideCtl").hidden=m==="front";
+  if(m!=="front"){ih=bestOf(side(m==="side2"?2:1));hsl.value=ih;setH()}readout()}
+$("#mFront").onclick=()=>setMode("front");$("#mSide2").onclick=()=>setMode("side2");$("#mSide1").onclick=()=>setMode("side1");
+$("#armSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;arm=b.dataset.a;document.querySelectorAll("#armSeg button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));setMode(mode)});
+$("#heat").addEventListener("change",e=>{showHeat=e.target.checked;draw()});
+window.addEventListener("resize",size);window.__expDraw=draw;size();readout();
+})();
+
+/* height chart */
+const HD=JSON.parse($("#hdata").textContent);const hc=$("#hchart"),W=640,Hh=340,m={l:52,r:18,t:16,b:44},hmin=0.40,hmax=0.70,ymin=0.15,ymax=0.65;
+const px=h=>m.l+(h-hmin)/(hmax-hmin)*(W-m.l-m.r),py=v=>m.t+(ymax-v)/(ymax-ymin)*(Hh-m.t-m.b);
+const SER=[["none","--s1","不用手"],["bar25","--s2","扶横杆 · 上限 25%"],["barweak","--s3","扶横杆 · 肩肘 ×0.5"]];
+const BI=1; // index of 0.42 m
+function hdraw(idx){hc.innerHTML="";const ink2=css("--ink2"),muted=css("--muted"),ln=css("--line");
+  const g=(t,a,c)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(c!=null)e.textContent=c;hc.appendChild(e);return e};
+  for(let v=0.2;v<=0.61;v+=0.1){g("line",{x1:m.l,x2:W-m.r,y1:py(v),y2:py(v),stroke:ln,"stroke-width":1});g("text",{x:m.l-8,y:py(v)+4,"text-anchor":"end","font-size":12,fill:muted,"font-family":css("--font-mono")},v.toFixed(1))}
+  for(let h=0.40;h<=0.701;h+=0.04)g("text",{x:px(h),y:Hh-m.b+18,"text-anchor":"middle","font-size":12,fill:muted,"font-family":css("--font-mono")},h.toFixed(2));
+  g("text",{x:(m.l+W-m.r)/2,y:Hh-6,"text-anchor":"middle","font-size":12.5,fill:ink2},"座面高度（m）");
+  g("text",{x:14,y:m.t+8,"font-size":12.5,fill:ink2,transform:`rotate(-90 14 ${m.t+8})`,"text-anchor":"end"},"effort");
+  g("rect",{x:px(0.41),y:m.t,width:px(0.43)-px(0.41),height:Hh-m.t-m.b,fill:ln,opacity:.6});g("text",{x:px(0.42),y:m.t+12,"text-anchor":"middle","font-size":11.5,fill:muted},"低床");
+  g("rect",{x:px(0.57),y:m.t,width:px(0.59)-px(0.57),height:Hh-m.t-m.b,fill:ln,opacity:.6});g("text",{x:px(0.58),y:m.t+12,"text-anchor":"middle","font-size":11.5,fill:muted},"固定床上限");g("rect",{x:px(0.65),y:m.t,width:px(0.67)-px(0.65),height:Hh-m.t-m.b,fill:css("--scope")});g("text",{x:px(0.66),y:m.t+28,"text-anchor":"middle","font-size":11.5,fill:css("--amber-ink")},"抬升目标");
+  SER.forEach(([k,c,lab],si)=>{const col=css(c);g("polyline",{points:HD[k].map(d=>px(d.h)+","+py(d.effort)).join(" "),fill:"none",stroke:col,"stroke-width":2.2,"stroke-linejoin":"round"});
+    const L=HD[k][2];g("text",{x:px(0.445),y:py(L.effort)+(si===2?-8:si===1?18:-8),"text-anchor":"start","font-size":12,fill:ink2},lab);
+    const d=HD[k][idx];g("circle",{cx:px(d.h),cy:py(d.effort),r:6,fill:col,stroke:css("--surface"),"stroke-width":2})});
+  g("line",{x1:px(HD.none[idx].h),x2:px(HD.none[idx].h),y1:m.t,y2:Hh-m.b,stroke:css("--amber"),"stroke-width":1.5,"stroke-dasharray":"4 3"})}
+function hread(idx){const n=HD.none[idx],mm=HD.bar25[idx],hh=HD.barweak[idx],n0=HD.none[BI];$("#hv").textContent=n.h.toFixed(2);
+  const pc=((n.effort/n0.effort-1)*100).toFixed(0);
+  $("#hcmp").textContent=(pc>0?"+":"")+pc+"%";
+  $("#hrows").innerHTML=`<span>不用手 · effort</span><span class="v">${n.effort.toFixed(2)}</span><span>扶横杆 · 上限 25%</span><span class="v">${mm.effort.toFixed(2)}</span><span>扶横杆 · 肩肘 ×0.5</span><span class="v">${hh.effort.toFixed(2)}</span><span>不用手 · 躯干前倾</span><span class="v">${n.trunk}°</span><span>不用手 · 小腿前倾</span><span class="v">${n.shank}°</span>`;hdraw(idx)}
+const hs=$("#hs");hs.max=HD.none.length-1;hs.value=13;hs.addEventListener("input",()=>hread(+hs.value));hread(+hs.value);
+hc.addEventListener("pointermove",e=>{const r=hc.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W;let idx=Math.round((hmin+(x-m.l)/(W-m.l-m.r)*(hmax-hmin)-0.40)/0.02);idx=Math.max(0,Math.min(HD.none.length-1,idx));
+  if(+hs.value!==idx){hs.value=idx;hread(idx)}const tip=$("#htip");tip.hidden=false;tip.style.left=(px(HD.none[idx].h)/W*r.width+10)+"px";tip.style.top=(py(HD.barweak[idx].effort)/Hh*r.height+40)+"px";
+  tip.textContent=`${HD.none[idx].h.toFixed(2)} m · 不用手 ${HD.none[idx].effort.toFixed(2)} · 上限 25% ${HD.bar25[idx].effort.toFixed(2)} · 肩肘 ×0.5 ${HD.barweak[idx].effort.toFixed(2)}`});
+hc.addEventListener("pointerleave",()=>{$("#htip").hidden=true});
+
+/* fmea */
+const FM=[
+ ["B","误抬：还没准备好就开始抬升","被向前推、失去平衡","高","低","必须按“起”键，并且座板承重、双手横杆、双脚踏板、左右均衡同时满足"],
+ ["B","抬升中松手、头晕发软或往回坐","从斜面上滑落","高","中","停止，先回水平再降；侧扶手和横杆在一侧和前方挡"],
+ ["B","离座后头晕，坐回去","坐到斜面上滑落","高","中","离座后座板立即回水平、保持高度，接住人"],
+ ["B","用户卸不了载","座板升不动","中","中","推力上限约 0.5 × 体重：升不动就停，属于设计行为；这类用户不在目标人群"],
+ ["B","没坐正，或从座板开口一侧侧倒","侧滑、侧倒","高","中","左右受力差超限就不响应“起”键；开口一侧加随座板升的低挡边；座板只有约 14 cm 深，侧向稳定性待测"],
+ ["B","座板前倾让人向前滑","滑落","高","中","前倾 ≤ 15°、防滑面、双脚踏板承重才动"],
+ ["B","往前挪时坐空，从床和座板之间滑下","跌倒","高","中","座板后缘唇边压在床垫上；侧扶手全程可扶；测量床垫边下陷量（RQ4）"],
+ ["B","侧扶手和床垫之间、座板升起后下方的缝","头颈或肢体卡住（夹困）","高","低","按床栏夹困要求控制缝宽；座板下方用伸缩裙板封住"],
+ ["B","台架被拉翻","人和台架一起倒","高","中（未固定前）","设计载荷统一 177 N（体重 30%）：台架约 35 kg、踏板长 0.80 m、底座半宽 0.33 m，两个方向都满足；带脚轮的床要先锁住；倾翻计算见 RQ2"],
+ ["B","升降机构的夹点","夹手、夹腿","中","中","软罩、间隙校核、边缘触感开关；机构在座板下方、脚的后面"],
+ ["B","他人（伴侣、孩子、宠物）触发或被夹","意外动作","中","低","需要按键 + 四类受力条件同时满足"],
+ ["B","踏板边缘、台架占用通道","绊倒","中","中","踏板 ≤ 13 mm 厚、四边斜坡、夜灯照亮；扶手不伸出底座范围"],
+ ["B","找不到或按错“起”键","不抬升，或误以为坏了","低","中","按键在横杆正中、带背光；条件不满足时指示灯提示是哪一项"],
+ ["AB","认知障碍用户","不理解装置，在错误时机使用","高","—","列为不适用人群，或需照护者在场"],
+ ["B","只能用一只手（如偏瘫）","互锁条件永远不满足","中","—","单手模式待定（RQ3）"],
+ ["AB","断电或电池故障","乙停在高位；甲转不动","中","低","乙：自锁 + 手动缓降；甲：离合脱开可手推"],
+ ["A","扶手转动时扫到膝或俯身的头","碰撞、惊吓","中","中","只在手推时转、低速限扭矩、遇阻即停；转动范围在膝前方约 0.8 m 高"],
+ ["A","转动中人突然用力","扶手在手下移动","高","低","受力超过阈值立即锁死；机械棘轮"],
+ ["A","收起时当床栏用，与床垫之间有缝","夹困","高","低","按 ASTM F3186-17 的间隙要求设计"],
+ ["A","展开后挡路","碰撞、绊倒","中","中","人离开后超时自动收回"]
+];
+$("#fmea").innerHTML=`<thead><tr><th style="width:68px">方案</th><th>可能的失效</th><th>后果</th><th>严重度</th><th>可能性（初估）</th><th>对策（待验证）</th></tr></thead><tbody>`+FM.map(r=>`<tr><td class="tg">${tagHtml(r[0])}</td><th>${r[1]}</th><td>${r[2]}</td><td><span class="pill ${r[3]==="高"?"bad":"amber"}">${r[3]}</span></td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join("")+`</tbody>`;
+const WEAK=[
+ ["W1","仍要往前挪约 25–30 cm，目标人群能否做到未知；床垫边下陷会让座板唇边变成小台阶"],
+ ["W2","占地：约 0.66 × 0.80 m（含踏板），放在床前会占用下床通道"],
+ ["W3","动作序列长：坐到床沿、挪、握住、按键、抬升约 8 s，加起来估计 20–30 秒（待测），和尿急冲突"],
+ ["W4","机构：升高 + 前倾 + 扶手随升，夹点和故障点多"],
+ ["W5","座板窄（约 14 cm 深）且前倾，开口一侧有侧倒、向前滑的风险"],
+ ["W6","比抬高床只多省 17–20%：要说明这部分值得一台机器，以及谁不能用抬高床"]
+];
+$("#weak").innerHTML=`<thead><tr><th>编号</th><th>缺点</th><th>A 托板式</th><th>B 单驱动连杆</th><th>C 门控被动助力</th></tr></thead><tbody>`+
+ WEAK.map((w,i)=>{const fx={A:[0,1],B:[2,3],C:[2,3]};const c=k=>fx[k].includes(i)?'<span class="pill model">改善</span>':'<span class="muted">—</span>';return `<tr><th>${w[0]}</th><td>${w[1]}</td><td>${c("A")}</td><td>${c("B")}</td><td>${c("C")}</td></tr>`}).join("")+`</tbody>`;
+const ALTS=[
+ {k:"A 托板式：不用挪",d:"一块硬质托板平时铺在床沿的床垫上（或者折起来当床栏），由床前的台架支撑，台架底座伸进床底。老人坐在床沿，就等于坐在托板上，抬升直接从床沿开始。",fix:"W1 不用挪动；W2 床前只剩扶手和窄底座；床压住底座，更不容易翻。",nw:"床下要有约 10–15 cm 的空隙（箱式床不行）；睡觉时托板是否硌人；托板的收放机构。"},
+ {k:"B 单驱动连杆",d:"用一个电机加一套四连杆，让座板沿设计好的轨迹同时升高和前倾；扶手装在同一个滑架上一起升。",fix:"W3 动作更连贯；W4 只有一个驱动和一条轨迹，夹点和故障点更少。",nw:"轨迹固定，不能按人调整；需要做连杆的运动学优化，这正好适合用 SolidWorks 展示。"},
+ {k:"C 门控被动助力（不采用）",d:"用气弹簧储能（像 UpEasy：坐下时压缩，起身时释放），电子部分只负责“锁”：握住 + 踩实才解锁，阻尼器限速。",fix:"W3 抬升速度跟着人起身走；W4 没有电机；断电时保持锁定；成本低。",nw:"气弹簧在人开始起身时才释放，卸不了载的人得不到帮助（这正是 UpEasy 的局限），和“主动推”的原则冲突；助力大小按体重预设；太轻的人可能压不回弹簧。"}
+];
+$("#alts").innerHTML=ALTS.map(a=>`<div class="card ev"><h3>${a.k}</h3><p>${a.d}</p><p><b>补上：</b>${a.fix}</p><p class="lim">新问题：${a.nw}</p></div>`).join("");
+
+/* inline cite spans */
+document.querySelectorAll(".c[data-c]").forEach(sp=>{sp.innerHTML=" "+cite(sp.dataset.c)});
+
+/* ================= PART 4 ================= */
+const RQ=[
+ {id:"RQ1",t:"座板几何：抬多高、前缘放哪、前倾多少？",why:"决定“比抬高床多省多少”这个核心数字，以及座板会不会顶大腿。",how:"按身高 1.50–1.70 m 把抬升目标换算成腿长的比例（0.66 m 对应模型里的 1.60 m 老人）；检查座板前缘与大腿的间隙（前缘在髋关节正下方或更靠后，圆角）；12 天内前倾只做敏感性估计，完整的离座前阶段模型留作后续。模型里座面越高越省力，但超过约 0.66 m（腿长的约 78%）时人已接近站立，窄座板上坐回去的余地和侧向稳定都变差，所以不再往上加（判断，待测）。",kill:"如果前缘放在髋下方时座板太窄、人坐不稳，就加两侧挡边，或改用托板式（方向 A）。",out:"抬升目标随身高的换算表、座板截面尺寸",d:"10/23–10/24"},
+ {id:"RQ2",t:"机构与稳定：一个驱动够不够？会不会翻？",why:"决定能不能做出来、占多大地方，是 CAD 和 FEA 的主体。",how:"单驱动四连杆，让座板同时升高 24 cm 和前倾 15°，扶手装在同一滑架上。执行器选型：推力约 0.5 × 体重 + 平台自重（约 400–500 N）、行程 24 cm、约 8 s。做 SolidWorks CAD；FEA 载荷：1.5 倍体重压在座板 + 横杆水平力 177 N。倾翻按 177 N 在前后、左右两个方向校核（台架约 35 kg、踏板长 0.80 m、底座半宽 0.33 m）。",kill:"如果 35 kg、0.66 × 0.80 m 做不到 177 N 不翻，又不能绑床腿，就改用方向 A（底座伸进床底）。",out:"连杆运动学、执行器选型、CAD、FEA、倾翻计算",d:"10/25–10/31"},
+ {id:"RQ3",t:"控制：状态机在出事时都能落到安全状态吗？",why:"这是“闭环”的部分，也是 Q&A 一定会追问的安全论证。",how:"把状态机写成代码，用脚本化的传感器数据做仿真：正常起身、抬升中坐回、抬升中晕倒、单手松开、宠物压座板、断电、离座后坐回；检查每种情况的最终状态和座板轨迹。阈值由坐姿静力学和组员自测（体重秤 + 手机）初定；自测前先确认是否需要 NUS IRB 豁免，并说明健康学生不能代表 86 岁老人。",kill:"如果某个场景找不到既不误抬、又不漏抬的阈值，就再加一个确认条件（例如踏板压力中心前移）。",out:"状态机图、7 个场景的仿真时间线、阈值表",d:"10/24–10/31"},
+ {id:"RQ4",t:"往前挪 25–30 cm 可行吗？怎么回床？",why:"挪动是起身台新增的一步，也是最可能被追问的一步。",how:"10/27 前做：组员负重或穿护膝模拟，从 0.42 m 床沿往前挪到座板上，记录挪了几次、手用了多少力；量坐在床沿时床垫边下陷多少。画出回床路径：座板齐平时坐上去，往后挪回床面。侧扶手 = 座面 +0.22 m；横杆 = 座面 +0.40 m、髋前 0.55 m（Bolli 2023：老人自选高出座面 0.25–0.38 m，我们取偏高的一端，因为模型在更高处更省力）。",kill:"如果连模拟用户都挪得很吃力，就改用方向 A（托板式，不用挪）。",out:"挪动测试记录、下陷量、回床路径图",d:"10/23–10/26"},
+ {id:"RQ5",t:"安全论证够不够？",why:"会动、会施力的装置，Q&A 一定会被追问安全。",how:"按本页表格完善两个方案的失效模式分析，补上检测方式；核对侧扶手是否落入成人便携床栏标准（16 CFR 1270 / ASTM F3186-17）；确认其他适用标准（EN 12182、IEC 60601-1-11、ISO 13482）；明确不适用人群。",kill:"如果某个高严重度的失效找不到可行对策，就收缩功能（例如取消前倾）。",out:"失效模式分析表、标准清单、适用人群说明",d:"10/27–10/31"}
+];
+$("#rqs").innerHTML=RQ.map(r=>`<details class="fold rqd"><summary><span class="id">${r.id}</span><span class="st">${r.t}</span><span class="sd mono">${r.d}</span><span class="sd" style="flex-basis:100%">Kill test：${r.kill}</span></summary>
+ <div class="body"><dl class="kv" style="grid-template-columns:88px minmax(0,1fr)"><dt>它决定什么</dt><dd>${r.why}</dd><dt>怎么做</dt><dd>${r.how}</dd><dt>产出</dt><dd>${r.out}</dd></dl></div></details>`).join("");
+(function(){const days=[],start=new Date(2026,9,22);for(let k=0;k<13;k++){const d=new Date(start);d.setDate(start.getDate()+k);days.push(d)}
+  const wk=["日","一","二","三","四","五","六"],di=(mo,d)=>days.findIndex(x=>x.getMonth()===mo-1&&x.getDate()===d);
+  const lanes=[["RQ1 座板几何",10,23,10,24,""],["RQ2 机构 CAD/FEA",10,25,10,31,""],["RQ3 状态机仿真",10,24,10,31,""],["RQ4 挪动测试",10,23,10,26,""],["RQ5 安全",10,27,10,31,""],["整合 slides、彩排",10,30,11,2,"int"]];
+  const g=$("#gantt");g.style.gridTemplateColumns=`150px repeat(${days.length},minmax(44px,1fr))`;
+  let h='<div></div>'+days.map(d=>`<div class="hd">${d.getMonth()+1}/${d.getDate()}<br>${wk[d.getDay()]}</div>`).join("");
+  lanes.forEach((l,r)=>{const row=r+2;h+=`<div class="lane" style="grid-row:${row};grid-column:1">${l[0]}</div>`;for(let c=0;c<days.length;c++)h+=`<div class="cell" style="grid-row:${row};grid-column:${c+2}"></div>`;
+    h+=`<div class="gbar ${l[5]}" style="grid-row:${row};grid-column:${di(l[1],l[2])+2}/${di(l[3],l[4])+3}">${l[0].split(" ")[0]}</div>`});
+  const last=lanes.length+1;h+=`<div class="today" style="grid-row:2/${last+1};grid-column:${di(10,22)+2}"></div><div class="ms" style="grid-row:2/${last+1};grid-column:${di(10,27)+2}"><span>10/27 consultation</span></div><div class="ms" style="grid-row:2/${last+1};grid-column:${di(11,3)+2}"><span>11/3 提交 + 展示</span></div>`;
+  g.innerHTML=h})();
+const TODO=[
+ ["10/24 前定型：方案乙（单驱动四连杆）为主方案，方案甲作为对照","托板式（方向 A）只在挪动测试失败时启用。"],
+ ["抬升目标：座面 0.66 m（从 0.42 m 升 24 cm）","必须高于固定床能设的上限（约 0.58 m）才有意义；按身高换算（RQ1）。"],
+ ["目标人群表述","床抬到 0.58 m 仍站不起来、或不愿换床的人；能自己承担一部分体重、能用助行器走。不适用：认知障碍、需要移位机的人；偏瘫（单手）是否纳入？"],
+ ["“起”键还是自动触发","按键更安全、意图明确，但又回到“需要老人操作”；可以讨论是否用踏板压力中心前移代替。"],
+ ["扶手：单侧 L 形 + 开口侧低挡边","单侧留出开口给助行器交接；挡边防侧倒。"],
+ ["床的适配范围","床高 0.40–0.50 m；床前约 0.8 m 空间；带脚轮的床要先锁住；单人床还是双人床。"],
+ ["组员自测前确认伦理要求","是否需要 NUS IRB 豁免。"],
+ ["每个 RQ 的负责人",""],
+ ["10/27 consultation 带去什么","建议：问题全景、证据链、床高两难、两个方案演示、和低床/抬高床的对比、“为什么不直接调高床”、控制状态和失效模式表、挪动测试的初步结果。"]
+];
+let saved={};try{saved=JSON.parse(localStorage.getItem("bedexit-v5-todo")||"{}")}catch(e){}
+$("#todo").innerHTML=TODO.map((t,k)=>`<label for="td${k}"><input type="checkbox" id="td${k}" ${saved[k]?"checked":""}><span>${t[0]}${t[1]?`<small>${t[1]}</small>`:""}</span></label>`).join("");
+$("#todo").addEventListener("change",e=>{saved[e.target.id.slice(2)]=e.target.checked;try{localStorage.setItem("bedexit-v5-todo",JSON.stringify(saved))}catch(err){}});
+
+const redraw=()=>{shown&&render(shown,cur);hdraw(+hs.value);window.__cmpDraw&&window.__cmpDraw();window.__expDraw&&window.__expDraw()};
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redraw)}catch(e){}
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
