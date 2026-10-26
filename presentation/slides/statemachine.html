@@ -1,0 +1,13 @@
+<section id="statemachine" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:44px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:26px;color:#9A5408;letter-spacing:2px">4 · 控制</p>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">状态机：每种意外都落到安全状态</h2>
+</div>
+<img src="/_blob/b4e55b4f2dcef340f2ccf9dccdc48401" alt="状态机：待机、已坐上、抬升、停住、站立保持、下降、空载复位、锁定，以及它们之间的切换条件" style="width:1664px;height:300px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="background:#F7F5F0;border-radius:20px;padding:36px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:34px;font-weight:700;color:#9A5408">松手即停</h3><p style="font-size:28px;line-height:1.5;color:#3F4A57">松手或任何故障，立即停住并制动，座板停在当前高度</p></div>
+<div style="background:#F7F5F0;border-radius:20px;padding:36px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:34px;font-weight:700;color:#9A5408">有人坐着才降</h3><p style="font-size:28px;line-height:1.5;color:#3F4A57">按住“降”，或坐着一段时间没有操作，才带人慢慢降；座板上没人时不动</p></div>
+<div style="background:#F7F5F0;border-radius:20px;padding:36px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:34px;font-weight:700;color:#9A5408">离座后停住</h3><p style="font-size:28px;line-height:1.5;color:#3F4A57">人站起来后座板停在原高度、保持水平，坐回去也接得住</p></div>
+</div>
+<aside>控制部分我们用一个状态机。这张图是从仿真代码直接生成的。整个控制的核心是三条规则：第一，松手或者出任何故障，立即停住并制动；第二，只有确认有人坐着才下降，座板上没人时不动；第三，人站起来以后，座板停在原高度、保持水平，万一坐回去也接得住。传感器自检不通过时进入锁定，只允许慢速下降。</aside>
+</section>
