@@ -32,13 +32,19 @@ def seat_poly(L, tilt):
     tn = math.tan(math.radians(tilt)); h0 = 0.42 + L; zr = h0 + 0.14*tn; t = 0.045
     return [[-0.03,zr],[0,zr],[0.13,h0+0.01*tn],[0.14,h0-0.012],[0.14,h0-t],[0,zr-t],[-0.03,zr-0.012]], h0
 
-def scene(L=0.24, tilt=15, rail=True, column=True, bed=True, seat_cls="seat"):
+def anchor():
+    """hook plate slid between mattress and bed frame, tying the station to the bed"""
+    return (f'<rect class="hook" x="{X(-0.26):.1f}" y="{Z(0.276):.1f}" width="{0.26*S:.1f}" height="{0.012*S:.1f}" rx="1.5"/>'
+            f'<rect class="hook" x="{X(-0.004):.1f}" y="{Z(0.30):.1f}" width="{0.012*S:.1f}" height="{0.036*S:.1f}"/>')
+
+def scene(L=0.24, tilt=0, rail=True, column=True, bed=True, seat_cls="seat"):
     out = []
     out.append(f'<line class="fl" x1="0" y1="{Z(0):.1f}" x2="{W}" y2="{Z(0):.1f}"/>')
     if bed:
         out.append(f'<rect class="bed" x="{X(-0.5):.1f}" y="{Z(0.27):.1f}" width="{0.5*S:.1f}" height="{0.27*S:.1f}" rx="4"/>')
         out.append(f'<rect class="mat" x="{X(-0.5):.1f}" y="{Z(0.42):.1f}" width="{0.5*S:.1f}" height="{0.15*S:.1f}" rx="6"/>')
         out.append(f'<text class="tm" x="{X(-0.27):.1f}" y="{Z(0.13):.1f}">床</text>')
+        out.append(anchor())
     out.append(f'<polygon class="dev" points="{pts([[0,0],[0.80,0],[0.77,0.013],[0,0.013]])}"/>')
     sp, h0 = seat_poly(L, tilt)
     if column:
@@ -96,7 +102,7 @@ def overview():
     b.append(leader(0.69, 1.10, 0.86, 1.22)); b.append(mark(0.86, 1.22, "5", "mk r5"))
     b.append(f'<text class="tm" x="{X(0.50):.1f}" y="{Z(0.05):.1f}">踏板</text>')
     b.append(f'<text class="t b" x="{X(-0.28):.1f}" y="30">升起后</text>')
-    b.append(f'<text class="t" x="{X(-0.28):.1f}" y="50">座板 0.66 m · 前倾 15°</text>')
+    b.append(f'<text class="t" x="{X(-0.28):.1f}" y="50">座板 0.66 m · 保持水平</text>')
     return svg("".join(b), H_SCENE, label="起身台侧视图与各角色负责的部分")
 
 # ---------- role 2: forces at seat-off ----------
@@ -133,6 +139,8 @@ def role3():
     b.append(f'<rect class="bed" x="{X(-0.5):.1f}" y="{Z(0.27):.1f}" width="{0.5*S:.1f}" height="{0.27*S:.1f}" rx="4"/>')
     b.append(f'<rect class="mat" x="{X(-0.5):.1f}" y="{Z(0.42):.1f}" width="{0.5*S:.1f}" height="{0.15*S:.1f}" rx="6"/>')
     b.append(f'<text class="tm" x="{X(-0.27):.1f}" y="{Z(0.13):.1f}">床</text>')
+    b.append(anchor())
+    b.append(f'<text class="tm" x="{X(-0.27):.1f}" y="{Z(0.30)-2:.1f}">钩板</text>')
     b.append(f'<polygon class="dev" points="{pts([[0,0],[0.80,0],[0.77,0.013],[0,0.013]])}"/>')
     # foot keep-out zone
     b.append(f'<rect class="keep" x="{X(0.20):.1f}" y="{Z(0.20):.1f}" width="{0.55*S:.1f}" height="{(0.20-0.013)*S:.1f}"/>')
@@ -142,12 +150,12 @@ def role3():
     b.append(f'<text class="t b" x="{X(0.19):.1f}" y="{Z(0.30):.1f}">机构区</text>')
     b.append(f'<text class="tm" x="{X(0.19):.1f}" y="{Z(0.30)+18:.1f}">（由你设计）</text>')
     # flush seat (ghost) and raised seat
-    sp0, _ = seat_poly(0, 0); sp1, _ = seat_poly(0.24, 15)
+    sp0, _ = seat_poly(0, 0); sp1, _ = seat_poly(0.24, 0)
     b.append(f'<polygon class="ghost" points="{pts(sp0)}"/>')
     b.append(f'<polygon class="seat" points="{pts(sp1)}"/>')
     b.append(arrow(X(0.07), Z(0.47), X(0.07), Z(0.60), "ar"))
     b.append(f'<text class="t" x="{X(0.20):.1f}" y="{Z(0.42)+5:.1f}">齐平 0.42 m（虚线）</text>')
-    b.append(f'<text class="t" x="{X(0.20):.1f}" y="{Z(0.75):.1f}">升起 0.66 m，前倾 ≤ 15°</text>')
+    b.append(f'<text class="t" x="{X(0.20):.1f}" y="{Z(0.75):.1f}">竖直升到 0.66 m，保持水平</text>')
     # rail both positions
     BX = 0.69
     b.append(f'<line class="rl" stroke-width="8" opacity=".35" x1="{X(BX):.1f}" y1="{Z(0.02):.1f}" x2="{X(BX):.1f}" y2="{Z(0.55):.1f}"/>')
@@ -166,31 +174,29 @@ def role3_options():
     def frame(ox, title):
         return (f'<rect class="box" x="{ox+4}" y="4" width="{w-8}" height="168" rx="8"/>'
                 f'<text class="t b c" x="{ox+w/2}" y="160">{title}</text>')
-    # four-bar
-    ox = 10; b.append(frame(ox, "四连杆"))
-    g1, g2 = (ox+42, 128), (ox+82, 128); c1, c2 = (ox+56, 52), (ox+104, 46)
+    # twin columns
+    ox = 10; b.append(frame(ox, "两根同步立柱"))
     b.append(f'<line class="fl" x1="{ox+24}" y1="132" x2="{ox+136}" y2="132"/>')
-    b.append(f'<line class="lk" x1="{g1[0]}" y1="{g1[1]}" x2="{c1[0]}" y2="{c1[1]}"/><line class="lk" x1="{g2[0]}" y1="{g2[1]}" x2="{c2[0]}" y2="{c2[1]}"/>')
-    b.append(f'<polygon class="seat" points="{ox+40},{c1[1]-4} {ox+120},{c2[1]+6} {ox+120},{c2[1]+14} {ox+40},{c1[1]+4}"/>')
-    b.append(f'<line class="actl" x1="{ox+116}" y1="128" x2="{(g2[0]+c2[0])/2+2}" y2="{(g2[1]+c2[1])/2}"/>')
-    for p in (g1, g2, c1, c2): b.append(f'<circle class="pin" cx="{p[0]}" cy="{p[1]}" r="4"/>')
+    for cx in (ox+46, ox+114):
+        b.append(f'<rect class="dev" x="{cx-9}" y="80" width="18" height="52" rx="2"/><rect class="dev" x="{cx-6}" y="56" width="12" height="28"/>')
+    b.append(f'<rect class="seat" x="{ox+32}" y="48" width="96" height="9" rx="2"/>')
+    b.append(f'<line class="lk" x1="{ox+46}" y1="70" x2="{ox+114}" y2="70"/>')
+    b.append(f'<line class="actl" x1="{ox+80}" y1="128" x2="{ox+80}" y2="72"/>')
     # scissor
     ox = 180; b.append(frame(ox, "剪叉"))
     b.append(f'<line class="fl" x1="{ox+24}" y1="132" x2="{ox+136}" y2="132"/>')
     b.append(f'<rect class="dev" x="{ox+34}" y="124" width="92" height="8"/>')
-    b.append(f'<polygon class="seat" points="{ox+34},{50} {ox+126},{58} {ox+126},{66} {ox+34},{58}"/>')
-    b.append(f'<line class="lk" x1="{ox+40}" y1="124" x2="{ox+120}" y2="62"/><line class="lk" x1="{ox+120}" y1="124" x2="{ox+40}" y2="56"/>')
+    b.append(f'<rect class="seat" x="{ox+34}" y="52" width="92" height="9" rx="2"/>')
+    b.append(f'<line class="lk" x1="{ox+40}" y1="124" x2="{ox+120}" y2="62"/><line class="lk" x1="{ox+120}" y1="124" x2="{ox+40}" y2="62"/>')
     b.append(f'<line class="actl" x1="{ox+44}" y1="118" x2="{ox+92}" y2="96"/>')
     b.append(f'<circle class="pin" cx="{ox+80}" cy="{92}" r="4"/>')
     # column
-    ox = 350; b.append(frame(ox, "立柱直接顶升"))
+    ox = 350; b.append(frame(ox, "单立柱直接顶升"))
     b.append(f'<line class="fl" x1="{ox+24}" y1="132" x2="{ox+136}" y2="132"/>')
     b.append(f'<rect class="dev" x="{ox+58}" y="76" width="44" height="56" rx="3"/>')
     b.append(f'<rect class="dev" x="{ox+66}" y="56" width="28" height="24"/>')
     b.append(f'<line class="actl" x1="{ox+80}" y1="128" x2="{ox+80}" y2="62"/>')
-    b.append(f'<polygon class="seat" points="{ox+44},{44} {ox+122},{54} {ox+122},{62} {ox+44},{52}"/>')
-    b.append(f'<circle class="pin" cx="{ox+70}" cy="{50}" r="4"/>')
-    b.append(f'<line class="lk" x1="{ox+108}" y1="58" x2="{ox+94}" y2="76"/>')
+    b.append(f'<rect class="seat" x="{ox+40}" y="47" width="80" height="9" rx="2"/>')
     return svg("".join(b), 178, label="三种可能的升降机构示意")
 
 # ---------- role 4: actuator, tipping, check points ----------
@@ -264,8 +270,8 @@ def checks():
     b.append(arrow(bx-60, bz-34, bx-8, bz-4, "ar"))
     b.append(f'<text class="t" x="{bx-150:.1f}" y="{bz-38:.1f}">手压 / 拉横杆</text>')
     # check marks
-    for (x, z, n) in ((0.14, 0.62, "1"), (0.69, 0.55, "2"), (0.07, 0.30, "3"), (0.0, 0.88, "4")):
-        b.append(mark(x, z, n, "mk r4", dx=16 if n != "4" else 0, dy=0 if n != "4" else -18))
+    for (x, z, n) in ((0.14, 0.62, "1"), (0.69, 0.55, "2"), (0.07, 0.30, "3"), (0.0, 0.88, "4"), (-0.13, 0.27, "5")):
+        b.append(mark(x, z, n, "mk r4", dx=16 if n not in "45" else 0, dy=0 if n not in "45" else (-18 if n == "4" else 22)))
     b.append(f'<text class="tm" x="{X(0.50):.1f}" y="{Z(0.05):.1f}">踏板</text>')
     return svg("".join(b), H_SCENE, label="需要校核强度的位置")
 
@@ -283,8 +289,8 @@ def role5():
     b.append(leader(0.73, 0.86, 0.86, 1.00)); b.append(mark(0.86, 1.00, "3", "mk r5"))
     b.append(leader(0.33, 0.006, 0.12, 0.18)); b.append(mark(0.12, 0.18, "4", "mk r5"))
     b.append(f'<text class="tm" x="{X(0.50):.1f}" y="{Z(0.05):.1f}">踏板</text>')
-    b.append(f'<text class="t" x="{X(-0.28):.1f}" y="30">坐在座板上、握住横杆，等待按“起”键</text>')
-    return svg("".join(b), H_SCENE, label="传感器和按键的位置")
+    b.append(f'<text class="t" x="{X(-0.28):.1f}" y="30">坐在座板上、握住握把，准备握紧“起”开关</text>')
+    return svg("".join(b), H_SCENE, label="传感器和开关的位置")
 
 comp = json.load(open('../model/compare_v11.json'))
 c = comp["P1 cap25"]

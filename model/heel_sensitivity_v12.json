@@ -1,0 +1,76 @@
+{
+ "note": "station B66_x55_z40 with heel >= hip + 0.10 m (same as beds); compare_v11 used 0.08 m for the station",
+ "P1 cap25": {
+  "B66_heel010": {
+   "effort": 0.244,
+   "shank": 10,
+   "trunk": 0,
+   "hand": 21.0
+  },
+  "B66_heel008": 0.233,
+  "raised_bed": 0.291,
+  "low_bed": 0.389,
+  "vs_raised_heel010": -0.162,
+  "vs_raised_heel008": -0.199,
+  "vs_low_heel010": -0.373,
+  "vs_low_heel008": -0.401
+ },
+ "P2 arm x0.5": {
+  "B66_heel010": {
+   "effort": 0.263,
+   "shank": 10,
+   "trunk": 0,
+   "hand": 19.0
+  },
+  "B66_heel008": 0.251,
+  "raised_bed": 0.303,
+  "low_bed": 0.357,
+  "vs_raised_heel010": -0.132,
+  "vs_raised_heel008": -0.172,
+  "vs_low_heel010": -0.263,
+  "vs_low_heel008": -0.297
+ },
+ "P3 arm x0.35": {
+  "B66_heel010": {
+   "effort": 0.292,
+   "shank": 10,
+   "trunk": 0,
+   "hand": 17.6
+  },
+  "B66_heel008": 0.276,
+  "raised_bed": 0.34,
+  "low_bed": 0.4,
+  "vs_raised_heel010": -0.141,
+  "vs_raised_heel008": -0.188,
+  "vs_low_heel010": -0.27,
+  "vs_low_heel008": -0.31
+ },
+ "strong cap30": {
+  "B66_heel010": {
+   "effort": 0.23,
+   "shank": 10,
+   "trunk": 60,
+   "hand": 26.7
+  },
+  "B66_heel008": 0.221,
+  "raised_bed": 0.266,
+  "low_bed": 0.35,
+  "vs_raised_heel010": -0.135,
+  "vs_raised_heel008": -0.169,
+  "vs_low_heel010": -0.343,
+  "vs_low_heel008": -0.369
+ },
+ "none": {
+  "none66_heel010": {
+   "effort": 0.403,
+   "shank": 10,
+   "trunk": 30,
+   "hand": 0.0
+  },
+  "none66_heel008": 0.374,
+  "none58": 0.478,
+  "vs_058_heel010": -0.157,
+  "vs_058_heel008": -0.218,
+  "note": "key none57 in compare_v11.json is the 0.58 m bed (int(0.58*100)=57)"
+ }
+}

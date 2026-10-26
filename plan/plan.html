@@ -5,7 +5,7 @@
 <style>
 /* Layout: first steps → 5-minute primer → time points → core table + hours → role cards (tabs) → talk split → glossary → shared parameters. */
 :root{
-  --bg:#f6f7f8; --surface:#ffffff; --ink:#18202a; --ink2:#4a5562; --muted:#7a8592; --line:#dfe3e8;
+  --bg:#f6f7f8; --surface:#ffffff; --ink:#18202a; --ink2:#4a5562; --muted:#66707c; --line:#dfe3e8;
   --amber:#b86b0b; --amber-bg:#fdf3e2; --free:#eef5f5;
   --r1:#3d63b8; --r2:#1d8a63; --r3:#b0532c; --r4:#7b4bb0; --r5:#a7781a;
   --font-display:"Noto Serif SC","Songti SC",serif;
@@ -180,6 +180,14 @@ footer{font-size:12.5px;color:var(--muted)}
 .chain span.s{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:1px 10px;color:var(--ink)}
 .chain span.s.warn{border-color:var(--amber);color:var(--amber)}
 .chain i{font-style:normal;color:var(--muted)}
+.primer .en{display:block;margin-top:8px;font-size:13.5px;color:var(--muted);font-style:italic;line-height:1.6}
+.primer ul.req{margin:0;padding-left:1.2em;display:grid;gap:2px}
+.fbnote{font-size:14px;color:var(--ink2);border-top:1px solid var(--line);padding-top:12px}
+.fbnote summary{cursor:pointer;color:var(--muted)}
+.fbnote ul{margin:8px 0 0;padding-left:1.2em;display:grid;gap:2px}
+@media (max-width:600px){.fg .t{font-size:19px}.fg .tm{font-size:17px}.fg .mkt{font-size:15px}}
+.card .head .start{margin-top:4px}
+.fg .hook{fill:var(--r4)}
 </style>
 
 <div class="wrap">
@@ -203,20 +211,32 @@ footer{font-size:12.5px;color:var(--muted)}
   <h2 id="h-primer">五分钟了解项目</h2>
   <div class="primer"><dl>
     <dt>要解决的问题</dt><dd>还能独立生活、但腿力下降的老人，夜里起床（多半因为夜尿）从床沿站起来时最容易出事：天黑、刚醒、<b>床低站不起来</b>、站起后可能头晕。</dd>
-    <dt>我们的方案</dt><dd><b>床边起身台</b>（在方案网页里叫“方案乙”）：床不改。老人坐在床沿、脚踩台架的踏板，往前挪到一块和床面齐平的短座板上；按住横杆上的“起”键，座板升到约 0.66 m 并稍微前倾，把骨盆送高；L 形扶手跟着升，站起来后手边还有支撑。</dd>
+
+    <dt>目标用户</dt><dd>住在家里、夜里要起床的老人：从普通高度的床（约 0.42 m）站起来困难或不安全，但从更高的座面、手有扶的地方能站起来；能独立行走，或借助助行器行走。还要能独立坐在床沿、握住扶手、操作按住式开关。<br><b>不适用于</b>：需要他人或移位机完全协助转移的人，以及中重度认知障碍的人。
+      <span class="en">Target users: older adults living at home who have difficulty standing from a standard bed (about 0.42 m) but can stand from an elevated seat with hand support, and walk independently or with a walking aid. They can sit unsupported at the bed edge, grip a handrail and operate a hold-to-run button. Not intended for people who need full transfer assistance or who have moderate to severe cognitive impairment.</span></dd>
+    <dt>设计工况</dt><dd>60 kg、1.60 m 的使用者（模型和载荷都按这个算）；能承受的体重上限由角色 4 校核后补上。</dd>
+    <dt>设计要求</dt><dd><ul class="req">
+      <li>床不改造，台架和床固定；只在起身那一刻把座面竖直升到约 0.66 m，平时和床面齐平</li>
+      <li>推人的力不超过体重的一半左右：辅助人站起，不把人整个抬起来</li>
+      <li>用握把式“起”开关发出“要起来”的指令（至少一只手），再用座板、踏板的力分布确认人坐正了、脚踩实了，才允许抬升；传感器自检不通过就锁住</li>
+      <li>抬升速度跟着人自己卸掉的体重走，并能因人设定上限</li>
+      <li>人坐上去、在座板上挪动、起身、坐回时，台架都不会翻；扶手受拉时也不翻，按安全系数 1.5 校核</li>
+      <li>松手或出现故障立即停住；只有确认有人坐着才下降；离座后座板停在原高度、保持水平，能接住坐回的人</li>
+    </ul></dd>
+    <dt>我们的方案</dt><dd><b>床边起身台</b>（在方案网页里叫“方案乙”）：床不改。老人坐在床沿、脚踩台架的踏板，往前挪到一块和床面齐平的短座板上；握住横杆上的握把、握紧“起”开关，座板竖直升到约 0.66 m，把骨盆送高；L 形扶手跟着升，站起来后手边还有支撑。台架和床固定，床本身不改。</dd>
     <dt>两个比较对象</dt><dd>① <b>抬高床 + 扶手</b>：用床脚垫把床抬到 0.58 m，最便宜，也是最强的对手。② <b>动态扶手</b>（“方案甲”，组里最初的想法）：扶手平时当床栏，坐到床沿后转到身前。它只在对比图和一页说明里出现，不做 CAD。</dd>
-    <dt>核心结论</dt><dd>模型里，升到 0.66 m 比垫高到 0.58 m 的床再省力约 17–20%，比现在 0.42 m 的低床省 30–40%。这里的“省力”指 <b>effort</b>：最吃力的那个关节用掉了自己最大力量的几成，越低越轻松。起身台的意义是：只在起身那一刻，升到固定床不能设的高度。</dd>
-    <dt>要交什么</dt><dd>11/3 交一份<b>英文 slides</b>（同时当报告用）并展示；10/27 先和老师做一次 consultation。只做概念、设计和仿真，不做实物、不做实验。</dd>
+    <dt>核心结论</dt><dd>模型里，升到 0.66 m 比垫高到 0.58 m 的床再省力约 13–20%，比现在 0.42 m 的低床省 26–40%（范围来自手臂力量和脚下空间的不同假设）。这里的“省力”指 <b>effort</b>：最吃力的那个关节用掉了自己最大力量的几成，越低越轻松。起身台的意义是：只在起身那一刻，升到固定床不能设的高度。</dd>
+    <dt>要交什么</dt><dd>11/3 交一份<b>英文 slides</b>（同时当报告用）并展示。主 slides 精简，设计和分析的细节、更多图、答问备用页放附录，附录不限页数；10/27 先和老师做一次 consultation。只做概念、设计和仿真，不做实物、不做实验。</dd>
     <dt>资料在哪</dt><dd><a href="https://claude.ai/artifact/DeLUrZ8vq8NcvaajPoN7pv" target="_blank" rel="noopener">方案网页</a>（中文，问题分析、动画、模型结果、风险表）；<a href="https://github.com/xiaweiyi0423/me5412-bedexit-proposal" target="_blank" rel="noopener">GitHub 仓库</a>（模型代码在 model/，只看文件名带 v11 的；文献和专利检索在 docs/）。</dd>
-    <dt>常见词</dt><dd><b>FMEA</b>：风险表，写“怎么出事 → 后果 → 多严重 → 怎么防”。<b>状态机</b>：把控制逻辑画成几个状态（待机、抬升……）和它们之间的切换条件。<b>“闭环”</b>：这里指从设计走到验证，不是反馈控制。</dd>
+    <dt>常见词</dt><dd><b>FMEA</b>：风险表，写“怎么出事 → 后果 → 多严重 → 怎么防”。<b>状态机</b>：把控制逻辑画成几个状态（待机、抬升……）和它们之间的切换条件。<b>压力中心</b>：几个测力点合起来，重量落在哪里。</dd>
   </dl></div>
   <figure class="fg primerfig" style="margin:0">
-   <svg viewBox="0 0 520 438" role="img" aria-label="起身台侧视图与各角色负责的部分"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="239.0" width="18.0" height="93.0"/><polygon class="seat" points="101.0,212.7 110.0,212.7 149.0,223.2 152.0,227.6 152.0,237.5 110.0,226.2 101.0,216.3"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><polyline class="pk" stroke-width="6" points="221.0,77.3 152.0,197.0 236.0,290.0 197.0,403.4 248.0,416.0"/><circle class="pk hd" stroke-width="4" cx="239.0" cy="46.1" r="16.5"/><polyline class="pk" stroke-width="4" points="221.0,77.3 266.0,128.0 317.0,104.0"/><rect class="act" x="125.0" y="338.0" width="12.0" height="66.0" rx="3"/><circle class="jt r2" cx="152.0" cy="197.0" r="6"/><circle class="jt r2" cx="236.0" cy="290.0" r="6"/><circle class="jt r2" cx="197.0" cy="403.4" r="6"/><line class="ld" x1="236.0" y1="290.0" x2="296.0" y2="314.0"/><circle class="mk r2" cx="296.0" cy="314.0" r="11"/><text class="mkt" x="296.0" y="318.5">2</text><line class="ld" x1="116.0" y1="236.0" x2="62.0" y2="182.0"/><circle class="mk r3" cx="62.0" cy="182.0" r="11"/><text class="mkt" x="62.0" y="186.5">3</text><line class="ld" x1="131.0" y1="371.0" x2="62.0" y2="398.0"/><circle class="mk r4" cx="62.0" cy="398.0" r="11"/><text class="mkt" x="62.0" y="402.5">4</text><circle class="sn" cx="131.0" cy="218.0" r="5.5"/><circle class="sn" cx="317.0" cy="92.0" r="5.5"/><circle class="sn" cx="236.0" cy="413.0" r="5.5"/><line class="ld" x1="317.0" y1="92.0" x2="368.0" y2="56.0"/><circle class="mk r5" cx="368.0" cy="56.0" r="11"/><text class="mkt" x="368.0" y="60.5">5</text><text class="tm" x="260.0" y="407.0">踏板</text><text class="t b" x="26.0" y="30">升起后</text><text class="t" x="26.0" y="50">座板 0.66 m · 前倾 15°</text></svg>
+   <svg viewBox="0 0 520 438" role="img" aria-label="起身台侧视图与各角色负责的部分"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><rect class="hook" x="32.0" y="339.2" width="78.0" height="3.6" rx="1.5"/><rect class="hook" x="108.8" y="332.0" width="3.6" height="10.8"/><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="239.0" width="18.0" height="93.0"/><polygon class="seat" points="101.0,224.0 110.0,224.0 149.0,224.0 152.0,227.6 152.0,237.5 110.0,237.5 101.0,227.6"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><polyline class="pk" stroke-width="6" points="221.0,77.3 152.0,197.0 236.0,290.0 197.0,403.4 248.0,416.0"/><circle class="pk hd" stroke-width="4" cx="239.0" cy="46.1" r="16.5"/><polyline class="pk" stroke-width="4" points="221.0,77.3 266.0,128.0 317.0,104.0"/><rect class="act" x="125.0" y="338.0" width="12.0" height="66.0" rx="3"/><circle class="jt r2" cx="152.0" cy="197.0" r="6"/><circle class="jt r2" cx="236.0" cy="290.0" r="6"/><circle class="jt r2" cx="197.0" cy="403.4" r="6"/><line class="ld" x1="236.0" y1="290.0" x2="296.0" y2="314.0"/><circle class="mk r2" cx="296.0" cy="314.0" r="11"/><text class="mkt" x="296.0" y="318.5">2</text><line class="ld" x1="116.0" y1="236.0" x2="62.0" y2="182.0"/><circle class="mk r3" cx="62.0" cy="182.0" r="11"/><text class="mkt" x="62.0" y="186.5">3</text><line class="ld" x1="131.0" y1="371.0" x2="62.0" y2="398.0"/><circle class="mk r4" cx="62.0" cy="398.0" r="11"/><text class="mkt" x="62.0" y="402.5">4</text><circle class="sn" cx="131.0" cy="218.0" r="5.5"/><circle class="sn" cx="317.0" cy="92.0" r="5.5"/><circle class="sn" cx="236.0" cy="413.0" r="5.5"/><line class="ld" x1="317.0" y1="92.0" x2="368.0" y2="56.0"/><circle class="mk r5" cx="368.0" cy="56.0" r="11"/><text class="mkt" x="368.0" y="60.5">5</text><text class="tm" x="260.0" y="407.0">踏板</text><text class="t b" x="26.0" y="30">升起后</text><text class="t" x="26.0" y="50">座板 0.66 m · 保持水平</text></svg>
    <figcaption><p><b>起身台升起后的侧视图，数字是负责这一部分的角色：</b></p><ul>
     <li><span class="chip" style="--k:var(--r2)">2</span><span><b>模型与几何</b>：人在屁股离开座板那一刻，髋、膝、踝（绿点）各要出多少力；座板升多高最省力。</span></li>
-    <li><span class="chip" style="--k:var(--r3)">3</span><span><b>机构与 CAD</b>：橙色座板和下面的升降机构，怎么从和床齐平升到 0.66 m 并前倾。</span></li>
-    <li><span class="chip" style="--k:var(--r4)">4</span><span><b>结构与安全</b>：立柱里的执行器（紫色，一根电动推杆）要多大推力，零件撑不撑得住，台架会不会翻。</span></li>
-    <li><span class="chip" style="--k:var(--r5)">5</span><span><b>控制与仿真</b>：黄点是传感器（座板、横杆、踏板），什么时候抬、出事了怎么办。</span></li>
+    <li><span class="chip" style="--k:var(--r3)">3</span><span><b>机构与 CAD</b>：橙色座板和下面的升降机构，怎么从和床齐平竖直升到 0.66 m；床垫下的钩板把台架和床固定。</span></li>
+    <li><span class="chip" style="--k:var(--r4)">4</span><span><b>结构与安全</b>：立柱里的执行器（紫色，一根电动推杆）要多大推力，零件撑不撑得住，台架稳不稳。</span></li>
+    <li><span class="chip" style="--k:var(--r5)">5</span><span><b>控制与仿真</b>：黄点是传感器（座板、横杆、踏板），什么时候抬、抬多快、出事了怎么办。</span></li>
     <li><span class="chip" style="--k:var(--r1)">1</span><span><b>问题与整合</b>：为什么要做它，并把上面四块串成一个故事。</span></li>
    </ul></figcaption>
   </figure>
@@ -226,9 +246,9 @@ footer{font-size:12.5px;color:var(--muted)}
   <h2 id="h-time">建议的时间点</h2>
   <p class="lead">只有 10/27 和 11/3 是固定的，其余是建议。每个时间点只看“东西在不在”，不评好坏。</p>
   <ol class="times">
-    <li><span class="d">10/24 六</span><span>共享 slides（英文模板）建好，每一节先放一页占位，附上本页的术语表和参数表。</span></li>
+    <li><span class="d">10/24 六</span><span>共享 slides（英文模板）建好，链接贴在群里；每一节先放一页占位，附上本页的术语表和参数表。</span></li>
     <li><span class="d">10/26 一 晚</span><span>每人在共享 slides 里有 1 页（图 + 一句结论）和 1 个想问老师的问题。角色 1 整理成 consultation 版。</span></li>
-    <li class="fix"><span class="d">10/27 二</span><span><b>consultation</b>。角色 1 记录老师意见，当天发到群里。</span></li>
+    <li class="fix"><span class="d">10/27 二</span><span><b>consultation</b>。老师已经回过邮件，可以带初版机构草图和状态机去，确认“速度随人自适应”的做法。角色 1 记录老师意见，当天发到群里。</span></li>
     <li><span class="d">10/29 四 晚</span><span>核心问题都有了初步答案；机构尺寸和台架质量大致确定，共用参数表定下来，之后改数先在群里说。</span></li>
     <li><span class="d">10/31 六 晚</span><span>内容基本定稿。还在进行中的部分，先保留占位页并写清“后续工作”。</span></li>
     <li><span class="d">11/1 – 11/2</span><span>合稿，每人检查自己的页；两次彩排，第二次计时。</span></li>
@@ -255,7 +275,7 @@ footer{font-size:12.5px;color:var(--muted)}
   <div class="two">
     <div class="box"><h3>可以先简化的（从上往下）</h3><ol>
       <li>所有拓展项</li>
-      <li>角色 3 的 CAD 视图减到 2 张</li>
+      <li>角色 3 的 CAD 静态视图减到 2 张（运动动画保留）</li>
       <li>角色 5 的编程仿真减到 3 个场景，其余用纸面场景表</li>
       <li>角色 4 的 FEA 改成手算横杆弯曲，加一张示意图</li>
       <li>角色 2 的人体姿态检查减到 2 个姿态</li>
@@ -265,7 +285,9 @@ footer{font-size:12.5px;color:var(--muted)}
       <li>对比图和“为什么不直接把床垫高”</li>
       <li>机构的 2D 运动简图</li>
       <li>状态机 + 场景表（纸面或仿真）</li>
-      <li>倾翻和 FMEA 的主要几条</li>
+      <li>CAD 运动动画</li>
+      <li>稳定性（合重心）和 FMEA 的主要几条</li>
+      <li>速度自适应的规则（写进状态机即可，不一定要仿真）</li>
       <li>需求—验证对照表</li>
       <li>局限与后续工作</li>
     </ul></div>
@@ -284,7 +306,19 @@ footer{font-size:12.5px;color:var(--muted)}
   <div class="scroll"><table class="stack"><thead><tr><th>参数</th><th>取值</th><th>谁会用到</th></tr></thead><tbody id="defs"></tbody></table></div>
 </section>
 
-<footer>截至 2026-10-23。以上都是建议，以组内讨论为准。</footer>
+<section aria-labelledby="h-fb">
+  <details class="fbnote"><summary id="h-fb">附：老师对方案邮件的回复要点（10/26）</summary>
+  <ul>
+    <li>目标用户的定义清楚；方案可以；只做概念、设计和仿真就够；验证方法够。</li>
+    <li>要考虑人坐上去、挪动时重心变化带来的台架稳定性。</li>
+    <li>用户界面和操作安全很关键：手握输入，加上压力和力分布传感；抬升速度要能个性化、自适应。</li>
+    <li>要展示 CAD 模型和运动动画。</li>
+    <li>把机构概念和状态机控制器讲清楚，工作量就够了。</li>
+    <li>主 slides 不要太多，细节可以放附录，附录不限页数。</li>
+  </ul></details>
+</section>
+
+<footer>截至 2026-10-26（第 12 版设计：竖直升降、和床固定）。以上都是建议，以组内讨论为准。</footer>
 </div>
 
 <script>
@@ -298,95 +332,98 @@ const chips=s=>s.split(" ").map(chip).join(" ");
 const FIGHTML=k=>({"1":`<div class="figs one"><figure class="fg"><div class="story">
  <div class="mine"><b>问题</b><span>谁、什么时候、为什么容易出事</span><span class="who">${chip("1")}</span></div>
  <div class="mine"><b>现有办法为什么不够</b><span>低床、抬高床、方案甲</span><span class="who">${chip("1")} ${chip("2")}</span></div>
- <div><b>我们的方案</b><span>起身台长什么样、怎么用</span><span class="who">${chip("3")}</span></div>
- <div><b>能不能用</b><span>省多少力；推得动、不会翻；怎么控制</span><span class="who">${chip("2")} ${chip("4")} ${chip("5")}</span></div>
+ <div><b>我们的方案</b><span>起身台长什么样、一次完整使用</span><span class="who">${chip("3")}</span></div>
+ <div><b>能不能用</b><span>省多少力；推得动、稳不稳；怎么控制</span><span class="who">${chip("2")} ${chip("4")} ${chip("5")}</span></div>
  <div class="mine"><b>结论</b><span>需求 → 验证 → 结果；局限</span><span class="who">${chip("1")}</span></div>
-</div><figcaption><p>整份 slides 的故事线。框出来的三段是你主要写的；另外两段由别人提供内容，你负责把它们接进来、前后说法一致。</p></figcaption></figure></div>`,"2":`<div class="figs"><figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="离座瞬间人体受力和关节力矩"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="239.0" width="18.0" height="93.0"/><polygon class="seat" points="101.0,212.7 110.0,212.7 149.0,223.2 152.0,227.6 152.0,237.5 110.0,226.2 101.0,216.3"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><polyline class="pk dim" stroke-width="6" points="221.0,77.3 152.0,197.0 236.0,290.0 197.0,403.4 248.0,416.0"/><circle class="pk dim hd" stroke-width="4" cx="239.0" cy="46.1" r="16.5"/><polyline class="pk dim" stroke-width="4" points="221.0,77.3 266.0,128.0 317.0,104.0"/><path class="mo" d="M138.0 187.0 A 17 17 0 1 1 138.0 207.0"/><circle class="jt r2" cx="152.0" cy="197.0" r="6"/><text class="t b" x="106.0" y="202.0">M髋</text><path class="mo" d="M222.0 280.0 A 17 17 0 1 1 222.0 300.0"/><circle class="jt r2" cx="236.0" cy="290.0" r="6"/><text class="t b" x="250.0" y="295.0">M膝</text><path class="mo" d="M183.0 393.4 A 17 17 0 1 1 183.0 413.4"/><circle class="jt r2" cx="197.0" cy="403.4" r="6"/><text class="t b" x="151.0" y="408.4">M踝</text><line class="ar" stroke-width="2.5" x1="317.0" y1="104.0" x2="283.0" y2="78.0"/><polygon class="arf" points="283.0,78.0 291.7,80.3 287.5,85.8"/><text class="t" x="199.0" y="74.0">手上的力</text><line class="ar" stroke-width="2.5" x1="218.0" y1="424.0" x2="212.0" y2="360.0"/><polygon class="arf" points="212.0,360.0 216.3,367.9 209.3,368.6"/><text class="t" x="224.0" y="378.0">地面反力</text><text class="t b" x="26.0" y="30">离座瞬间</text><text class="t" x="26.0" y="50">座板上的力 = 0</text><circle class="cg" cx="191.0" cy="158.0" r="6"/><line class="ar" stroke-width="2.5" x1="191.0" y1="164.0" x2="191.0" y2="216.0"/><polygon class="arf" points="191.0,216.0 187.5,207.7 194.5,207.7"/><text class="t" x="199.0" y="202.0">体重</text></svg><figcaption>
+</div><figcaption><p>整份 slides 的故事线。框出来的三段是你主要写的；另外两段由别人提供内容，你负责把它们接进来、前后说法一致。</p></figcaption></figure></div>`,"2":`<div class="figs"><figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="离座瞬间人体受力和关节力矩"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><rect class="hook" x="32.0" y="339.2" width="78.0" height="3.6" rx="1.5"/><rect class="hook" x="108.8" y="332.0" width="3.6" height="10.8"/><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="239.0" width="18.0" height="93.0"/><polygon class="seat" points="101.0,224.0 110.0,224.0 149.0,224.0 152.0,227.6 152.0,237.5 110.0,237.5 101.0,227.6"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><polyline class="pk dim" stroke-width="6" points="221.0,77.3 152.0,197.0 236.0,290.0 197.0,403.4 248.0,416.0"/><circle class="pk dim hd" stroke-width="4" cx="239.0" cy="46.1" r="16.5"/><polyline class="pk dim" stroke-width="4" points="221.0,77.3 266.0,128.0 317.0,104.0"/><path class="mo" d="M138.0 187.0 A 17 17 0 1 1 138.0 207.0"/><circle class="jt r2" cx="152.0" cy="197.0" r="6"/><text class="t b" x="106.0" y="202.0">M髋</text><path class="mo" d="M222.0 280.0 A 17 17 0 1 1 222.0 300.0"/><circle class="jt r2" cx="236.0" cy="290.0" r="6"/><text class="t b" x="250.0" y="295.0">M膝</text><path class="mo" d="M183.0 393.4 A 17 17 0 1 1 183.0 413.4"/><circle class="jt r2" cx="197.0" cy="403.4" r="6"/><text class="t b" x="151.0" y="408.4">M踝</text><line class="ar" stroke-width="2.5" x1="317.0" y1="104.0" x2="283.0" y2="78.0"/><polygon class="arf" points="283.0,78.0 291.7,80.3 287.5,85.8"/><text class="t" x="199.0" y="74.0">手上的力</text><line class="ar" stroke-width="2.5" x1="218.0" y1="424.0" x2="212.0" y2="360.0"/><polygon class="arf" points="212.0,360.0 216.3,367.9 209.3,368.6"/><text class="t" x="224.0" y="378.0">地面反力</text><text class="t b" x="26.0" y="30">离座瞬间</text><text class="t" x="26.0" y="50">座板上的力 = 0</text><circle class="cg" cx="191.0" cy="158.0" r="6"/><line class="ar" stroke-width="2.5" x1="191.0" y1="164.0" x2="191.0" y2="216.0"/><polygon class="arf" points="191.0,216.0 187.5,207.7 194.5,207.7"/><text class="t" x="199.0" y="202.0">体重</text></svg><figcaption>
  <p><b>你要算的就是这一瞬间。</b>座板升到 0.66 m、屁股刚离开座板：座板不再受力，人只靠脚踩地、手拉横杆，加上髋、膝、踝三个关节出力（M 是关节力矩）。</p>
  <p>模型在力平衡的前提下，找一种手脚用力的分配，让“最吃力的那个关节用掉的力量比例”最小，这个比例就是 effort。</p></figcaption></figure>
- <figure class="fg"><div class="hbars"><div class="row"><span class="lab">低床 0.42 m，撑床垫</span><div class="trk"><div class="fill m" style="width:86%"></div></div><span class="v">0.39</span></div><div class="row"><span class="lab">抬高床 0.58 m + 扶手</span><div class="trk"><div class="fill m" style="width:65%"></div></div><span class="v">0.29</span></div><div class="row"><span class="lab">方案甲（动态扶手）</span><div class="trk"><div class="fill m" style="width:86%"></div></div><span class="v">0.39</span></div><div class="row"><span class="lab">起身台 0.66 m</span><div class="trk"><div class="fill c" style="width:52%"></div></div><span class="v">0.23</span></div></div><figcaption>
+ <figure class="fg"><div class="hbars"><div class="row"><span class="lab">低床 0.42 m，撑床垫</span><div class="trk"><div class="fill m" style="width:86%"></div></div><span class="v">0.39</span></div><div class="row"><span class="lab">抬高床 0.58 m + 扶手</span><div class="trk"><div class="fill m" style="width:65%"></div></div><span class="v">0.29</span></div><div class="row"><span class="lab">方案甲（动态扶手）</span><div class="trk"><div class="fill m" style="width:86%"></div></div><span class="v">0.39</span></div><div class="row"><span class="lab">起身台 0.66 m</span><div class="trk"><div class="fill c" style="width:52%"></div></div><span class="v">0.23</span></div><div class="row"><span class="lab">起身台，脚下空间同床</span><div class="trk"><div class="fill c" style="width:54%"></div></div><span class="v">0.24</span></div></div><figcaption>
  <p><b>effort 对比</b>（越低越轻松；这里是“手上最多出 25% 体重”这一种假设）。</p>
- <p>另外三种手臂假设下排序一样：起身台比抬高床低 17–20%，比低床低 30–40%。</p></figcaption></figure></div>`,"3":`<div class="figs"><figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="座板两个位置和机构可以放的区域"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="keep" x="170.0" y="362.0" width="165.0" height="56.1"/><text class="t" x="200.0" y="392.0">脚的空间，机构别放这里</text><rect class="env" x="107.0" y="236.0" width="54.0" height="182.1" rx="4"/><text class="t b" x="167.0" y="332.0">机构区</text><text class="tm" x="167.0" y="350.0">（由你设计）</text><polygon class="ghost" points="101.0,296.0 110.0,296.0 149.0,296.0 152.0,299.6 152.0,309.5 110.0,309.5 101.0,299.6"/><polygon class="seat" points="101.0,212.7 110.0,212.7 149.0,223.2 152.0,227.6 152.0,237.5 110.0,226.2 101.0,216.3"/><line class="ar" stroke-width="2.5" x1="131.0" y1="281.0" x2="131.0" y2="242.0"/><polygon class="arf" points="131.0,242.0 134.5,250.3 127.5,250.3"/><text class="t" x="170.0" y="301.0">齐平 0.42 m（虚线）</text><text class="t" x="170.0" y="197.0">升起 0.66 m，前倾 ≤ 15°</text><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="ghostl" x1="110.0" y1="230.0" x2="317.0" y2="230.0"/><line class="ghostl" x1="317.0" y1="272.0" x2="317.0" y2="176.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><text class="t" x="194.0" y="109.0">L 形扶手跟着升</text><text class="tm" x="329.0" y="332.0">外套管</text></svg><figcaption>
- <p><b>座板要完成的动作：</b>从和床齐平（虚线）升到 0.66 m，同时前倾，L 形扶手一起升，前立柱在外套管里滑。</p>
- <p>机构要放进紫色虚线框；前面绿色虚线框是脚的位置，最好不放东西。</p></figcaption></figure>
- <figure class="fg"><svg viewBox="0 0 520 178" role="img" aria-label="三种可能的升降机构示意"><rect class="box" x="14" y="4" width="152" height="168" rx="8"/><text class="t b c" x="90.0" y="160">四连杆</text><line class="fl" x1="34" y1="132" x2="146" y2="132"/><line class="lk" x1="52" y1="128" x2="66" y2="52"/><line class="lk" x1="92" y1="128" x2="114" y2="46"/><polygon class="seat" points="50,48 130,52 130,60 50,56"/><line class="actl" x1="126" y1="128" x2="105.0" y2="87.0"/><circle class="pin" cx="52" cy="128" r="4"/><circle class="pin" cx="92" cy="128" r="4"/><circle class="pin" cx="66" cy="52" r="4"/><circle class="pin" cx="114" cy="46" r="4"/><rect class="box" x="184" y="4" width="152" height="168" rx="8"/><text class="t b c" x="260.0" y="160">剪叉</text><line class="fl" x1="204" y1="132" x2="316" y2="132"/><rect class="dev" x="214" y="124" width="92" height="8"/><polygon class="seat" points="214,50 306,58 306,66 214,58"/><line class="lk" x1="220" y1="124" x2="300" y2="62"/><line class="lk" x1="300" y1="124" x2="220" y2="56"/><line class="actl" x1="224" y1="118" x2="272" y2="96"/><circle class="pin" cx="260" cy="92" r="4"/><rect class="box" x="354" y="4" width="152" height="168" rx="8"/><text class="t b c" x="430.0" y="160">立柱直接顶升</text><line class="fl" x1="374" y1="132" x2="486" y2="132"/><rect class="dev" x="408" y="76" width="44" height="56" rx="3"/><rect class="dev" x="416" y="56" width="28" height="24"/><line class="actl" x1="430" y1="128" x2="430" y2="62"/><polygon class="seat" points="394,44 472,54 472,62 394,52"/><circle class="pin" cx="420" cy="50" r="4"/><line class="lk" x1="458" y1="58" x2="444" y2="76"/></svg><figcaption>
- <p><b>三种可能的机构</b>（示意）。紫色粗线是执行器（电动推杆），黑线是连杆，圆圈是铰点。</p>
- <p>方案网页倾向四连杆：一根推杆就能同时升高和前倾。用哪一种、尺寸多少，由你判断。</p></figcaption></figure></div>`,"4":`<div class="figs"><figure class="fg"><svg viewBox="0 0 460 150" role="img" aria-label="电动推杆（执行器）结构示意"><rect class="act" x="80" y="84" width="74" height="34" rx="6"/><text class="t c" x="117" y="142">电机 + 减速箱</text><rect class="tube" x="30" y="56" width="230" height="28" rx="6"/><line class="screw" x1="44" y1="70" x2="250" y2="70"/><rect class="rod" x="260" y="63" width="120" height="14" rx="3"/><circle class="pin" cx="22" cy="70" r="9"/><circle class="pin" cx="392" cy="70" r="9"/><text class="t c" x="150" y="46">外管（里面是丝杠，虚线）</text><text class="t c" x="320" y="54">推杆：伸出 / 缩回</text><text class="tm c" x="22" y="100">铰接孔</text><text class="tm c" x="392" y="100">铰接孔</text><line class="dim" x1="260" y1="110" x2="380" y2="110"/><line class="dim" x1="260" y1="104" x2="260" y2="116"/><line class="dim" x1="380" y1="104" x2="380" y2="116"/><text class="t c" x="320" y="130">行程（伸出的长度）</text><line class="ar" stroke-width="2.5" x1="404.0" y1="70.0" x2="448.0" y2="70.0"/><polygon class="arf" points="448.0,70.0 439.7,73.5 439.7,66.5"/><text class="t b" x="410" y="56">推力 F</text></svg><figcaption>
+ <p>最后一根是起身台也按床的脚下空间（脚跟在髋前 10 cm）算的结果。四种手臂假设下，起身台比抬高床低 13–20%，比低床低 26–40%。</p></figcaption></figure></div>`,"3":`<div class="figs"><figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="座板两个位置和机构可以放的区域"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><rect class="hook" x="32.0" y="339.2" width="78.0" height="3.6" rx="1.5"/><rect class="hook" x="108.8" y="332.0" width="3.6" height="10.8"/><text class="tm" x="29.0" y="330.0">钩板</text><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="keep" x="170.0" y="362.0" width="165.0" height="56.1"/><text class="t" x="200.0" y="392.0">脚的空间，机构别放这里</text><rect class="env" x="107.0" y="236.0" width="54.0" height="182.1" rx="4"/><text class="t b" x="167.0" y="332.0">机构区</text><text class="tm" x="167.0" y="350.0">（由你设计）</text><polygon class="ghost" points="101.0,296.0 110.0,296.0 149.0,296.0 152.0,299.6 152.0,309.5 110.0,309.5 101.0,299.6"/><polygon class="seat" points="101.0,224.0 110.0,224.0 149.0,224.0 152.0,227.6 152.0,237.5 110.0,237.5 101.0,227.6"/><line class="ar" stroke-width="2.5" x1="131.0" y1="281.0" x2="131.0" y2="242.0"/><polygon class="arf" points="131.0,242.0 134.5,250.3 127.5,250.3"/><text class="t" x="170.0" y="301.0">齐平 0.42 m（虚线）</text><text class="t" x="170.0" y="197.0">竖直升到 0.66 m，保持水平</text><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="ghostl" x1="110.0" y1="230.0" x2="317.0" y2="230.0"/><line class="ghostl" x1="317.0" y1="272.0" x2="317.0" y2="176.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><text class="t" x="194.0" y="109.0">L 形扶手跟着升</text><text class="tm" x="329.0" y="332.0">外套管</text></svg><figcaption>
+ <p><b>座板要完成的动作：</b>从和床齐平（虚线）竖直升到 0.66 m，全程保持水平；L 形扶手一起升，前立柱在外套管里滑。</p>
+ <p>机构要放进紫色虚线框；前面绿色虚线框是脚的位置，最好不放东西。床垫下的钩板把台架和床固定。</p></figcaption></figure>
+ <figure class="fg"><svg viewBox="0 0 520 178" role="img" aria-label="三种可能的升降机构示意"><rect class="box" x="14" y="4" width="152" height="168" rx="8"/><text class="t b c" x="90.0" y="160">两根同步立柱</text><line class="fl" x1="34" y1="132" x2="146" y2="132"/><rect class="dev" x="47" y="80" width="18" height="52" rx="2"/><rect class="dev" x="50" y="56" width="12" height="28"/><rect class="dev" x="115" y="80" width="18" height="52" rx="2"/><rect class="dev" x="118" y="56" width="12" height="28"/><rect class="seat" x="42" y="48" width="96" height="9" rx="2"/><line class="lk" x1="56" y1="70" x2="124" y2="70"/><line class="actl" x1="90" y1="128" x2="90" y2="72"/><rect class="box" x="184" y="4" width="152" height="168" rx="8"/><text class="t b c" x="260.0" y="160">剪叉</text><line class="fl" x1="204" y1="132" x2="316" y2="132"/><rect class="dev" x="214" y="124" width="92" height="8"/><rect class="seat" x="214" y="52" width="92" height="9" rx="2"/><line class="lk" x1="220" y1="124" x2="300" y2="62"/><line class="lk" x1="300" y1="124" x2="220" y2="62"/><line class="actl" x1="224" y1="118" x2="272" y2="96"/><circle class="pin" cx="260" cy="92" r="4"/><rect class="box" x="354" y="4" width="152" height="168" rx="8"/><text class="t b c" x="430.0" y="160">单立柱直接顶升</text><line class="fl" x1="374" y1="132" x2="486" y2="132"/><rect class="dev" x="408" y="76" width="44" height="56" rx="3"/><rect class="dev" x="416" y="56" width="28" height="24"/><line class="actl" x1="430" y1="128" x2="430" y2="62"/><rect class="seat" x="390" y="47" width="80" height="9" rx="2"/></svg><figcaption>
+ <p><b>三种可能的竖直升降机构</b>（示意）。紫色粗线是执行器（电动推杆），黑线是连杆或横梁。</p>
+ <p>座板下空间很浅，能“折叠”的剪叉比较容易放下 24 cm 行程；用哪一种、尺寸多少，由你判断。</p></figcaption></figure></div>`,"4":`<div class="figs"><figure class="fg"><svg viewBox="0 0 460 150" role="img" aria-label="电动推杆（执行器）结构示意"><rect class="act" x="80" y="84" width="74" height="34" rx="6"/><text class="t c" x="117" y="142">电机 + 减速箱</text><rect class="tube" x="30" y="56" width="230" height="28" rx="6"/><line class="screw" x1="44" y1="70" x2="250" y2="70"/><rect class="rod" x="260" y="63" width="120" height="14" rx="3"/><circle class="pin" cx="22" cy="70" r="9"/><circle class="pin" cx="392" cy="70" r="9"/><text class="t c" x="150" y="46">外管（里面是丝杠，虚线）</text><text class="t c" x="320" y="54">推杆：伸出 / 缩回</text><text class="tm c" x="22" y="100">铰接孔</text><text class="tm c" x="392" y="100">铰接孔</text><line class="dim" x1="260" y1="110" x2="380" y2="110"/><line class="dim" x1="260" y1="104" x2="260" y2="116"/><line class="dim" x1="380" y1="104" x2="380" y2="116"/><text class="t c" x="320" y="130">行程（伸出的长度）</text><line class="ar" stroke-width="2.5" x1="404.0" y1="70.0" x2="448.0" y2="70.0"/><polygon class="arf" points="448.0,70.0 439.7,73.5 439.7,66.5"/><text class="t b" x="410" y="56">推力 F</text></svg><figcaption>
  <p><b>执行器 = 电动推杆</b>（linear actuator）。电机转动，经减速箱和丝杠变成推杆的直线伸缩，和电动升降桌、电动护理床里的是同一类东西。</p>
- <p>选型主要看<b>推力、行程、速度</b>，以及断电时能不能自锁（不会自己缩回）。</p>
+ <p>选型主要看<b>推力、保持力、行程、速度</b>，以及断电时能不能自锁（不会自己缩回）。</p>
  <p>推杆推力 ≈ 座板处的力（约 400–500 N）× 机构传动比（角色 3 给）。</p></figcaption></figure>
  <figure class="fg"><svg viewBox="0 0 460 312" role="img" aria-label="侧向倾翻受力示意"><line class="fl" x1="0" y1="260" x2="460" y2="260"/><rect class="dev" x="144.2" y="249.6" width="171.6" height="10.4" rx="3"/><rect class="dev" x="217.0" y="98.8" width="26.0" height="150.8"/><rect class="seat" x="175.4" y="88.4" width="109.2" height="10.4" rx="3"/><line class="rl" stroke-width="5" x1="292.4" y1="98.8" x2="292.4" y2="31.2"/><line class="rl" stroke-width="5" x1="276.8" y1="31.2" x2="308.0" y2="31.2"/><line class="ar" stroke-width="2.5" x1="310.0" y1="31.2" x2="370.0" y2="31.2"/><polygon class="arf" points="370.0,31.2 361.7,34.7 361.7,27.7"/><text class="t b" x="312.0" y="19.2">F（手拉扶手）</text><line class="dim" x1="339.2" y1="260" x2="339.2" y2="31.2"/><text class="t" x="345.2" y="143.0">h</text><circle class="cg" cx="230.0" cy="195.0" r="6"/><line class="ar" stroke-width="2.5" x1="230.0" y1="201.0" x2="230.0" y2="245.0"/><polygon class="arf" points="230.0,245.0 226.5,236.7 233.5,236.7"/><text class="t" x="118.0" y="225.0">台架重量 W</text><polygon class="edge" points="315.8,260 308.8,272 322.8,272"/><text class="t" x="327.8" y="274">翻倒时绕这条边转</text><line class="dim" x1="230.0" y1="284" x2="315.8" y2="284"/><text class="t c" x="272.9" y="302">b = 底座半宽</text><text class="tm" x="12" y="24">正视图（从床尾方向看）</text></svg><figcaption>
- <p><b>不翻的条件：F · h ≤ W · b。</b>台架 35 kg，W ≈ 343 N；b = 0.33 m，所以 W · b ≈ 113 N·m。</p>
- <ul><li>扶手在低位，h ≈ 0.64 m：F 最多约 177 N，刚好等于设计值 177 N。</li><li>扶手在高位，h ≈ 0.88 m：只有约 129 N，不够。这就是待处理的点。</li></ul></figcaption></figure>
- <figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="需要校核强度的位置"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="239.0" width="18.0" height="93.0"/><polygon class="seat" points="101.0,212.7 110.0,212.7 149.0,223.2 152.0,227.6 152.0,237.5 110.0,226.2 101.0,216.3"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><rect class="act" x="125.0" y="338.0" width="12.0" height="66.0" rx="3"/><line class="ar" stroke-width="2.5" x1="140.0" y1="164.0" x2="140.0" y2="208.0"/><polygon class="arf" points="140.0,208.0 136.5,199.7 143.5,199.7"/><text class="t" x="150.0" y="190.0">人压在座板上</text><line class="ar" stroke-width="2.5" x1="257.0" y1="70.0" x2="309.0" y2="100.0"/><polygon class="arf" points="309.0,100.0 300.1,98.9 303.6,92.8"/><text class="t" x="167.0" y="66.0">手压 / 拉横杆</text><circle class="mk r4" cx="168.0" cy="236.0" r="11"/><text class="mkt" x="168.0" y="240.5">1</text><circle class="mk r4" cx="333.0" cy="257.0" r="11"/><text class="mkt" x="333.0" y="261.5">2</text><circle class="mk r4" cx="147.0" cy="332.0" r="11"/><text class="mkt" x="147.0" y="336.5">3</text><circle class="mk r4" cx="110.0" cy="140.0" r="11"/><text class="mkt" x="110.0" y="144.5">4</text><text class="tm" x="260.0" y="407.0">踏板</text></svg><figcaption>
+ <p><b>台架不固定时，拉扶手会不会翻：F · h ≤ W · b。</b>台架 35 kg，W ≈ 343 N；b = 0.33 m，所以 W · b ≈ 113 N·m。</p>
+ <ul><li>扶手在低位，h ≈ 0.64 m：F 最多约 177 N，刚好等于设计值，没有余量。</li><li>扶手在高位，h ≈ 0.88 m：只有约 129 N，不够。</li></ul>
+ <p>这就是为什么已定要把台架和床固定，并按安全系数 1.5 校核。人完全在台架上时，手上的力是内力，这张图不适用。</p></figcaption></figure>
+ <figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="需要校核强度的位置"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><rect class="hook" x="32.0" y="339.2" width="78.0" height="3.6" rx="1.5"/><rect class="hook" x="108.8" y="332.0" width="3.6" height="10.8"/><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="239.0" width="18.0" height="93.0"/><polygon class="seat" points="101.0,224.0 110.0,224.0 149.0,224.0 152.0,227.6 152.0,237.5 110.0,237.5 101.0,227.6"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="104.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="158.0" x2="317.0" y2="158.0"/><circle class="bar" cx="317.0" cy="104.0" r="7"/><rect class="act" x="125.0" y="338.0" width="12.0" height="66.0" rx="3"/><line class="ar" stroke-width="2.5" x1="140.0" y1="164.0" x2="140.0" y2="208.0"/><polygon class="arf" points="140.0,208.0 136.5,199.7 143.5,199.7"/><text class="t" x="150.0" y="190.0">人压在座板上</text><line class="ar" stroke-width="2.5" x1="257.0" y1="70.0" x2="309.0" y2="100.0"/><polygon class="arf" points="309.0,100.0 300.1,98.9 303.6,92.8"/><text class="t" x="167.0" y="66.0">手压 / 拉横杆</text><circle class="mk r4" cx="168.0" cy="236.0" r="11"/><text class="mkt" x="168.0" y="240.5">1</text><circle class="mk r4" cx="333.0" cy="257.0" r="11"/><text class="mkt" x="333.0" y="261.5">2</text><circle class="mk r4" cx="147.0" cy="332.0" r="11"/><text class="mkt" x="147.0" y="336.5">3</text><circle class="mk r4" cx="110.0" cy="140.0" r="11"/><text class="mkt" x="110.0" y="144.5">4</text><circle class="mk r4" cx="71.0" cy="363.0" r="11"/><text class="mkt" x="71.0" y="367.5">5</text><text class="tm" x="260.0" y="407.0">踏板</text></svg><figcaption>
  <p><b>要校核强度的地方</b>（升起位置）：</p>
- <ol><li>座板和它的连接：人压在上面</li><li>扶手前立柱根部：手压、手拉</li><li>执行器两端的铰点</li><li>侧扶手和座板的连接</li></ol>
- <p>可以先手算，再挑一两处做 FEA。</p></figcaption></figure></div>`,"5":`<div class="figs"><figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="传感器和按键的位置"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="311.0" width="18.0" height="21.0"/><polygon class="seat" points="101.0,296.0 110.0,296.0 149.0,296.0 152.0,299.6 152.0,309.5 110.0,309.5 101.0,299.6"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="176.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="230.0" x2="317.0" y2="230.0"/><circle class="bar" cx="317.0" cy="176.0" r="7"/><polyline class="pk dim" stroke-width="6" points="194.0,140.0 149.0,269.0 248.0,302.0 197.0,403.4 248.0,416.0"/><circle class="pk dim hd" stroke-width="4" cx="205.9" cy="106.0" r="16.5"/><polyline class="pk dim" stroke-width="4" points="194.0,140.0 254.0,194.0 317.0,176.0"/><circle class="sn" cx="131.0" cy="302.0" r="6"/><circle class="sn" cx="317.0" cy="176.0" r="6"/><rect class="btn" x="323.0" y="160.0" width="14" height="10" rx="2"/><circle class="sn" cx="209.0" cy="420.2" r="6"/><line class="ld" x1="131.0" y1="302.0" x2="74.0" y2="236.0"/><circle class="mk r5" cx="74.0" cy="236.0" r="11"/><text class="mkt" x="74.0" y="240.5">1</text><line class="ld" x1="317.0" y1="176.0" x2="368.0" y2="224.0"/><circle class="mk r5" cx="368.0" cy="224.0" r="11"/><text class="mkt" x="368.0" y="228.5">2</text><line class="ld" x1="329.0" y1="164.0" x2="368.0" y2="122.0"/><circle class="mk r5" cx="368.0" cy="122.0" r="11"/><text class="mkt" x="368.0" y="126.5">3</text><line class="ld" x1="209.0" y1="420.2" x2="146.0" y2="368.0"/><circle class="mk r5" cx="146.0" cy="368.0" r="11"/><text class="mkt" x="146.0" y="372.5">4</text><text class="tm" x="260.0" y="407.0">踏板</text><text class="t" x="26.0" y="30">坐在座板上、握住横杆，等待按“起”键</text></svg><figcaption>
- <p><b>建议的传感器和按键：</b></p>
- <ol><li>座板测力（左右两路）：坐上了没有、坐正了没有</li><li>横杆测力：双手握住了没有</li><li>“起”键：按住才抬，松开就停</li><li>踏板测力（左右两路）：脚踩实了没有</li></ol></figcaption></figure>
- <figure class="fg"><div class="chain"><span class="s">待机</span><i>→</i><span class="s">已坐上</span><i>→</i><span class="s">静坐</span><i>→ 按住“起”键且条件满足 →</i><span class="s">抬升</span><i>→</i><span class="s">离座：回水平、保持高度</span><i>→</i><span class="s">人离开后复位</span></div>
- <div class="chain"><i>抬升中出现异常 →</i><span class="s warn">先回水平</span><i>→</i><span class="s warn">慢慢降下</span></div>
+ <ol><li>座板和它的连接：人压在上面</li><li>扶手前立柱根部：手压、手拉</li><li>执行器两端的铰点</li><li>侧扶手和座板的连接</li><li>和床固定的钩板</li></ol>
+ <p>可以先手算，再挑一两处做 FEA。</p></figcaption></figure></div>`,"5":`<div class="figs"><figure class="fg"><svg viewBox="0 0 520 438" role="img" aria-label="传感器和开关的位置"><line class="fl" x1="0" y1="422.0" x2="520" y2="422.0"/><rect class="bed" x="-40.0" y="341.0" width="150.0" height="81.0" rx="4"/><rect class="mat" x="-40.0" y="296.0" width="150.0" height="45.0" rx="6"/><text class="tm" x="29.0" y="383.0">床</text><rect class="hook" x="32.0" y="339.2" width="78.0" height="3.6" rx="1.5"/><rect class="hook" x="108.8" y="332.0" width="3.6" height="10.8"/><polygon class="dev" points="110.0,422.0 350.0,422.0 341.0,418.1 110.0,418.1"/><rect class="dev" x="110.0" y="332.0" width="42.0" height="86.1" rx="3"/><rect class="dev" x="122.0" y="311.0" width="18.0" height="21.0"/><polygon class="seat" points="101.0,296.0 110.0,296.0 149.0,296.0 152.0,299.6 152.0,309.5 110.0,309.5 101.0,299.6"/><line class="rl" stroke-width="8" opacity=".35" x1="317.0" y1="416.0" x2="317.0" y2="257.0"/><line class="rl" stroke-width="4" opacity=".6" x1="317.0" y1="272.0" x2="317.0" y2="176.0"/><line class="rl" stroke-width="4" opacity=".5" stroke-linecap="round" x1="110.0" y1="230.0" x2="317.0" y2="230.0"/><circle class="bar" cx="317.0" cy="176.0" r="7"/><polyline class="pk dim" stroke-width="6" points="194.0,140.0 149.0,269.0 248.0,302.0 197.0,403.4 248.0,416.0"/><circle class="pk dim hd" stroke-width="4" cx="205.9" cy="106.0" r="16.5"/><polyline class="pk dim" stroke-width="4" points="194.0,140.0 254.0,194.0 317.0,176.0"/><circle class="sn" cx="131.0" cy="302.0" r="6"/><circle class="sn" cx="317.0" cy="176.0" r="6"/><rect class="btn" x="323.0" y="160.0" width="14" height="10" rx="2"/><circle class="sn" cx="209.0" cy="420.2" r="6"/><line class="ld" x1="131.0" y1="302.0" x2="74.0" y2="236.0"/><circle class="mk r5" cx="74.0" cy="236.0" r="11"/><text class="mkt" x="74.0" y="240.5">1</text><line class="ld" x1="317.0" y1="176.0" x2="368.0" y2="224.0"/><circle class="mk r5" cx="368.0" cy="224.0" r="11"/><text class="mkt" x="368.0" y="228.5">2</text><line class="ld" x1="329.0" y1="164.0" x2="368.0" y2="122.0"/><circle class="mk r5" cx="368.0" cy="122.0" r="11"/><text class="mkt" x="368.0" y="126.5">3</text><line class="ld" x1="209.0" y1="420.2" x2="146.0" y2="368.0"/><circle class="mk r5" cx="146.0" cy="368.0" r="11"/><text class="mkt" x="146.0" y="372.5">4</text><text class="tm" x="260.0" y="407.0">踏板</text><text class="t" x="26.0" y="30">坐在座板上、握住握把，准备握紧“起”开关</text></svg><figcaption>
+ <p><b>建议的传感器和开关：</b></p>
+ <ol><li>座板下 4 个测力单元：坐上了没有、坐正了没有（压力中心）</li><li>横杆测力：手在不在上面</li><li>握把式“起”开关：握紧才升，松手就停</li><li>踏板下 4 个测力单元：脚踩实了没有</li></ol></figcaption></figure>
+ <figure class="fg"><div class="chain"><span class="s">待机</span><i>→</i><span class="s">已坐上</span><i>→</i><span class="s">静坐</span><i>→ 握紧“起”开关且条件满足 →</i><span class="s">抬升（速度跟着人走）</span><i>→</i><span class="s">离座：停在原高度</span><i>→</i><span class="s">人离开后复位</span></div>
+ <div class="chain"><i>松手或故障 →</i><span class="s warn">立即停住</span><i>→ 确认有人坐着 →</i><span class="s warn">按住“降”或静坐一段时间后慢慢降</span></div>
+ <div class="chain"><i>回床：坐在升起的座板上 →</i><span class="s">按住“降”</span><i>→</i><span class="s">降到床面，往后挪回床</span></div>
  <figcaption><p><b>建议的状态链。</b>每个状态写清“怎么进、怎么出”；再用场景表检查：每种意外最后都会落到一个安全状态。</p></figcaption></figure></div>`})[k]||"";
 const ROLES={
  "1":{n:"问题与整合",fit:"可能适合：表达好、愿意统筹的人；负责开场和收尾",
   purpose:"让听众，以及只看 slides 的老师，相信这是一个真问题、起身台是合理的解法；并让整份 slides 读起来是一个前后一致的故事。",
-  bg:["slides 同时当报告：老师可能只看 slides、不听讲解，所以每页都要有<b>能单独读懂的结论和依据</b>。","这个方案最容易被问住的是<b>“为什么不直接把床垫高？”</b>，需要正面回答。","证据分三种：文献事实、本组模型、推断。每页标清楚，被追问时不吃亏。"],
-  core:["问题是什么、为谁解决，为什么聚焦“从床沿站起”这一段","为什么选起身台，而不是方案甲或抬高床","设计有没有达到要求：每条需求用什么验证、结果如何（汇总大家的结果）","结论是什么，还有哪些局限"],
+  bg:["slides 同时当报告：老师可能只看 slides、不听讲解，所以每页都要有<b>能单独读懂的结论和依据</b>。","这个方案最容易被问住的是<b>“为什么不直接把床垫高？”</b>，需要正面回答。","展示时间有限，<b>主 slides 不要太多</b>；设计、分析的细节和答问备用页放<b>附录</b>，附录不限页数。","证据分三种：文献事实、本组模型、推断。每页标清楚，被追问时不吃亏。"],
+  core:["问题是什么、为谁解决，为什么聚焦“从床沿站起”这一段","为什么选起身台，而不是方案甲或抬高床","设计有没有达到要求：每条需求用什么验证、结果如何（汇总大家的结果），需求可以从“五分钟了解项目”里的设计要求出发","结论是什么，还有哪些局限"],
   full:["现有产品为什么不够，我们和它们差在哪","整份 slides 前后一致：数字、术语、格式统一，常见追问有准备"],
   ext:["用新加坡本地的老年人居住、跌倒数据，让问题更贴近本地"],
-  how:["尽早建一个共享 slides 和英文模板（例如：结论句标题 + 一张主图 + 两三句依据），每一节先放一页占位，大家直接在里面写","问题部分可以从一个具体的夜晚场景切入，再给两三个关键数字","“为什么不垫高床”的主论点：固定床为了坐着脚能踩实，一般最多到约 0.58 m；起身台只在起身时升到 0.66 m","方案甲可以用方案网页的动画截图，半页说明为什么没选它；使用过程也可以用动画的步骤截图","需求—验证可以做成一张表，请每人给一两行；局限请每人给两条，Q&A 请每人给三个问题，由你汇总"],
+  how:["主 slides 可以按每人 2–3 页左右来排，以图为主；推导、参数表、更多视图放附录，附录也可以当被提问时的备用页","问题部分可以从一个具体的夜晚场景切入，再给两三个关键数字","“为什么不垫高床”的主论点：固定床为了坐着脚能踩实，一般最多到约 0.58 m；起身台只在起身时升到 0.66 m，比抬高床再省 13–20%","方案甲可以用方案网页的动画截图，半页说明为什么没选它","需求—验证可以做成一张表，请每人给一两行；局限请每人给两条，Q&A 请每人给三个问题，由你汇总","共用参数表可以和角色 2 一起维护，谁先发现数字对不上谁改"],
   src:["方案网页「问题全景」「证据链」「床高两难」「现有方案」，以及「为什么不直接用现成的东西」一节的问答","文献：Pesonen 2020（夜尿与跌倒）、Hignett 2010（床边跌倒）、Merryweather 2015 与 Christman 2015（低床难站起）、NCOA 居家防跌建议","GitHub 的 docs/prior-art-bed-exit-assist.md；最接近的专利 US5619762、US6360382、US10022284"],
-  start:"建一个共享 slides（Google Slides 或 PowerPoint Online），每一节先放一页占位：问题、为什么抬骨盆、模型结果、机构、结构与安全、控制与验证、结论。",
-  talk:[["2","对比结论用哪张图、哪句话；你不在时可以请角色 2 帮忙整合和提交"],["全员","每人给你 3 个可能被问的问题、2 条局限、一两行需求—验证"]]},
+  start:"在共享 slides 里按“主 slides / 附录”排好目录（还没建的话先建一个），每一节先放一页占位：问题、为什么抬骨盆、模型结果、机构与使用过程、稳定性与安全、控制与验证、结论。",
+  talk:[["2","对比结论用哪张图、哪句话；参数表一起维护；你不在时可以请角色 2 帮忙整合和提交"],["3","使用过程那几页放在主 slides 哪里"],["全员","每人给你 3 个可能被问的问题、2 条局限、一两行需求—验证"]]},
  "2":{n:"模型与几何",fit:"可能适合：会 Python、对生物力学有兴趣的人；也是整合的第二联系人",
   purpose:"用数字说明为什么要把骨盆抬到 0.66 m：比现状和最便宜的办法省多少力，结论可信到什么程度；同时让全组用的数字保持一致。",
-  bg:["模型是 <b>2D 准静态</b>：不考虑速度和加速度，只算力的平衡；而且只看“屁股刚离开座面”那一瞬间。","<b>effort</b>：最吃力的关节用掉了自己最大力量的几成（0.5 = 一半），越低越轻松。","手臂力量不确定，所以模型用了<b>四种假设</b>：手上最多出 25% 体重；肩肘力量打五折；打 35% 折；手臂正常。结论在四种下都成立才算稳。","对比图取数：低床 = <code>bed042_mattress</code>；抬高床 = <code>bed058_mattress</code> 和 <code>bed058_handle</code> 里较小的那个；方案甲 = <code>A042_drawn</code>；起身台 = <code>B66_x55_z40</code>。"],
-  core:["为什么助力要打在骨盆，而不是只靠手","起身台比低床、抬高床、方案甲省多少力，四种手臂假设下是否都成立","为什么是 0.66 m：座高和省力的关系","模型是怎么算的，不能回答什么"],
-  full:["人在每一步放不放得下：脚能不能收回、大腿碰不碰座板、手够不够得到横杆，往前挪多远","结构和控制用到的载荷、阈值有依据","全组 slides 里的数字和参数表一致","不同身高的人，目标高度怎么定"],
+  bg:["模型是 <b>2D 准静态</b>：不考虑速度和加速度，只算力的平衡；而且只看“屁股刚离开座面”那一瞬间。","<b>effort</b>：最吃力的关节用掉了自己最大力量的几成（0.5 = 一半），越低越轻松。","手臂力量不确定，所以模型用了<b>四种假设</b>：手上最多出 25% 体重；肩肘力量只剩五成；只剩 35%；手臂正常、手上最多 30% 体重。结论在四种下都成立才算稳。","<b>脚下空间的假设会影响结果</b>：模型里起身台允许脚跟收到髋前 8 cm，床是 10 cm。两边都按 10 cm 时，比抬高床的降幅从 17–20% 变成 13–16%，不用手时从 22% 变成 16%。所以 slides 里写<b>比抬高床低 13–20%</b>，并说明范围从哪来（数据在 <code>heel_sensitivity_v12.json</code>）。","对比图取数：低床 = <code>bed042_mattress</code>；抬高床 = <code>bed058_mattress</code> 和 <code>bed058_handle</code> 里较小的那个；方案甲 = <code>A042_drawn</code>；起身台 = <code>B66_x55_z40</code>。注意：<code>none57</code> 这个键其实是 0.58 m 的床。"],
+  core:["为什么助力要打在骨盆，而不是只靠手","起身台比低床、抬高床、方案甲省多少力，四种手臂假设下是否都成立，范围从哪来","为什么是 0.66 m：座高和省力的关系","模型是怎么算的，不能回答什么","人从坐上座板到站起、再到坐回，每个阶段重心在哪，重量怎么分到座板、踏板和横杆上（角色 4 做稳定性、角色 5 定阈值都要用）"],
+  full:["推力上限够不够：坐着时座板承重多少，人要先卸掉多少体重座板才开始升","人在每一步放不放得下：脚能不能收回、大腿碰不碰座板、手够不够得到横杆，往前挪多远","结构和控制用到的载荷、阈值有依据","全组 slides 里的数字和参数表一致","不同身高的人，目标高度怎么定"],
   ext:["体重变化对结论的影响"],
-  how:["对比图可以直接用 compare_v11.json 的数据画（取数方法见上）；座高曲线用 seat_height_v11.json；画出来的数可以和方案网页上的同款图对照","“为什么抬骨盆”可以把方案网页的“四个关键选择”压成一页","局限可以讲“方向和量级”，并说清模型没包括什么：座板前倾的作用、床垫变形、起身的动态过程","姿态检查可以在角色 3 的侧视简图上叠一个火柴人，摆坐床沿、挪上座板、升起、站立四个姿态","载荷和阈值可以用简单的坐姿静力学估；参数表可以放在共享 slides 的附录页，由你更新"],
-  src:["GitHub 的 model/compare_v11.json、seat_height_v11.json；README 里有复现方法（想跑模型时用，不跑也可以）","方案网页「方案对比」「座板抬多高」「四个关键选择」，以及各处的“局限”折叠栏","Merryweather 2015：老人实测，和模型方向一致"],
+  how:["对比图可以直接用 compare_v11.json 的数据画（取数方法见上），起身台再加一根“脚下空间同床”的柱子（heel_sensitivity_v12.json），两种假设并排比只给一个数更有说服力","座高曲线用 seat_height_v11.json；画出来的数可以和方案网页上的同款图对照","“为什么抬骨盆”可以把方案网页的“四个关键选择”压成一页","局限可以讲“方向和量级”，并说清模型没包括什么：床垫变形、起身的动态过程、往前挪的代价","姿态检查可以在角色 3 的侧视简图上叠一个火柴人，摆坐床沿、挪上座板、升起、站立四个姿态","各阶段的人体重心可以用方案网页动画里的姿态坐标，加常用的人体各段质量比例来估"],
+  src:["GitHub 的 model/compare_v11.json、seat_height_v11.json、heel_sensitivity_v12.json；README 里有复现方法（想跑模型时用，不跑也可以）","方案网页「方案对比」「座板抬多高」「四个关键选择」，以及各处的“局限”折叠栏","Merryweather 2015：老人实测，和模型方向一致"],
   start:"打开 compare_v11.json，按上面写的四个键取数，画出四根柱子。",
-  talk:[["3","座板尺寸、横杆位置；姿态检查可以用他的侧视简图"],["4","载荷怎么取"],["5","阈值怎么定"],["1","对比图配哪句结论"]]},
+  talk:[["1","对比图配哪句结论；参数表一起维护"],["3","座板尺寸、横杆位置；姿态检查可以用他的侧视简图"],["4","载荷怎么取；各阶段的人体重心"],["5","阈值怎么定；坐着时座板承重多少"]]},
  "3":{n:"机构与 CAD",fit:"可能适合：SolidWorks 最熟的人",
-  purpose:"让人看懂起身台在机构上怎么实现：一个驱动如何让座板从齐平升到 0.66 m 并前倾，做出来大概长什么样。",
-  bg:["起身台的组成：<b>底座 + 地面踏板</b>（人站在上面，用体重压住台架）、<b>短座板</b>（约 14 cm 深，平时和床面齐平）、<b>L 形扶手</b>（侧边一段 + 身前横杆，跟座板一起升）、<b>升降机构</b>。","座板动作：从约 0.42 m 升到约 0.66 m，同时后高前低前倾不超过 15°。","座板下方前部要留给脚（脚跟至少在髋关节前 8 cm），机构最好不放在那里。"],
-  core:["起身台由哪些部分组成，各自起什么作用","座板从齐平到升起怎么运动，一个驱动怎么同时完成升高和前倾","大致长什么样"],
-  full:["机构尺寸能满足运动要求，推杆的行程和受力比例（传动比）清楚","做出来的模型在齐平和升起两个位置都能配合，有图可以放进使用过程","结构和倾翻计算需要的质量、质心有出处","为什么选这种机构"],
-  ext:["录一段运动过程（拖动配合或爆炸视图）"],
-  how:["可以先在纸上或 SolidWorks 草图里画齐平和升起两个位置的侧视图","方案网页倾向单驱动四连杆，可以直接以它为主，再简单和剪叉、直接顶升比较一下行程、体积、夹手点","3D 可以从简化骨架开始，不需要螺丝等细节","给角色 1 三四张关键位置的视图就够，使用过程图由角色 1 排","SolidWorks 的质量属性截图可以直接给角色 4"],
-  src:["方案网页「方案演示」的侧视动画（每一步人和台子的样子）","共用参数表（本页最下面）","机构学里的四连杆位置综合；电动如厕抬升座专利 US6360382 有连杆示意"],
+  purpose:"让人看懂起身台在机构上怎么实现：一个驱动如何让座板从齐平竖直升到 0.66 m、扶手跟着升，以及一次完整的使用是什么样子。",
+  bg:["起身台的组成：<b>底座 + 地面踏板</b>（人站在上面，用体重压住台架）、<b>短座板</b>（约 14 cm 深，平时和床面齐平）、<b>L 形扶手</b>（侧边一段 + 身前横杆，跟座板一起升）、<b>升降机构</b>，以及把台架和床固定的<b>钩板或床腿夹</b>。","座板动作：从约 0.42 m <b>竖直</b>升到约 0.66 m（升 24 cm），全程保持水平。原来设想的前倾已经取消：一个推杆驱动的四连杆，倾角由高度决定，做不到“离座后停在高处、座板水平”。","空间很紧：座板下只有约 14 cm 深、38 cm 高。推杆缩回时的长度大约是行程再加 10–15 cm，所以机构要能“折叠”，例如剪叉。","座板下方前部要留给脚（脚跟至少在髋关节前 8 cm），机构最好不放在那里。","slides 里要有 <b>CAD 模型和运动动画</b>；老师特别关注机构概念讲得是否清楚。"],
+  core:["起身台由哪些部分组成，各自起什么作用","一个驱动怎么让座板竖直升 24 cm、扶手一起升；推杆装在哪、行程大约多少（角色 4 算推力要用）","CAD 模型和运动动画：座板从齐平到升起、扶手跟着升的整个动作","一次完整的使用是什么样子：坐上 → 握住 → 升起 → 站起 → 坐回，用 CAD 截图或动画说明"],
+  full:["机构放得进座板下的空间，推杆的传动比清楚","台架怎么和床固定（床垫下钩板或床腿夹）","结构和稳定性计算需要的质量、质心有出处","为什么选这种机构"],
+  ext:["在动画里加一个简化人体，一起演示起身过程","爆炸视图"],
+  how:["可以先在纸上或 SolidWorks 草图里画齐平和升起两个位置的侧视图","机构可以在剪叉（沿座宽方向布置）、两根同步立柱、单立柱直接顶升之间选，比较行程、能不能塞进座板下、夹手点","3D 可以从简化骨架开始，不需要螺丝等细节","动画可以用 SolidWorks 的运动算例（Motion Study），先只做机构本身，导出视频放进主 slides，静态截图放附录","使用过程可以从动画里截几张关键帧，每张配一句话：人在做什么、台架在做什么","SolidWorks 的质量属性截图可以直接给角色 4"],
+  src:["方案网页「方案演示」的侧视动画（每一步人和台子的样子）","共用参数表（本页最下面）","剪叉升降台、电动升降桌的结构；家具旁抬升座专利 US5619762 用的是螺杆立柱"],
   start:"照共用参数表，画出座板“齐平”和“升起”两个位置的侧视草图。",
-  talk:[["2","几何约束；他可能用你的简图做人体姿态检查"],["4","传动比、质量和质心"],["5","传感器装在哪"]]},
+  talk:[["4","推杆位置和行程、质量和质心；台架和床怎么固定"],["2","几何约束；他可能用你的简图做人体姿态检查"],["5","传感器和握把装在哪"],["1","使用过程那几页放在主 slides 哪里"]]},
  "4":{n:"结构与安全",fit:"可能适合：熟悉结构计算或 FEA 的人",
-  purpose:"用计算说明起身台推得动、撑得住、翻不了，并说明它可能怎么出事、怎么防。",
-  bg:["<b>推力上限</b>：推人的力大约不超过体重的一半，人自己要承担一部分体重，座板才升得动，不会把人整个推起来。","<b>防翻</b>：人站在踏板上时，手拉扶手的力是人和台架之间的“内力”，不会翻；危险在人离开踏板后还拉着扶手。设计水平力 177 N（60 kg × 9.8 × 30%）。","<b>一个待处理的点</b>：扶手在低位时两个方向都够；扶手升到高位（约 0.88 m）时，35 kg 的台架侧向只能承受约 129 N，不够。可能的办法：加宽底座（半宽约 0.45 m）、加配重、和床腿固定，或人离开踏板后再降回。","参数表里的 400–500 N 是座板处的力；用四连杆后，推杆实际受力要乘传动比（角色 3 给出），可能是 1.5–3 倍。"],
-  core:["执行器需要多大的推力和行程","会不会翻：前后、左右，扶手在低位和高位；高位侧向的问题怎么处理","主要的风险和对策，适用哪些标准"],
-  full:["关键零件受力后不会坏（应力和安全系数）","执行器选型和机构传动比对得上","倾翻用真实质量和质心复核"],
-  ext:["断电后怎么手动降下来","电池续航"],
-  how:["推力可以先按直接顶升手算，注明等角色 3 的传动比再修正","倾翻可以从 tipping_v11.py 的力矩平衡出发，画一张受力简图","风险表可以从方案网页的风险表整理，挑 8–10 条机械和结构类；控制类的几条可以请角色 5 补","FEA 可以按参数表自己建座板和扶手两个简单零件，不用等总装；也可以先用手算（σ = M/W）对照","标准可以每条写一句“为什么相关”，不用读原文"],
+  purpose:"用计算说明起身台推得动、撑得住，人坐上去、挪动时台架也不会翻；并说明它可能怎么出事、怎么防。",
+  bg:["<b>推力上限</b>：推人的力大约不超过体重的一半，人自己要承担一部分体重，座板才升得动，不会把人整个推起来。","<b>稳定性的关键</b>：人坐在座板上、脚踩踏板时，全部重量都在台架上，手拉扶手的力是人和台架之间的内力，拉不翻台架；人的重心偏移也很难把台架弄翻（侧翻需要人的重心横向偏出约 0.5 m，而座板半宽只有约 0.22 m）。所以更现实的风险是<b>人从窄座板上滑下来</b>。","<b>真正危险的时候</b>：人只有一部分在台架上，比如半坐在床上，或已经离开踏板，还拉着扶手。台架不固定时，前后只能承受约 178 N（设计载荷 177 N，安全系数只有 1.0）；扶手在高位时侧向约 129 N，往床的方向约 134 N。","<b>已定的对策</b>：台架和床固定（床垫下钩板或床腿夹）；空载时扶手降回低位；载荷工况按安全系数 1.5 校核。","一个未核实的参考量级，可以拿来和你的结果对照：前后方向，脚踩在踏板上时腿把重心往前拉，合重心离后边缘还有 13 cm 以上。","参数表里的 400–500 N 是座板处的推力；推杆实际受力要乘机构传动比（角色 3 给出）。不动时的保持力要按座板处约 1 kN 考虑。"],
+  core:["座板处需要多大的推力和保持力（先按直接顶升算，有了传动比再换算成推杆的力）","人坐上去、在座板上挪动、起身、坐回时，人和台架合起来的重心离底座边缘多远（前后、左右）","台架和床怎么固定，固定件要承受多大的力","主要的风险和对策，适用哪些标准"],
+  full:["关键零件受力后不会坏（应力和安全系数）","执行器选型和机构传动比对得上","按多大体重设计：例如 100 kg 时推力、保持力和稳定性是否还够","用真实质量和质心复核"],
+  ext:["断电后怎么降下来（电池或带阻尼的手动缓降）","电池续航","重重坐回去的冲击（可以取 2–3 倍体重）"],
+  how:["推力可以先按直接顶升手算，注明等角色 3 的传动比再换算","稳定性可以画成一张俯视图：底座矩形里标出各阶段合重心的位置，一眼看出离边缘多远，适合放主 slides","各阶段的人体重心可以请角色 2 给，也可以用人体各段质量比例自己估","拉扶手的情况可以从 tipping_v11.py 的力矩平衡出发，画一张受力简图，对比固定前后","风险表可以从方案网页的风险表整理，挑 8–10 条机械和结构类；控制类的几条可以请角色 5 补","FEA 可以按参数表自己建座板和扶手两个简单零件，不用等总装；也可以先用手算（σ = M/Z，Z 是截面系数）对照","标准可以每条写一句“为什么相关”，不用读原文"],
   src:["GitHub 的 model/tipping_v11.py 和 tipping_v11.json","方案网页「风险」一节（标题：两个方案可能怎么出事）和它下面的标准清单：IEC 60601-1-11、ISO 13482、EN 12182、16 CFR 1270 / ASTM F3186","医疗床常用的线性推杆厂商目录","SolidWorks Simulation 教程"],
   start:"打开 tipping_v11.py，看懂那几行力矩平衡。",
-  talk:[["3","传动比、质量和质心"],["2","载荷"],["5","风险表里控制类的条目"]]},
+  talk:[["3","推杆位置和行程、质量和质心；台架和床怎么固定"],["2","载荷；各阶段的人体重心"],["5","风险表里控制类的条目；压力中心偏得太多时不让抬升"]]},
  "5":{n:"控制与仿真",fit:"可能适合：熟悉控制和编程的人",
-  purpose:"说明起身台怎么判断“人准备好了”、什么时候抬、出事时怎么办，并用场景说明各种情况下都能回到安全状态。这是整份 slides 从“设计”走到“验证”的部分。",
-  bg:["建议的传感器：<b>座板</b>测力（左右两路）、<b>横杆</b>测力（握住没有）、<b>踏板</b>测力（左右两路），加横杆上一个<b>按住式“起”键</b>（松开就停）。","状态链：待机 → 已坐上 → 静坐（想坐多久都行）→ 按住“起”键且条件满足 → 抬升（约 3 cm/s，推力上限约为体重一半）→ 离座后座板回到水平、保持高度 → 人离开后复位。抬升中出现异常 → 先回水平，再慢慢降下。","参数表里有一组默认阈值（假设值），可以直接用。"],
-  core:["用哪些传感器和按键判断人的状态","控制逻辑：有哪些状态、怎么切换","典型意外（抬升中坐回、晕倒松手、单手松开、断电）发生时会怎样，最后是否安全"],
-  full:["这些场景能用仿真跑出来，结果可以复查","阈值有依据","控制类的风险和对策进入风险表"],
+  purpose:"说明起身台怎么判断“人准备好了”、什么时候抬、抬多快、出事时怎么办，并用场景说明各种情况下都能回到安全状态。这是整份 slides 从“设计”走到“验证”的部分。",
+  bg:["建议的输入和传感：<b>握把式“起”开关</b>（握紧才升、松手就停，至少一只手握住即可）、<b>座板</b>和<b>踏板</b>下各 4 个测力单元（能算出重量偏前偏后、偏左偏右，也就是压力中心）、<b>横杆</b>测力。","已定的控制规则：<b>松手或任何故障，立即停住并制动</b>，座板停在当前高度；<b>只有确认有人坐着才下降</b>（按住“降”键，或坐着一段时间没有操作）；座板上没人时不动。","<b>速度跟着人走</b>：速度 = k ×（推力上限 − 座板测到的力），限制在个人最快速度以内。人自己卸掉的体重越多，座板升得越快；人往回坐，座板上的力超过上限，速度自然变成零。这样“推力不超过半个体重”和“速度随人自适应”是同一条规则。这种“按力决定速度”的做法叫导纳控制（admittance control）。","状态链：待机 → 已坐上 → 静坐（想坐多久都行）→ 握紧“起”开关且条件满足 → 抬升 → 离座（座板停在原高度）→ 人离开后复位。另有一条回床路径：坐在升起的座板上按住“降”，带人降回床面。","参数表里有一组默认阈值（假设值），可以直接用。老师特别关注状态机控制器讲得是否清楚。"],
+  core:["输入和传感：手怎么给出“要起来”的指令，力分布怎么判断人坐正了、脚踩实了","控制逻辑：有哪些状态、怎么切换，松手和出故障时怎样","抬升速度怎么因人设定、怎么随人的用力自适应","典型意外（抬升中坐回、晕倒松手、单手松开、断电、传感器失效）发生时会怎样，最后是否安全"],
+  full:["这些场景能用仿真跑出来，结果可以复查，包括起身慢的人和快的人","阈值有依据","用户怎么知道现在处于哪个状态（灯、声音）","控制类的风险和对策进入风险表"],
   ext:["传感器噪声下会不会误触发","更多场景：宠物压座板、站起后又坐回"],
-  how:["状态机可以按上面的状态链来画，每个状态写清怎么进、怎么出","场景可以先做一张纸面表：每行写“传感器发生了什么 → 状态怎么变 → 最后座板在哪 → 是否安全”，不用写代码","想写仿真的话，可以把状态机写成一个函数，每个场景是一段不同的输入序列；Python、MATLAB、Stateflow 都可以","按键还是自动触发可以讨论：按键意图明确，但需要老人自己操作"],
-  src:["方案网页「风险」一节（标题：两个方案可能怎么出事）里的控制状态","共用参数表里的默认阈值和执行器参数"],
+  how:["状态机可以按上面的状态链来画，每个状态写清怎么进、怎么出","场景可以先做一张纸面表：每行写“传感器发生了什么 → 状态怎么变 → 最后座板在哪 → 是否安全”，不用写代码","想写仿真的话，可以把状态机写成一个函数，每个场景是一段不同的输入序列；Python、MATLAB、Stateflow 都可以","速度规则可以画成一张图：横轴是座板测到的力，纵轴是速度，力比上限低得越多速度越快，到个人最快速度封顶","因人设定：安装时存一份个人设置（推力上限 0.3–0.6 倍体重、最快 1.5–4 cm/s、目标高度），由家人或护理人员设定","传感器自检：座板 + 踏板 + 横杆测到的竖直力之和应约等于体重，对不上就锁住；每次待机时做一次空载零点检查","推力顶到上限约 2 s 还升不动，可以停住并提示“可以按降”"],
+  src:["方案网页「风险」一节里的控制状态（已按新规则更新）","共用参数表里的默认阈值和执行器参数","Panasonic 专利 US9962305：按扶手拉力比例调速，可以作为“速度跟着力走”的先例引用"],
   start:"照状态链在纸上画出状态机。",
-  talk:[["3","传感器装在哪"],["4","执行器参数；风险表里控制类的条目"],["2","阈值依据"]]}
+  talk:[["3","传感器和握把装在哪"],["4","执行器参数；风险表里控制类的条目"],["2","阈值依据；坐着时座板承重多少"]]}
 };
+
 const KEYS=["1","2","3","4","5"];
 
 $("#core").innerHTML=[
  ["1","问题与整合","问题是什么、为什么选起身台、设计有没有达到要求、结论与局限","方案网页第一部分（问题全景、证据链、床高两难、现有方案）和方案演示动画"],
- ["2","模型与几何","为什么抬骨盆、比其他办法省多少力、为什么是 0.66 m、模型的局限","compare_v11.json、seat_height_v11.json；方案网页「方案对比」「座板抬多高」「四个关键选择」"],
- ["3","机构与 CAD","由哪些部分组成、座板怎么运动、一个驱动怎么同时升高和前倾","方案网页「方案演示」的侧视动画；共用参数表"],
- ["4","结构与安全","推力和行程、会不会翻（含扶手高位时的侧向）、主要风险和对策","tipping_v11.py；方案网页的风险表"],
- ["5","控制与仿真","怎么判断人准备好了、控制逻辑、典型意外发生时是否安全","方案网页「风险」一节的控制状态"]
+ ["2","模型与几何","为什么抬骨盆、比其他办法省多少力、为什么是 0.66 m、模型的局限","compare_v11.json、seat_height_v11.json、heel_sensitivity_v12.json；方案网页「方案对比」「座板抬多高」「四个关键选择」"],
+ ["3","机构与 CAD","由哪些部分组成、座板怎么竖直升起、一次完整使用；CAD 运动动画","方案网页「方案演示」的侧视动画；共用参数表"],
+ ["4","结构与安全","推力和保持力；人坐上去、挪动时台架稳不稳；和床怎么固定；主要风险和对策","tipping_v11.py；方案网页的风险表"],
+ ["5","控制与仿真","输入和力分布传感、控制逻辑（松手即停、有人坐着才降）、速度怎么随人自适应、典型意外发生时是否安全","方案网页「风险」一节的控制状态"]
 ].map(r=>`<tr><th>${chip(r[0])} ${r[1]}</th><td data-l="要说明什么" style="color:var(--ink)">${r[2]}</td><td data-l="可以参考">${r[3]}</td></tr>`).join("");
 $("#hours").innerHTML=[
  ["1","问题与整合","","","开场（问题、现有方案、为什么不垫高床）约 2.5 分钟 + 收尾 1 分钟"],
@@ -402,29 +439,29 @@ function render(k){const r=ROLES[k];
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.k===k)));
   $("#card").innerHTML=`<article class="card" style="--c:var(${C[k]})">
    <div class="head"><div class="name"><span class="tag">角色 ${k}</span><h2>${r.n}</h2><span class="fit">${r.fit}</span></div>
-    <p class="task"><b>这一部分要说明：</b>${r.purpose}</p></div>
-   ${FIGHTML(k)}
+    <p class="task"><b>这一部分要说明：</b>${r.purpose}</p>
+    <p class="start"><b>可以从这里开始：</b>${r.start}</p></div>
    <div class="tiers">
     <div class="list core"><h4>核心：slides 里要能回答</h4><ul>${r.core.map(x=>`<li>${x}</li>`).join("")}</ul></div>
     <div class="list full"><h4>进一步：时间允许的话，还可以回答</h4><ul>${r.full.map(x=>`<li>${x}</li>`).join("")}</ul></div>
     <div class="list ext"><h4>拓展：有兴趣再看</h4><ul>${r.ext.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    </div>
+   ${FIGHTML(k)}
    <div class="block"><h4>先知道这些</h4><ul class="bg">${r.bg.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <details class="more"${narrow()?"":" open"}><summary>建议的做法（仅供参考，你有更好的办法就用你的）</summary>
-    <ul class="bg">${r.how.map(x=>`<li>${x}</li>`).join("")}</ul>
-    <p class="start" style="margin-top:12px"><b>可以从这里开始：</b>${r.start}</p></details>
+    <ul class="bg">${r.how.map(x=>`<li>${x}</li>`).join("")}</ul></details>
    <div class="block"><h4>资料在哪</h4><ul class="bg">${r.src.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <div class="block"><h4>可以和谁对一下</h4><ul class="talk">${r.talk.map(t=>`<li>${t[0]==="全员"?`<span class="chip" style="--k:var(--amber)">全员</span>`:chip(t[0])}<span>${t[1]}</span></li>`).join("")}</ul></div>
    ${k==="1"?"":`<p class="fit">另外，也请给角色 1 准备 3 个可能被问的问题和 2 条局限，方便汇总成 Q&A 和局限页。</p>`}
   </article>`;}
 
-const GL=[["床边起身台","bedside rise station"],["抬高床（床脚垫）","raised bed (bed risers)"],["动态扶手","dynamic handrail"],["座板","seat plate"],["踏板","footplate"],["L 形扶手 / 横杆 / 侧扶手","L-shaped rail / front grab bar / side rail"],["坐→站","sit-to-stand (STS)"],["离座","seat-off"],["effort（最吃力关节的负担）","joint effort (bottleneck)"],["前倾","forward tilt"],["推力上限","force limit"],["“起”键（按住式）","hold-to-run button"],["状态机","state machine"],["回水平再降","level-then-lower"],["倾翻","tipping / overturning"],["风险表","FMEA"],["需求—验证对照表","requirements–verification matrix"],["局限与后续工作","limitations and future work"]];
+const GL=[["床边起身台","bedside rise station"],["抬高床（床脚垫）","raised bed (bed risers)"],["动态扶手","dynamic handrail"],["座板","seat plate"],["踏板","footplate"],["L 形扶手 / 横杆 / 侧扶手","L-shaped rail / front grab bar / side rail"],["坐→站","sit-to-stand (STS)"],["离座","seat-off"],["effort（最吃力关节的负担）","joint effort (bottleneck)"],["推力上限","force limit"],["握把式“起”开关","grip-activated hold-to-run switch"],["状态机","state machine"],["松手即停 / 有人坐着才降","stop on release / lower only when occupied"],["速度跟着力走（导纳控制）","admittance control"],["和床固定","anchored to the bed"],["安全系数","safety factor"],["倾翻","tipping / overturning"],["稳定性 / 合重心","stability / combined centre of gravity"],["底座支撑范围","base of support"],["压力中心","centre of pressure (COP)"],["自适应速度","adaptive lifting speed"],["个人设置","user profile / personalised settings"],["运动动画","motion study / animation"],["附录页","appendix / backup slides"],["风险表","FMEA"],["需求—验证对照表","requirements–verification matrix"],["局限与后续工作","limitations and future work"]];
 $("#gl").innerHTML=GL.map(g=>`<div><span>${g[0]}</span><span>${g[1]}</span></div>`).join("");
 
 $("#defs").innerHTML=[
  ["床面高度（现状）","0.42 m","2 3"],
  ["座面最高（抬升目标）","0.66 m（升 24 cm）","1 2 3 4 5"],
- ["前倾角","不超过 15°","2 3"],
+ ["座板姿态","全程水平，竖直升降（不前倾）","2 3 5"],
  ["座板深 / 宽","约 0.14 m / 约 0.44 m（宽度取自示意图）","3"],
  ["座板前缘","在髋关节正下方，不顶大腿","2 3"],
  ["脚的空间","脚跟至少在髋关节前 8 cm；座板下方前部不放机构","2 3"],
@@ -432,16 +469,18 @@ $("#defs").innerHTML=[
  ["侧扶手高度","高出座面约 0.22 m","3 4"],
  ["踏板","长约 0.80 m，厚不超过 13 mm（防绊）","3 4"],
  ["底座半宽 / 台架质量 / 质心","约 0.33 m（总宽约 0.66 m）/ 约 35 kg / 质心离床沿约 0.25 m","3 4"],
+ ["和床固定","床垫下钩板或床腿夹（具体形式由角色 3、4 定）","3 4"],
  ["参考用户","60 kg、1.60 m","2 3 4 5"],
- ["抬升速度 / 时间","约 3 cm/s / 约 8 s","4 5"],
- ["推人的力上限（安全要求）","约 0.5 × 体重 ≈ 300 N（60 kg 时）","4 5"],
- ["座板处所需推力","约 300 N + 运动部件重量 ≈ 400–500 N；推杆实际受力 = 这个值 × 传动比（待角色 3 给出）","3 4"],
+ ["抬升速度","速度 = k ×（推力上限 − 座板测到的力），封顶为个人最快速度；默认最快约 3 cm/s、全程约 8 s；个人设置建议 1.5–4 cm/s","4 5"],
+ ["推人的力上限（安全要求）","约 0.5 × 体重 ≈ 300 N（60 kg 时）；个人设置建议 0.3–0.6 × 体重","4 5"],
+ ["座板处所需推力 / 保持力","推力约 300 N + 运动部件重量 ≈ 400–500 N；保持力按约 1 kN；推杆实际受力 = 这个值 × 传动比（待角色 3 给出）","3 4"],
  ["横杆设计水平力","177 N（60 kg × 9.8 × 30%）","2 4"],
- ["座板设计竖直载荷","1.5 × 体重（含坐下时的冲击余量）","4"],
- ["倾翻（35 kg 时）","前后约 178 N；侧向：扶手低位约 177 N，扶手高位约 129 N（不够，待处理）","4"],
- ["默认阈值（假设值）","已坐上：座板承重 > 40% 体重；握住：每只手 > 20 N；踩实：踏板承重 > 30% 体重；左右差 < 20%","5"],
- ["异常时","先回水平，再以约 2 cm/s 降回床面高度","5"],
- ["关键结论（四种手臂假设）","0.66 m 比 0.58 m 的床省 17–20%；比 0.42 m 低床省 30–40%；不用手时比 0.58 m 的床省 22%；只升到 0.60 m 则和抬高床差不多（−5% 到 +4%）","1 2"],
+ ["座板设计竖直载荷","1.5 × 体重；重重坐回的冲击可取 2–3 × 体重","4"],
+ ["安全系数","载荷工况按 1.5","4"],
+ ["倾翻（35 kg、不固定时）","前后约 178 N（安全系数 1.0）；侧向：扶手低位约 177 N（没有余量），高位约 129 N；往床的方向约 134 N。所以台架要和床固定","4"],
+ ["默认阈值（假设值）","已坐上：座板承重 > 40% 体重；握住：握把开关闭合且手上 > 20 N；踩实：踏板承重 > 30% 体重；压力中心在安全区内（按个人基线）；各传感器竖直力之和与体重相差 < 15%","5"],
+ ["松手或故障时","立即停住并制动；只有座板承重 > 40% 体重（有人坐着）时才下降，约 2 cm/s；推力顶到上限约 2 s 就停住","5"],
+ ["关键结论（四种手臂假设）","0.66 m 比 0.58 m 的床省 13–20%；比 0.42 m 低床省 26–40%；不用手时比 0.58 m 的床省 16–22%（范围的下端是起身台也按床的脚下空间算）；只升到 0.60 m 则和抬高床差不多（−5% 到 +4%）","1 2"],
  ["固定床的上限","约 0.58 m（NCOA 建议 20–23 英寸）","1 2"]
 ].map(r=>`<tr><th>${r[0]}</th><td data-l="取值" style="color:var(--ink)">${r[1]}</td><td data-l="谁会用到">${chips(r[2])}</td></tr>`).join("");
 
