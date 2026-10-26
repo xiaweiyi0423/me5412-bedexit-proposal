@@ -1,0 +1,755 @@
+<title>床边起身台</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (≤ 780px) for argument text; wide bands (≤ 1120px) for the night stepper, the effort chart,
+   the state diagram and the scenario grid. Sticky section nav. Night-light amber on night indigo, kept from earlier versions. */
+:root{
+  --bg:#f1f2f5; --surface:#ffffff; --sunk:#e8eaf0; --ink:#151b2c; --ink2:#4a5368; --muted:#7d8598; --line:#dde1ea;
+  --night:#2c3b6b; --amber:#b86e0c; --amber-ink:#8c5200; --amber-bg:#fbf0dc; --amber-line:#ecd2a6;
+  --good:#1f7a52; --bad:#b4352f; --good-bg:#e3f2ea; --bad-bg:#f8e4e2;
+  --s1:#2a78d6; --s2:#eb6834;
+  --st-idle:#c7ccd6; --st-seated:#8a93a6; --st-lift:#1baf7a; --st-stop:#eda100; --st-stand:#6250d6; --st-lower:#2a78d6; --st-lock:#e34948;
+  --bedc:#d4d9e3; --matc:#e7eaf1; --dev:#c3c9d3; --dev2:#a9b1be; --seat:#e09a3a; --sens-on:#e3a92e; --sens-off:#d5d9e1; --plate:#9b6bd0;
+  --font-display:"Noto Serif SC","Songti SC","STSong",serif;
+  --font-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d111d; --surface:#151b2b; --sunk:#10162a; --ink:#e8ebf3; --ink2:#b3b9ca; --muted:#7f869a; --line:#273049;
+  --night:#9fb2ec; --amber:#f0a63c; --amber-ink:#f5b968; --amber-bg:#2a2416; --amber-line:#5a4826;
+  --good:#5cc999; --bad:#ef7a72; --good-bg:#14291f; --bad-bg:#2f1715;
+  --s1:#3987e5; --s2:#d95926;
+  --st-idle:#3a4257; --st-seated:#6c7590; --st-lift:#199e70; --st-stop:#c98500; --st-stand:#9085e9; --st-lower:#3987e5; --st-lock:#e66767;
+  --bedc:#2c3550; --matc:#36405e; --dev:#4a5470; --dev2:#5d6884; --seat:#c98a3a; --sens-on:#f0b43a; --sens-off:#3a4359; --plate:#a98ae0;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d111d; --surface:#151b2b; --sunk:#10162a; --ink:#e8ebf3; --ink2:#b3b9ca; --muted:#7f869a; --line:#273049;
+  --night:#9fb2ec; --amber:#f0a63c; --amber-ink:#f5b968; --amber-bg:#2a2416; --amber-line:#5a4826;
+  --good:#5cc999; --bad:#ef7a72; --good-bg:#14291f; --bad-bg:#2f1715;
+  --s1:#3987e5; --s2:#d95926;
+  --st-idle:#3a4257; --st-seated:#6c7590; --st-lift:#199e70; --st-stop:#c98500; --st-stand:#9085e9; --st-lower:#3987e5; --st-lock:#e66767;
+  --bedc:#2c3550; --matc:#36405e; --dev:#4a5470; --dev2:#5d6884; --seat:#c98a3a; --sens-on:#f0b43a; --sens-off:#3a4359; --plate:#a98ae0;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15.5px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1120px;margin:0 auto}
+.col{max-width:780px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.3;margin:0}
+h1{font-size:clamp(34px,5.4vw,52px);letter-spacing:.02em}
+h2{font-size:clamp(22px,3vw,29px)}
+h3{font-size:17px}
+p{margin:0}
+a{color:var(--night)}
+.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12.5px;letter-spacing:.08em;color:var(--muted)}
+.lead{color:var(--ink2);max-width:780px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+section{padding-block:60px 0;display:grid;gap:20px;scroll-margin-top:60px}
+section>*{min-width:0}
+.sec-head{display:grid;gap:8px}
+.pill{display:inline-block;font-size:12px;padding:0 8px;border-radius:999px;border:1px solid currentColor;line-height:1.7;white-space:nowrap;font-family:var(--font-body)}
+.pill.fact{color:var(--night)} .pill.model{color:var(--good)} .pill.infer{color:var(--amber-ink)} .pill.open{color:var(--bad)}
+.tag{display:inline-block;font-size:12px;padding:0 8px;border-radius:5px;line-height:1.8;white-space:nowrap;font-weight:500}
+.tag.done{background:var(--good-bg);color:var(--good)} .tag.todo{background:var(--bad-bg);color:var(--bad)} .tag.calc{background:var(--amber-bg);color:var(--amber-ink)} .tag.no{background:var(--sunk);color:var(--ink2)}
+.scroll-x{overflow-x:auto;min-width:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+
+nav.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+nav.top .in{max-width:1120px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+nav.top a{flex:none;text-decoration:none;color:var(--ink2);font-size:13.5px;padding:4px 10px;border-radius:999px}
+nav.top a:hover,nav.top a:focus-visible{background:var(--surface);color:var(--ink);outline:none}
+
+/* hero */
+header.hero{padding-block:44px 0;display:grid;gap:18px}
+.statement{font-size:17.5px;line-height:1.85;max-width:800px}
+.statement b{color:var(--amber-ink);font-weight:700}
+.v13{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 18px;background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--r);padding:16px 20px;max-width:900px}
+.v13 .vno{font-family:var(--font-mono);font-size:34px;line-height:1;color:var(--amber-ink)}
+.v13 .vno small{display:block;font-size:12px;letter-spacing:.06em;margin-top:6px;color:var(--ink2);font-family:var(--font-body)}
+.v13 ul{margin:0;padding-left:18px;display:grid;gap:5px;font-size:14.5px}
+.v13 li b{color:var(--amber-ink)}
+@media (max-width:560px){.v13{grid-template-columns:1fr}}
+
+/* audit table */
+table.t{border-collapse:collapse;width:100%;font-size:14px;min-width:760px}
+table.t th,table.t td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.t thead th{font-weight:500;color:var(--ink2);font-size:13px;border-bottom:1.5px solid var(--ink2)}
+table.t td.n{font-family:var(--font-mono);color:var(--muted);width:34px}
+table.t td a{white-space:nowrap}
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px 8px}
+
+/* problem facts */
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fact{display:grid;gap:4px;align-content:start;border-top:2px solid var(--ink);padding-top:10px}
+.fact .big{font-family:var(--font-mono);font-size:30px;line-height:1.2}
+.fact p{font-size:14px;color:var(--ink2)}
+.fact .src{font-size:12.5px;color:var(--muted)}
+@media (max-width:760px){.facts{grid-template-columns:1fr}}
+.scope{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.scope>div{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;background:var(--surface)}
+.scope>div.in{background:var(--amber-bg);border-color:var(--amber-line)}
+.scope .k{font-size:12.5px;color:var(--muted);letter-spacing:.05em}
+.scope .v{font-weight:700;margin-top:2px}
+.scope p{font-size:13.5px;color:var(--ink2);margin-top:4px}
+@media (max-width:760px){.scope{grid-template-columns:1fr}}
+
+/* night stepper */
+.phases{display:grid;grid-template-columns:5fr 3fr 4fr;gap:4px}
+.phase{display:grid;gap:6px;min-width:0}
+.phase .ph{font-size:12.5px;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.phase .ph::after{content:"";flex:1;height:1px;background:var(--line)}
+.phase .btns{display:flex;flex-wrap:wrap;gap:4px}
+.stepbtn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:8px;padding:3px 9px;cursor:pointer;line-height:1.5}
+.stepbtn .no{font-family:var(--font-mono);margin-right:3px;opacity:.75}
+.stepbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stepbtn.new{border-style:dashed;border-color:var(--amber)}
+.stepbtn[aria-pressed="true"].new{border-style:solid}
+.stepbtn:focus-visible,.ctl button:focus-visible,.seg button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+@media (max-width:760px){.phases{grid-template-columns:1fr}}
+.stepper{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.stepper{grid-template-columns:1fr}}
+.scene{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px}
+.scene svg{width:100%;height:auto;display:block}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 6px 2px;font-size:13px;color:var(--ink2)}
+.ctl button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 11px;cursor:pointer}
+.ctl label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.ctl input{accent-color:var(--amber)}
+.spanel{display:grid;gap:12px}
+.spanel .top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.spanel .sn{font-family:var(--font-mono);font-size:13px;color:var(--amber-ink)}
+.spanel h3{font-size:20px}
+.kv{display:grid;grid-template-columns:76px minmax(0,1fr);gap:7px 12px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.stpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:var(--font-mono)}
+.stpill i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.watch{font-size:13.5px;border-top:1px dashed var(--line);padding-top:8px;color:var(--ink2)}
+.watch b{color:var(--bad);font-weight:500}
+.topview svg{width:100%;max-width:360px;height:auto;display:block}
+
+/* effort chart */
+.two{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+.chart{position:relative}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink2);margin:2px 4px 8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{width:26px;height:8px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 9px;border-radius:6px;font-family:var(--font-mono);line-height:1.55;white-space:nowrap;z-index:2}
+.readout{display:grid;gap:12px}
+.readout input[type=range]{width:100%;accent-color:var(--amber)}
+.rv{font-family:var(--font-mono);font-size:30px;line-height:1.1}
+.verdict{font-size:14px;border-left:3px solid var(--amber);padding:2px 0 2px 12px}
+.rrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:13.5px}
+.rrow .v{font-family:var(--font-mono);text-align:right}
+.band{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-radius:8px;overflow:hidden;font-size:13px}
+.band>div{padding:8px 10px;background:var(--sunk);display:grid;gap:2px}
+.band>div.hit{background:var(--amber-bg)}
+.band b{font-family:var(--font-mono);font-weight:500}
+table.mini{border-collapse:collapse;font-size:13.5px;width:100%}
+table.mini th,table.mini td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--font-mono)}
+table.mini th:first-child,table.mini td:first-child{text-align:left;font-family:var(--font-body)}
+table.mini thead th{font-family:var(--font-body);font-weight:500;color:var(--ink2);font-size:12.5px}
+table.mini tr.warn td{color:var(--bad)}
+table.mini tr.ok td:first-child{color:var(--good)}
+
+/* state diagram */
+.sm svg{width:100%;min-width:760px;height:auto;display:block}
+.sm text{font-family:var(--font-body)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rules>div{border-top:2px solid var(--ink);padding-top:10px;display:grid;gap:4px;align-content:start}
+.rules h3{font-size:16px}
+.rules p{font-size:14px;color:var(--ink2)}
+@media (max-width:760px){.rules{grid-template-columns:1fr}}
+
+/* sims */
+.simgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 12px 8px;display:grid;gap:6px;align-content:start;min-width:0}
+.sim .hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.sim h3{font-size:14.5px;font-family:var(--font-body);font-weight:700;line-height:1.45}
+.sim .fin{font-size:12.5px;color:var(--ink2);font-family:var(--font-mono);min-height:19px}
+.sim svg{width:100%;height:auto;display:block;touch-action:none}
+.seg{display:inline-grid;grid-template-columns:1fr 1fr;background:var(--sunk);border-radius:7px;padding:2px;gap:2px;flex:none}
+.seg button{font:inherit;font-size:12px;border:0;background:transparent;color:var(--ink2);padding:1px 8px;border-radius:5px;cursor:pointer;font-family:var(--font-mono)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.stlegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink2)}
+.stlegend span{display:inline-flex;gap:5px;align-items:center}
+.stlegend i{width:14px;height:9px;border-radius:2px;display:inline-block}
+
+/* settings / risk */
+.risklist{display:grid;gap:0}
+table.t tr.newrow td:nth-child(2){box-shadow:inset 3px 0 0 var(--amber)}
+.sev{font-family:var(--font-mono);font-size:12.5px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.note{font-size:14px;color:var(--ink2)}
+.qa{display:grid;gap:10px}
+.qa>div{display:grid;grid-template-columns:28px minmax(0,1fr);gap:2px 10px}
+.qa .qn{font-family:var(--font-mono);color:var(--amber-ink);font-size:15px;grid-row:span 2}
+.qa .q{font-weight:700;font-size:15px}
+.qa .a{font-size:14px;color:var(--ink2)}
+ol.src{font-size:13.5px;color:var(--ink2);padding-left:22px;display:grid;gap:4px;max-width:920px;margin:0}
+footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;max-width:900px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<nav class="top" aria-label="章节"><div class="in">
+  <a href="#changes">这一版改了什么</a><a href="#problem">问题和用户</a><a href="#night">一晚上的往返</a><a href="#why">为什么升高、谁受益</a>
+  <a href="#control">控制规则</a><a href="#sims">12 个场景</a><a href="#structure">结构与固定</a><a href="#risk">风险</a><a href="#open">还没验证的</a><a href="#sources">来源</a>
+</div></nav>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">ME5412 Robotics for Healthcare · Group 16 · 方案第 13 版 · 2026-10-26</div>
+  <h1>床边起身台</h1>
+  <p class="statement">帮腿力下降、夜里要起床的老人从床沿站起来，再回到床上。平时座板和床一样低；起身时<b>竖直升到固定床达不到的高度</b>，速度跟着人自己卸掉的体重走，松手就停。人离开后座板<b>停在原处等人回来</b>，回床时坐上去按“降”，带人慢慢降回床面。</p>
+  <div class="v13">
+    <div class="vno">v13<small>根据 10/26 的六角度审计修订</small></div>
+    <ul>
+      <li><b>补上了论证缺的一环：</b>座板托住半个体重时，起步只用 effort 0.16，比离座的 0.23 轻；所以推力上限的可设范围收窄到 0.4–0.6 倍体重。</li>
+      <li><b>目标人群改用能力定义：</b>抬高床站不起来、起身台能站起来的人。离座高度因人而异，在 0.58–0.66 m 之间。</li>
+      <li><b>加了回床和离开的流程：</b>座板空着时停在原高度；出入都走开口一侧，助行器也停在那一侧。</li>
+      <li><b>改了四条控制规则：</b>力之和自检只在离开床面后的运动中做；取消空载复位；无操作下降改成 20 s 加提示音；两根立柱高差超过 5 mm 就锁定。</li>
+      <li><b>定了固定方式：</b>按扶手标准的 1112 N 设计，以床架夹为主，床垫下钩板只负责定位。</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ========== CHANGES ========== -->
+<section id="changes">
+  <div class="sec-head"><div class="eyebrow">审计 → 改动</div><h2>这一版改了什么，为什么</h2>
+    <p class="lead">10/26 用 Gemini 4 从六个角度审计了汇报 slides 和讲稿（核心论证、安全与故障、真实使用、评分要求、现场可讲性、答辩拷问），每条意见都回到原文和代码核对过。下表是对方案本身有影响的条目；版面和讲稿的问题留到改 slides 时处理。</p></div>
+  <div class="tablewrap scroll-x"><table class="t" id="auditT">
+    <thead><tr><th>#</th><th>审计发现</th><th style="width:96px">处理</th><th>这一版怎么改</th><th style="width:96px">见</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- ========== PROBLEM ========== -->
+<section id="problem">
+  <div class="sec-head"><div class="eyebrow">问题和用户</div><h2>固定高度的床，低了站不起来，高了坐不稳</h2>
+    <p class="lead">夜里起床多半因为夜尿：人刚醒，房间暗。三件事叠在一起。</p></div>
+  <div class="facts">
+    <div class="fact"><span class="pill fact" style="justify-self:start">事实</span><div class="big">一半</div><p>12 名 56–90 岁老人里，一半人从 38 cm 的床上不借助明显协助站不起来；换到 58 cm，离床时髋部力矩从 48.2 降到 27.5 N·m。</p><p class="src">Merryweather 等 2015；医院病床，样本小</p></div>
+    <div class="fact"><span class="pill fact" style="justify-self:start">指南</span><div class="big">≤ 0.58 m</div><p>居家防跌建议床面离地约 20–23 英寸。再高，坐在床沿时脚踩不实；万一睡着滚下床，落差也更大。</p><p class="src">NCOA 居家防跌建议；指南，不是试验证据</p></div>
+    <div class="fact"><span class="pill fact" style="justify-self:start">事实</span><div class="big">22%</div><p>社区老人里约 22% 有体位性低血压：站起来那一刻可能头晕，手边需要一直有东西扶。</p><p class="src">Saedon 等 2020，荟萃分析</p></div>
+  </div>
+  <p class="col">所以床高是一个两难：坐着、睡觉要低，起身要高。固定床最多抬到约 0.58 m，这也是最便宜、效果最好的现有做法（床脚垫加床边扶手）。起身台把两个高度分开：平时和床齐平，只在起身那一刻升到 0.66 m。</p>
+  <div class="scope">
+    <div class="in"><div class="k">重点解决</div><div class="v">坐在床沿 → 站稳 → 离开</div><p>坐上座板、握住握把、升起、站稳、换手到助行器。</p></div>
+    <div class="in"><div class="k">v13 新加入</div><div class="v">回来 → 坐下 → 回到床上</div><p>和起床对称：坐上高处的座板，再由它带人降到床面。</p></div>
+    <div><div class="k">不在范围</div><div class="v">躺 → 坐、走到卫生间、如厕</div><p>台架在躺→坐时提供扶点，但不额外助力。</p></div>
+  </div>
+  <div class="box col" style="display:grid;gap:6px;max-width:900px">
+    <h3>目标人群（v13 用能力来定义）</h3>
+    <p class="small">住在家里、能独立或借助助行器行走、能独立坐在床沿并握住扶手的老人中，<b>从抬高到 0.58 m 的床上仍然站不起来，但从 0.66 m 的座面、手扶横杆能站起来</b>的那部分人。按我们的模型，就是最大发力程度（effort）落在约 0.23–0.29 之间的人（见<a href="#why">谁受益</a>）。不适用：需要完全协助转移的人、中重度认知障碍的人。设计工况：60 kg、1.60 m。</p>
+  </div>
+</section>
+
+<!-- ========== NIGHT ========== -->
+<section id="night">
+  <div class="sec-head"><div class="eyebrow">方案</div><h2>一晚上的往返：起床、离开、回床</h2>
+    <p class="lead">点步骤看每一步人做什么、台架做什么、控制器在哪个状态、还有哪些没验证。左边是侧视图（人面朝右，床在左），右边说明栏下方是俯视图。虚线框的步骤是这一版新加的。尺寸是初定目标值，示意图不是 CAD。</p></div>
+  <div class="phases" id="phases"></div>
+  <div class="stepper">
+    <div class="scene">
+      <svg id="side" viewBox="0 0 620 470" role="img" aria-label="床、起身台和老人的侧视示意图"></svg>
+      <div class="ctl"><button id="play" type="button">▶ 播放</button><label for="dims"><input type="checkbox" id="dims"> 标出尺寸</label><span class="muted">橙色 = 座板；黄点 = 正在受力的传感器</span></div>
+    </div>
+    <div class="box spanel" id="spanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ========== WHY ========== -->
+<section id="why">
+  <div class="sec-head"><div class="eyebrow">模型 · 审计补上的一环</div><h2>为什么要升到 0.66 m，谁真正受益</h2>
+    <p class="lead">用组里的 2D 准静态起身模型算 effort：最吃力的那个关节用掉自身最大力量的比例，越低越轻松。v13 在模型里加了一个变量：座板向上托人的力。这样能回答审计提出的问题：速度规则要求人先把座板上的力降到推力上限（默认 0.5 倍体重）以下，座板才会升，这一步有多吃力？</p></div>
+  <div class="two">
+    <div class="box chart" id="effBox">
+      <div class="legend" id="effLegend"></div>
+      <svg id="eff" viewBox="0 0 640 360" role="img" aria-label="离座和起步所需 effort 随座高变化的折线图"></svg>
+      <div class="tip" id="effTip" hidden></div>
+    </div>
+    <div class="box readout">
+      <label for="cap" class="small muted">假设这个人最多能用到的 effort：<span class="mono" id="cv"></span></label>
+      <input type="range" id="cap" min="20" max="34" step="1" value="25">
+      <div class="seg" role="group" aria-label="手臂假设" style="justify-self:start"><button type="button" data-arm="P1" aria-pressed="true">手上 ≤ 25% 体重</button><button type="button" data-arm="P2" aria-pressed="false">肩肘力量 ×0.5</button></div>
+      <div><div class="small muted">在起身台上离座的高度</div><div class="rv" id="hOff"></div></div>
+      <div class="band" id="whoBand"></div>
+      <p class="verdict" id="whoText"></p>
+      <div class="rrow" id="rrows"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="box" style="display:grid;gap:8px">
+      <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span class="pill model">本组模型</span><h3>起步不是瓶颈，但推力上限不能设得太低</h3></div>
+      <p class="note">在 0.42 m 起步时，人要让座板上的力降到上限以下。上限越低，人自己要扛的越多。上限 0.5 时，起步的 effort 明显低于在 0.66 m 离座；上限降到 0.3 时，起步反而和离座一样吃力，甚至更吃力。所以 v13 把可设范围从 0.3–0.6 收窄到 <b>0.4–0.6</b>，默认 0.5。</p>
+      <div class="scroll-x"><table class="mini" id="capT"></table></div>
+    </div>
+    <div class="box" style="display:grid;gap:8px">
+      <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span class="pill infer">推断</span><h3>这解释了审计指出的“0.61 m 矛盾”</h3></div>
+      <p class="note">v12 仿真里的用户在 0.61 m 就站起来了，而 slides 说“只升到 0.60 m 就和抬高床差不多”。两者并不矛盾：速度规则让座板只升到这个人需要的高度。能力越弱，离座越高；最弱的目标用户要到 0.66 m。13–20% 是升到 0.66 m 时的省力，对应最弱的那批人；对不需要那么高的人，起身台的意义是“能站起来”，而不是“省多少”。</p>
+      <p class="note">起身台的价值因此可以说得更准确：它把能站起来的人群，从“effort 能到 0.29 的人”扩大到“effort 能到约 0.23 的人”（手臂假设不同时为 0.30 → 0.25）。</p>
+    </div>
+  </div>
+  <details class="box" style="padding:12px 18px"><summary style="cursor:pointer"><b>模型的简化与局限</b> <span class="muted small">被追问时要能说清</span></summary>
+    <ul class="small" style="margin:10px 0 0;padding-left:18px;color:var(--ink2);display:grid;gap:4px">
+      <li>2D 侧视、准静态，只算髋、膝（扶横杆时加肩、肘）；没有动态过程，没有踝关节和平衡控制。关节力量是假设值，结论依赖的是相对比较。</li>
+      <li>座板托人的力取竖直方向，作用在髋关节后方 4 cm（座板前缘在髋下方、深 14 cm）。改成 2 cm 或 7 cm，上限 0.5 时的起步 effort 在 0.154–0.156 之间，几乎不变。</li>
+      <li>脚的负担至少 0.3 倍体重（控制器判断“脚踩实”的门槛）。横杆按设计位置：髋前 0.55 m、座面上方 0.40 m。脚跟至少在髋前 8 cm；改成和床一样的 10 cm 时，0.66 m 的离座 effort 从 0.233 变成 0.244，“比抬高床省 13–20%”的范围就来自这里。</li>
+      <li>座板支撑力设为 0 时，扩展模型逐个高度复现了 v12 的离座结果（0.42 m 时 0.389，0.66 m 时 0.233），说明扩展没有改变原模型。代码：<span class="mono">model/calc_v13/seat_support.py</span>。</li>
+      <li>“手上最多 25% 体重”是代理值：起身困难的老年女性推扶手时双手合力峰值约 159 N（Alexander 等），推扶手和拉横杆不完全一样。</li>
+    </ul></details>
+</section>
+
+<!-- ========== CONTROL ========== -->
+<section id="control">
+  <div class="sec-head"><div class="eyebrow">控制</div><h2>控制规则 v13：先停住，确认有人坐着才动</h2>
+    <p class="lead">三条核心规则不变。v13 改的是边界：哪些时候做自检、人离开后座板做什么、坐着不动多久才降、两根立柱不同步怎么办。图中橙色是 v13 改动或新加的切换。</p></div>
+  <div class="rules">
+    <div><h3>握紧才升，松手即停</h3><p>握把式“起”开关、手在横杆上、双脚踩实踏板、压力中心在安全区，四个条件同时满足才升。任何一条丢失，立即停住并制动，座板停在当前高度。</p></div>
+    <div><h3>有人坐着才带人降</h3><p>座板上有人，按“降”或坐着 20 s 没有操作（17 s 先响提示音），以 2 cm/s 带人降到床面。握着握把就不会自己降。</p></div>
+    <div><h3>没人时不自己动</h3><p>人站起后座板停在原高度、保持水平，坐回去接得住；人离开 5 s 后进入“空座保持”，仍留在原高度等人回来。空座只在按住“升/降”时以 1.5 cm/s 移动，碰到任何阻力就停。</p></div>
+  </div>
+  <div class="box sm scroll-x"><svg id="smsvg" viewBox="0 0 1060 505" role="img" aria-label="v13 控制状态机：九个状态和它们之间的切换条件"></svg></div>
+  <div class="tablewrap scroll-x"><table class="t" id="setT">
+    <thead><tr><th>个人设置和参数</th><th>v12</th><th>v13</th><th>为什么改</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- ========== SIMS ========== -->
+<section id="sims">
+  <div class="sec-head"><div class="eyebrow">仿真</div><h2>12 个场景，最后都落到安全状态</h2>
+    <p class="lead">用户不再随手设定，而是用上面的模型：每个人按自己的最大 effort，在每个高度最多能把座板上的力降到多少。上图是座板高度，下图是座板上的力（虚线是推力上限 0.5 倍体重），底条是控制器状态。把鼠标移到图上看数值。带 <span class="mono">v12 / v13</span> 切换的三个场景可以对比新旧规则。</p></div>
+  <div class="stlegend" id="stLegend"></div>
+  <div class="simgrid" id="simgrid"></div>
+  <p class="note col">仿真只检验控制逻辑会不会出错，用户模型来自准静态起身模型，不代表真实的起身动力学。代码：<span class="mono">model/calc_v13/controller_v13.py</span>。写仿真时还发现了一个 v12 遗留问题：控制器把“座板上的力低于 0.4 倍体重”当作“人已离开”，人一边坐着一边卸力时（尤其部分体重在床垫上）会被当成走了，永远进不了抬升。v13 改成座板力低于 5% 体重且脚离开踏板，才算人离开。</p>
+</section>
+
+<!-- ========== STRUCTURE ========== -->
+<section id="structure">
+  <div class="sec-head"><div class="eyebrow">结构与固定</div><h2>放得下、推得动、不会翻</h2></div>
+  <div class="grid2">
+    <div class="box" style="display:grid;gap:8px"><h3>机构：两根同步的三节升降柱</h3>
+      <p class="note">座板下折叠后只有约 0.30 m 高。三节升降柱（如 TiMOTION TL8，缩回约 0.275 m，直径 124 mm）放得进 14 cm 深的座板下，推力不放大：推到上限时每根约 0.23 kN，保持 1.5 倍体重时每根约 0.49 kN，额定 2 kN。剪叉也放得下，但在床面高度会把推杆力放大 2.7–3.9 倍，起步要 1.2–1.7 kN，只作对比。</p>
+      <p class="note"><b>同步（v13 新增）：</b>厂家控制器按霍尔信号同步，座板和扶手装在同一个刚性滑架上；软件再比较两根柱的位置，高差超过 5 mm 就制动锁定。5 mm 是暂定值，要按厂家的同步精度确定。</p></div>
+    <div class="box" style="display:grid;gap:8px"><h3>稳定：人在台架上不会翻，人一半在外面要靠固定</h3>
+      <p class="note">人完全在台架上（坐在座板上、站在踏板上）时，拉扶手是人和台架之间的内力，拉不翻：6 个姿态的合重心离后边缘 0.13–0.28 m，人的重心要侧向偏出约 0.5 m 才翻，而座板半宽只有 0.22 m。人半坐在床上去拉扶手时是外力：不固定时安全系数只有 0.73–1.0。</p>
+      <p class="note"><b>固定方式（v13 定下）：</b>老人失去平衡时会猛拽扶手，所以按扶手标准 ADA 609 的 1112 N 设计，固定件需要约 2 kN 的压紧力，采用夹住床侧梁或床腿的<b>床架夹</b>。床垫下的钩板只用来定位座板后缘，不算承载。日常拉力（30% 体重，177 N）只要 90–180 N 就到安全系数 1.5。夹不住的床（落地箱体床）暂列为不适用。</p></div>
+  </div>
+  <div class="box col" style="display:grid;gap:6px;max-width:900px"><h3>审计质疑的“脚下空间”：用尺寸回答</h3>
+    <p class="note">审计认为座板下有立柱、还要用裙板封住，起身台的脚不可能比在床边收得更靠后，所以“脚跟在髋前 8 cm”（床是 10 cm）不成立。按尺寸看：人坐在 14 cm 深座板的前缘，髋在离床沿约 0.14 m 处；立柱外壳和裙板只占床沿到 0.14 m 这一段；脚跟至少在 0.22 m，比外壳前沿还远 8 cm。所以 8 cm 和机构布置不冲突，在上面的侧视图里勾选“标出尺寸”可以看到。床边那侧的 10 cm 是因为床垫边缘和床架挡小腿。为了稳妥，报告仍写范围：两边都按 10 cm 算时比抬高床省 13–16%，按各自的值算时省 17–20%。</p></div>
+</section>
+
+<!-- ========== RISK ========== -->
+<section id="risk">
+  <div class="sec-head"><div class="eyebrow">安全</div><h2>可能怎么出事，怎么防</h2>
+    <p class="lead">严重度和可能性是初步估计。左侧有橙色竖线的是 v13 新增或改动的行。“仿真”一列指上面 12 个场景里对应的那一个。</p></div>
+  <div class="tablewrap scroll-x"><table class="t" id="riskT">
+    <thead><tr><th>#</th><th>怎么出事</th><th style="width:76px">严重 / 可能</th><th>怎么防</th><th style="width:118px">状态</th></tr></thead><tbody></tbody></table></div>
+  <p class="note col">可能相关的标准（待核对适用范围）：家用医疗电气设备 IEC 60601-1-11；个人护理机器人 ISO 13482；辅助产品通用要求 EN 12182；移位机测试方法 ISO 10535（停止距离 &lt; 10 mm、前后 10° 和侧向 5° 斜坡上不倾覆）。侧扶手紧贴床沿、可能被用来拉着坐起，可能落入成人便携床栏标准（16 CFR 1270）的范围，需要核对。</p>
+</section>
+
+<!-- ========== OPEN ========== -->
+<section id="open">
+  <div class="sec-head"><div class="eyebrow">下一步</div><h2>还没验证的地方，以及怎么尽快知道</h2>
+    <p class="lead">项目只做概念、设计和仿真，下面的检查都在这个范围内。前两条是 11/3 必须交的。</p></div>
+  <div class="qa" id="openQ"></div>
+</section>
+
+<section id="sources">
+  <div class="sec-head"><div class="eyebrow">来源</div><h2>参考资料</h2></div>
+  <ol class="src" id="srcs"></ol>
+</section>
+
+<footer>
+  <p>模型和仿真：GitHub 仓库 me5412-bedexit-proposal 的 <span class="mono">model/calc_v13/</span>（起步计算 <span class="mono">seat_support.py</span>，控制器 <span class="mono">controller_v13.py</span>）；审计报告在 <span class="mono">presentation/audit/</span>。</p>
+  <p>v12 及更早的内容（问题全景矩阵、证据链、方案甲动态扶手的模型和对比）仍在仓库的 <span class="mono">page/bedexit_proposal.html</span>；这一版只保留已选定的方案乙。</p>
+</footer>
+</div>
+
+<script type="application/json" id="data">/*__DATA__*/{}</script>
+<script>
+(function(){"use strict";
+const D=JSON.parse(document.getElementById("data").textContent);
+const $=s=>document.querySelector(s);
+const NS="http://www.w3.org/2000/svg";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ---------------- audit table ---------------- */
+const AUD=[
+ ["“各力之和与体重对不上就锁住”在正常使用中会误锁：刚坐上时大腿压在床垫上；站起后一只脚已在地上。五个角度都提到。","done","已改","只在抬升、或带人下降、且座板高于床面 3 cm 时检查，偏差持续 0.5 s 才锁。仿真里两个误锁场景在 v13 下都正常。","#control"],
+ ["速度规则要求人先把座板上的力降到上限以下，这一步在 0.42 m 有多吃力，没有算过。","calc","已算","起身模型加入座板托力。上限 0.5 时起步 effort 0.155–0.166，低于 0.66 m 离座的 0.233–0.251；上限 0.3 时起步变成瓶颈，所以可设范围收窄到 0.4–0.6。","#why"],
+ ["仿真用户在 0.61 m 离座，而 slides 说只升到 0.60 m 和抬高床差不多。","calc","已解释","离座高度由用户能力决定；目标人群改用能力区间定义（effort 约 0.23–0.29），仿真用户改由起身模型驱动。","#why"],
+ ["只讲了起床，没有讲回床；slides 上“座板上没人时不动”和状态机里的空载复位矛盾。","done","已加","取消空载复位，座板空着时留在原高度；回床时坐上去按“降”。“没人时不自己动”现在成立。","#night"],
+ ["站起后身前横杆挡路，只能从开口一侧出去；助行器放哪没交代。","done","已加","出入都走开口一侧，助行器停在开口侧；横杆端部立柱给换手时扶。扶手可左右换装，按偏瘫的健侧安装。","#night"],
+ ["有人坐在高处时 10 s 没操作就自动下降，和“按住才动”的原则冲突。","done","已改","保留（晕倒时把人降低更安全），但改成 20 s，17 s 先响提示音，握着握把不降。","#control"],
+ ["两根升降柱不同步时没有检测和对策。","done","已加","高差超过 5 mm 制动锁定，只能按住“降”慢降；阈值待厂家资料。","#structure"],
+ ["固定方式口径不一：正文说 90–180 N，小字又说按 1112 N 需要约 2 kN。","done","已定","按 1112 N 设计，以床架夹为主；床垫下钩板只定位。","#structure"],
+ ["个人最快速度 4 cm/s 超出推杆空载速度（约 3.3 cm/s）。","done","已改","可设 1.5–3 cm/s；3 cm/s 时的推力要按厂家力-速度曲线核对。","#control"],
+ ["“脚跟在髋前 8 cm”和座板下的立柱、裙板冲突。","no","部分驳回","按尺寸不冲突：髋在 0.14 m，外壳到 0.14 m 为止，脚跟在 0.22 m 以外。报告仍写 13–20% 的范围。","#structure"],
+ ["老师点名要的 CAD 模型和运动动画还没有；讲稿的时间紧版本还删了运动演示页。","todo","待做","角色 3，11/3 必须；时间紧版本要保留这一页。","#open"],
+ ["往前挪 25–30 cm 坐上短座板，对老人是否可行。","todo","仍未验证","仍是最大的不确定；v13 的回床流程又加了一个同类问题（坐上高处的窄座板）。","#open"]
+];
+const auT=$("#auditT tbody");
+auT.innerHTML=AUD.map((r,i)=>`<tr><td class="n">${i+1}</td><td>${esc(r[0])}</td><td><span class="tag ${r[1]}">${esc(r[2])}</span></td><td>${esc(r[3])}</td><td><a href="${r[4]}">${({"#control":"控制规则","#why":"谁受益","#night":"往返流程","#structure":"结构与固定","#open":"还没验证的"})[r[4]]}</a></td></tr>`).join("");
+
+/* ---------------- side view geometry ---------------- */
+const LEN={T:0.461,TH:0.392,SH:0.394,U:0.298,F:0.32};
+const P={
+ edge:{S:[-0.12,0.97],H:[-0.15,0.51],K:[0.24,0.46],A:[0.24,0.062],T:[0.41,0.02],E:[-0.05,0.72],W:[0.10,0.64]},
+ scoot:{S:[0.18,0.97],H:[0.13,0.51],K:[0.52,0.46],A:[0.52,0.062],T:[0.69,0.02],E:[0.22,0.70],W:[0.36,0.64]},
+ ready:{S:[0.28,0.94],H:[0.13,0.51],K:[0.46,0.40],A:[0.29,0.062],T:[0.46,0.02],E:[0.48,0.76],W:[0.69,0.82]},
+ rise:{S:[0.37,1.149],H:[0.14,0.75],K:[0.42,0.44],A:[0.29,0.062],T:[0.46,0.02],E:[0.52,0.98],W:[0.69,1.06]},
+ stand:{S:[0.31,1.309],H:[0.29,0.848],K:[0.31,0.456],A:[0.29,0.062],T:[0.46,0.02],E:[0.50,1.10],W:[0.69,1.06]}
+};
+const seated=L=>({S:[0.14,0.97+L],H:[0.11,0.51+L],K:[0.46,0.44+0.6*L],A:[0.29,0.062],T:[0.46,0.02],E:[0.22,0.70+L],W:[0.40,0.58+L]});
+const lerpP=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,[a[k][0]+(b[k][0]-a[k][0])*t,a[k][1]+(b[k][1]-a[k][1])*t]]));
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]], add=(a,b)=>[a[0]+b[0],a[1]+b[1]], mul=(a,s)=>[a[0]*s,a[1]*s], nrm=a=>Math.hypot(a[0],a[1]);
+function ik(a,b,l1,l2,hint){let d=sub(b,a),L=nrm(d);L=Math.min(Math.max(L,Math.abs(l1-l2)+1e-3),l1+l2-1e-3);const u=mul(d,1/(nrm(d)+1e-9));b=add(a,mul(u,L));
+ const x=(l1*l1-l2*l2+L*L)/(2*L),h=Math.sqrt(Math.max(0,l1*l1-x*x)),n=[-u[1],u[0]];const p1=add(add(a,mul(u,x)),mul(n,h)),p2=add(add(a,mul(u,x)),mul(n,-h));
+ return [nrm(sub(p1,hint))<=nrm(sub(p2,hint))?p1:p2,b];}
+function solve(q){q=JSON.parse(JSON.stringify(q));const t=sub(q.S,q.H);q.S=add(q.H,mul(t,LEN.T/nrm(t)));
+ [q.K,q.A]=ik(q.H,q.A,LEN.TH,LEN.SH,q.K);[q.E,q.W]=ik(q.S,q.W,LEN.U,LEN.F,q.E);return q;}
+const SC=290, X=x=>(x+0.98)*SC, Z=z=>455-z*SC;
+
+/* steps of one night */
+const STN={IDLE:"待机",SEATED:"坐着",LIFTING:"抬升",STOPPED:"停住",STANDING_HOLD:"站立保持",LOWERING:"下降",EMPTY_HOLD:"空座保持",EMPTY_MOVE:"空座移动",RESET_EMPTY:"空载复位（v12）",LOCKED:"锁定"};
+const STC={IDLE:"--st-idle",SEATED:"--st-seated",LIFTING:"--st-lift",STOPPED:"--st-stop",STANDING_HOLD:"--st-stand",LOWERING:"--st-lower",EMPTY_HOLD:"--st-idle",EMPTY_MOVE:"--st-idle",RESET_EMPTY:"--st-idle",LOCKED:"--st-lock"};
+const STEPS=[
+ {ph:0,t:"坐在床沿，脚踩踏板",pose:P.edge,L:0,sens:["feet"],st:"IDLE",tv:{p:[-0.15,0],a:0},
+  you:"醒来后坐到床沿，双脚放到台架的踏板上（踏板离地约 4 cm）。",dev:"待机。握把上的状态灯和踏板夜灯亮着，告诉人支撑在哪里。",watch:"躺→坐这一步台架只提供扶点（侧扶手），不助力。"},
+ {ph:0,t:"往前挪到短座板上",pose:P.scoot,L:0,sens:["seat","feet"],st:"SEATED",tv:{p:[0.10,0],a:0},
+  you:"手拉横杆借力，往前挪 25–30 cm，坐到和床齐平、深 14 cm 的座板前缘。大腿后侧可以还压在床垫上。",dev:"座板受力超过 0.4 倍体重 → 坐着。v13 不在这时做力之和自检，所以压着床垫不会误锁。",watch:"<b>未验证：</b>往前挪 25–30 cm 对目标用户是否可行，是目前最大的不确定。"},
+ {ph:0,t:"握住握把，想坐多久都行",pose:P.ready,L:0,sens:["seat","bar","feet"],st:"SEATED",tv:{p:[0.10,0],a:0},
+  you:"双手握住横杆上的握把，坐稳，缓一缓。",dev:"坐着，座板在床面高度，不会自己动。",watch:""},
+ {ph:0,t:"握紧“起”，座板升，人也发力",pose:lerpP(P.ready,P.rise,0.5),L:0.12,sens:["seat","bar","feet"],st:"LIFTING",tv:{p:[0.14,0],a:0},
+  you:"握紧握把上的“起”开关，身体前倾、脚往下踩，把座板上的力降到半个体重以下。",dev:"抬升：速度 = k ×（0.5 倍体重 − 座板上的力），最快 3 cm/s。人卸得越多升得越快；往回坐时速度自然变成 0。",watch:"起步的 effort 约 0.16，低于离座时的 0.23（见“谁受益”）。"},
+ {ph:0,t:"离座站稳，座板停在原高度",pose:P.stand,L:0.20,sens:["bar","feet"],st:"STANDING_HOLD",tv:{p:[0.30,0],a:0},
+  you:"站直，双手仍在横杆上，站着缓几秒（防体位性低血压）。",dev:"座板上的力低于 5% 体重持续 0.3 s → 站立保持：座板停在离座时的高度（典型用户约 0.62 m）、保持水平，万一坐回去接得住。",watch:""},
+ {ph:1,t:"从开口一侧迈下，换手到助行器",pose:P.stand,L:0.20,sens:["bar","feet"],st:"STANDING_HOLD",tv:{p:[0.36,0.36],a:90},path:"out",isNew:1,
+  you:"一只手扶横杆端部的立柱，另一只手去拿停在开口一侧的助行器，侧身迈下踏板。",dev:"仍是站立保持。一只脚已经踩在地上、踏板只有约一半体重时，v12 会因为力之和对不上而锁死；v13 在这个状态不做这项检查。",watch:"<b>待 CAD 核对：</b>横杆端部到台架边缘只有约 0.20 m 的空当，侧身迈出和够到助行器的距离要在 CAD 里确认。"},
+ {ph:1,t:"人离开，座板空着等在原处",pose:null,L:0.20,sens:[],st:"EMPTY_HOLD",tv:null,path:"away",isNew:1,
+  you:"去卫生间。",dev:"座板和踏板都空 5 s → 空座保持：座板留在原高度，不自己复位。v12 会在这时空载降回床面。",watch:"<b>需要老师确认：</b>座板整夜停在高处是否可以接受。它在台架占地范围内，夜灯照着。"},
+ {ph:2,t:"回来，踏上踏板，转身背对座板",pose:P.stand,L:0.20,sens:["bar","feet"],st:"EMPTY_HOLD",tv:{p:[0.32,0.04],a:0},path:"back",isNew:1,
+  you:"从开口一侧走回来，把助行器停在原处，双手扶横杆踏上踏板，转身背对座板，让小腿后侧先碰到座板前缘。",dev:"空座保持。踏板受力不会让座板移动。",watch:"<b>新风险：</b>在踏板上转身要全程有扶点；横杆就在身前。"},
+ {ph:2,t:"坐上停在高处的座板",pose:seated(0.20),L:0.20,sens:["seat","bar","feet"],st:"SEATED",tv:{p:[0.12,0],a:0},isNew:1,
+  you:"扶着横杆坐下。座面约 0.62 m，像坐高凳，膝盖弯得浅，比直接坐到 0.42 m 的床上好控制。",dev:"座板受力 → 坐着。",watch:"<b>未验证：</b>座板只有 14 cm 深；坐得太靠后会越过后缘，滑向低 0.2 m 的床垫。座板后缘要不要加软挡边，待定。"},
+ {ph:2,t:"按“降”，座板带人降到床面",pose:seated(0.10),L:0.10,sens:["seat","bar","feet"],st:"LOWERING",tv:{p:[0.12,0],a:0},isNew:1,
+  you:"按一下“降”，双手扶横杆。",dev:"有人坐着 → 下降，2 cm/s，约 10 s 到床面。座板一旦卸载（人站起来）立即停住。",watch:""},
+ {ph:2,t:"往后挪回床上，躺下",pose:P.edge,L:0,sens:["feet"],st:"IDLE",tv:{p:[-0.15,0],a:0},isNew:1,
+  you:"手推横杆，身体往后挪回床垫，把腿收上床。",dev:"到床面后坐着；人挪走、座板和踏板都空了 → 待机。体重转到床垫上的过程中不做力之和自检。",watch:"往后挪时双手推横杆，用的是伸直手臂的力。比起床时往前挪是否更容易，没有验证。"}
+];
+const PH=["起床","离开","回床"];
+let cur=0, playT=null;
+function phasesUI(){
+ $("#phases").innerHTML=PH.map((p,pi)=>`<div class="phase"><div class="ph">${p}</div><div class="btns">${STEPS.map((s,i)=>s.ph===pi?`<button type="button" class="stepbtn${s.isNew?" new":""}" data-i="${i}" aria-pressed="${i===cur}"><span class="no">${i+1}</span>${esc(s.t)}</button>`:"").join("")}</div></div>`).join("");
+ document.querySelectorAll(".stepbtn").forEach(b=>b.addEventListener("click",()=>{stop();show(+b.dataset.i)}));
+}
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function drawSide(s){
+ const svg=$("#side");svg.innerHTML="";const L=s.L,h0=0.42+L;
+ el("line",{x1:0,y1:Z(0),x2:620,y2:Z(0),stroke:"var(--muted)","stroke-width":1.5},svg);
+ el("rect",{x:X(-0.98),y:Z(0.27),width:X(0)-X(-0.98),height:Z(0)-Z(0.27),fill:"var(--bedc)"},svg);
+ el("rect",{x:X(-0.98),y:Z(0.42),width:X(0)-X(-0.98),height:Z(0.27)-Z(0.42),fill:"var(--matc)"},svg);
+ const tb=el("text",{x:X(-0.5),y:Z(0.12),"text-anchor":"middle","font-size":14,fill:"var(--muted)"},svg);tb.textContent="床（不改造）";
+ el("rect",{x:X(-0.26),y:Z(0.277),width:0.27*SC,height:4,fill:"var(--plate)",opacity:.8},svg);
+ el("polygon",{points:[[0,0],[0.80,0],[0.77,0.013],[0,0.013]].map(p=>X(p[0])+","+Z(p[1])).join(" "),fill:"var(--dev)"},svg);
+ el("rect",{x:X(0),y:Z(0.30),width:0.14*SC,height:Z(0.013)-Z(0.30),fill:"var(--dev)"},svg);
+ if(h0-0.05>0.30) el("rect",{x:X(0.035),y:Z(h0-0.05),width:0.07*SC,height:Z(0.30)-Z(h0-0.05),fill:"var(--dev2)"},svg);
+ el("polygon",{points:[[-0.03,h0],[0.14,h0],[0.14,h0-0.045],[-0.03,h0-0.045]].map(p=>X(p[0])+","+Z(p[1])).join(" "),fill:"var(--seat)"},svg);
+ const BX=0.69,zs=0.64+L,zb=0.82+L;
+ el("line",{x1:X(BX),y1:Z(0.02),x2:X(BX),y2:Z(0.55),stroke:"var(--ink)","stroke-width":7,opacity:.25},svg);
+ el("line",{x1:X(BX),y1:Z(0.5),x2:X(BX),y2:Z(zb),stroke:"var(--ink)","stroke-width":3.5,opacity:.6},svg);
+ el("line",{x1:X(0),y1:Z(zs),x2:X(BX),y2:Z(zs),stroke:"var(--ink)","stroke-width":3.5,opacity:.4,"stroke-linecap":"round"},svg);
+ el("circle",{cx:X(BX),cy:Z(zb),r:6.5,fill:"var(--ink)"},svg);
+ if(s.pose){const q=solve(s.pose);const pl=(pts,w)=>el("polyline",{points:pts.map(p=>X(p[0])+","+Z(p[1])).join(" "),fill:"none",stroke:"var(--ink)","stroke-width":w,"stroke-linecap":"round","stroke-linejoin":"round"},svg);
+  pl([q.S,q.H,q.K,q.A,q.T],5);pl([q.S,q.E,q.W],3.5);const d=sub(q.S,q.H),hc=add(q.S,mul(d,0.12/nrm(d)));
+  el("circle",{cx:X(hc[0]),cy:Z(hc[1]),r:0.055*SC,fill:"var(--surface)",stroke:"var(--ink)","stroke-width":3},svg);}
+ else{const t=el("text",{x:X(0.42),y:Z(0.95),"text-anchor":"middle","font-size":14,fill:"var(--muted)"},svg);t.textContent="（人已离开）";}
+ for(const [k,x,z] of [["seat",0.07,h0-0.022],["bar",BX,zb+0.045],["feet",0.40,0.008]])
+  el("circle",{cx:X(x),cy:Z(z),r:5.5,fill:s.sens.includes(k)?"var(--sens-on)":"var(--sens-off)",stroke:"var(--ink)","stroke-width":1},svg);
+ // night light under the bar
+ el("circle",{cx:X(0.76),cy:Z(0.03),r:3,fill:"var(--amber)"},svg);
+ // state chip
+ const g=el("g",{},svg);el("rect",{x:418,y:14,width:190,height:52,rx:8,fill:"var(--surface)",stroke:"var(--line)"},g);
+ el("rect",{x:430,y:26,width:11,height:11,rx:2,fill:`var(${STC[s.st]})`},g);
+ const t1=el("text",{x:448,y:36,"font-size":14.5,fill:"var(--ink)","font-weight":700},g);t1.textContent=STN[s.st];
+ const t2=el("text",{x:430,y:56,"font-size":12.5,fill:"var(--ink2)","font-family":"var(--font-mono)"},g);t2.textContent=`座面 ${h0.toFixed(2)} m`;
+ if($("#dims").checked) drawDims(svg,s);
+}
+function dimLine(svg,x1,z1,x2,z2,label,off,anchor){const a=[X(x1),Z(z1)],b=[X(x2),Z(z2)];
+ el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:"var(--amber-ink)","stroke-width":1.2,"marker-start":"url(#ar)","marker-end":"url(#ar)"},svg);
+ const t=el("text",{x:(a[0]+b[0])/2+(off?off[0]:0),y:(a[1]+b[1])/2+(off?off[1]:-5),"text-anchor":anchor||"middle","font-size":12,fill:"var(--amber-ink)","font-family":"var(--font-mono)"},svg);t.textContent=label;}
+function drawDims(svg,s){
+ const defs=el("defs",{},svg),m=el("marker",{id:"ar",viewBox:"0 0 6 6",refX:3,refY:3,markerWidth:6,markerHeight:6,orient:"auto-start-reverse"},defs);
+ el("path",{d:"M0,0 L6,3 L0,6 z",fill:"var(--amber-ink)"},m);
+ const h0=0.42+s.L;
+ dimLine(svg,0,0.36,0.14,0.36,"座板深 0.14",[0,-6]);
+ dimLine(svg,0.70,0.42,0.70,0.66,"0.42 → 0.66 m",[8,4],"start");
+ dimLine(svg,0.14,0.20,0.23,0.20,"脚跟 ≥ 髋 + 0.08",[0,-6]);
+ dimLine(svg,0.14,h0+0.40,0.69,h0+0.40,"横杆：髋前 0.55",[0,-8]);
+ dimLine(svg,0,-0.035,0.80,-0.035,"踏板 0.80 m",[0,14]);
+ el("line",{x1:X(0.14),y1:Z(0.16),x2:X(0.14),y2:Z(h0),stroke:"var(--amber-ink)","stroke-dasharray":"3 3"},svg);
+ const t=el("text",{x:X(0.07),y:Z(0.16)+14,"text-anchor":"middle","font-size":11,fill:"var(--amber-ink)"},svg);t.textContent="立柱外壳止于此";
+}
+// top view inside the side svg: lower-right corner
+function drawTop(svg,s){
+ svg.innerHTML="";const ox=10,oy=8,k=118; const TX=x=>ox+(x+0.45)*k, TY=y=>oy+(y+0.55)*k;
+ const g=el("g",{},svg);
+   el("rect",{x:TX(-0.45),y:TY(-0.55),width:0.45*k,height:1.75*k-14,fill:"var(--matc)"},g);
+ const bl=el("text",{x:TX(-0.23),y:TY(0.95),"text-anchor":"middle","font-size":11,fill:"var(--muted)"},g);bl.textContent="床";
+ el("rect",{x:TX(0),y:TY(-0.33),width:0.80*k,height:0.66*k,fill:"var(--sunk)",stroke:"var(--dev2)"},g);
+ el("rect",{x:TX(-0.03),y:TY(-0.22),width:0.17*k,height:0.44*k,fill:"var(--seat)"},g);
+ el("polyline",{points:`${TX(0)},${TY(-0.28)} ${TX(0.69)},${TY(-0.28)} ${TX(0.69)},${TY(0.13)}`,fill:"none",stroke:"var(--ink)","stroke-width":3,"stroke-linecap":"round"},g);
+ el("circle",{cx:TX(0.69),cy:TY(0.13),r:4,fill:"var(--ink)"},g);
+ const ol=el("text",{x:TX(0.42),y:TY(0.49),"text-anchor":"middle","font-size":10.5,fill:"var(--amber-ink)"},g);ol.textContent="开口一侧 ↓";
+ const walkerAway=s.path==="away";
+ if(!walkerAway){el("rect",{x:TX(0.86),y:TY(0.42),width:0.30*k,height:0.36*k,rx:3,fill:"none",stroke:"var(--night)","stroke-width":2},g);
+  const wl=el("text",{x:TX(1.01),y:TY(0.90),"text-anchor":"middle","font-size":10.5,fill:"var(--night)"},g);wl.textContent="助行器";}
+ const arrow=(pts,col)=>{const pl=el("polyline",{points:pts.map(p=>TX(p[0])+","+TY(p[1])).join(" "),fill:"none",stroke:col,"stroke-width":1.8,"stroke-dasharray":"4 3"},g);
+  const a=pts[pts.length-2],b=pts[pts.length-1],ang=Math.atan2(TY(b[1])-TY(a[1]),TX(b[0])-TX(a[0]));
+  el("path",{d:`M${TX(b[0])},${TY(b[1])} l${-8*Math.cos(ang-0.45)},${-8*Math.sin(ang-0.45)} M${TX(b[0])},${TY(b[1])} l${-8*Math.cos(ang+0.45)},${-8*Math.sin(ang+0.45)}`,stroke:col,"stroke-width":1.8,fill:"none"},g);};
+ if(s.path==="out") arrow([[0.30,0.0],[0.38,0.40],[0.86,0.62]],"var(--amber-ink)");
+ if(s.path==="away") arrow([[0.40,0.42],[0.70,0.95],[1.10,1.12]],"var(--amber-ink)");
+ if(s.path==="back") arrow([[1.10,1.10],[0.42,0.45],[0.32,0.06]],"var(--amber-ink)");
+ if(s.tv){const [x,y]=s.tv.p,a=s.tv.a*Math.PI/180;
+  el("ellipse",{cx:TX(x),cy:TY(y),rx:0.09*k,ry:0.17*k,transform:`rotate(${s.tv.a} ${TX(x)} ${TY(y)})`,fill:"var(--surface)",stroke:"var(--ink)","stroke-width":2},g);
+  el("line",{x1:TX(x),y1:TY(y),x2:TX(x)+16*Math.cos(a),y2:TY(y)+16*Math.sin(a),stroke:"var(--ink)","stroke-width":2},g);}
+}
+function show(i){cur=i;const s=STEPS[i];
+ document.querySelectorAll(".stepbtn").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.i===i));
+ drawSide(s);
+ $("#spanel").innerHTML=`<div class="top"><span class="sn">${PH[s.ph]} · 第 ${i+1} / ${STEPS.length} 步</span>${s.isNew?'<span class="pill infer">v13 新加</span>':""}</div>
+ <h3>${esc(s.t)}</h3>
+ <dl class="kv"><dt>人</dt><dd>${esc(s.you)}</dd><dt>台架</dt><dd>${esc(s.dev)}</dd><dt>控制状态</dt><dd><span class="stpill"><i style="background:var(${STC[s.st]})"></i>${STN[s.st]}</span></dd></dl>
+ ${s.watch?`<p class="watch">${s.watch}</p>`:""}
+ <div class="topview"><div class="small muted">俯视（床在左，台架在床的长边）</div><svg id="topv" viewBox="0 0 220 225" role="img" aria-label="俯视图：台架、扶手、开口一侧和助行器的位置"></svg></div>`;
+ drawTop($("#topv"),s);
+}
+function stop(){if(playT){clearInterval(playT);playT=null;$("#play").textContent="▶ 播放";}}
+$("#play").addEventListener("click",()=>{if(playT){stop();return;}$("#play").textContent="❚❚ 暂停";if(cur===STEPS.length-1)show(0);
+ playT=setInterval(()=>{if(cur>=STEPS.length-1){stop();return;}show(cur+1);},2600);});
+$("#dims").addEventListener("change",()=>drawSide(STEPS[cur]));
+phasesUI();show(0);
+
+/* ---------------- effort chart ---------------- */
+const E=D.eff;let arm="P1";
+const W=640,H=360,m={l:52,r:18,t:16,b:44},xs=h=>m.l+(h-0.40)/(0.68-0.40)*(W-m.l-m.r),ys=v=>m.t+(1-v/0.45)*(H-m.t-m.b);
+function seatOffHeight(c,key){const cg=E.cgrid,ms=E.minseat[key];
+ const at=(hi)=>{const row=ms[hi];if(c<=cg[0])return row[0];if(c>=cg[cg.length-1])return row[row.length-1];
+  let j=0;while(cg[j+1]<c)j++;const w=(c-cg[j])/(cg[j+1]-cg[j]);return row[j]*(1-w)+row[j+1]*w;};
+ const thr=0.01;let prev=null;
+ for(let i=0;i<E.h.length;i++){const v=at(i);if(v<=thr){if(i===0)return E.h[0];const w=(prev-thr)/(prev-v);return E.h[i-1]+w*(E.h[i]-E.h[i-1]);}prev=v;}
+ return null;}
+function drawEff(){
+ const svg=$("#eff");svg.innerHTML="";const c=+$("#cap").value/100;
+ for(let v=0;v<=0.401;v+=0.1){el("line",{x1:m.l,x2:W-m.r,y1:ys(v),y2:ys(v),stroke:"var(--line)"},svg);
+  const t=el("text",{x:m.l-8,y:ys(v)+4,"text-anchor":"end","font-size":12,fill:"var(--muted)","font-family":"var(--font-mono)"},svg);t.textContent=v.toFixed(1);}
+ for(const h of [0.42,0.46,0.50,0.54,0.58,0.62,0.66]){const t=el("text",{x:xs(h),y:H-m.b+18,"text-anchor":"middle","font-size":12,fill:"var(--muted)","font-family":"var(--font-mono)"},svg);t.textContent=h.toFixed(2);}
+ const xl=el("text",{x:(m.l+W-m.r)/2,y:H-6,"text-anchor":"middle","font-size":12.5,fill:"var(--ink2)"},svg);xl.textContent="座高（m）";
+ const yl=el("text",{x:14,y:m.t+6,"font-size":12.5,fill:"var(--ink2)"},svg);yl.textContent="effort";
+ // fixed-bed limit band and target
+ el("rect",{x:xs(0.55),y:m.t,width:xs(0.58)-xs(0.55),height:H-m.t-m.b,fill:"var(--sunk)"},svg);
+ const fb=el("text",{x:xs(0.565),y:m.t+14,"text-anchor":"middle","font-size":11.5,fill:"var(--muted)"},svg);fb.textContent="固定床上限";
+ el("line",{x1:xs(0.66),x2:xs(0.66),y1:m.t,y2:H-m.b,stroke:"var(--amber)","stroke-dasharray":"2 4"},svg);
+ const tg=el("text",{x:xs(0.66)-4,y:m.t+14,"text-anchor":"end","font-size":11.5,fill:"var(--amber-ink)"},svg);tg.textContent="抬升目标";
+ const line=(vals,col,dash,w)=>el("polyline",{points:E.h.map((h,i)=>xs(h)+","+ys(vals[i])).join(" "),fill:"none",stroke:col,"stroke-width":w||2,"stroke-dasharray":dash||"","stroke-linejoin":"round"},svg);
+ const other=arm==="P1"?"P2":"P1";
+ line(E.seatoff[other],"var(--muted)","",1.2);line(E.start50[other],"var(--muted)","5 4",1.2);
+ const col=arm==="P1"?"var(--s1)":"var(--s2)";
+ line(E.seatoff[arm],col,"",2.4);line(E.start50[arm],col,"6 4",2.4);
+ // direct labels
+ const lab=(x,y,txt,colr)=>{const t=el("text",{x,y,"font-size":12,fill:colr,"font-weight":500},svg);t.textContent=txt;};
+ lab(xs(0.43),ys(E.seatoff[arm][0])-8,"离座（座板不托）","var(--ink)");
+ lab(xs(0.43),ys(E.start50[arm][0])-8,"起步（座板托 0.5 倍体重）","var(--ink)");
+ // raised bed marker
+ const rb=E.raised[arm];el("circle",{cx:xs(0.58),cy:ys(rb),r:5,fill:"var(--surface)",stroke:"var(--ink)","stroke-width":2},svg);
+ lab(xs(0.58)+8,ys(rb)-8,`抬高床 + 扶手 ${rb.toFixed(2)}`,"var(--ink2)");
+ // capacity line
+ el("line",{x1:m.l,x2:W-m.r,y1:ys(c),y2:ys(c),stroke:"var(--amber-ink)","stroke-width":1.5,"stroke-dasharray":"1 3"},svg);
+ const ct=el("text",{x:m.l+6,y:ys(c)-6,"text-anchor":"start","font-size":12,fill:"var(--amber-ink)","font-family":"var(--font-mono)"},svg);ct.textContent=`这个人最多 ${c.toFixed(2)}`;
+ const ho=seatOffHeight(c,arm);
+ if(ho!==null&&ho<=0.665){const sv=interp(E.seatoff[arm],ho);el("circle",{cx:xs(ho),cy:ys(Math.min(sv,c)),r:6,fill:col,stroke:"var(--surface)","stroke-width":2},svg);}
+ // hover layer
+ const hl=el("line",{x1:0,x2:0,y1:m.t,y2:H-m.b,stroke:"var(--ink2)","stroke-width":1,visibility:"hidden"},svg);
+ const hit=el("rect",{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:"transparent"},svg);
+ const tip=$("#effTip");
+ const move=ev=>{const r=svg.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W;let h=0.40+(px-m.l)/(W-m.l-m.r)*0.28;
+  h=Math.min(0.66,Math.max(0.42,Math.round(h*50)/50));const i=E.h.findIndex(v=>Math.abs(v-h)<1e-6);if(i<0)return;
+  hl.setAttribute("x1",xs(h));hl.setAttribute("x2",xs(h));hl.setAttribute("visibility","visible");
+  tip.hidden=false;tip.innerHTML=`座高 ${h.toFixed(2)} m<br>离座 ${E.seatoff[arm][i].toFixed(3)}<br>起步 ${E.start50[arm][i].toFixed(3)}`;
+  const bx=$("#effBox").getBoundingClientRect();let lx=ev.clientX-bx.left+14;if(lx>bx.width-150)lx=ev.clientX-bx.left-150;tip.style.left=lx+"px";tip.style.top=(ev.clientY-bx.top-30)+"px";};
+ hit.addEventListener("pointermove",move);hit.addEventListener("pointerleave",()=>{tip.hidden=true;hl.setAttribute("visibility","hidden");});
+ readout(c,ho);
+}
+function interp(vals,h){for(let i=0;i<E.h.length-1;i++){if(h>=E.h[i]&&h<=E.h[i+1]){const w=(h-E.h[i])/(E.h[i+1]-E.h[i]);return vals[i]*(1-w)+vals[i+1]*w;}}return vals[vals.length-1];}
+function readout(c,ho){
+ $("#cv").textContent=c.toFixed(2);
+ const so66=E.seatoff[arm][E.h.length-1],rb=E.raised[arm],lb=E.low[arm];
+ $("#hOff").textContent=ho===null?"0.66 m 也站不起来":`约 ${ho.toFixed(2)} m`;
+ const zone=c<so66?0:(c<rb?1:2);
+ $("#whoBand").innerHTML=[["站不起来",`< ${so66.toFixed(2)}`],["目标人群",`${so66.toFixed(2)}–${rb.toFixed(2)}`],["抬高床就够",`≥ ${rb.toFixed(2)}`]].map((z,i)=>`<div class="${i===zone?"hit":""}"><span>${z[0]}</span><b>${z[1]}</b></div>`).join("");
+ $("#whoText").textContent=zone===0?"升到 0.66 m 仍站不起来。控制器会在到顶后停住，等他按“降”或 20 s 后带他降回床面（仿真“站不起来的人”）。这类人不在目标人群里。"
+  :zone===1?`抬高到 0.58 m 的床站不起来，起身台能：座板会在约 ${ho.toFixed(2)} m 处停住让他离座。这是起身台真正要帮的人。`
+  :`抬高床（${rb.toFixed(2)}）已经能站起来。起身台仍然更轻松，但不是必需的。`;
+ const st=E.start50[arm][0];
+ $("#rrows").innerHTML=`<span>在 0.42 m 起步所需（上限 0.5）</span><span class="v">${st.toFixed(3)}</span><span>在 0.66 m 离座所需</span><span class="v">${so66.toFixed(3)}</span><span>抬高床 0.58 m + 扶手</span><span class="v">${rb.toFixed(3)}</span><span>低床 0.42 m 撑床垫</span><span class="v">${lb.toFixed(3)}</span>`;
+}
+$("#effLegend").innerHTML=`<span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--ink)" stroke-width="2.4"/></svg>离座</span><span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--ink)" stroke-width="2.4" stroke-dasharray="6 4"/></svg>起步（座板托 0.5 倍体重）</span><span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--s1)" stroke-width="2.4"/></svg>手上 ≤ 25% 体重</span><span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--s2)" stroke-width="2.4"/></svg>肩肘力量 ×0.5</span><span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--muted)" stroke-width="1.2"/></svg>另一种手臂假设</span>`;
+document.querySelectorAll("[data-arm]").forEach(b=>b.addEventListener("click",()=>{arm=b.dataset.arm;document.querySelectorAll("[data-arm]").forEach(x=>x.setAttribute("aria-pressed",x===b));drawEff();}));
+$("#cap").addEventListener("input",drawEff);
+drawEff();
+// cap table
+const so={P1:E.seatoff.P1[E.h.length-1],P2:E.seatoff.P2[E.h.length-1]};
+$("#capT").innerHTML=`<thead><tr><th>推力上限（× 体重）</th><th>起步 · 手上≤25%</th><th>起步 · 肩肘×0.5</th></tr></thead><tbody>`+
+ ["0.3","0.4","0.5","0.6"].map(c=>{const a=E.startcaps.P1[c],b=E.startcaps.P2[c];const bad=a>=so.P1-0.025||b>=so.P2-0.025;
+ return `<tr class="${bad?"warn":(c==="0.5"?"ok":"")}"><td>${c}${c==="0.5"?"（默认）":""}${c==="0.3"?"（v13 不再允许）":""}</td><td>${a.toFixed(3)}</td><td>${b.toFixed(3)}</td></tr>`}).join("")+
+ `<tr><td>对照：在 0.66 m 离座</td><td>${so.P1.toFixed(3)}</td><td>${so.P2.toFixed(3)}</td></tr></tbody>`;
+
+/* ---------------- state machine diagram ---------------- */
+(function(){
+ const svg=$("#smsvg");
+ const N={IDLE:[90,100,130],SEATED:[330,100,130],LIFTING:[600,100,130],STANDING_HOLD:[900,100,150],
+  LOWERING:[330,300,130],STOPPED:[600,300,130],EMPTY_HOLD:[900,300,150],EMPTY_MOVE:[900,440,150],LOCKED:[95,440,130]};
+ const defs=el("defs",{},svg);
+ for(const [id,c] of [["ah","var(--ink2)"],["ahn","var(--amber)"]]){const mk=el("marker",{id,viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:7,markerHeight:7,orient:"auto"},defs);el("path",{d:"M0,0 L10,5 L0,10 z",fill:c},mk);}
+ // [path, label, lx, ly, anchor, isNew]
+ const ED=[
+  ["M155,90 L265,90","有人坐上\n（> 40% 体重）",210,62,"middle",0],
+  ["M265,112 L155,112","人离开\n（< 5% 且脚离开踏板）",210,132,"middle",1],
+  ["M395,92 L535,92","握紧“起”+ 手在横杆\n+ 脚踩实 + 压力中心正常",465,50,"middle",0],
+  ["M665,92 L825,92","离座\n（< 5% 体重，0.3 s）",745,58,"middle",0],
+  ["M900,78 C900,18 330,18 330,78","坐回（座板水平接住）",615,26,"middle",0],
+  ["M585,122 L585,278","松手 / 条件丢失\n/ 断电",577,150,"end",0],
+  ["M615,278 L615,122","重新握紧",623,262,"start",0],
+  ["M535,292 L395,292","按“降”或 20 s 无操作",465,282,"middle",1],
+  ["M395,312 L535,312","下降中座板卸载",465,332,"middle",0],
+  ["M310,122 L310,278","座板在高处：\n按“降”或\n20 s 无操作",302,180,"end",1],
+  ["M350,278 L350,122","到床面",358,205,"start",0],
+  ["M900,122 L900,278","人离开 5 s：\n座板留在原高度",910,190,"start",1],
+  ["M825,290 Q600,190 395,108","有人坐上（回床）",728,232,"middle",1],
+  ["M890,322 L890,418","按住\n“升/降”",882,365,"end",1],
+  ["M910,418 L910,322","松开或\n座板受力",918,365,"start",1]
+ ];
+ const txt=(x,y,str,o)=>{const t=el("text",Object.assign({x,y,"font-size":12.5},o),svg);str.split("\n").forEach((ln,i)=>{const sp=el("tspan",{x,dy:i?15:0},t);sp.textContent=ln;});return t;};
+ for(const [d,label,lx,ly,anchor,isNew] of ED){
+  el("path",{d,fill:"none",stroke:isNew?"var(--amber)":"var(--ink2)","stroke-width":isNew?2:1.4,"marker-end":`url(#${isNew?"ahn":"ah"})`},svg);
+  txt(lx,ly,label,{"text-anchor":anchor,fill:isNew?"var(--amber-ink)":"var(--ink2)"});}
+ for(const id in N){const [x,y,w]=N[id],h=44;const isNewNode=id==="EMPTY_HOLD"||id==="EMPTY_MOVE";
+  el("rect",{x:x-w/2,y:y-h/2,width:w,height:h,rx:9,fill:"var(--surface)",stroke:isNewNode?"var(--amber)":(id==="LOCKED"?"var(--st-lock)":"var(--ink)"),"stroke-width":1.6,"stroke-dasharray":isNewNode?"5 3":""},svg);
+  el("rect",{x:x-w/2+12,y:y-5,width:10,height:10,rx:2,fill:`var(${STC[id]})`},svg);
+  const t=el("text",{x:x+8,y:y+5,"text-anchor":"middle","font-size":14.5,"font-weight":700,fill:"var(--ink)"},svg);t.textContent=STN[id];}
+ txt(180,428,"任意状态 → 锁定：抬升或带人下降中、高于床面 3 cm，力之和偏差 > 15% 持续 0.5 s；\n或两根立柱高差 > 5 mm。锁定后只能按住“降”慢降。",{fill:"var(--ink2)"});
+ txt(30,492,"断电：任意运动 → 停住（推杆自锁），按住“降”用电池慢降。",{fill:"var(--ink2)"});
+ txt(1050,492,"空座移动：1.5 cm/s，松手或座板受力即停",{"text-anchor":"end",fill:"var(--muted)","font-size":12});
+})();
+
+/* ---------------- settings table ---------------- */
+const SET=[
+ ["推力上限（× 体重）","默认 0.5，可设 0.3–0.6","默认 0.5，可设 0.4–0.6","上限 0.3 时，在 0.42 m 起步比在 0.66 m 离座还吃力"],
+ ["最快速度","1.5–4 cm/s","1.5–3 cm/s","TL8 空载约 3.3 cm/s，带人更慢；3 cm/s 待厂家曲线核对"],
+ ["最高高度","固定 0.66 m","按腿长设定，默认 0.66 m","0.66 m 是按 1.60 m 身高定的"],
+ ["坐在高处无操作后下降","10 s，无提示","20 s，17 s 先响提示音；握着握把不降","头晕的人需要缓一缓；突然移动会吓到人"],
+ ["人离开后","5 s 后空载降回床面","留在原高度（空座保持）","回床时坐高处的座板更好控制；也让“没人时不自己动”成立"],
+ ["力之和自检","任何状态","只在抬升或带人下降中、高于床面 3 cm，持续 0.5 s","避免压床垫、迈步时误锁"],
+ ["“人已离开”的判断","座板力 < 0.4 倍体重","座板力 < 5% 体重且脚离开踏板","人边坐边卸力时不被误判为离开"],
+ ["两柱同步","未定义","高差 > 5 mm 锁定","防座板歪斜把人掀侧"],
+ ["扶手侧","固定","左右可换装","按偏瘫用户的健侧安装"]
+];
+$("#setT tbody").innerHTML=SET.map(r=>`<tr><td>${esc(r[0])}</td><td class="muted">${esc(r[1])}</td><td><b>${esc(r[2])}</b></td><td class="small">${esc(r[3])}</td></tr>`).join("");
+
+/* ---------------- sims ---------------- */
+const STATES=D.states, SIMS=D.sims;
+$("#stLegend").innerHTML=["SEATED","LIFTING","STOPPED","STANDING_HOLD","LOWERING","EMPTY_HOLD","LOCKED"].map(k=>`<span><i style="background:var(${STC[k]})${k==="LOCKED"?";background-image:repeating-linear-gradient(135deg,transparent 0 3px,rgba(255,255,255,.55) 3px 5px)":""}"></i>${STN[k]}</span>`).join("")+`<span><i style="background:var(--st-idle)"></i>待机 / 空载复位（v12）</span>`;
+const ORDER=["typical","weakest","strong","tooweak","sitback","faint","mattress","stepoff","return","stuck","power","sync"];
+const finTxt=s=>`${STN[s.final]} · 座面 ${s.fh.toFixed(2)} m${s.so?` · 离座 ${s.so.toFixed(2)} m`:""}`;
+const SW=300,SH=150,pl=34,pr=6;
+function drawSim(svg,s,info){
+ svg.innerHTML="";const T=s.t[s.t.length-1],tx=t=>pl+t/T*(SW-pl-pr);
+ const hy=v=>8+(1-(v-0.40)/0.28)*56, ly=v=>80+(1-v)*44, by=130;
+ for(const v of [0.42,0.66]){el("line",{x1:pl,x2:SW-pr,y1:hy(v),y2:hy(v),stroke:"var(--line)"},svg);const t=el("text",{x:pl-4,y:hy(v)+4,"text-anchor":"end","font-size":10,fill:"var(--muted)","font-family":"var(--font-mono)"},svg);t.textContent=v.toFixed(2);}
+ for(const v of [0,1]){el("line",{x1:pl,x2:SW-pr,y1:ly(v),y2:ly(v),stroke:"var(--line)"},svg);const t=el("text",{x:pl-4,y:ly(v)+4,"text-anchor":"end","font-size":10,fill:"var(--muted)","font-family":"var(--font-mono)"},svg);t.textContent=v===0?"0":"1 BW";}
+ el("line",{x1:pl,x2:SW-pr,y1:ly(0.5),y2:ly(0.5),stroke:"var(--s1)","stroke-dasharray":"2 3",opacity:.8},svg);
+ const lbl=(x,y,txt)=>{const t=el("text",{x,y,"font-size":10,fill:"var(--muted)"},svg);t.textContent=txt;};
+ lbl(pl+3,hy(0.68)+2,"座高 m");lbl(pl+3,ly(1)+11,"座板上的力");
+ el("polyline",{points:s.t.map((t,i)=>tx(t)+","+hy(s.h[i])).join(" "),fill:"none",stroke:"var(--ink)","stroke-width":2},svg);
+ el("polyline",{points:s.t.map((t,i)=>tx(t)+","+ly(Math.min(1,s.seat[i]))).join(" "),fill:"none",stroke:"var(--s1)","stroke-width":1.6},svg);
+ let j0=0;for(let j=1;j<=s.st.length;j++){if(j===s.st.length||s.st[j]!==s.st[j0]){const k=STATES[s.st[j0]];
+   el("rect",{x:tx(s.t[j0]),y:by,width:Math.max(1,tx(s.t[j-1])-tx(s.t[j0])+ (j<s.st.length?tx(s.t[1])-tx(0):0)),height:9,fill:`var(${STC[k]})`},svg);
+   if(k==="LOCKED"){for(let x=tx(s.t[j0]);x<tx(s.t[j-1]);x+=5)el("line",{x1:x,y1:by+9,x2:x+5,y2:by,stroke:"var(--surface)","stroke-width":1,opacity:.7},svg);}
+   j0=j;}}
+ for(const t of [0,10,20,30,40,50]){if(t>T)break;const tt=el("text",{x:tx(t),y:SH-2,"text-anchor":"middle","font-size":10,fill:"var(--muted)","font-family":"var(--font-mono)"},svg);tt.textContent=t+(t===0?" s":"");}
+ const hl=el("line",{y1:6,y2:by+9,stroke:"var(--ink2)",visibility:"hidden"},svg);
+ const hit=el("rect",{x:pl,y:0,width:SW-pl-pr,height:by+10,fill:"transparent"},svg);
+ const mv=ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)/r.width*SW;const t=(px-pl)/(SW-pl-pr)*T;const i=Math.max(0,Math.min(s.t.length-1,Math.round(t/(s.t[1]-s.t[0]))));
+  hl.setAttribute("x1",tx(s.t[i]));hl.setAttribute("x2",tx(s.t[i]));hl.setAttribute("visibility","visible");
+  info.textContent=`${s.t[i].toFixed(1)} s · ${s.h[i].toFixed(3)} m · ${s.seat[i].toFixed(2)} BW · ${STN[STATES[s.st[i]]]}`;};
+ hit.addEventListener("pointermove",mv);hit.addEventListener("pointerleave",()=>{hl.setAttribute("visibility","hidden");info.textContent=finTxt(s);});
+ info.textContent=finTxt(s);
+}
+const grid=$("#simgrid");
+for(const key of ORDER){const v13=SIMS.find(s=>s.key===key&&s.rules==="v13"),v12=SIMS.find(s=>s.key===key&&s.rules==="v12");
+ const card=document.createElement("div");card.className="sim";
+ card.innerHTML=`<div class="hd"><h3>${esc(v13.name)}</h3>${v12?`<div class="seg" role="group" aria-label="规则版本"><button type="button" aria-pressed="false" data-r="v12">v12</button><button type="button" aria-pressed="true" data-r="v13">v13</button></div>`:""}</div><div class="fin"></div>`;
+ const svg=document.createElementNS(NS,"svg");svg.setAttribute("viewBox",`0 0 ${SW} ${SH}`);svg.setAttribute("role","img");svg.setAttribute("aria-label",v13.name+"：座高、座板受力和控制状态随时间变化");card.appendChild(svg);
+ grid.appendChild(card);const info=card.querySelector(".fin");drawSim(svg,v13,info);
+ if(v12)card.querySelectorAll("[data-r]").forEach(b=>b.addEventListener("click",()=>{card.querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b));drawSim(svg,b.dataset.r==="v12"?v12:v13,info);}));
+}
+
+/* ---------------- risk table ---------------- */
+const RISK=[
+ [0,"抬升中头晕，往回坐","高 / 中","座板上的力超过上限，速度自然变成 0，立即停住、座板水平接住；有人坐着才带人降","done","仿真：往回坐"],
+ [0,"抬升中晕倒、松手","高 / 低","松手即停；20 s 无操作（17 s 提示音）后带人降到床面","done","仿真：晕倒"],
+ [0,"传感器卡住或漂移","高 / 低","抬升中力之和自检（偏差 > 15% 持续 0.5 s 即锁定）；开关双通道触点","done","仿真：传感器卡住"],
+ [1,"自检误锁：坐上时压着床垫；迈步时一只脚已在地上","中 / 高（v12）","只在离开床面后的运动中检查","done","仿真：压床垫、迈下踏板"],
+ [1,"两根立柱不同步，座板歪斜","高 / 低","厂家控制器同步 + 刚性滑架；软件高差 > 5 mm 锁定","calc","仿真：不同步；阈值待厂家资料"],
+ [0,"断电","中 / 低","推杆自锁停住；电池供电，按住“降”慢降","done","仿真：断电"],
+ [1,"回床时坐过头，越过 14 cm 座板的后缘滑向床垫","中 / 中","双手扶横杆、小腿后侧先碰座板前缘再坐；座板后缘软挡边（待定）","todo","未验证"],
+ [1,"站起后侧身迈下踏板时绊倒","高 / 中","踏板约 4 cm 高、斜边、夜灯；横杆端部立柱可扶；助行器停在开口一侧","todo","待 CAD 核对出口宽度"],
+ [1,"空座移动时夹手、夹脚","中 / 低","按住才动、1.5 cm/s、座板受力即停；座板下伸缩裙板；边缘触感开关","done","设计规则"],
+ [1,"座板空着停在高处，夜里被碰到","低 / 中","停在台架占地范围内、夜灯照亮；白天可按住“降”收回","todo","需老师确认"],
+ [1,"固定件松脱，人拉扶手时台架翻","高 / 低","按 1112 N 设计床架夹（约 2 kN 压紧）；安装时检查","calc","待选型和 FEA"],
+ [0,"往前挪到短座板时滑落","高 / 中","手拉横杆借力；压力中心偏出安全区就不抬；防滑座面和开口一侧低挡边","todo","最大的不确定"],
+ [0,"夹在座板和床垫之间","中 / 低","座板后缘唇边压在床垫上","todo","床垫下陷量待实测"],
+ [0,"认知障碍的人自己升起后跌倒","高 / —","列为不适用人群（升降躺椅的死亡案例都是这种情况）","no","范围界定"]
+];
+$("#riskT tbody").innerHTML=RISK.map((r,i)=>`<tr class="${r[0]?"newrow":""}"><td class="n">${i+1}</td><td>${esc(r[1])}</td><td class="sev">${esc(r[2])}</td><td>${esc(r[3])}</td><td><span class="tag ${r[4]}">${esc(r[5])}</span></td></tr>`).join("");
+
+/* ---------------- open questions ---------------- */
+const OPEN=[
+ ["CAD 模型和运动动画（11/3 必须）","老师邮件明确要求。要展示：两根升降柱伸出、座板竖直升起、扶手跟着升；台架和床架夹的装配；开口一侧的出入空间。角色 3。讲稿的时间紧版本要保留运动演示页。"],
+ ["FEA（11/3 必须）","座板、滑架和床架夹在 1.5 倍体重下的应力和变形；再算一次重重坐回的冲击（2–3 倍体重）。角色 4，需要 CAD 的真实质量和质心。"],
+ ["往前挪 25–30 cm 坐上短座板，是否可行","仍是最大的不确定。最快的检查：在 CAD 里用 1.60 m 人体模型摆出坐床沿和坐座板两个姿态，量臀部要移动的距离和手到横杆的距离；距离超过手能借力的范围就要改座板或横杆位置。"],
+ ["回床时坐上高处的窄座板，是否稳妥","v13 新出现的问题。座板深 14 cm、离床面约 0.2 m。检查：在 CAD 里放坐偏 5 cm 和坐偏 10 cm 两个姿态，看重心是否还在座板上；不在就加后缘软挡边，或回床时先把座板降到更低再坐。"],
+ ["推杆在 3 cm/s 时能否推动约 0.23 kN","拿 TL8 的厂家力-速度曲线核对；不够就把最快速度上限再降，或换柱型。"],
+ ["床架夹适合哪些床","列出常见的居家床型（带床腿的框架床、落地箱体床、可调床），看床架夹能否夹住；夹不住的列为不适用或另配底板。"],
+ ["座板整夜停在高处是否可以接受","这是一个取舍：回床更安全，代价是床边有个高出床面的空座板。10/27 问老师。"]
+];
+$("#openQ").innerHTML=OPEN.map((r,i)=>`<div><span class="qn">${i+1}</span><span class="q">${esc(r[0])}</span><span class="a">${esc(r[1])}</span></div>`).join("");
+
+/* ---------------- sources ---------------- */
+const SRC=[
+ ["Merryweather et al. 2015, Effects of bed height on the biomechanics of hospital bed entry and egress, Work 52","https://stacks.cdc.gov/view/cdc/231426/cdc_231426_DS1.pdf"],
+ ["National Council on Aging, Bedroom Safety Tips for Older Adults","https://www.ncoa.org/article/bedroom-safety-guide/"],
+ ["Saedon et al. 2020, The Prevalence of Orthostatic Hypotension: A Systematic Review and Meta-Analysis, J Gerontol A","https://eprints.um.edu.my/25203/"],
+ ["Anderson, Boshier, Hanna 2012, Interventions designed to prevent healthcare bed-related injuries in patients, Cochrane (CD008931)","https://www.cochrane.org/evidence/CD008931_interventions-designed-prevent-healthcare-bed-related-injuries-patients"],
+ ["Robinovitch et al. 2013, video capture of falls in long-term care（跌倒最常见原因：重心转移不当，41%）","https://www.2minutemedicine.com/video-surveillance-sheds-light-on-causes-of-falls-in-the-elderly/"],
+ ["Schultz, Alexander, Ashton-Miller 1992, Biomechanical analyses of rising from a chair, J Biomech 25(12)（手力数据引自 Alexander et al. 1991）","https://deepblue.lib.umich.edu/bitstream/2027.42/29713/1/0000047.pdf"],
+ ["Yoshioka et al. 2014, Peak hip and knee joint moments during a sit-to-stand movement are invariant to the change of seat height within the range of low to normal seat height, BioMed Eng OnLine","https://link.springer.com/doi/10.1186/1475-925x-13-27"],
+ ["US10022284 (Panasonic), Life assistance system for assisting user in act of standing up","https://patents.google.com/patent/US10022284"],
+ ["US9962305 (Panasonic), Living support system and living support method","https://patents.google.com/patent/US9962305"],
+ ["US5619762 (Mein, 1997), Lift for assisting persons from a seated position","https://patents.google.com/patent/US5619762"],
+ ["UpEasy Seat Assist（产品页）","https://www.1800wheelchair.com/product/upeasy-seat-assist"],
+ ["College of Occupational Therapists of Ontario, Response to coroner's report: deaths from power recliner lift chairs (2022)","https://coto.org/resources/college-response-to-the-coroner-s-report-deaths-from-power-recliner-lift-chairs-2022"],
+ ["CPSC 2023, Mandatory Safety Standard for Adult Portable Bed Rails (16 CFR 1270)","https://www.cpsc.gov/Newsroom/News-Releases/2023/CPSC-Issues-New-Federal-Mandatory-Safety-Standard-for-Adult-Portable-Bed-Rails"],
+ ["ISO 10535 移位机测试报告（停止距离、斜坡倾覆）","https://hmi-basen.dk/en/blobs/testrapporter/71846_9.pdf"]
+];
+$("#srcs").innerHTML=SRC.map(s=>`<li>${esc(s[0])}　<a href="${s[1]}" target="_blank" rel="noopener">链接</a></li>`).join("");
+})();
+</script>
