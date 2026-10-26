@@ -19,12 +19,16 @@ from model import G, Subject
 
 OUT = os.path.join(HERE, "seat_1dof")
 TOP = 0.66
+MECH = os.environ.get("MECH", "swept15")      # which four-bar from fourbar2.json goes on the page
 
 if __name__ == "__main__":
     t0 = time.time()
     D = json.load(open(os.path.join(OUT, "design.json"))); FB = json.load(open(os.path.join(OUT, "fourbar.json"))); CU = json.load(open(os.path.join(OUT, "cushion.json")))
-    sim = SIMS[TOP]; cv = with_prefix(np.array([p[0] for p in sim]), np.array([p[1] for p in sim])); npre = len(cv[0]) - len(sim)
-    A, B, c1, c2 = V[:2], V[2:4], V[4:6], V[6:8]
+    F2 = json.load(open(os.path.join(OUT, "fourbar2.json")))
+    import seat_1dof_fourbar2 as FB2
+    x = np.array(F2["variants"][MECH]["x"]); sim = [p[:5] for p in FB2.run(x, n=700)]
+    cv = with_prefix(np.array([p[0] for p in sim]), np.array([p[1] for p in sim])); npre = len(cv[0]) - len(sim)
+    A, B, c1, c2 = x[:2], x[2:4], x[4:6], x[6:8]
     seat_kw = dict(r_e=0.03)
     with Pool() as pool: R = pool.map(track_user, [(u, cv, PAD_AMAX, seat_kw) for u in USERS])
     real = {k: s for k, s, _ in R}; rows_real = {k: rows for k, _, rows in R}
@@ -67,6 +71,14 @@ if __name__ == "__main__":
                     dmin = min(dmin, seg_d(X + t * (Y - X), pz["A"], pz["K"]) - 0.05)
         worst.append(dict(user=ukey(u), clearance_cm=round(100 * dmin, 1)))
     mech["calf_clearance_min_cm"] = min(w["clearance_cm"] for w in worst)
+    mech["name"] = MECH; mech["act"] = F2["variants"][MECH]["mech"]["act"]; mech["bracket_depth_mm"] = F2["variants"][MECH]["mech"]["bracket_depth_mm"]
+    mech["summary"] = F2["variants"][MECH]["summary"]
+    placements = {}
+    for n, Vv in F2["variants"].items():
+        m_ = Vv["mech"]; placements[n] = dict(A=m_["A"], B=m_["B"], space_x=m_["space_x"], space_z=m_["space_z"], bracket_depth_mm=m_["bracket_depth_mm"],
+                                              centre_err_mm=m_["centre_err_mm"], tilt_err_deg=m_["tilt_err_deg"], transmission_deg=m_["transmission_deg"],
+                                              act=None if m_["act"] is None else {k: m_["act"][k] for k in ("stroke", "L", "F_hold100_N", "F_lift60_N", "D", "on")},
+                                              **{k: Vv["summary"][k] for k in ("n_ok", "fwd_max", "catch_min", "E_med", "clear_calf_cm", "clear_act_calf_cm", "cushion_lost")})
     # animation
     anim = {}
     for u in USERS:
@@ -86,7 +98,7 @@ if __name__ == "__main__":
                 mech=mech, anim=anim, check=dict(design=real, vertical=D["check"]["vertical"], twotrack=D["check"]["design"]),
                 twotrack={k: D["mech"][k] for k in ("c1", "c2", "stroke", "act_len", "F_act_lift60_N", "F_act_hold100_N", "R_min")},
                 shapes=dict(table=FB["table"], mech={R: {k: v for k, v in m.items() if k != "frames"} for R, m in FB["mech"].items()}),
-                cushion=dict(cushions=CU["cushions"], summary=CU["summary"], sitdown=CU["sitdown"]))
+                cushion=dict(cushions=CU["cushions"], summary=CU["summary"], sitdown=CU["sitdown"]), placements=placements)
     page["consts"]["top"] = TOP
     json.dump(page, open(os.path.join(OUT, "page.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     ok = lambda v: bool(v.get("release_hz") and v["fwd_slip_max_cm"] <= 2 and v["min_catch_cm"] >= 0)

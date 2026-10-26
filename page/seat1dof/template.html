@@ -210,7 +210,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
 
 <section id="mech">
   <div class="step">步骤 5</div>
-  <h2>机构：藏在座板下的四连杆</h2>
+  <h2>机构：两侧四连杆 + 中间一根电动推杆</h2>
   <div class="prose" id="mechProse"></div>
   <div class="band">
     <div class="fig">
@@ -223,8 +223,8 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
     <div class="fig">
       <div class="ttl">尺寸（交给 CAD）</div>
       <div class="tscroll"><table id="dimTable"></table></div>
-      <div class="ttl" style="margin-top:6px">电机扭矩与传动角</div>
-      <svg id="svgTorque" viewBox="0 0 440 230" role="img" aria-label="输入扭矩随坐板高度"></svg>
+      <div class="ttl" style="margin-top:6px">推杆推力与传动角</div>
+      <svg id="svgTorque" viewBox="0 0 440 230" role="img" aria-label="推杆推力随坐板高度"></svg>
       <svg id="svgMu" viewBox="0 0 440 200" role="img" aria-label="传动角随坐板高度"></svg>
     </div>
   </div>
@@ -353,8 +353,15 @@ function linkage(g,M,s){
   line(g,M,A,cw[0],{stroke:"var(--steel)","stroke-width":7,"stroke-linecap":"round"});
   line(g,M,B,cw[1],{stroke:"var(--steel)","stroke-width":7,"stroke-linecap":"round"});
   [A,B].forEach((P,i)=>{el("circle",{cx:M.X(P[0]),cy:M.Z(P[1]),r:4.5,fill:"var(--surface)",stroke:"var(--steel)","stroke-width":2},g);
-    txt(g,M.X(P[0])+(i?8:-8),M.Z(P[1])+(i?-6:16),i?"B":"A（电机）",{"text-anchor":i?"start":"end",fill:"var(--steel)","font-size":11,"font-weight":600})});
+    txt(g,M.X(P[0])+(i?8:-8),M.Z(P[1])+(i?-6:16),i?"B":"A",{"text-anchor":i?"start":"end",fill:"var(--steel)","font-size":11,"font-weight":600})});
   cw.forEach(P=>el("circle",{cx:M.X(P[0]),cy:M.Z(P[1]),r:3.5,fill:"var(--surface)",stroke:"var(--steel)","stroke-width":2},g));
+  const ac=m.act; if(ac){const G0=ac.on==="A"?A:B, P=ac.on==="A"?cw[0]:cw[1]; const d=[P[0]-G0[0],P[1]-G0[1]], L=Math.hypot(...d), e=[d[0]/L,d[1]/L], n=[-e[1],e[0]];
+    const E=[G0[0]+ac.t*d[0]+ac.o*n[0],G0[1]+ac.t*d[1]+ac.o*n[1]], Dp=ac.D, LL=Math.hypot(E[0]-Dp[0],E[1]-Dp[1]), u=[(E[0]-Dp[0])/LL,(E[1]-Dp[1])/LL], hl=ac.L[0]-0.04;
+    line(g,M,P,E,{stroke:"var(--steel)","stroke-width":4,"stroke-linecap":"round"});
+    line(g,M,Dp,[Dp[0]+u[0]*hl,Dp[1]+u[1]*hl],{stroke:"var(--amber)","stroke-width":M.s*0.045,"stroke-linecap":"round",opacity:.85});
+    line(g,M,Dp,E,{stroke:"var(--amber)","stroke-width":M.s*0.016,"stroke-linecap":"round"});
+    [Dp,E].forEach(Q=>el("circle",{cx:M.X(Q[0]),cy:M.Z(Q[1]),r:4,fill:"var(--surface)",stroke:"var(--amber)","stroke-width":2},g));
+    txt(g,M.X(Dp[0])+8,M.Z(Dp[1])-4,"电动推杆",{fill:"var(--amber)","font-size":11,"font-weight":600});}
 }
 /* ---------- step 2 ---------- */
 let t1=0,t2=0.35,anim1=null,anim2=null;
@@ -456,26 +463,30 @@ function lineChart(svg,xs,series,opt){
 function drawMechStatic(){
   const m=D.mech, tv=m.travel, sh=D.shapes.table, mk=k=>sh[k];
   const fl=mk("fourbar R1000.0"), r40=mk("fourbar R0.4"), r25=mk("fourbar R0.25");
-  $("#mechProse").innerHTML=`<p><b>先回答两个问题。</b>坐板和人体在几何上都按刚体算；坐垫的软在第 6 步单独算。动画里的绿点是刚体模型下的接触点，也就是坐板推力的作用点。</p>
-   <p>四连杆的两个底座铰点 A、B 和两根摇杆都在座板正下方（x ${(m.space_x[0]*100).toFixed(0)}–${(m.space_x[1]*100).toFixed(0)} cm，z ${(m.space_z[0]*100).toFixed(0)}–${(m.space_z[1]*100).toFixed(0)} cm），座板本身就是连杆。电机在 A 点转动摇杆 A，转 ${Math.abs(m.input_sweep_deg)}°，坐板前移 ${(tv.dx*100).toFixed(0)} cm、上升 ${(tv.dz*100).toFixed(0)} cm，前倾先增到 ${m.phi_max}°，到顶时回到 ${m.phi_end}°。</p>
-   <p><b>为什么上一版说四连杆不行，这次又行了。</b>上一版要求四连杆精确复刻理想曲线（位置和角度都对上），在这么小的空间里做不到。但理想曲线本身不是要求，真正的要求是第 7 步的三个指标。这次只要求<b>座板中心</b>走对路径，前倾角允许偏差，再直接用 81 人检查：前倾角最多差 9°，但前滑、坐回余量都合格。原因是平座面配软托腿垫，接触点本来就会沿座面移动，几度的角度差只是让接触点前后挪一点。</p>
-   <p><b>座面做成圆弧会不会更好？</b>试了凸圆弧座面（半径 40 / 25 / 18 cm）。圆弧的好处是坐板绕圆心转动时座面不变，角度误差能被吸收；但四连杆要追的变成了圆弧圆心的路径，这条路径更难追。结果平座面最好：</p>
-   <div class="tscroll"><table><thead><tr><th>座面</th><th class=n>合格</th><th class=n>前滑 最大</th><th class=n>坐回余量 最小</th><th class=n>费力 中位</th></tr></thead><tbody>
-   ${[["平面",fl],["圆弧 R 40 cm",r40],["圆弧 R 25 cm",r25],["圆弧 R 18 cm",mk("fourbar R0.18")]].map(([n,t])=>`<tr><td>${n}</td><td class=n>${t.n_ok}/81</td><td class=n>${sg(t.fwd_max)} cm</td><td class=n>${sg(t.catch_min)} cm</td><td class=n>${t.E_med.toFixed(3)}</td></tr>`).join("")}
+  const P=D.placements, act=m.act;
+  const NAME={prev:"上一版（支架深 25 cm）",tuck12:"收在座板下方，支架 ≤ 12 cm",tuck20:"收在座板下方，支架 ≤ 20 cm",fwd6:"支架向前伸 6 cm，支架 ≤ 12 cm",swept15:"铰点在座板走过的范围内，支架 ≤ 15 cm",swept20:"铰点在座板走过的范围内，支架 ≤ 20 cm"};
+  const ORDER=["tuck12","tuck20","fwd6","prev","swept20","swept15"];
+  $("#mechProse").innerHTML=`<p>坐板和人体在几何上都按刚体算，坐垫的软在第 6 步单独算。动画里的绿点是接触点，也就是坐板推力的作用点。</p>
+   <p><b>连杆能不能全部收进座板下面？</b>座板全程要向前走 ${(tv.dx*100).toFixed(0)} cm、向上走 ${(tv.dz*100).toFixed(0)} cm，摇杆转 70–100° 才能走完，所以摇杆至少要 20 cm 左右。把底座铰点限制在起始座板的正下方（床沿前 0–14 cm）时，要么轨迹误差大，要么接近死点（传动角只有个位数度，推力会无穷大）。座板加长、让支架向前伸出也不解决问题，因为瓶颈在摇杆长度，不在座板上两个铰点的间距。</p>
+   <p>可行的折中是：<b>底座铰点放在座板走过的范围内</b>（床沿前 0–30 cm），起身时座板一直盖在连杆上方；同时把座板下的支架从 25 cm 浅到 15 cm。下表是各种布置的比较：</p>
+   <div class="tscroll"><table><thead><tr><th>连杆布置</th><th class=n>合格</th><th class=n>轨迹误差</th><th class=n>前倾误差</th><th class=n>传动角 最小</th><th class=n>占用空间</th><th class=n>离小腿（同一平面）</th></tr></thead><tbody>
+   ${ORDER.filter(k=>P[k]).map(k=>{const p=P[k];const bad=p.transmission_deg[0]<35||p.n_ok<81;return `<tr${k===m.name?' style="background:var(--amber-bg)"':''}><td>${NAME[k]}${k===m.name?' <span class="chip good">采用</span>':''}</td><td class=n>${p.n_ok}/81</td><td class=n>${p.centre_err_mm.toFixed(0)} mm</td><td class=n>${p.tilt_err_deg.toFixed(0)}°</td><td class="n" style="color:${p.transmission_deg[0]<35?'var(--bad)':'inherit'}">${p.transmission_deg[0].toFixed(0)}°</td><td class=n>x ${(p.space_x[0]*100).toFixed(0)}–${(p.space_x[1]*100).toFixed(0)}，z ${(p.space_z[0]*100).toFixed(0)}–${(p.space_z[1]*100).toFixed(0)} cm</td><td class="n" style="color:${p.clear_calf_cm<2?'var(--bad)':'inherit'}">${sg(p.clear_calf_cm)} cm</td></tr>`}).join("")}
    </tbody></table></div>
-   <p>上一版的双曲线导轨（两个滚轮走两条槽）能精确复刻曲线，但槽要做在座板两侧的侧板上，占的空间大。这次的四连杆不需要侧板，所以不再采用双导轨。行程从 0.63 加到 0.66 m，是为了补偿坐垫下陷（第 6 步）。</p>`;
-  const r=[["底座铰点 A（x, z）",`${m.A.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],["底座铰点 B（x, z）",`${m.B.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],
+   <p>采用的布置下，铰点向前挪到了小腿所在的前后位置，所以连杆要做成<b>两侧各一套、装在腿的外侧</b>（座板宽 44 cm，两侧板之间留给双腿），不和小腿在同一平面。</p>
+   <p><b>动力源：建议用两端带转动副的电动推杆</b>（丝杠式、可自锁），而不是在铰点 A 装电机。100 kg 的人坐下时，A 点要承受约 ${Math.max(...m.torque_hold100_Nm.map(Math.abs)).toFixed(0)} N·m 的静载，电机方案需要大速比、能自锁的减速器，体积和成本都高；推杆本身能自锁、断电能停住，自带位置反馈，是护理床和起身椅常用的标准件。推杆放在两套连杆之间的中间平面：下端铰在底座 (${act.D.map(v=>(v*100).toFixed(1)).join(", ")}) cm，上端铰在摇杆 B 上，两侧摇杆用一根横管连成一体，一根推杆就能驱动。推杆离小腿最近 ${m.summary.clear_act_calf_cm} cm。</p>`;
+  const r=[["底座铰点 A / B（x, z）",`(${m.A.map(v=>(v*1000).toFixed(0)).join(", ")}) / (${m.B.map(v=>(v*1000).toFixed(0)).join(", ")}) mm`],
     ["摇杆 A / B 长",`${(m.L1*1000).toFixed(0)} / ${(m.L2*1000).toFixed(0)} mm`],
     ["座板上铰点 1 / 2（座板坐标，原点为座面中心）",`(${m.c1.map(v=>(v*1000).toFixed(0)).join(", ")}) / (${m.c2.map(v=>(v*1000).toFixed(0)).join(", ")}) mm`],
-    ["座板上两铰点间距",`${(m.coupler*1000).toFixed(0)} mm`],["电机转角",`${Math.abs(m.input_sweep_deg)}°`],["传动角",`${m.transmission_deg[0]}–${m.transmission_deg[1]}°`],
+    ["支架深度（座面以下）",`${m.bracket_depth_mm.toFixed(0)} mm`],["传动角",`${m.transmission_deg[0]}–${m.transmission_deg[1]}°`],
     ["机构占用空间",`x ${(m.space_x[0]*100).toFixed(0)}–${(m.space_x[1]*100).toFixed(0)} cm，z ${(m.space_z[0]*100).toFixed(0)}–${(m.space_z[1]*100).toFixed(0)} cm`],
-    ["电机扭矩，起身（60 kg，推 0.5 倍体重）",`${Math.min(...m.torque_lift60_Nm.map(Math.abs)).toFixed(0)}–${Math.max(...m.torque_lift60_Nm.map(Math.abs)).toFixed(0)} N·m`],
-    ["静载扭矩（100 kg 坐下，1.5 倍体重）",`${Math.min(...m.torque_hold100_Nm.map(Math.abs)).toFixed(0)}–${Math.max(...m.torque_hold100_Nm.map(Math.abs)).toFixed(0)} N·m`]];
+    ["推杆底座铰点（x, z）",`${act.D.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],["推杆上端","摇杆 B 末端外侧 60 mm"],
+    ["推杆长度（收回 → 伸出）",`${(act.L[0]*1000).toFixed(0)} → ${(act.L[1]*1000).toFixed(0)} mm`],["推杆行程",`${(act.stroke*1000).toFixed(0)} mm`],
+    ["推力，起身（60 kg，坐板推 0.5 倍体重）",`${act.F_lift60_N[0]}–${act.F_lift60_N[1]} N`],["推力，静载（100 kg 坐下，1.5 倍体重）",`${act.F_hold100_N[0]}–${act.F_hold100_N[1]} N`]];
   $("#dimTable").innerHTML="<tbody>"+r.map(x=>`<tr><td>${x[0]}</td><td class=n>${x[1]}</td></tr>`).join("")+"</tbody>";
-  const tc=m.torque_curve, zt=[0.42,0.48,0.54,0.60,0.66].filter(z=>z>=Math.min(...tc.z)-0.01&&z<=Math.max(...tc.z)+0.01);
-  const h100=tc.hold100.map(Math.abs), l60=tc.lift60.map(Math.abs); const ymax=Math.ceil(Math.max(...h100)/100)*100;
-  lineChart($("#svgTorque"),tc.z,[{name:"静载 100 kg ×1.5",y:h100,c:"var(--bad)"},{name:"起身 60 kg ×0.5",y:l60,c:"var(--path)"}],
-    {x0:Math.min(...tc.z),x1:Math.max(...tc.z),y0:0,y1:ymax,yt:[0,ymax/2,ymax],xt:zt,xl:"座面中心高度 (m)",yl:"电机在 A 点的扭矩 (N·m)"});
+  const fc=act.force_curve, zt=[0.42,0.48,0.54,0.60,0.66];
+  const ymax=Math.ceil(Math.max(...fc.hold100)/500)*500;
+  lineChart($("#svgTorque"),fc.z,[{name:"静载 100 kg ×1.5",y:fc.hold100,c:"var(--bad)"},{name:"起身 60 kg ×0.5",y:fc.lift60,c:"var(--path)"}],
+    {x0:Math.min(...fc.z),x1:Math.max(...fc.z),y0:0,y1:ymax,yt:[0,ymax/2,ymax],xt:zt,xl:"座面中心高度 (m)",yl:"推杆推力 (N)"});
   const mc=m.transmission_curve;
   lineChart($("#svgMu"),mc.z,[{name:"传动角",y:mc.mu,c:"var(--steel)"}],{x0:Math.min(...mc.z),x1:Math.max(...mc.z),y0:0,y1:180,yt:[40,90,140],xt:zt,xl:"座面中心高度 (m)",yl:"传动角 (°)，绿带 = 40–140° 可用区",band:[40,140]});
   // cushion
@@ -541,9 +552,9 @@ function drawStatic(){
     .map(([v,k,c,cl])=>`<div class="kpi"><span class="v ${cl}">${v}</span><span class="k">${k}</span><span class="c">${c}</span></div>`).join("");
   $("#assistNote").innerHTML=D.assistNote;
   const m=D.mech;
-  $("#cadList").innerHTML=[`四连杆：A (${m.A.map(v=>(v*1000).toFixed(0)).join(", ")}) mm，B (${m.B.map(v=>(v*1000).toFixed(0)).join(", ")}) mm（x 从床沿，z 从地面）；摇杆 ${(m.L1*1000).toFixed(0)} / ${(m.L2*1000).toFixed(0)} mm`,
-    `座板支架铰点：(${m.c1.map(v=>(v*1000).toFixed(0)).join(", ")})、(${m.c2.map(v=>(v*1000).toFixed(0)).join(", ")}) mm，座板坐标；两侧各一套，装在腿的外侧`,
-    `电机在 A：转角 ${Math.abs(m.input_sweep_deg)}°，起身扭矩 ≤ ${Math.max(...m.torque_lift60_Nm.map(Math.abs)).toFixed(0)} N·m，静载 ${Math.max(...m.torque_hold100_Nm.map(Math.abs)).toFixed(0)} N·m（蜗轮蜗杆自锁或抱闸）`,
+  $("#cadList").innerHTML=[`四连杆（两侧各一套，装在腿外侧）：A (${m.A.map(v=>(v*1000).toFixed(0)).join(", ")}) mm，B (${m.B.map(v=>(v*1000).toFixed(0)).join(", ")}) mm（x 从床沿，z 从地面）；摇杆 ${(m.L1*1000).toFixed(0)} / ${(m.L2*1000).toFixed(0)} mm`,
+    `座板支架铰点：(${m.c1.map(v=>(v*1000).toFixed(0)).join(", ")})、(${m.c2.map(v=>(v*1000).toFixed(0)).join(", ")}) mm（座板坐标），支架深 ${m.bracket_depth_mm.toFixed(0)} mm；两侧摇杆 B 用横管连接`,
+    `电动推杆（中间平面）：底座铰点 (${m.act.D.map(v=>(v*1000).toFixed(0)).join(", ")}) mm，行程 ${(m.act.stroke*1000).toFixed(0)} mm，收回长度 ≤ ${(m.act.L[0]*1000).toFixed(0)} mm，推力 ≥ ${m.act.F_hold100_N[1]} N（静载），自锁丝杠，带位置反馈`,
     `坐垫：中硬约 6 kPa/cm、厚 5 cm；前缘圆角软托腿垫覆盖大腿后侧约 ${Math.round(D.consts.pad*100)} cm`,`运动动画：用“机构”图的 ${m.frames.length} 帧座板姿态`].map(x=>`<li>${x}</li>`).join("");
 }
 
