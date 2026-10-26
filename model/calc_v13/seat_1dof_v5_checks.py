@@ -79,17 +79,20 @@ def pinch():
     return {k: round(100 * v_, 1) for k, v_ in g_.items()}
 
 def tipping(dev_kg=40.0, dev_com=(0.25, 0.08)):
-    """base: x 0.03..0.78 (front extended past the pole), y -0.27..+0.27. Device mass centre (x, y) shifted to the head side."""
-    out = {}; X0, X1, Yh = 0.03, 0.78, 0.27
+    """base: x 0.03..0.78 (front extended past the pole); y from -0.27 (open, foot side) to +0.33 (head side: the side beam
+    carries the link pivot B at |y| 0.31). Device mass centre (x, y) shifted to the head side."""
+    out = {}; X0, X1, Yo, Yh = 0.03, 0.78, 0.27, 0.33
     cases = {"100 kg 猛坐座板后缘（1.5 倍体重）": [(1.5 * 100 * G, 0.01, 0.0)], "100 kg 整个挂在扶手立杆上": [(100 * G, 0.69, 0.25)],
              "45 kg 猛坐后缘": [(1.5 * 45 * G, 0.01, 0.0)]}
     for k, loads in cases.items():
         F = sum(a for a, _, _ in loads) + dev_kg * G
         cx = (sum(a * x for a, x, _ in loads) + dev_kg * G * dev_com[0]) / F; cy = (sum(a * y for a, _, y in loads) + dev_kg * G * dev_com[1]) / F
-        out[k] = dict(cop_x=round(cx, 3), cop_y=round(cy, 3), margin_rear_cm=round(100 * (cx - X0), 1), margin_front_cm=round(100 * (X1 - cx), 1), margin_side_cm=round(100 * (Yh - abs(cy)), 1))
+        out[k] = dict(cop_x=round(cx, 3), cop_y=round(cy, 3), margin_rear_cm=round(100 * (cx - X0), 1), margin_front_cm=round(100 * (X1 - cx), 1),
+                      margin_side_cm=round(100 * min(Yh - cy, Yo + cy), 1))
     for m in (60, 100):
-        W = (m + dev_kg) * G; out[f"侧推翻倒力（{m} kg 在台上，扶手 1.06 m）"] = dict(to_open_side_N=round(W * (Yh - dev_kg * dev_com[1] / (m + dev_kg)) / 1.06),
-                                                                         to_head_side_N=round(W * (Yh + dev_kg * dev_com[1] / (m + dev_kg)) / 1.06))
+        W = (m + dev_kg) * G; yc = dev_kg * dev_com[1] / (m + dev_kg)     # person on the seat centre line, device on the head side
+        out[f"侧推翻倒力（{m} kg 在台上，扶手 1.06 m）"] = dict(to_open_side_N=round(W * (Yo + yc) / 1.06), to_head_side_N=round(W * (Yh - yc) / 1.06))
+    out["base"] = dict(x=[X0, X1], y=[-Yo, Yh], device_kg=dev_kg, device_com=list(dev_com))
     return out
 
 def emergency():

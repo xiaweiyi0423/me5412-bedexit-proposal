@@ -815,29 +815,44 @@
    "cop_y": 0.017,
    "margin_rear_cm": 3.1,
    "margin_front_cm": 71.9,
-   "margin_side_cm": 25.3
+   "margin_side_cm": 28.7
   },
   "100 kg 整个挂在扶手立杆上": {
    "cop_x": 0.564,
    "cop_y": 0.201,
    "margin_rear_cm": 53.4,
    "margin_front_cm": 21.6,
-   "margin_side_cm": 6.9
+   "margin_side_cm": 12.9
   },
   "45 kg 猛坐后缘": {
    "cop_x": 0.099,
    "cop_y": 0.03,
    "margin_rear_cm": 6.9,
    "margin_front_cm": 68.1,
-   "margin_side_cm": 24.0
+   "margin_side_cm": 30.0
   },
   "侧推翻倒力（60 kg 在台上，扶手 1.06 m）": {
-   "to_open_side_N": 220,
-   "to_head_side_N": 279
+   "to_open_side_N": 279,
+   "to_head_side_N": 276
   },
   "侧推翻倒力（100 kg 在台上，扶手 1.06 m）": {
-   "to_open_side_N": 320,
-   "to_head_side_N": 379
+   "to_open_side_N": 379,
+   "to_head_side_N": 398
+  },
+  "base": {
+   "x": [
+    0.03,
+    0.78
+   ],
+   "y": [
+    -0.27,
+    0.33
+   ],
+   "device_kg": 40.0,
+   "device_com": [
+    0.25,
+    0.08
+   ]
   }
  },
  "emergency": {
