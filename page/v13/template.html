@@ -128,6 +128,10 @@ table.t td a{white-space:nowrap}
 .spanel h3{font-size:20px}
 .kv{display:grid;grid-template-columns:76px minmax(0,1fr);gap:7px 12px;font-size:14px;margin:0}
 .kv dt{color:var(--muted)} .kv dd{margin:0}
+.parts{display:grid;gap:8px}
+.kv2{display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 14px;font-size:14px;margin:0}
+.kv2 dt{color:var(--muted)} .kv2 dd{margin:0}
+@media (max-width:560px){.kv2{grid-template-columns:1fr}.kv2 dd{margin-bottom:6px}}
 .stpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:var(--font-mono)}
 .stpill i{width:10px;height:10px;border-radius:2px;display:inline-block}
 .watch{font-size:13.5px;border-top:1px dashed var(--line);padding-top:8px;color:var(--ink2)}
@@ -163,7 +167,7 @@ table.mini tr.ok td:first-child{color:var(--good)}
 /* state diagram */
 .sm svg{width:100%;min-width:760px;height:auto;display:block}
 .sm text{font-family:var(--font-body)}
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
 .rules>div{border-top:2px solid var(--ink);padding-top:10px;display:grid;gap:4px;align-content:start}
 .rules h3{font-size:16px}
 .rules p{font-size:14px;color:var(--ink2)}
@@ -202,15 +206,15 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
 
 <nav class="top" aria-label="章节"><div class="in">
   <a href="#problem">问题和用户</a><a href="#night">一晚上的往返</a><a href="#why">为什么升高、谁受益</a>
-  <a href="#control">控制规则</a><a href="#sims">12 个场景</a><a href="#structure">结构与固定</a><a href="#risk">风险</a><a href="#open">还没验证的</a><a href="#changes">修订记录</a><a href="#sources">来源</a>
+  <a href="#control">控制规则</a><a href="#sims">15 个场景</a><a href="#structure">结构与固定</a><a href="#risk">风险</a><a href="#open">还没验证的</a><a href="#changes">修订记录</a><a href="#sources">来源</a>
 </div></nav>
 
 <div class="wrap">
 <header class="hero">
-  <div class="eyebrow">ME5412 Robotics for Healthcare · Group 16 · 方案第 13 版 · 2026-10-26</div>
+  <div class="eyebrow">ME5412 Robotics for Healthcare · Group 16 · 方案第 13.1 版 · 2026-10-26</div>
   <h1>床边起身台</h1>
   <p class="statement">帮腿力下降、夜里要起床的老人从床沿站起来，再回到床上。平时座板和床一样低；起身时<b>竖直升到固定床达不到的高度</b>，速度跟着人自己卸掉的体重走，松手就停。人离开后座板<b>停在原处等人回来</b>，回床时坐上去按“降”，带人慢慢降回床面。</p>
-  <p class="small muted">相对第 12 版的修改和原因，见文末的<a href="#changes">修订记录</a>。</p>
+  <p class="small muted">第 13 版和 13.1 版的修改及原因，见文末的<a href="#changes">修订记录</a>。</p>
 </header>
 
 <!-- ========== PROBLEM ========== -->
@@ -238,11 +242,23 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
 <section id="night">
   <div class="sec-head"><div class="eyebrow">方案</div><h2>一晚上的往返：起床、离开、回床</h2>
     <p class="lead">点步骤看每一步人做什么、台架做什么、控制器在哪个状态、还有哪些没验证。左边是侧视图（人面朝右，床在左），右边说明栏下方是俯视图。尺寸是初定目标值，示意图不是 CAD。</p></div>
+  <div class="box parts">
+    <h3>装置组成</h3>
+    <dl class="kv2">
+      <dt>座板</dt><dd>14 × 44 cm，平时和床面齐平（0.42 m），竖直升到最高 0.66 m（最高高度按腿长设定），全程保持水平。</dd>
+      <dt>升降</dt><dd>两根同步的三节升降柱，在座板下方；座板和扶手装在同一个刚性滑架上。</dd>
+      <dt>踏板和底座</dt><dd>0.80 × 0.66 m，约 4 cm 高，四边斜坡，带夜灯。</dd>
+      <dt>L 形扶手</dt><dd>侧扶手沿台架一侧，高出座面 0.22 m；前横杆在髋前约 0.55 m、高出座面 0.40 m。转角处的立柱是伸缩套筒，把扶手上的力传到底座；横杆末端悬空，开口一侧完全敞开。台架可以装在床的左侧或右侧（扶手镜像安装）。</dd>
+      <dt>固定</dt><dd>床架夹夹住床侧梁或床腿，承受拉扶手的力；床垫下的定位板只定位座板后缘。</dd>
+      <dt>传感器</dt><dd>座板下 4 个测力单元、踏板下 4 个测力单元（各自算出压力中心，即重量落在哪里）；前横杆两轴测力（竖直分力带正负号：往下压为正，往上拉为负）。</dd>
+      <dt>操作</dt><dd>前横杆握把：整只手握紧即触发的“起”开关、“降”键、朝向用户的状态灯（可以起 / 正在升 / 已停住）和提示音；侧扶手前端另有一个“降”键，坐着时也按得到。</dd>
+    </dl>
+  </div>
   <div class="phases" id="phases"></div>
   <div class="stepper">
     <div class="scene">
       <svg id="side" viewBox="0 0 620 470" role="img" aria-label="床、起身台和老人的侧视示意图"></svg>
-      <div class="ctl"><button id="play" type="button">▶ 播放</button><label for="dims"><input type="checkbox" id="dims"> 标出尺寸</label><span class="muted">橙色 = 座板；黄点 = 正在受力的传感器</span></div>
+      <div class="ctl"><button id="play" type="button">▶ 播放</button><label for="dims"><input type="checkbox" id="dims"> 标出尺寸</label><span class="muted">橙色 = 座板；黄点 = 正在受力的传感器；紫色 = 床垫下定位板；深灰块 = 床架夹</span></div>
     </div>
     <div class="box spanel" id="spanel" aria-live="polite"></div>
   </div>
@@ -251,7 +267,7 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
 <!-- ========== WHY ========== -->
 <section id="why">
   <div class="sec-head"><div class="eyebrow">模型</div><h2>为什么要升到 0.66 m，谁真正受益</h2>
-    <p class="lead">用组里的 2D 准静态起身模型算 effort：最吃力的那个关节用掉自身最大力量的比例，越低越轻松。模型里另加了一个变量：座板向上托人的力。它用来回答一个关键问题：速度规则要求人先把座板上的力降到推力上限（默认 0.5 倍体重）以下，座板才会升，这一步有多吃力？</p></div>
+    <p class="lead">用组里的 2D 准静态起身模型算 effort：最吃力的那个关节用掉自身最大力量的比例，越低越轻松。模型里另加了一个变量：座板向上托人的力。它用来回答一个关键问题：速度规则要求人先把座板上的力降到推力上限以下，座板才会升，这一步有多吃力？这里的<b>推力上限</b>是控制器给座板设的助力上限（默认 0.5 倍体重：座板最多替人托住半个体重，其余要人自己转到脚和手上），不是推杆的额定推力。</p></div>
   <div class="two">
     <div class="box chart" id="effBox">
       <div class="legend" id="effLegend"></div>
@@ -261,6 +277,7 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
     <div class="box readout">
       <label for="cap" class="small muted">假设这个人最多能用到的 effort：<span class="mono" id="cv"></span></label>
       <input type="range" id="cap" min="20" max="34" step="1" value="25">
+      <p class="small muted">两种手臂假设，用来检验结论对手臂力量是否敏感：① 上肢力量正常，但双手合力最多 25% 体重；② 肩肘力量减半，双手合力最多 30% 体重。</p>
       <div class="seg" role="group" aria-label="手臂假设" style="justify-self:start"><button type="button" data-arm="P1" aria-pressed="true">手上 ≤ 25% 体重</button><button type="button" data-arm="P2" aria-pressed="false">肩肘力量 ×0.5</button></div>
       <div><div class="small muted">在起身台上离座的高度</div><div class="rv" id="hOff"></div></div>
       <div class="band" id="whoBand"></div>
@@ -270,14 +287,15 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
   </div>
   <div class="grid2">
     <div class="box" style="display:grid;gap:8px">
-      <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span class="pill model">本组模型</span><h3>起步不是瓶颈，但推力上限不能设得太低</h3></div>
-      <p class="note">在 0.42 m 起步时，人要让座板上的力降到上限以下。上限越低，人自己要扛的越多。上限 0.5 时，起步的 effort 明显低于在 0.66 m 离座；上限降到 0.3 时，起步反而和离座一样吃力，甚至更吃力。所以可设范围定为 <b>0.4–0.6</b>，默认 0.5。</p>
+      <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span class="pill model">本组模型</span><h3>起步不是瓶颈，但有两个前提</h3></div>
+      <p class="note"><b>推力上限不能太低。</b>上限越低，人自己要扛的越多。还要给速度留余量：座板上的力刚好等于上限时速度是 0，要比上限再低约 0.1 倍体重，座板才以约三成的最快速度上升。按这个算，上限 0.4 在“肩肘力量减半”时起步要 0.30，超过离座的 0.25。所以面向目标人群的可设范围是 <b>0.5–0.6</b>，默认 0.5。</p>
+      <p class="note"><b>起步时上身要基本坐直。</b>座板还托着人时，人不必把重心移到脚上方，所以坐直、脚往下踩最省力。如果像平常起身那样一上来就前倾 20° 以上，髋部要多扛上身的重量，起步 effort 会和离座差不多甚至更高。老人习惯先前倾，所以操作提示和练习很重要，这一点没有验证。</p>
       <div class="scroll-x"><table class="mini" id="capT"></table></div>
     </div>
     <div class="box" style="display:grid;gap:8px">
       <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span class="pill infer">推断</span><h3>离座高度因人而异：价值在“能站起来”</h3></div>
       <p class="note">速度规则让座板只升到这个人需要的高度：人一离座，座板就停。能力越弱，离座越高；最弱的目标用户要到 0.66 m。13–20% 是升到 0.66 m 时的省力，对应最弱的那批人；对不需要那么高的人，起身台的意义是“能站起来”，而不是“省多少”。</p>
-      <p class="note">起身台的价值因此可以说得更准确：它把能站起来的人群，从“effort 能到 0.29 的人”扩大到“effort 能到约 0.23 的人”（手臂假设不同时为 0.30 → 0.25）。</p>
+      <p class="note">起身台的价值因此可以说得更准确：它把能站起来的人群，从“effort 能到 0.29 的人”扩大到“effort 能到约 0.23 的人”（手臂假设不同时为 0.30 → 0.25）。下限 0.23 用的是“脚跟在髋前 8 cm”；如果起身台的脚下空间和床一样按 10 cm 算，下限约 0.24。</p>
     </div>
   </div>
   <details class="box" style="padding:12px 18px"><summary style="cursor:pointer"><b>模型的简化与局限</b> <span class="muted small">被追问时要能说清</span></summary>
@@ -285,6 +303,8 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
       <li>2D 侧视、准静态，只算髋、膝（扶横杆时加肩、肘）；没有动态过程，没有踝关节和平衡控制。关节力量是假设值，结论依赖的是相对比较。</li>
       <li>座板托人的力取竖直方向，作用在髋关节后方 4 cm（座板前缘在髋下方、深 14 cm）。改成 2 cm 或 7 cm，上限 0.5 时的起步 effort 在 0.154–0.156 之间，几乎不变。</li>
       <li>脚的负担至少 0.3 倍体重（控制器判断“脚踩实”的门槛）。横杆按设计位置：髋前 0.55 m、座面上方 0.40 m。脚跟至少在髋前 8 cm；改成和床一样的 10 cm 时，0.66 m 的离座 effort 从 0.233 变成 0.244，“比抬高床省 13–20%”的范围就来自这里。</li>
+      <li>座板只有竖直托力，没有水平摩擦力。加上摩擦力相当于给人多一个借力的方向，算出的 effort 只会更低或不变，所以现在的结论偏保守。</li>
+      <li>起步 effort 在所有躯干前倾角里取最小，最优解是上身基本坐直（前倾 0–10°）。限制前倾至少 10° / 20° / 30° 时，在 0.42 m 起步分别为 0.166 / 0.229 / 0.230（手上 ≤ 25%）和 0.186 / 0.267 / 0.307（肩肘 ×0.5）。姿态网格从 5° 加密到 2.5°，离座和起步的结果不变。</li>
       <li>座板支撑力设为 0 时，扩展模型逐个高度复现了原模型的离座结果（0.42 m 时 0.389，0.66 m 时 0.233），说明扩展没有改变原模型。代码：<span class="mono">model/calc_v13/seat_support.py</span>。</li>
       <li>“手上最多 25% 体重”是代理值：起身困难的老年女性推扶手时双手合力峰值约 159 N（Alexander 等），推扶手和拉横杆不完全一样。</li>
     </ul></details>
@@ -295,9 +315,10 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
   <div class="sec-head"><div class="eyebrow">控制</div><h2>控制规则：先停住，确认有人坐着才动</h2>
     <p class="lead">三条核心规则，加上边界情况的处理：什么时候做传感器自检、人离开后座板做什么、坐着不动多久才降、两根立柱不同步怎么办。</p></div>
   <div class="rules">
-    <div><h3>握紧才升，松手即停</h3><p>握把式“起”开关、手在横杆上、双脚踩实踏板、压力中心在安全区，四个条件同时满足才升。任何一条丢失，立即停住并制动，座板停在当前高度。</p></div>
-    <div><h3>有人坐着才带人降</h3><p>座板上有人，按“降”或坐着 20 s 没有操作（17 s 先响提示音），以 2 cm/s 带人降到床面。握着握把就不会自己降。</p></div>
-    <div><h3>没人时不自己动</h3><p>人站起后座板停在原高度、保持水平，坐回去接得住；人离开 5 s 后进入“空座保持”，仍留在原高度等人回来。空座只在按住“升/降”时以 1.5 cm/s 移动，碰到任何阻力就停。</p></div>
+    <div><h3>握紧才升，松手即停</h3><p>“起”开关握紧、手在横杆上、双脚踩实踏板、压力中心在安全区，四个条件同时满足才升。任何一条丢失，立即停住并制动，座板停在当前高度。暂定的安全区：座板压力中心在座板中线前后 ±5 cm、左右 ±10 cm 内；踏板压力中心在两脚之间。阈值要实测校准。</p></div>
+    <div><h3>有人坐着才带人降，按住才降</h3><p>座板上有人时，按住“降”才以 2 cm/s 下降，松手即停；压力中心偏出安全区时不降。坐在高处 20 s 没有操作（17 s 先响提示音）时，自动带人降到床面，这是唯一不用按住的下降；握着握把就不会触发。</p></div>
+    <div><h3>没人时不自己动</h3><p>人站起后座板停在原高度、保持水平，坐回去接得住；人离开 5 s 后进入“空座保持”，仍留在原高度。空座只在按住“升/降”时以 1.5 cm/s 移动，到回床高度先停一下，碰到任何阻力就停。</p></div>
+    <div><h3>自检和锁定</h3><p>抬升中或带人下降中、座板高于床面 3 cm 时，检查座板、踏板、横杆三处的竖直力之和是否约等于体重（横杆往上拉记为负），偏差超过 15% 持续 0.5 s 就锁定，之后只能按住“降”以 1 cm/s 慢降。两根立柱高差超过 5 mm 时锁死，不再运动，以免一根卡住时另一根继续动把座板拧歪。</p></div>
   </div>
   <div class="box sm scroll-x"><svg id="smsvg" viewBox="0 0 1060 505" role="img" aria-label="控制状态机：九个状态和它们之间的切换条件"></svg></div>
   <div class="tablewrap scroll-x"><table class="t" id="setT">
@@ -306,8 +327,8 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
 
 <!-- ========== SIMS ========== -->
 <section id="sims">
-  <div class="sec-head"><div class="eyebrow">仿真</div><h2>12 个场景，最后都落到安全状态</h2>
-    <p class="lead">仿真里的用户由上面的起身模型驱动：每个人按自己的最大 effort，在每个高度最多能把座板上的力降到多少。上图是座板高度，下图是座板上的力（虚线是推力上限 0.5 倍体重），底条是控制器状态。把鼠标移到图上看数值。</p></div>
+  <div class="sec-head"><div class="eyebrow">仿真</div><h2>15 个场景，每个都停在安全状态</h2>
+    <p class="lead">仿真里的用户由上面的起身模型驱动：每个人按自己的最大 effort，在每个高度最多能把座板上的力降到多少。上图是座板高度，下图是座板上的力（BW = 体重；虚线是推力上限 0.5 倍体重），底条是控制器状态。把鼠标移到图上看数值。控制器在座板上的力低于 5% 体重时判定离座，所以仿真里的离座高度比“谁受益”里模型给出的略低（约 1 cm）。</p></div>
   <div class="stlegend" id="stLegend"></div>
   <div class="simgrid" id="simgrid"></div>
   <p class="note col">仿真只检验控制逻辑会不会出错，用户模型来自准静态起身模型，不代表真实的起身动力学。代码：<span class="mono">model/calc_v13/controller_v13.py</span>。</p>
@@ -319,7 +340,8 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
   <div class="grid2">
     <div class="box" style="display:grid;gap:8px"><h3>机构：两根同步的三节升降柱</h3>
       <p class="note">座板下折叠后只有约 0.30 m 高。三节升降柱（如 TiMOTION TL8，缩回约 0.275 m，直径 124 mm）放得进 14 cm 深的座板下，推力不放大：推到上限时每根约 0.23 kN，保持 1.5 倍体重时每根约 0.49 kN，额定 2 kN。剪叉也放得下，但在床面高度会把推杆力放大 2.7–3.9 倍，起步要 1.2–1.7 kN，只作对比。</p>
-      <p class="note"><b>同步：</b>厂家控制器按霍尔信号同步，座板和扶手装在同一个刚性滑架上；软件再比较两根柱的位置，高差超过 5 mm 就制动锁定。5 mm 是暂定值，要按厂家的同步精度确定。</p></div>
+      <p class="note"><b>同步：</b>厂家控制器按霍尔信号同步，座板和扶手装在同一个刚性滑架上；软件再比较两根柱的位置，高差超过 5 mm 就锁死、不再运动。5 mm 是暂定值，要按厂家的同步精度确定。</p>
+      <p class="note"><b>L 形扶手：</b>侧扶手后端连在滑架上，转角处的立柱是固定在底座上的伸缩套筒，所以拉扶手的力主要经套筒传到底座，而不是全部压在升降柱上（TL8 每根允许的动态弯矩约 500 N·m）。横杆末端悬空约 0.41 m：按 1112 N 计算，转角处弯矩约 460 N·m，要在 FEA 里校核。</p></div>
     <div class="box" style="display:grid;gap:8px"><h3>稳定：人在台架上不会翻，人一半在外面要靠固定</h3>
       <p class="note">人完全在台架上（坐在座板上、站在踏板上）时，拉扶手是人和台架之间的内力，拉不翻：6 个姿态的合重心离后边缘 0.13–0.28 m，人的重心要侧向偏出约 0.5 m 才翻，而座板半宽只有 0.22 m。人半坐在床上去拉扶手时是外力：不固定时安全系数只有 0.73–1.0。</p>
       <p class="note"><b>固定方式：</b>老人失去平衡时会猛拽扶手，所以按扶手标准 ADA 609 的 1112 N 设计，固定件需要约 2 kN 的压紧力，采用夹住床侧梁或床腿的<b>床架夹</b>。床垫下的钩板只用来定位座板后缘，不算承载。日常拉力（30% 体重，177 N）只要 90–180 N 就到安全系数 1.5。夹不住的床（落地箱体床）暂列为不适用。</p></div>
@@ -331,7 +353,7 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
 <!-- ========== RISK ========== -->
 <section id="risk">
   <div class="sec-head"><div class="eyebrow">安全</div><h2>可能怎么出事，怎么防</h2>
-    <p class="lead">严重度和可能性是初步估计。“仿真”指上面 12 个场景里对应的那一个。</p></div>
+    <p class="lead">严重度和可能性是初步估计。“仿真”指上面 15 个场景里对应的那一个。</p></div>
   <div class="tablewrap scroll-x"><table class="t" id="riskT">
     <thead><tr><th>#</th><th>怎么出事</th><th style="width:76px">严重 / 可能</th><th>怎么防</th><th style="width:118px">状态</th></tr></thead><tbody></tbody></table></div>
   <p class="note col">可能相关的标准（待核对适用范围）：家用医疗电气设备 IEC 60601-1-11；个人护理机器人 ISO 13482；辅助产品通用要求 EN 12182；移位机测试方法 ISO 10535（停止距离 &lt; 10 mm、前后 10° 和侧向 5° 斜坡上不倾覆）。侧扶手紧贴床沿、可能被用来拉着坐起，可能落入成人便携床栏标准（16 CFR 1270）的范围，需要核对。</p>
@@ -346,7 +368,11 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
 
 <!-- ========== CHANGES ========== -->
 <section id="changes">
-  <div class="sec-head"><div class="eyebrow">修订记录</div><h2>第 12 版 → 第 13 版：改了什么，为什么</h2>
+  <div class="sec-head"><div class="eyebrow">修订记录</div><h2>第 12 版 → 第 13 版 → 第 13.1 版</h2>
+    <p class="lead">第 13.1 版：第 13 版写完后，又用 Gemini 4 从六个角度审计了这份方案（核心论证与模型、控制与安全、真实使用、评分要求、读者、答辩拷问），每条意见都回到代码和页面核对过。下表是处理结果；被驳回的意见也列出了理由。</p></div>
+  <div class="tablewrap scroll-x"><table class="t" id="audit2T">
+    <thead><tr><th>#</th><th>审计发现（角度）</th><th style="width:96px">处理</th><th>怎么改 / 为什么不改</th></tr></thead><tbody></tbody></table></div>
+  <div class="sec-head"><h3>第 12 版 → 第 13 版</h3>
     <p class="lead">10/26 用 Gemini 4 从六个角度审计了汇报 slides 和讲稿（核心论证、安全与故障、真实使用、评分要求、现场可讲性、答辩拷问），每条意见都回到原文和代码核对过。下表是对方案本身有影响的条目；版面和讲稿的问题留到改 slides 时处理。</p></div>
   <div class="v13" style="max-width:none">
     <div class="vno">v13<small>根据 10/26 的六角度审计修订</small></div>
@@ -362,7 +388,7 @@ footer{margin-top:48px;font-size:12.5px;color:var(--muted);display:grid;gap:4px;
     <thead><tr><th>#</th><th>审计发现</th><th style="width:96px">处理</th><th>这一版怎么改</th><th style="width:96px">见</th></tr></thead><tbody></tbody></table></div>
   <div class="tablewrap scroll-x"><table class="t" id="chgT">
     <thead><tr><th>个人设置和参数</th><th>第 12 版</th><th>第 13 版</th><th>为什么改</th></tr></thead><tbody></tbody></table></div>
-  <div class="sec-head"><h3>同两个场景，按第 12 版的规则会怎样</h3><p class="note col">第 12 版在任何状态都做力之和自检，所以“大腿压在床垫上”一坐上就锁定，“一只脚先踩到地上”在离开时锁定。写仿真时还发现一个第 12 版遗留的问题：控制器把“座板上的力低于 0.4 倍体重”当作“人已离开”，人一边坐着一边卸力（尤其部分体重在床垫上）时会被当成走了，永远进不了抬升；第 13 版改成座板力低于 5% 体重且脚离开踏板。</p></div>
+  <div class="sec-head"><h3>同三个场景，按第 12 版的规则会怎样</h3><p class="note col">第 12 版在任何状态都做力之和自检，并把横杆力截成非负，所以“大腿压在床垫上”一坐上就锁定，“一只脚先踩到地上”在离开时锁定，“往上拉横杆”一起步就锁定。写仿真时还发现一个第 12 版遗留的问题：控制器把“座板上的力低于 0.4 倍体重”当作“人已离开”，人一边坐着一边卸力（尤其部分体重在床垫上）时会被当成走了，永远进不了抬升；第 13 版改成座板力低于 5% 体重且脚离开踏板。</p></div>
   <div class="simgrid" id="simgridOld"></div>
   <p class="note col">第 12 版及更早的内容（问题全景矩阵、证据链、方案甲动态扶手的模型和对比）仍在原方案网页和仓库的 <span class="mono">page/bedexit_proposal.html</span>；这一版只保留已选定的方案乙。</p>
 </section>
@@ -404,6 +430,31 @@ const AUD=[
 const auT=$("#auditT tbody");
 auT.innerHTML=AUD.map((r,i)=>`<tr><td class="n">${i+1}</td><td>${esc(r[0])}</td><td><span class="tag ${r[1]}">${esc(r[2])}</span></td><td>${esc(r[3])}</td><td><a href="${r[4]}">${({"#control":"控制规则","#why":"谁受益","#night":"往返流程","#structure":"结构与固定","#open":"还没验证的"})[r[4]]}</a></td></tr>`).join("");
 
+const AUD2=[
+ ["“起步只要 0.16”建立在上身基本坐直的姿势上，而第 4 步写的是“身体前倾”（A）","calc","已算","限制前倾 ≥ 20° 时起步 0.229 / 0.267，和离座差不多或更高。第 4 步改成“先坐直往下踩，升起后再前倾”；风险表加“习惯性前倾”。"],
+ ["推力上限 0.4 没给速度留余量（A）","calc","已算","留 0.1 倍体重余量后，0.4 在肩肘力量减半时起步 0.296，超过离座 0.251。可设范围改为 0.5–0.6。"],
+ ["回床坐到停在高处、只有 14 cm 深的座板上，坐偏会滑向低 0.2 m 的床垫（B、C、D、F）","done","已改","回床先按住“降”把空座板降到回床高度（默认与床面齐平）再坐；回床高度可设 0.50 m。仿真两种回床都走通。"],
+ ["力之和自检把横杆力截成非负，往上拉横杆会误锁；仿真里横杆力是写死的（B、D、F）","done","已改","横杆按带正负号的竖直分力计入；新增“往上拉横杆”场景：第 12 版规则下锁定，现在正常。"],
+ ["“有人坐着”没有迟滞：下降中脚一用力就急停，坐得浅时按“降”没反应（B、C）","done","已改","坐上要超过 0.40 倍体重，降到 0.15 以下才算不坐。"],
+ ["带人下降是“按一下降到底”，违反按住才动（B）","done","已改","按住才降，松手即停；只有坐着无操作超时会自动降。下降前和下降中都检查压力中心。"],
+ ["两柱不同步后还允许按“降”，可能把滑架拧歪；仿真没模拟两根柱（B、D）","done","已改","不同步时锁死、不再运动。"],
+ ["坐在床沿够不到前横杆（肩到横杆约 0.82 m，手臂 0.62 m），第 2 步“手拉横杆”不成立（C、D）","done","已改","第 1–2 步改为拉侧扶手、撑床垫；坐上座板后才握横杆。坐着的几步，手画在侧扶手上，横杆传感器不亮。"],
+ ["横杆末端的立柱挡住开口一侧（C）","done","已改","立柱移到 L 形扶手转角（伸缩套筒），横杆末端悬空，开口一侧完全敞开；末端强度列入 FEA。"],
+ ["“谁受益”和仿真的离座高度不一致（0.63 / 0.62 m）；滑块拉到 0.23 显示“站不起来”（E）","done","已改","按模型离座高度判断目标人群；说明控制器在 5% 体重时判定离座，仿真低约 1 cm。"],
+ ["“站不起来的人”仿真没到顶，与文字不符（E、F）","done","已改","场景改成到顶后停住、按住“降”回到床面。"],
+ ["压力中心检查在仿真里从未失败（B、D）","done","已加","新增“坐偏”场景；页面写出暂定的安全区。"],
+ ["装置组成、传感器、按钮位置没交代；手臂假设、推力上限、BW 没解释（D、E）","done","已加","新增“装置组成”；术语在首次出现处解释。"],
+ ["“按偏瘫健侧换装”给自己挖坑（F）","done","已改","改为按卧室布局镜像安装；单侧严重偏瘫另行评估，暂不列入目标人群。"],
+ ["收腿上床时磕到座板前缘和扶手（C）","done","已加","风险表加软边包覆。"],
+ ["座板没有水平摩擦力（F）","no","写入局限","加上只会让 effort 更低，现在的结论偏保守。"],
+ ["姿态网格太粗，造成台阶（A）","no","已查","网格加密到 2.5° 后离座和起步结果不变。最少座板力随能力的台阶，推断来自起身策略（坐直还是前倾）的切换。"],
+ ["髋关节方程不该包含座板托力，而且正负号反了（A）","no","驳回","座板托力作用在骨盆上，骨盆在模型里属于躯干段；这一项增加髋伸肌负担，方向是保守的。"],
+ ["坐在床沿时小腿会被座板下的立柱顶住（C）","no","驳回","坐床沿时小腿在离床沿约 0.24 m 处垂下，立柱外壳只到 0.14 m。"],
+ ["导航栏遮住标题和正文（C、D、E、F）","no","驳回","是逐节截图的方式造成的；正常浏览和锚点跳转不受影响。"],
+ ["CAD 模型、运动动画、FEA 仍没有；终稿要英文 slides（D）","todo","待做","见“还没验证的”。"]
+];
+$("#audit2T tbody").innerHTML=AUD2.map((r,i)=>`<tr><td class="n">${i+1}</td><td>${esc(r[0])}</td><td><span class="tag ${r[1]}">${esc(r[2])}</span></td><td>${esc(r[3])}</td></tr>`).join("");
+
 /* ---------------- side view geometry ---------------- */
 const LEN={T:0.461,TH:0.392,SH:0.394,U:0.298,F:0.32};
 const P={
@@ -413,7 +464,9 @@ const P={
  rise:{S:[0.37,1.149],H:[0.14,0.75],K:[0.42,0.44],A:[0.29,0.062],T:[0.46,0.02],E:[0.52,0.98],W:[0.69,1.06]},
  stand:{S:[0.31,1.309],H:[0.29,0.848],K:[0.31,0.456],A:[0.29,0.062],T:[0.46,0.02],E:[0.50,1.10],W:[0.69,1.06]}
 };
-const seated=L=>({S:[0.14,0.97+L],H:[0.11,0.51+L],K:[0.46,0.44+0.6*L],A:[0.29,0.062],T:[0.46,0.02],E:[0.22,0.70+L],W:[0.40,0.58+L]});
+const seated=L=>({S:[0.14,0.97+L],H:[0.11,0.51+L],K:[0.46,0.44+0.6*L],A:[0.29,0.062],T:[0.46,0.02],E:[0.22,0.72+L],W:[0.40,0.64+L]});
+const upright=L=>({S:[0.18,0.97+L],H:[0.12,0.51+L],K:[0.46,0.44+0.6*L],A:[0.29,0.062],T:[0.46,0.02],E:[0.42,0.86+L],W:[0.69,0.82+L]});
+const standAt=L=>Object.assign({},P.stand,{W:[0.69,0.82+L]});
 const lerpP=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,[a[k][0]+(b[k][0]-a[k][0])*t,a[k][1]+(b[k][1]-a[k][1])*t]]));
 const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]], add=(a,b)=>[a[0]+b[0],a[1]+b[1]], mul=(a,s)=>[a[0]*s,a[1]*s], nrm=a=>Math.hypot(a[0],a[1]);
 function ik(a,b,l1,l2,hint){let d=sub(b,a),L=nrm(d);L=Math.min(Math.max(L,Math.abs(l1-l2)+1e-3),l1+l2-1e-3);const u=mul(d,1/(nrm(d)+1e-9));b=add(a,mul(u,L));
@@ -428,27 +481,27 @@ const STN={IDLE:"待机",SEATED:"坐着",LIFTING:"抬升",STOPPED:"停住",STAND
 const STC={IDLE:"--st-idle",SEATED:"--st-seated",LIFTING:"--st-lift",STOPPED:"--st-stop",STANDING_HOLD:"--st-stand",LOWERING:"--st-lower",EMPTY_HOLD:"--st-idle",EMPTY_MOVE:"--st-idle",RESET_EMPTY:"--st-idle",LOCKED:"--st-lock"};
 const STEPS=[
  {ph:0,t:"坐在床沿，脚踩踏板",pose:P.edge,L:0,sens:["feet"],st:"IDLE",tv:{p:[-0.15,0],a:0},
-  you:"醒来后坐到床沿，双脚放到台架的踏板上（踏板离地约 4 cm）。",dev:"待机。握把上的状态灯和踏板夜灯亮着，告诉人支撑在哪里。",watch:"躺→坐这一步台架只提供扶点（侧扶手），不助力。"},
+  you:"醒来后坐到床沿，双脚放到台架的踏板上（踏板离地约 4 cm），一只手扶侧扶手。",dev:"待机。握把上的状态灯和踏板夜灯亮着，告诉人支撑在哪里。",watch:"坐在床沿时够不到前横杆（肩到横杆约 0.8 m，手臂约 0.62 m），这一步只扶侧扶手。躺→坐时台架只提供扶点，不助力。"},
  {ph:0,t:"往前挪到短座板上",pose:P.scoot,L:0,sens:["seat","feet"],st:"SEATED",tv:{p:[0.10,0],a:0},
-  you:"手拉横杆借力，往前挪 25–30 cm，坐到和床齐平、深 14 cm 的座板前缘。大腿后侧可以还压在床垫上。",dev:"座板受力超过 0.4 倍体重 → 坐着。这时不做力之和自检，大腿压着床垫也不会误锁。",watch:"<b>未验证：</b>往前挪 25–30 cm 对目标用户是否可行，是目前最大的不确定。"},
+  you:"一手拉侧扶手、一手撑床垫，往前挪 25–30 cm，坐到和床齐平、深 14 cm 的座板前缘。挪上座板以后才够得着前横杆。大腿后侧可以还压在床垫上。",dev:"座板受力超过 0.4 倍体重 → 坐着。这时不做力之和自检，大腿压着床垫也不会误锁。",watch:"<b>未验证：</b>往前挪 25–30 cm 对目标用户是否可行，是目前最大的不确定。"},
  {ph:0,t:"握住握把，想坐多久都行",pose:P.ready,L:0,sens:["seat","bar","feet"],st:"SEATED",tv:{p:[0.10,0],a:0},
-  you:"双手握住横杆上的握把，坐稳，缓一缓。",dev:"坐着，座板在床面高度，不会自己动。",watch:""},
- {ph:0,t:"握紧“起”，座板升，人也发力",pose:lerpP(P.ready,P.rise,0.5),L:0.12,sens:["seat","bar","feet"],st:"LIFTING",tv:{p:[0.14,0],a:0},
-  you:"握紧握把上的“起”开关，身体前倾、脚往下踩，把座板上的力降到半个体重以下。",dev:"抬升：速度 = k ×（0.5 倍体重 − 座板上的力），最快 3 cm/s。人卸得越多升得越快；往回坐时速度自然变成 0。",watch:"起步的 effort 约 0.16，低于离座时的 0.23（见“谁受益”）。"},
- {ph:0,t:"离座站稳，座板停在原高度",pose:P.stand,L:0.20,sens:["bar","feet"],st:"STANDING_HOLD",tv:{p:[0.30,0],a:0},
+  you:"双手握住前横杆上的握把，坐稳，缓一缓。",dev:"坐着，座板在床面高度，不会自己动。",watch:""},
+ {ph:0,t:"握紧“起”，坐直往下踩，座板升",pose:upright(0.12),L:0.12,sens:["seat","bar","feet"],st:"LIFTING",tv:{p:[0.12,0],a:0},
+  you:"握紧“起”开关，上身基本坐直，双脚往下踩、手扶横杆，把座板上的力降到半个体重以下；座板升高以后再逐渐前倾。",dev:"抬升：速度 = k ×（推力上限 − 座板上的力），最快 3 cm/s；座板上的力先滤掉晃动再用。人卸得越多升得越快，往回坐时速度自然变成 0。",watch:"起步要上身坐直：前倾 10° 以内时起步 effort 约 0.17–0.19；一上来就前倾 20° 以上，会升到 0.23–0.27，和离座一样吃力（见“谁受益”）。老人习惯先前倾，需要提示和练习（未验证）。"},
+ {ph:0,t:"离座站稳，座板停在原高度",pose:standAt(0.20),L:0.20,sens:["bar","feet"],st:"STANDING_HOLD",tv:{p:[0.30,0],a:0},
   you:"站直，双手仍在横杆上，站着缓几秒（防体位性低血压）。",dev:"座板上的力低于 5% 体重持续 0.3 s → 站立保持：座板停在离座时的高度（典型用户约 0.62 m）、保持水平，万一坐回去接得住。",watch:""},
- {ph:1,t:"从开口一侧迈下，换手到助行器",pose:P.stand,L:0.20,sens:["bar","feet"],st:"STANDING_HOLD",tv:{p:[0.36,0.36],a:90},path:"out",isNew:1,
-  you:"一只手扶横杆端部的立柱，另一只手去拿停在开口一侧的助行器，侧身迈下踏板。",dev:"仍是站立保持。这个状态不做力之和自检，一只脚已经踩在地上、踏板只剩约一半体重也不会误锁。",watch:"<b>待 CAD 核对：</b>横杆端部到台架边缘只有约 0.20 m 的空当，侧身迈出和够到助行器的距离要在 CAD 里确认。"},
- {ph:1,t:"人离开，座板空着等在原处",pose:null,L:0.20,sens:[],st:"EMPTY_HOLD",tv:null,path:"away",isNew:1,
-  you:"去卫生间。",dev:"座板和踏板都空 5 s → 空座保持：座板留在原高度，不自己降回床面。",watch:"<b>需要老师确认：</b>座板整夜停在高处是否可以接受。它在台架占地范围内，夜灯照着。"},
- {ph:2,t:"回来，踏上踏板，转身背对座板",pose:P.stand,L:0.20,sens:["bar","feet"],st:"EMPTY_HOLD",tv:{p:[0.32,0.04],a:0},path:"back",isNew:1,
-  you:"从开口一侧走回来，把助行器停在原处，双手扶横杆踏上踏板，转身背对座板，让小腿后侧先碰到座板前缘。",dev:"空座保持。踏板受力不会让座板移动。",watch:"<b>新风险：</b>在踏板上转身要全程有扶点；横杆就在身前。"},
- {ph:2,t:"坐上停在高处的座板",pose:seated(0.20),L:0.20,sens:["seat","bar","feet"],st:"SEATED",tv:{p:[0.12,0],a:0},isNew:1,
-  you:"扶着横杆坐下。座面约 0.62 m，像坐高凳，膝盖弯得浅，比直接坐到 0.42 m 的床上好控制。",dev:"座板受力 → 坐着。",watch:"<b>未验证：</b>座板只有 14 cm 深；坐得太靠后会越过后缘，滑向低 0.2 m 的床垫。座板后缘要不要加软挡边，待定。"},
- {ph:2,t:"按“降”，座板带人降到床面",pose:seated(0.10),L:0.10,sens:["seat","bar","feet"],st:"LOWERING",tv:{p:[0.12,0],a:0},isNew:1,
-  you:"按一下“降”，双手扶横杆。",dev:"有人坐着 → 下降，2 cm/s，约 10 s 到床面。座板一旦卸载（人站起来）立即停住。",watch:""},
- {ph:2,t:"往后挪回床上，躺下",pose:P.edge,L:0,sens:["feet"],st:"IDLE",tv:{p:[-0.15,0],a:0},isNew:1,
-  you:"手推横杆，身体往后挪回床垫，把腿收上床。",dev:"到床面后坐着；人挪走、座板和踏板都空了 → 待机。体重转到床垫上的过程中不做力之和自检。",watch:"往后挪时双手推横杆，用的是伸直手臂的力。比起床时往前挪是否更容易，没有验证。"}
+ {ph:1,t:"从开口一侧迈下，换手到助行器",pose:standAt(0.20),L:0.20,sens:["bar","feet"],st:"STANDING_HOLD",tv:{p:[0.36,0.36],a:90},path:"out",
+  you:"一只手扶横杆末端，另一只手去拿停在开口一侧的助行器，侧身迈下踏板。",dev:"仍是站立保持。这个状态不做力之和自检，一只脚已经踩在地上、踏板只剩约一半体重也不会误锁。",watch:"开口一侧没有立柱：立柱在 L 形扶手的转角处，横杆末端悬空。迈出的宽度和够到助行器的距离仍要在 CAD 里确认。"},
+ {ph:1,t:"人离开，座板空着停在原处",pose:null,L:0.20,sens:[],st:"EMPTY_HOLD",tv:null,path:"away",
+  you:"去卫生间。",dev:"座板和踏板都空 5 s → 空座保持：座板留在原高度，不自己动。",watch:"座板空着停在高处：在台架占地范围内，夜灯照着；回来时由人按住“降”放下来。"},
+ {ph:2,t:"回来，踏上踏板，扶住横杆",pose:standAt(0.20),L:0.20,sens:["bar","feet"],st:"EMPTY_HOLD",tv:{p:[0.32,0.04],a:0},path:"back",
+  you:"从开口一侧走回来，把助行器停在原处，双手扶横杆踏上踏板。",dev:"空座保持。踏板受力不会让座板移动。",watch:"在踏板上转身要全程有扶点；横杆就在身前。"},
+ {ph:2,t:"按住“降”，空座板降到回床高度",pose:standAt(0.10),L:0.10,sens:["bar","feet"],st:"EMPTY_MOVE",tv:{p:[0.32,0.04],a:0},
+  you:"按住握把上的“降”。空座板以 1.5 cm/s 往下降，到设定的回床高度（默认和床面齐平）自动停住。",dev:"空座移动：按住才动、松手即停；座板碰到任何阻力（受力超过 5% 体重）立即停住。",watch:"回床不再坐到停在高处的窄座板上：座板只有 14 cm 深，坐偏会越过后缘滑向低 0.2 m 的床垫。"},
+ {ph:2,t:"扶着横杆坐下",pose:seated(0),L:0,sens:["seat","feet"],st:"SEATED",tv:{p:[0.10,0],a:0},
+  you:"双手扶横杆，转身背对座板，慢慢坐到座板和床垫连成的平面上；坐偏了也是坐在床垫上。坐稳后手换到侧扶手。",dev:"座板受力超过 0.4 倍体重 → 坐着；降到 0.15 倍体重以下才算不坐了。",watch:"坐到 0.42 m 要靠腿控制下蹲，比坐到高处难。回床高度可以按人设成 0.50 m：先坐上座板，再按住“降”带人降到床面（仿真“回床高度 0.50 m”）。"},
+ {ph:2,t:"往后挪回床上，躺下",pose:P.edge,L:0,sens:["feet"],st:"IDLE",tv:{p:[-0.15,0],a:0},
+  you:"一手推侧扶手、一手撑床垫，往后挪回床上，把腿收上床。",dev:"人挪走、座板和踏板都空了 → 待机。体重转到床垫上的过程中不做力之和自检。",watch:"座板前缘和侧扶手外露处要包软边，收腿上床时容易磕到脚踝和小腿。"}
 ];
 const PH=["起床","离开","回床"];
 let cur=0, playT=null;
@@ -468,6 +521,8 @@ function drawSide(s){
  el("rect",{x:X(0),y:Z(0.30),width:0.14*SC,height:Z(0.013)-Z(0.30),fill:"var(--dev)"},svg);
  if(h0-0.05>0.30) el("rect",{x:X(0.035),y:Z(h0-0.05),width:0.07*SC,height:Z(0.30)-Z(h0-0.05),fill:"var(--dev2)"},svg);
  el("polygon",{points:[[-0.03,h0],[0.14,h0],[0.14,h0-0.045],[-0.03,h0-0.045]].map(p=>X(p[0])+","+Z(p[1])).join(" "),fill:"var(--seat)"},svg);
+ el("line",{x1:X(0.005),y1:Z(h0),x2:X(0.005),y2:Z(0.64+L),stroke:"var(--ink)","stroke-width":3.5,opacity:.4},svg);
+ el("rect",{x:X(-0.09),y:Z(0.20),width:0.09*SC,height:0.07*SC,rx:3,fill:"var(--ink2)",opacity:.75},svg);
  const BX=0.69,zs=0.64+L,zb=0.82+L;
  el("line",{x1:X(BX),y1:Z(0.02),x2:X(BX),y2:Z(0.55),stroke:"var(--ink)","stroke-width":7,opacity:.25},svg);
  el("line",{x1:X(BX),y1:Z(0.5),x2:X(BX),y2:Z(zb),stroke:"var(--ink)","stroke-width":3.5,opacity:.6},svg);
@@ -499,9 +554,9 @@ function drawDims(svg,s){
  dimLine(svg,0.70,0.42,0.70,0.66,"0.42 → 0.66 m",[8,4],"start");
  dimLine(svg,0.14,0.20,0.23,0.20,"脚跟 ≥ 髋 + 0.08",[0,-6]);
  dimLine(svg,0.14,h0+0.40,0.69,h0+0.40,"横杆：髋前 0.55",[0,-8]);
- dimLine(svg,0,-0.035,0.80,-0.035,"踏板 0.80 m",[0,14]);
+ dimLine(svg,0,-0.02,0.80,-0.02,"踏板 0.80 m",[60,-5]);
  el("line",{x1:X(0.14),y1:Z(0.16),x2:X(0.14),y2:Z(h0),stroke:"var(--amber-ink)","stroke-dasharray":"3 3"},svg);
- const t=el("text",{x:X(0.07),y:Z(0.16)+14,"text-anchor":"middle","font-size":11,fill:"var(--amber-ink)"},svg);t.textContent="立柱外壳止于此";
+ const t=el("text",{x:X(0.15),y:Z(0.10),"text-anchor":"start","font-size":11,fill:"var(--amber-ink)"},svg);t.textContent="← 立柱外壳止于此";
 }
 // top view inside the side svg: lower-right corner
 function drawTop(svg,s){
@@ -512,8 +567,8 @@ function drawTop(svg,s){
  el("rect",{x:TX(0),y:TY(-0.33),width:0.80*k,height:0.66*k,fill:"var(--sunk)",stroke:"var(--dev2)"},g);
  el("rect",{x:TX(-0.03),y:TY(-0.22),width:0.17*k,height:0.44*k,fill:"var(--seat)"},g);
  el("polyline",{points:`${TX(0)},${TY(-0.28)} ${TX(0.69)},${TY(-0.28)} ${TX(0.69)},${TY(0.13)}`,fill:"none",stroke:"var(--ink)","stroke-width":3,"stroke-linecap":"round"},g);
- el("circle",{cx:TX(0.69),cy:TY(0.13),r:4,fill:"var(--ink)"},g);
- const ol=el("text",{x:TX(0.42),y:TY(0.49),"text-anchor":"middle","font-size":10.5,fill:"var(--amber-ink)"},g);ol.textContent="开口一侧 ↓";
+ el("circle",{cx:TX(0.69),cy:TY(-0.28),r:4.5,fill:"var(--ink)"},g);
+ const ol=el("text",{x:TX(0.02),y:TY(0.64),"text-anchor":"start","font-size":10.5,fill:"var(--amber-ink)"},g);ol.textContent="开口一侧 ↓";
  const walkerAway=s.path==="away";
  if(!walkerAway){el("rect",{x:TX(0.86),y:TY(0.42),width:0.30*k,height:0.36*k,rx:3,fill:"none",stroke:"var(--night)","stroke-width":2},g);
   const wl=el("text",{x:TX(1.01),y:TY(0.90),"text-anchor":"middle","font-size":10.5,fill:"var(--night)"},g);wl.textContent="助行器";}
@@ -598,9 +653,9 @@ function readout(c,ho){
  $("#cv").textContent=c.toFixed(2);
  const so66=E.seatoff[arm][E.h.length-1],rb=E.raised[arm],lb=E.low[arm];
  $("#hOff").textContent=ho===null?"0.66 m 也站不起来":`约 ${ho.toFixed(2)} m`;
- const zone=c<so66?0:(c<rb?1:2);
+ const zone=ho===null?0:(c<rb?1:2);
  $("#whoBand").innerHTML=[["站不起来",`< ${so66.toFixed(2)}`],["目标人群",`${so66.toFixed(2)}–${rb.toFixed(2)}`],["抬高床就够",`≥ ${rb.toFixed(2)}`]].map((z,i)=>`<div class="${i===zone?"hit":""}"><span>${z[0]}</span><b>${z[1]}</b></div>`).join("");
- $("#whoText").textContent=zone===0?"升到 0.66 m 仍站不起来。控制器会在到顶后停住，等他按“降”或 20 s 后带他降回床面（仿真“站不起来的人”）。这类人不在目标人群里。"
+ $("#whoText").textContent=zone===0?"升到 0.66 m 仍站不起来。座板到顶后停住，他按住“降”就被带回床面（仿真“站不起来的人”）。这类人不在目标人群里。"
   :zone===1?`抬高到 0.58 m 的床站不起来，起身台能：座板会在约 ${ho.toFixed(2)} m 处停住让他离座。这是起身台真正要帮的人。`
   :`抬高床（${rb.toFixed(2)}）已经能站起来。起身台仍然更轻松，但不是必需的。`;
  const st=E.start50[arm][0];
@@ -612,10 +667,11 @@ $("#cap").addEventListener("input",drawEff);
 drawEff();
 // cap table
 const so={P1:E.seatoff.P1[E.h.length-1],P2:E.seatoff.P2[E.h.length-1]};
-$("#capT").innerHTML=`<thead><tr><th>推力上限（× 体重）</th><th>起步 · 手上≤25%</th><th>起步 · 肩肘×0.5</th></tr></thead><tbody>`+
- ["0.3","0.4","0.5","0.6"].map(c=>{const a=E.startcaps.P1[c],b=E.startcaps.P2[c];const bad=a>=so.P1-0.025||b>=so.P2-0.025;
- return `<tr class="${bad?"warn":(c==="0.5"?"ok":"")}"><td>${c}${c==="0.5"?"（默认）":""}${c==="0.3"?"（不允许）":""}</td><td>${a.toFixed(3)}</td><td>${b.toFixed(3)}</td></tr>`}).join("")+
- `<tr><td>对照：在 0.66 m 离座</td><td>${so.P1.toFixed(3)}</td><td>${so.P2.toFixed(3)}</td></tr></tbody>`;
+$("#capT").innerHTML=`<thead><tr><th>推力上限（× 体重）</th><th>手上≤25% · 刚好起步</th><th>· 留余量</th><th>肩肘×0.5 · 刚好起步</th><th>· 留余量</th></tr></thead><tbody>`+
+ ["0.4","0.5","0.6"].map(c=>{const m=(+c-0.1).toFixed(1),a=E.startcaps.P1[c],am=E.startcaps.P1[m],b=E.startcaps.P2[c],bm=E.startcaps.P2[m];const bad=am>=so.P1-0.01||bm>=so.P2-0.01;
+ return `<tr class="${bad?"warn":(c==="0.5"?"ok":"")}"><td>${c}${c==="0.5"?"（默认）":""}${c==="0.4"?"（不用于目标人群）":""}</td><td>${a.toFixed(3)}</td><td>${am.toFixed(3)}</td><td>${b.toFixed(3)}</td><td>${bm.toFixed(3)}</td></tr>`}).join("")+
+ `<tr><td>上身前倾 ≥ 20°（上限 0.5）</td><td colspan="2">${E.lean.P1["20"].toFixed(3)}</td><td colspan="2">${E.lean.P2["20"].toFixed(3)}</td></tr>`+
+ `<tr><td>对照：在 0.66 m 离座</td><td colspan="2">${so.P1.toFixed(3)}</td><td colspan="2">${so.P2.toFixed(3)}</td></tr></tbody>`;
 
 /* ---------------- state machine diagram ---------------- */
 (function(){
@@ -633,14 +689,14 @@ $("#capT").innerHTML=`<thead><tr><th>推力上限（× 体重）</th><th>起步 
   ["M900,78 C900,18 330,18 330,78","坐回（座板水平接住）",615,26,"middle",0],
   ["M585,122 L585,278","松手 / 条件丢失\n/ 断电",577,150,"end",0],
   ["M615,278 L615,122","重新握紧",623,262,"start",0],
-  ["M535,292 L395,292","按“降”或 20 s 无操作",465,282,"middle",1],
-  ["M395,312 L535,312","下降中座板卸载",465,332,"middle",0],
-  ["M310,122 L310,278","座板在高处：\n按“降”或\n20 s 无操作",302,180,"end",1],
+  ["M535,292 L395,292","按住“降”或 20 s 无操作",465,282,"middle",1],
+  ["M395,312 L535,312","松开“降” / 卸载 / 压力中心偏出",465,332,"middle",0],
+  ["M310,122 L310,278","座板在高处：\n按住“降”或\n20 s 无操作",302,180,"end",1],
   ["M350,278 L350,122","到床面",358,205,"start",0],
   ["M900,122 L900,278","人离开 5 s：\n座板留在原高度",910,190,"start",1],
   ["M825,290 Q600,190 395,108","有人坐上（回床）",728,232,"middle",1],
   ["M890,322 L890,418","按住\n“升/降”",882,365,"end",1],
-  ["M910,418 L910,322","松开或\n座板受力",918,365,"start",1]
+  ["M910,418 L910,322","松开 / 受力 /\n到回床高度",918,365,"start",1]
  ];
  const txt=(x,y,str,o)=>{const t=el("text",Object.assign({x,y,"font-size":12.5},o),svg);str.split("\n").forEach((ln,i)=>{const sp=el("tspan",{x,dy:i?15:0},t);sp.textContent=ln;});return t;};
  for(const [d,label,lx,ly,anchor,isNew] of ED){
@@ -650,30 +706,35 @@ $("#capT").innerHTML=`<thead><tr><th>推力上限（× 体重）</th><th>起步 
   el("rect",{x:x-w/2,y:y-h/2,width:w,height:h,rx:9,fill:"var(--surface)",stroke:isNewNode?"var(--amber)":(id==="LOCKED"?"var(--st-lock)":"var(--ink)"),"stroke-width":1.6,"stroke-dasharray":isNewNode?"5 3":""},svg);
   el("rect",{x:x-w/2+12,y:y-5,width:10,height:10,rx:2,fill:`var(${STC[id]})`},svg);
   const t=el("text",{x:x+8,y:y+5,"text-anchor":"middle","font-size":14.5,"font-weight":700,fill:"var(--ink)"},svg);t.textContent=STN[id];}
- txt(180,428,"任意状态 → 锁定：抬升或带人下降中、高于床面 3 cm，力之和偏差 > 15% 持续 0.5 s；\n或两根立柱高差 > 5 mm。锁定后只能按住“降”慢降。",{fill:"var(--ink2)"});
+ txt(180,428,"任意状态 → 锁定：抬升或带人下降中、高于床面 3 cm，竖直力之和偏差 > 15% 持续 0.5 s，\n锁定后只能按住“降”以 1 cm/s 慢降；两根立柱高差 > 5 mm 时锁死，不再运动。",{fill:"var(--ink2)"});
  txt(30,492,"断电：任意运动 → 停住（推杆自锁），按住“降”用电池慢降。",{fill:"var(--ink2)"});
  txt(1050,492,"空座移动：1.5 cm/s，松手或座板受力即停",{"text-anchor":"end",fill:"var(--muted)","font-size":12});
 })();
 
 /* ---------------- settings table ---------------- */
 const SET=[
- ["推力上限（× 体重）","默认 0.5，可设 0.3–0.6","默认 0.5，可设 0.4–0.6","上限 0.3 时，在 0.42 m 起步比在 0.66 m 离座还吃力"],
+ ["推力上限（× 体重）","默认 0.5，可设 0.3–0.6","默认 0.5，可设 0.5–0.6","上限越低起步越吃力；留出速度余量后，0.4 在“肩肘力量减半”时起步要 0.30，超过离座的 0.25"],
  ["最快速度","1.5–4 cm/s","1.5–3 cm/s","TL8 空载约 3.3 cm/s，带人更慢；3 cm/s 待厂家曲线核对"],
  ["最高高度","固定 0.66 m","按腿长设定，默认 0.66 m","0.66 m 是按 1.60 m 身高定的"],
+ ["回床高度","无","默认和床面齐平，可设 0.42–0.50 m","回床时空座板先降到这里再坐；坐下有困难的人可设高一点，坐上后再按住“降”"],
+ ["带人下降","按一下就降到底","按住“降”才降，松手即停","按住才动；只有坐着无操作超时会自动降"],
  ["坐在高处无操作后下降","10 s，无提示","20 s，17 s 先响提示音；握着握把不降","头晕的人需要缓一缓；突然移动会吓到人"],
- ["人离开后","5 s 后空载降回床面","留在原高度（空座保持）","回床时坐高处的座板更好控制；也让“没人时不自己动”成立"],
- ["力之和自检","任何状态","只在抬升或带人下降中、高于床面 3 cm，持续 0.5 s","避免压床垫、迈步时误锁"],
+ ["人离开后","5 s 后空载降回床面","留在原高度（空座保持）","没人时不自己动；回来时由人按住“降”放下来"],
+ ["力之和自检","任何状态；横杆力截成非负","只在抬升或带人下降中、高于床面 3 cm，持续 0.5 s；横杆按带正负号的竖直分力计入","避免压床垫、迈步、往上拉横杆时误锁"],
+ ["“有人坐着”的判断","超过 0.4 倍体重","超过 0.40 倍体重算坐上，降到 0.15 以下才算不坐","坐得浅或下降中脚一用力时，不会被当成离开而急停"],
  ["“人已离开”的判断","座板力 < 0.4 倍体重","座板力 < 5% 体重且脚离开踏板","人边坐边卸力时不被误判为离开"],
- ["两柱同步","未定义","高差 > 5 mm 锁定","防座板歪斜把人掀侧"],
- ["扶手侧","固定","左右可换装","按偏瘫用户的健侧安装"]
+ ["压力中心安全区","未定义","座板中线前后 ±5 cm、左右 ±10 cm；踏板在两脚之间（暂定）","邮件要求力分布传感；抬升和下降都要检查"],
+ ["两柱同步","未定义","高差 > 5 mm 锁死，不再运动","一根卡住时另一根继续动会把座板拧歪"],
+ ["扶手侧","固定","左右镜像安装","按卧室布局和用户习惯；单侧严重偏瘫的人另行评估"]
 ];
+
 $("#setT tbody").innerHTML=SET.map(r=>`<tr><td>${esc(r[0])}</td><td><b>${esc(r[2])}</b></td><td class="small">${esc(r[3])}</td></tr>`).join("");
 $("#chgT tbody").innerHTML=SET.map(r=>`<tr><td>${esc(r[0])}</td><td class="muted">${esc(r[1])}</td><td><b>${esc(r[2])}</b></td><td class="small">${esc(r[3])}</td></tr>`).join("");
 
 /* ---------------- sims ---------------- */
 const STATES=D.states, SIMS=D.sims;
-$("#stLegend").innerHTML=["SEATED","LIFTING","STOPPED","STANDING_HOLD","LOWERING","EMPTY_HOLD","LOCKED"].map(k=>`<span><i style="background:var(${STC[k]})${k==="LOCKED"?";background-image:repeating-linear-gradient(135deg,transparent 0 3px,rgba(255,255,255,.55) 3px 5px)":""}"></i>${STN[k]}</span>`).join("")+`<span><i style="background:var(--st-idle)"></i>待机</span>`;
-const ORDER=["typical","weakest","strong","tooweak","sitback","faint","mattress","stepoff","return","stuck","power","sync"];
+$("#stLegend").innerHTML=["SEATED","LIFTING","STOPPED","STANDING_HOLD","LOWERING","EMPTY_MOVE","LOCKED"].map(k=>`<span><i style="background:var(${STC[k]})${k==="LOCKED"?";background-image:repeating-linear-gradient(135deg,transparent 0 3px,rgba(255,255,255,.55) 3px 5px)":""}"></i>${STN[k]}</span>`).join("")+`<span><i style="background:var(--st-idle)"></i>待机 / 空座保持</span>`;
+const ORDER=["typical","weakest","strong","tooweak","sitback","faint","mattress","stepoff","pullup","cop","return","return50","stuck","power","sync"];
 const finTxt=s=>`${STN[s.final]} · 座面 ${s.fh.toFixed(2)} m${s.so?` · 离座 ${s.so.toFixed(2)} m`:""}`;
 const SW=300,SH=150,pl=34,pr=6;
 function drawSim(svg,s,info){
@@ -695,7 +756,7 @@ function drawSim(svg,s,info){
  const hit=el("rect",{x:pl,y:0,width:SW-pl-pr,height:by+10,fill:"transparent"},svg);
  const mv=ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)/r.width*SW;const t=(px-pl)/(SW-pl-pr)*T;const i=Math.max(0,Math.min(s.t.length-1,Math.round(t/(s.t[1]-s.t[0]))));
   hl.setAttribute("x1",tx(s.t[i]));hl.setAttribute("x2",tx(s.t[i]));hl.setAttribute("visibility","visible");
-  info.textContent=`${s.t[i].toFixed(1)} s · ${s.h[i].toFixed(3)} m · ${s.seat[i].toFixed(2)} BW · ${STN[STATES[s.st[i]]]}`;};
+  info.textContent=`${s.t[i].toFixed(1)} s · ${s.h[i].toFixed(3)} m · 座板 ${s.seat[i].toFixed(2)} 倍体重 · ${STN[STATES[s.st[i]]]}`;};
  hit.addEventListener("pointermove",mv);hit.addEventListener("pointerleave",()=>{hl.setAttribute("visibility","hidden");info.textContent=finTxt(s);});
  info.textContent=finTxt(s);
 }
@@ -709,7 +770,7 @@ for(const key of ORDER){const v13=SIMS.find(s=>s.key===key&&s.rules==="v13"),v12
 }
 
 const gridOld=$("#simgridOld");
-for(const key of ["mattress","stepoff"]){for(const r of ["v12","v13"]){const sm=SIMS.find(x=>x.key===key&&x.rules===r);
+for(const key of ["mattress","stepoff","pullup"]){for(const r of ["v12","v13"]){const sm=SIMS.find(x=>x.key===key&&x.rules===r);
  const card=document.createElement("div");card.className="sim";card.innerHTML=`<div class="hd"><h3>${esc(sm.name)}</h3><span class="tag ${r==="v12"?"todo":"done"}">${r==="v12"?"第 12 版规则":"第 13 版规则"}</span></div><div class="fin"></div>`;
  const sv=document.createElementNS(NS,"svg");sv.setAttribute("viewBox",`0 0 ${SW} ${SH}`);sv.setAttribute("role","img");sv.setAttribute("aria-label",sm.name+"（"+r+"）");card.appendChild(sv);gridOld.appendChild(card);drawSim(sv,sm,card.querySelector(".fin"));}}
 
@@ -717,19 +778,25 @@ for(const key of ["mattress","stepoff"]){for(const r of ["v12","v13"]){const sm=
 const RISK=[
  [0,"抬升中头晕，往回坐","高 / 中","座板上的力超过上限，速度自然变成 0，立即停住、座板水平接住；有人坐着才带人降","done","仿真：往回坐"],
  [0,"抬升中晕倒、松手","高 / 低","松手即停；20 s 无操作（17 s 提示音）后带人降到床面","done","仿真：晕倒"],
+ [0,"坐偏，压力中心偏出","高 / 中","压力中心偏出安全区立即停住；重新握紧才继续；下降时同样检查","done","仿真：坐偏"],
  [0,"传感器卡住或漂移","高 / 低","抬升中力之和自检（偏差 > 15% 持续 0.5 s 即锁定）；开关双通道触点","done","仿真：传感器卡住"],
- [1,"自检误锁：坐上时压着床垫；迈步时一只脚已在地上","中 / 中","只在离开床面后的运动中检查","done","仿真：压床垫、迈下踏板"],
- [1,"两根立柱不同步，座板歪斜","高 / 低","厂家控制器同步 + 刚性滑架；软件高差 > 5 mm 锁定","calc","仿真：不同步；阈值待厂家资料"],
+ [0,"传感器锁定后慢降时夹人","中 / 低","锁定后按住“降”才降、1 cm/s；座板下伸缩裙板和边缘触感开关","done","仿真：传感器卡住"],
+ [0,"自检误锁：压着床垫、迈步时一只脚在地上、往上拉横杆","中 / 中","只在离开床面后的运动中检查；横杆按带正负号的竖直分力计入","done","仿真：压床垫、迈下踏板、拉横杆"],
+ [0,"两根立柱不同步，座板歪斜","高 / 低","厂家控制器同步 + 刚性滑架；软件高差 > 5 mm 锁死、不再运动","calc","仿真：不同步；阈值待厂家资料"],
  [0,"断电","中 / 低","推杆自锁停住；电池供电，按住“降”慢降","done","仿真：断电"],
- [1,"回床时坐过头，越过 14 cm 座板的后缘滑向床垫","中 / 中","双手扶横杆、小腿后侧先碰座板前缘再坐；座板后缘软挡边（待定）","todo","未验证"],
- [1,"站起后侧身迈下踏板时绊倒","高 / 中","踏板约 4 cm 高、斜边、夜灯；横杆端部立柱可扶；助行器停在开口一侧","todo","待 CAD 核对出口宽度"],
- [1,"空座移动时夹手、夹脚","中 / 低","按住才动、1.5 cm/s、座板受力即停；座板下伸缩裙板；边缘触感开关","done","设计规则"],
- [1,"座板空着停在高处，夜里被碰到","低 / 中","停在台架占地范围内、夜灯照亮；白天可按住“降”收回","todo","需老师确认"],
- [1,"固定件松脱，人拉扶手时台架翻","高 / 低","按 1112 N 设计床架夹（约 2 kN 压紧）；安装时检查","calc","待选型和 FEA"],
- [0,"往前挪到短座板时滑落","高 / 中","手拉横杆借力；压力中心偏出安全区就不抬；防滑座面和开口一侧低挡边","todo","最大的不确定"],
+ [0,"习惯性一上来就前倾，起步吃力","中 / 中","提示“先坐直往下踩”；状态灯和提示音；安装时练习","todo","未验证"],
+ [0,"回床坐下时坐偏","中 / 低","空座板先降到回床高度，座板和床垫连成平面；双手扶横杆","done","仿真：回床"],
+ [0,"站起后侧身迈下踏板时绊倒","高 / 中","踏板约 4 cm 高、斜边、夜灯；开口一侧无立柱；助行器停在开口一侧","todo","待 CAD 核对出口宽度"],
+ [0,"空座移动时夹手、夹脚","中 / 低","按住才动、1.5 cm/s、座板受力即停；座板下伸缩裙板；边缘触感开关","done","设计规则"],
+ [0,"收腿上床时磕到座板前缘、扶手","低 / 中","座板前缘和扶手外露处包软边","done","设计规则"],
+ [0,"座板空着停在高处，夜里被碰到","低 / 中","停在台架占地范围内、夜灯照亮","todo","需老师确认"],
+ [0,"固定件松脱，人拉扶手时台架翻","高 / 低","按 1112 N 设计床架夹（约 2 kN 压紧）；安装时检查","calc","待选型和 FEA"],
+ [0,"往前挪到短座板时滑落","高 / 中","拉侧扶手借力；压力中心偏出安全区就不抬；防滑座面和开口一侧低挡边","todo","最大的不确定"],
  [0,"夹在座板和床垫之间","中 / 低","座板后缘唇边压在床垫上","todo","床垫下陷量待实测"],
- [0,"认知障碍的人自己升起后跌倒","高 / —","列为不适用人群（升降躺椅的死亡案例都是这种情况）","no","范围界定"]
+ [0,"认知障碍的人自己升起后跌倒","高 / —","列为不适用人群（升降躺椅的死亡案例都是这种情况）","no","范围界定"],
+ [0,"单侧严重偏瘫的人只能单手扶","中 / —","模型只算了双手；另行评估，暂不列入目标人群","no","范围界定"]
 ];
+
 $("#riskT tbody").innerHTML=RISK.map((r,i)=>`<tr><td class="n">${i+1}</td><td>${esc(r[1])}</td><td class="sev">${esc(r[2])}</td><td>${esc(r[3])}</td><td><span class="tag ${r[4]}">${esc(r[5])}</span></td></tr>`).join("");
 
 /* ---------------- open questions ---------------- */
@@ -737,10 +804,12 @@ const OPEN=[
  ["CAD 模型和运动动画（11/3 必须）","老师邮件明确要求。要展示：两根升降柱伸出、座板竖直升起、扶手跟着升；台架和床架夹的装配；开口一侧的出入空间。角色 3。讲稿的时间紧版本要保留运动演示页。"],
  ["FEA（11/3 必须）","座板、滑架和床架夹在 1.5 倍体重下的应力和变形；再算一次重重坐回的冲击（2–3 倍体重）。角色 4，需要 CAD 的真实质量和质心。"],
  ["往前挪 25–30 cm 坐上短座板，是否可行","仍是最大的不确定。最快的检查：在 CAD 里用 1.60 m 人体模型摆出坐床沿和坐座板两个姿态，量臀部要移动的距离和手到横杆的距离；距离超过手能借力的范围就要改座板或横杆位置。"],
- ["回床时坐上高处的窄座板，是否稳妥","回床流程带来的问题。座板深 14 cm、离床面约 0.2 m。检查：在 CAD 里放坐偏 5 cm 和坐偏 10 cm 两个姿态，看重心是否还在座板上；不在就加后缘软挡边，或回床时先把座板降到更低再坐。"],
+ ["回床时坐到床面高度是否吃力，回床高度设多少","回床改成先把空座板降下来再坐。坐到 0.42 m 要靠腿控制下蹲；可以用同一个起身模型算“坐下”时的 effort（离心发力，要换力量参数），看哪些人需要把回床高度设到 0.50 m。"],
+ ["起步姿势：老人能否先坐直、往下踩","模型显示起步时一上来就前倾 20° 以上会和离座一样吃力。检查：在动画里演示正确的起步姿势；用状态灯或提示音提示“先坐直往下踩”；后续实测时观察老人的自然起身策略。"],
+ ["横杆末端和转角立柱的强度","横杆末端悬空约 0.41 m，按 1112 N 计算转角处弯矩约 460 N·m；在 FEA 里校核滑架、套筒和底座连接。"],
  ["推杆在 3 cm/s 时能否推动约 0.23 kN","拿 TL8 的厂家力-速度曲线核对；不够就把最快速度上限再降，或换柱型。"],
  ["床架夹适合哪些床","列出常见的居家床型（带床腿的框架床、落地箱体床、可调床），看床架夹能否夹住；夹不住的列为不适用或另配底板。"],
- ["座板整夜停在高处是否可以接受","这是一个取舍：回床更安全，代价是床边有个高出床面的空座板。10/27 问老师。"]
+ ["座板空着停在高处是否可以接受","没人时不自己动，所以人离开后座板留在原高度，回来时由人放下。代价是夜里床边有个高出床面的空座板。10/27 问老师。"]
 ];
 $("#openQ").innerHTML=OPEN.map((r,i)=>`<div><span class="qn">${i+1}</span><span class="q">${esc(r[0])}</span><span class="a">${esc(r[1])}</span></div>`).join("");
 

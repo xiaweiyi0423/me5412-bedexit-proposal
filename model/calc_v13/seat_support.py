@@ -10,6 +10,10 @@ Two questions, both at every seat height h on the lift path (bar fixed at hip + 
   2. min seat load(h, c): for a user whose strongest effort is c, the least seat load they can reach. Seat-off is
      possible at the first height where this reaches 0. This replaces the ad-hoc user model of calc_v12/controller_sim.
 
+  3. lean_start_cap05: the start effort when the user already leans the trunk forward at least 10 / 20 / 30 deg, as in an
+     ordinary sit-to-stand. The low start effort needs a fairly upright trunk; a habitual early lean costs about as much as
+     seat-off at 0.66 m (arms P1) or more (arms P2).
+
 Same simplifications as model.py: 2-D, quasi-static, hip and knee (plus shoulder and elbow when holding the bar).
 """
 import json, os, sys
@@ -25,7 +29,7 @@ MIN_FEET = 0.30               # feet must carry at least this x BW (the controll
 SHANKS = list(range(-10, 31, 5)); TRUNKS = tuple(range(0, 81, 5))
 ARMS = {"P1 cap25": (1.0, 0.25), "P2 arm x0.5": (0.5, 0.30)}
 HS = [round(0.42 + 0.02 * i, 2) for i in range(13)]          # 0.42 .. 0.66
-CAPS = [0.3, 0.4, 0.5, 0.6]
+CAPS = [0.2, 0.3, 0.4, 0.5, 0.6]   # cap - 0.1 BW margin is read off the next lower entry
 EFFORTS = [0.20, 0.22, 0.23, 0.24, 0.25, 0.27, 0.29, 0.31, 0.35, 0.39]
 
 def subject(arm_factor):
@@ -67,11 +71,12 @@ def lp_rows(sub, cfg, g, P, u, S, E, x_s):
     A += [[r[0], r[1], 0, 0] for r in cA]; b += cb
     return A, b
 
-def solve(sub, h, hand_cap, heel_min, seat_cap, eff_cap=None, x_off=SEAT_BEHIND_HIP):
-    """eff_cap None: minimise effort with Fs <= seat_cap*BW. Else: minimise Fs with effort <= eff_cap."""
+def solve(sub, h, hand_cap, heel_min, seat_cap, eff_cap=None, x_off=SEAT_BEHIND_HIP, trunk_min=0):
+    """eff_cap None: minimise effort with Fs <= seat_cap*BW. Else: minimise Fs with effort <= eff_cap.
+    trunk_min: least forward trunk lean allowed (deg), to test the start with a habitual forward lean."""
     BW = sub.M * G; best = None
     for st in SHANKS:
-        cfg = STSConfig(bed_h=h, shank_tilt_deg=st, trunk_grid=TRUNKS, hand_cap=hand_cap)
+        cfg = STSConfig(bed_h=h, shank_tilt_deg=st, trunk_grid=tuple(t for t in TRUNKS if t >= trunk_min), hand_cap=hand_cap)
         try: g = sts_geometry(sub, cfg)
         except ValueError: continue
         if g["heel"] - g["Hp"][0] < heel_min: continue
@@ -95,16 +100,20 @@ def solve(sub, h, hand_cap, heel_min, seat_cap, eff_cap=None, x_off=SEAT_BEHIND_
 def job(a):
     kind, arm, h, heel, x = a
     f, hc = ARMS[arm]; sub = subject(f)
+    if kind == "lean":
+        return a, {str(t): solve(sub, h, hc, heel, 0.5, trunk_min=t)[1] for t in (10, 20, 30)}
     if kind == "start": return a, {str(c): solve(sub, h, hc, heel, c, x_off=SEAT_BEHIND_HIP)[1] for c in CAPS + [0.0]}
     return a, {str(e): (lambda r: None if r is None else r[1])(solve(sub, h, hc, heel, 1.0, eff_cap=e)) for e in EFFORTS}
 
 if __name__ == "__main__":
     jobs = [("start", arm, h, heel, None) for arm in ARMS for h in HS for heel in (0.08, 0.10)]
     jobs += [("minseat", arm, h, 0.08, None) for arm in ARMS for h in HS]
+    jobs += [("lean", arm, h, 0.08, None) for arm in ARMS for h in HS]
     with Pool() as p: R = p.map(job, jobs)
     out = {"note": __doc__.strip().split("\n")[0], "bar": BAR, "seat_behind_hip": SEAT_BEHIND_HIP, "min_feet_BW": MIN_FEET,
-           "start": {}, "min_seat": {}}
+           "start": {}, "min_seat": {}, "lean_start_cap05": {}}
     for (kind, arm, h, heel, _), res in R:
+        if kind == "lean": out["lean_start_cap05"].setdefault(arm, {})[f"{h:.2f}"] = res; continue
         if kind == "start": out["start"].setdefault(arm, {}).setdefault(f"heel{int(heel*100):02d}", {})[f"{h:.2f}"] = res
         else: out["min_seat"].setdefault(arm, {})[f"{h:.2f}"] = res
     # sensitivity of the start effort at flush to where the seat pushes

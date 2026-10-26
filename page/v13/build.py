@@ -10,7 +10,8 @@ for key, arm in (("P1", "P1 cap25"), ("P2", "P2 arm x0.5")):
     st = ss["start"][arm]["heel08"]
     eff["seatoff"][key] = [st[h]["0.0"]["effort"] for h in hs]
     eff["start50"][key] = [st[h]["0.5"]["effort"] for h in hs]
-    eff["startcaps"][key] = {c: st["0.42"][c]["effort"] for c in ("0.3", "0.4", "0.5", "0.6")}
+    eff["startcaps"][key] = {c: st["0.42"][c]["effort"] for c in ("0.2", "0.3", "0.4", "0.5", "0.6")}
+    eff.setdefault("lean", {})[key] = {t: ss["lean_start_cap05"][arm]["0.42"][t]["effort"] for t in ("10", "20", "30")}
     ms = ss["min_seat"][arm]; cg = sorted(ms["0.42"], key=float); eff["cgrid"] = [float(c) for c in cg]
     eff["minseat"][key] = [[(ms[h][c]["Fs_BW"] if ms[h][c] else 1.0) for c in cg] for h in hs]
 SN = ["IDLE", "SEATED", "LIFTING", "STOPPED", "STANDING_HOLD", "LOWERING", "EMPTY_HOLD", "EMPTY_MOVE", "RESET_EMPTY", "LOCKED"]
