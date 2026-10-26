@@ -67,3 +67,41 @@
   - 握把式开关 + 力分布互锁（座板、踏板压力中心，传感器之和与体重校验）；
   - 推力上限和自适应速度是同一条规则，不把人整个推起来；
   - 松手即停、只有确认有人坐着才下降；离座后座板停在原高度、保持水平，接住坐回的人。
+
+## 第五轮补充（2026-10-26）：类似项目、标准、零件、工具
+
+标 ✓ 的已打开原页核对；其他来自调研摘要，引用前请再核对。
+
+### 类似项目
+
+| 项目 | 做了什么 | 我们借鉴什么 | 来源 |
+|---|---|---|---|
+| Kogami 等，东京大学 ✓ | 辅助椅在臀下抬高座面 160 mm、约 2 s，两个气缸；座下 6 个压力传感器算压力中心，前移超过“静坐均值 + 10 × 标准差”（约 10 mm）就开始抬；3 名健康老人；作者承认抬升太慢，速度应能按人调整 | 压力中心前移作为第二个起身确认条件；评价指标；“速度因人自适应”的出处 | http://robot.t.u-tokyo.ac.jp/~yamashita/paper/B/B233Final.pdf |
+| Xin、An、Kurazume，九州大学 2021 | 座面压力中心换算成目标推力，测力反馈控制推臀单元 | “由座面力决定助力”的先例（日文，系数不一致，只借思路） | https://robotics.ait.kyushu-u.ac.jp/kurazume/papers/ROBOMECH21-6.pdf |
+| Chugo & Takase | 起身分 4 阶段，抬升阶段力控制、其余位置控制；输出饱和；蜗轮自锁 | 分阶段状态机、力上限、断电自锁 | https://www.intechopen.com/chapters/8624 |
+| SEALE，底特律仁慈大学 2010 | 5 名研究生；按住电容传感器才动；限位开关；自锁蜗轮电机 | 安全需求页的结构 | https://asee-ncs.org/wp-content/uploads/2021/12/proceedings/2010/papers/144.pdf |
+| UConn 2020 ME Team 26 马桶升降座 | 推杆 + 气弹簧；ANSYS；应变片多工况 | 需求清单和多工况校核的结构 | https://seniordesignday.engr.uconn.edu/seniorprojectpt/senior-design-2020-me-team-26/ |
+
+### 可引用的标准和数字
+
+| 来源 | 数字 | 来源 |
+|---|---|---|
+| ADA 2010 §609 扶手 | 任意方向 1112 N（250 lbf）；管径 32–51 mm | https://www.corada.com/documents/2010ADAStandards/609 |
+| ISO 10535 移位机测试报告 | 全部按住才动；停止距离 < 10 mm；前后 10°、侧向 5° 不倾覆；150% 额定负载 20 min；带载上升约 36 mm/s | https://hmi-basen.dk/en/blobs/testrapporter/71846_9.pdf |
+| IEC 60601-2-52 护理床测试报告 | 侧边 2200 N；力矩最大处、≤ 1 m 高度向下 1100 N 不倾覆；2 × 额定负载 1 min | https://hmi-basen.dk/blobs/testrapporter/117460_28.pdf |
+| ISO 17966 / EN 12182 | 座面 1.5 × 体重；扶手 950 N；脚托 1200 N；静载 = 额定 × 1.5 | https://www.hmi-basen.dk/blobs/testrapporter/113520_58.pdf |
+| Wilson & Nicol | 起身开始约 80% 体重在座面，离座时降到 0 | https://strathprints.strath.ac.uk/8363/1/0217.pdf |
+| 同类产品抬升用时 | 马桶升降座 15–20 s；跌倒起身椅 20–30 s | 见调研摘要 |
+
+### 零件
+
+| 零件 | 参数 | 来源 |
+|---|---|---|
+| TiMOTION TL8 三节升降柱 ✓ | 2000 N；满载 9.6 mm/s、空载 32.6 mm/s；行程 250–750 mm；缩回 ≥ 行程/2 + 150 mm；Ø124 mm；弯矩动态 500 N·m、静态 1000 N·m；只能成对使用 | https://www.timotion.com/en/products/lifting-columns/tl8-series |
+| TiMOTION TA6 升降椅推杆 | 6000 N；缩回 ≥ 行程 + 163 mm；占空比 10%；自锁、安全螺母；UL962 | https://mmintercom.com/upload/publish/277/TIMOTION%20DataSheet_TA6-AG.pdf |
+| 剪叉推力 | F = W / tanθ；剪叉角 < 15° 不实用 | https://www.firgelliauto.com/blogs/engineering-calculators/scissor-lift-force-calculator-actuator-sizing |
+
+### 结论更新
+
+- 座板下折叠后约 0.30 m 高：单节推杆放不下；两根三节升降柱（如 TL8，缩回约 0.275 m）放得下且推力不放大，建议为主方案；剪叉作对比（齐平附近推杆力放大约 3–4 倍）。
+- 稳定性载荷可直接引用 ADA 1112 N、ISO 17966 / EN 12182 的 1.5 × 体重；按 1112 N 设计时必须和床固定（床腿夹）。

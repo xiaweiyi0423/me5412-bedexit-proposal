@@ -87,12 +87,21 @@ def inline(c_body_range=(0.10, 0.20)):
                      "so it would sit beside the seat (e.g. inside the side-rail post) and carry the seat as a "
                      "cantilever.")
 
+def telescopic_pair(stroke=0.25, base=0.15, dia=0.124, F_each=2000.0, M_dyn=500.0):
+    """3-stage lifting columns used in pairs (e.g. TiMOTION TL8: retracted >= stroke/2 + 150 mm, 2000 N push,
+    500 N m dynamic bending, diameter 124 mm, 'can only be used in pairs'). Ratio 1, no force amplification."""
+    ret = stroke / 2 + base
+    return dict(name="Twin telescopic lifting columns (ratio 1)", ratio=1.0, act_stroke=stroke, retracted=ret,
+                fits_under_seat=bool(ret <= H_AVAIL), diameter=dia, fits_seat_depth=bool(dia <= SEAT_DEPTH),
+                rated_push_total=2 * F_each, rated_dyn_moment_each=M_dyn,
+                source="TiMOTION TL8 product page (checked 2026-10-26)")
+
 def cantilever_moment(offset=0.25, load=None):
     load = load or L60["hold"]
     return load * offset
 
 A = scissor_horizontal(); B = scissor_inclined()
-C = inline()
+C = inline(); D = telescopic_pair()
 out = dict(
     envelope=dict(collapsed_height_available=H_AVAIL, stroke=STROKE, seat_depth=SEAT_DEPTH, seat_width=SEAT_WIDTH),
     loads_60kg=L60, loads_100kg=L100,
@@ -107,8 +116,12 @@ for o in (A, B):
 C2 = dict(C); C2.update(F_lift_60kg=L60["lift_max"], F_hold_60kg=L60["hold"], F_hold_100kg=L100["hold"],
                         cantilever_moment_60kg_Nm=cantilever_moment(), cantilever_moment_100kg_Nm=cantilever_moment(load=L100["hold"]))
 out["options"][C["name"]] = C2
+D2 = dict(D); D2.update(F_lift_60kg_per_column=L60["lift_max"] / 2, F_hold_60kg_per_column=L60["hold"] / 2,
+                        F_hold_100kg_per_column=L100["hold"] / 2)
+out["options"][D["name"]] = D2
 out["design_notes"] = [
- "Space under the seat (collapsed) is about 0.30 m; an inline actuator needs about stroke + 0.10-0.20 m = 0.34-0.44 m, so it does not fit under the seat.",
+ "Space under the seat (collapsed) is about 0.30 m; a single-stage actuator needs about stroke + 0.10-0.20 m = 0.34-0.44 m, so it does not fit.",
+ "Three-stage lifting columns used in pairs (e.g. TiMOTION TL8: retracted >= stroke/2 + 150 mm, 124 mm diameter) do fit: about 0.275 m retracted for a 250 mm stroke, with no force amplification.",
  "A scissor fits (collapsed about 0.13 m) but multiplies the actuator force by about 2.7-3.9 near the flush position.",
  "Let the seat rest on a mechanical end stop when flush, so the actuator only ever pushes up to the force cap at the start of a lift.",
  "With the admittance rule the actuator never pushes more than F_cap x ratio; holding loads at height are 0.6-1.3 x the seat load."]
@@ -121,19 +134,23 @@ for o, col in ((A, "#7b4bb0"), (B, "#b0532c")):
     h = np.array(o["h"]); r = np.array(o["ratio"])
     ax[0].plot(h, r * L60["lift_max"] / 1000, color=col, lw=2, label=o["name"] + " — lifting")
     ax[0].plot(h, r * L60["hold"] / 1000, color=col, lw=1.5, ls="--", label=o["name"] + " — holding")
-ax[0].axhline(L60["lift_max"] / 1000, color="#1d8a63", lw=2, label="Inline / column — lifting")
-ax[0].axhline(L60["hold"] / 1000, color="#1d8a63", lw=1.5, ls="--", label="Inline / column — holding")
+ax[0].axhline(L60["lift_max"] / 1000, color="#1d8a63", lw=2, label="Columns (total of both) — lifting")
+ax[0].axhline(L60["hold"] / 1000, color="#1d8a63", lw=1.5, ls="--", label="Columns (total of both) — holding")
 ax[0].set_xlabel("Seat height (m)"); ax[0].set_ylabel("Actuator force (kN), 60 kg user")
-ax[0].set_title("Actuator force over the lift")
-ax[0].text(0.43, 0.08, "Dashed = holding 1.5 x BW. At flush the seat should rest on an end stop,\nso the actuator never holds a seated user at the bottom.", transform=ax[0].transAxes, fontsize=7.5, va="bottom", color="#444"); ax[0].grid(alpha=.3); ax[0].legend(fontsize=7.5)
+ax[0].set_title("Actuator force over the lift"); ax[0].grid(alpha=.3); ax[0].legend(fontsize=7.5)
 names = [o["name"] for o in (A, B, C) if o]
 ax[1].barh(["Available under seat"], [H_AVAIL], color="#999")
 for i, o in enumerate((A, B)):
     if o: ax[1].barh([o["name"] + "\n(collapsed)"], [A["collapsed_height"]], color=["#7b4bb0", "#b0532c"][i])
-ax[1].barh(["Inline actuator\n(retracted, min)"], [C["retracted_needed"][0]], color="#1d8a63")
+ax[1].barh(["Single-stage actuator\n(retracted, min)"], [C["retracted_needed"][0]], color="#9aa3ad")
+ax[1].barh(["Twin 3-stage columns\n(retracted, e.g. TL8)"], [D["retracted"]], color="#1d8a63")
 ax[1].axvline(H_AVAIL, color="k", ls=":")
 ax[1].set_xlabel("Height (m)"); ax[1].set_title("Does it fit under the seat?")
-plt.tight_layout(); plt.savefig("lift_sizing.png", dpi=160)
+plt.tight_layout(rect=(0, 0.09, 1, 1))
+fig.text(0.01, 0.01, "Dashed = holding 1.5 x BW (60 kg user + 10 kg moving parts). At flush the seat should rest on an end stop, "
+         "so a scissor's actuator never holds a seated user at the bottom.\nColumn data: TiMOTION TL8 (retracted >= stroke/2 + 150 mm).",
+         fontsize=8, color="#444")
+plt.savefig("lift_sizing.png", dpi=160)
 
 def pr(o):
     print(o["name"]); [print("  ", k, (round(v, 3) if isinstance(v, float) else v)) for k, v in o.items()]

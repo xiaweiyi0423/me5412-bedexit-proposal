@@ -51,7 +51,7 @@ model/
   export_explorer_v10.py  方案甲扶手位置热力图数据 → explorer_v10.json
   tipping_v11.py          台架不固定时的倾翻：设计载荷 177 N → tipping_v11.json
   calc_v12/               第 12 版设计的计算起点（英文图，可直接放进 slides）
-    lift_sizing.py        座板下空间、三种机构（剪叉水平推 / 剪叉斜推 / 直线推杆或立柱）的推杆力和行程
+    lift_sizing.py        座板下空间、几种机构（剪叉水平推 / 剪叉斜推 / 单节推杆 / 双三节升降柱）的推杆力和行程
     stability.py          人完全在台架上时各姿态的合重心；人部分离开时拉扶手的承载力和固定件压紧力
     controller_sim.py     状态机 + 速度规则 v = k(F_cap − F_seat)，8 个场景仿真；用 graphviz 自动画状态图
   compare_v10.py, seat_height_v10.py, tipping_v10.py   上一版（扶手位置自由优化）
