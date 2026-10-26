@@ -194,8 +194,8 @@ footer{font-size:12.5px;color:var(--muted)}
 <header>
   <div class="eyebrow">ME5412 Robotics for Healthcare · 小组项目</div>
   <h1>床边起身台：分工建议</h1>
-  <p class="lead">方案已定为起身台（方案乙），slides 用英文。这页告诉你：你负责的部分要说明什么、可以参考哪些资料、可以找谁。具体做法都是建议。</p>
-  <p class="note">这是一份建议，角色划分和做法都可以在组里讨论后调整。<b>方案网页</b>里的研究问题分工、挪动测试和伦理审批待办已经不做，以本页为准；网页只当资料用。</p>
+  <p class="lead">方案已定为起身台（方案乙），slides 用英文。这页告诉你：你负责的部分要说明什么、可以参考哪些资料、可以找谁。</p>
+  <p class="note"><b>方案网页</b>里的研究问题分工、挪动测试和伦理审批待办已经不做，以本页为准；网页只当资料用。</p>
 </header>
 
 <section aria-labelledby="h-first">
@@ -258,7 +258,7 @@ footer{font-size:12.5px;color:var(--muted)}
 
 <section aria-labelledby="h-core">
   <h2 id="h-core">每一部分要说明什么</h2>
-  <p class="lead">五部分合起来，就能讲完“问题 → 方案 → 为什么升这么高 → 长什么样 → 安不安全 → 怎么控制”。重点是每部分把自己的问题讲清楚；用什么方法、做成什么形式，由各自决定。右栏的现成素材可以直接当起点，共享 slides 里也会先用它们占位。</p>
+  <p class="lead">五部分合起来，就能讲完“问题 → 方案 → 为什么升这么高 → 长什么样 → 安不安全 → 怎么控制”。重点是每部分把自己的问题讲清楚。右栏的现成素材可以直接当起点，共享 slides 里也会先用它们占位。</p>
   <div class="scroll"><table class="stack"><thead><tr><th>角色</th><th>要说明什么</th><th>可以参考的素材</th></tr></thead><tbody id="core"></tbody></table></div>
   <p class="lead">展示时每人讲自己负责的部分：</p>
   <div class="scroll"><table class="stack"><thead><tr><th>角色</th><th>讲哪一段（以 15 分钟为例）</th></tr></thead><tbody id="hours"></tbody></table></div>
@@ -318,7 +318,7 @@ footer{font-size:12.5px;color:var(--muted)}
   </ul></details>
 </section>
 
-<footer>截至 2026-10-26（第 12 版设计：竖直升降、和床固定）。以上都是建议，以组内讨论为准。</footer>
+<footer>截至 2026-10-26（第 12 版设计：竖直升降、和床固定）。</footer>
 </div>
 
 <script>
@@ -345,7 +345,7 @@ const FIGHTML=k=>({"1":`<div class="figs one"><figure class="fg"><div class="sto
  <p>机构要放进紫色虚线框；前面绿色虚线框是脚的位置，最好不放东西。床垫下的钩板把台架和床固定。</p></figcaption></figure>
  <figure class="fg"><svg viewBox="0 0 520 178" role="img" aria-label="三种可能的升降机构示意"><rect class="box" x="14" y="4" width="152" height="168" rx="8"/><text class="t b c" x="90.0" y="160">两根同步立柱</text><line class="fl" x1="34" y1="132" x2="146" y2="132"/><rect class="dev" x="47" y="80" width="18" height="52" rx="2"/><rect class="dev" x="50" y="56" width="12" height="28"/><rect class="dev" x="115" y="80" width="18" height="52" rx="2"/><rect class="dev" x="118" y="56" width="12" height="28"/><rect class="seat" x="42" y="48" width="96" height="9" rx="2"/><line class="lk" x1="56" y1="70" x2="124" y2="70"/><line class="actl" x1="90" y1="128" x2="90" y2="72"/><rect class="box" x="184" y="4" width="152" height="168" rx="8"/><text class="t b c" x="260.0" y="160">剪叉</text><line class="fl" x1="204" y1="132" x2="316" y2="132"/><rect class="dev" x="214" y="124" width="92" height="8"/><rect class="seat" x="214" y="52" width="92" height="9" rx="2"/><line class="lk" x1="220" y1="124" x2="300" y2="62"/><line class="lk" x1="300" y1="124" x2="220" y2="62"/><line class="actl" x1="224" y1="118" x2="272" y2="96"/><circle class="pin" cx="260" cy="92" r="4"/><rect class="box" x="354" y="4" width="152" height="168" rx="8"/><text class="t b c" x="430.0" y="160">单立柱直接顶升</text><line class="fl" x1="374" y1="132" x2="486" y2="132"/><rect class="dev" x="408" y="76" width="44" height="56" rx="3"/><rect class="dev" x="416" y="56" width="28" height="24"/><line class="actl" x1="430" y1="128" x2="430" y2="62"/><rect class="seat" x="390" y="47" width="80" height="9" rx="2"/></svg><figcaption>
  <p><b>三种可能的竖直升降机构</b>（示意）。紫色粗线是执行器（电动推杆），黑线是连杆或横梁。</p>
- <p>座板下空间很浅，能“折叠”的剪叉比较容易放下 24 cm 行程；用哪一种、尺寸多少，由你判断。</p></figcaption></figure></div>`,"4":`<div class="figs"><figure class="fg"><svg viewBox="0 0 460 150" role="img" aria-label="电动推杆（执行器）结构示意"><rect class="act" x="80" y="84" width="74" height="34" rx="6"/><text class="t c" x="117" y="142">电机 + 减速箱</text><rect class="tube" x="30" y="56" width="230" height="28" rx="6"/><line class="screw" x1="44" y1="70" x2="250" y2="70"/><rect class="rod" x="260" y="63" width="120" height="14" rx="3"/><circle class="pin" cx="22" cy="70" r="9"/><circle class="pin" cx="392" cy="70" r="9"/><text class="t c" x="150" y="46">外管（里面是丝杠，虚线）</text><text class="t c" x="320" y="54">推杆：伸出 / 缩回</text><text class="tm c" x="22" y="100">铰接孔</text><text class="tm c" x="392" y="100">铰接孔</text><line class="dim" x1="260" y1="110" x2="380" y2="110"/><line class="dim" x1="260" y1="104" x2="260" y2="116"/><line class="dim" x1="380" y1="104" x2="380" y2="116"/><text class="t c" x="320" y="130">行程（伸出的长度）</text><line class="ar" stroke-width="2.5" x1="404.0" y1="70.0" x2="448.0" y2="70.0"/><polygon class="arf" points="448.0,70.0 439.7,73.5 439.7,66.5"/><text class="t b" x="410" y="56">推力 F</text></svg><figcaption>
+ <p>座板下空间很浅，能“折叠”的剪叉比较容易放下 24 cm 行程。</p></figcaption></figure></div>`,"4":`<div class="figs"><figure class="fg"><svg viewBox="0 0 460 150" role="img" aria-label="电动推杆（执行器）结构示意"><rect class="act" x="80" y="84" width="74" height="34" rx="6"/><text class="t c" x="117" y="142">电机 + 减速箱</text><rect class="tube" x="30" y="56" width="230" height="28" rx="6"/><line class="screw" x1="44" y1="70" x2="250" y2="70"/><rect class="rod" x="260" y="63" width="120" height="14" rx="3"/><circle class="pin" cx="22" cy="70" r="9"/><circle class="pin" cx="392" cy="70" r="9"/><text class="t c" x="150" y="46">外管（里面是丝杠，虚线）</text><text class="t c" x="320" y="54">推杆：伸出 / 缩回</text><text class="tm c" x="22" y="100">铰接孔</text><text class="tm c" x="392" y="100">铰接孔</text><line class="dim" x1="260" y1="110" x2="380" y2="110"/><line class="dim" x1="260" y1="104" x2="260" y2="116"/><line class="dim" x1="380" y1="104" x2="380" y2="116"/><text class="t c" x="320" y="130">行程（伸出的长度）</text><line class="ar" stroke-width="2.5" x1="404.0" y1="70.0" x2="448.0" y2="70.0"/><polygon class="arf" points="448.0,70.0 439.7,73.5 439.7,66.5"/><text class="t b" x="410" y="56">推力 F</text></svg><figcaption>
  <p><b>执行器 = 电动推杆</b>（linear actuator）。电机转动，经减速箱和丝杠变成推杆的直线伸缩，和电动升降桌、电动护理床里的是同一类东西。</p>
  <p>选型主要看<b>推力、保持力、行程、速度</b>，以及断电时能不能自锁（不会自己缩回）。</p>
  <p>推杆推力 ≈ 座板处的力（约 400–500 N）× 机构传动比（角色 3 给）。</p></figcaption></figure>
@@ -448,7 +448,7 @@ function render(k){const r=ROLES[k];
    </div>
    ${FIGHTML(k)}
    <div class="block"><h4>先知道这些</h4><ul class="bg">${r.bg.map(x=>`<li>${x}</li>`).join("")}</ul></div>
-   <details class="more"${narrow()?"":" open"}><summary>建议的做法（仅供参考，你有更好的办法就用你的）</summary>
+   <details class="more"${narrow()?"":" open"}><summary>建议的做法</summary>
     <ul class="bg">${r.how.map(x=>`<li>${x}</li>`).join("")}</ul></details>
    <div class="block"><h4>资料在哪</h4><ul class="bg">${r.src.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <div class="block"><h4>可以和谁对一下</h4><ul class="talk">${r.talk.map(t=>`<li>${t[0]==="全员"?`<span class="chip" style="--k:var(--amber)">全员</span>`:chip(t[0])}<span>${t[1]}</span></li>`).join("")}</ul></div>
