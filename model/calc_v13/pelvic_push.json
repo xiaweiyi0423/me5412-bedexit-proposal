@@ -1,0 +1,1863 @@
+{
+ "note": "Does a push on the pelvis from behind, or a forward-tilted seat, make standing up easier?",
+ "results": [
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.291,
+    "shank": 20,
+    "trunk": 50,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.1,
+    "hand_z_BW": 0.224,
+    "cop_to_toe_cm": 9.8,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.05,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.274,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.073,
+    "hand_z_BW": 0.235,
+    "cop_to_toe_cm": 8.0,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.05,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.276,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.06,
+    "hand_z_BW": 0.24,
+    "cop_to_toe_cm": 8.9,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.252,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.067,
+    "hand_z_BW": 0.238,
+    "cop_to_toe_cm": 4.8,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.1,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.261,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.039,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 6.7,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.15,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.242,
+    "shank": 15,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.066,
+    "hand_z_BW": 0.238,
+    "cop_to_toe_cm": 4.4,
+    "hip": [
+     -0.217,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.58,
+   "pad_cap": 0.15,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.259,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.004,
+    "hand_z_BW": 0.235,
+    "cop_to_toe_cm": 5.8,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.258,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.06,
+    "hand_z_BW": 0.24,
+    "cop_to_toe_cm": 11.1,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.05,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.243,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.044,
+    "hand_z_BW": 0.234,
+    "cop_to_toe_cm": 8.6,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.05,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.25,
+    "shank": 20,
+    "trunk": 55,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.029,
+    "hand_z_BW": 0.236,
+    "cop_to_toe_cm": 9.7,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.225,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.017,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 6.7,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.1,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.242,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": -0.016,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 9.2,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.15,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.207,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.004,
+    "hand_z_BW": 0.242,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.62,
+   "pad_cap": 0.15,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.235,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.129,
+    "hand_x_BW": -0.031,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 8.2,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.233,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.197,
+    "hand_z_BW": 0.038,
+    "cop_to_toe_cm": 5.8,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.05,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.216,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.039,
+    "hand_x_BW": 0.188,
+    "hand_z_BW": 0.037,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.05,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.217,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.173,
+    "hand_z_BW": 0.041,
+    "cop_to_toe_cm": 4.2,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.202,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.182,
+    "hand_z_BW": 0.035,
+    "cop_to_toe_cm": 16.8,
+    "hip": [
+     -0.321,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.1,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.211,
+    "shank": 15,
+    "trunk": 5,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.122,
+    "hand_z_BW": 0.054,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.15,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.181,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.17,
+    "hand_z_BW": 0.034,
+    "cop_to_toe_cm": 14.5,
+    "hip": [
+     -0.321,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "pad_cap": 0.15,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.195,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.133,
+    "hand_z_BW": 0.047,
+    "cop_to_toe_cm": 16.5,
+    "hip": [
+     -0.321,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.233,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.197,
+    "hand_z_BW": 0.038,
+    "cop_to_toe_cm": 5.8,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.201,
+    "shank": 10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.181,
+    "hand_z_BW": 0.038,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.184,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.77,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.215,
+    "shank": 10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.183,
+    "hand_z_BW": 0.032,
+    "cop_to_toe_cm": 9.0,
+    "hip": [
+     -0.158,
+     0.77
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.77,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.171,
+    "shank": 10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.156,
+    "hand_z_BW": 0.031,
+    "cop_to_toe_cm": 4.4,
+    "hip": [
+     -0.158,
+     0.77
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.191,
+    "shank": 5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.162,
+    "hand_z_BW": 0.029,
+    "cop_to_toe_cm": 12.5,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.145,
+    "shank": 5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.134,
+    "hand_z_BW": 0.029,
+    "cop_to_toe_cm": 7.9,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.81,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.162,
+    "shank": 0,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.125,
+    "hand_z_BW": 0.021,
+    "cop_to_toe_cm": 16.6,
+    "hip": [
+     -0.168,
+     0.81
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.81,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.116,
+    "shank": 0,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.093,
+    "hand_z_BW": 0.021,
+    "cop_to_toe_cm": 12.3,
+    "hip": [
+     -0.168,
+     0.81
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.83,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.103,
+    "shank": -5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.085,
+    "hand_z_BW": 0.027,
+    "cop_to_toe_cm": 20.2,
+    "hip": [
+     -0.147,
+     0.83
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.83,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.058,
+    "shank": -5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.048,
+    "hand_z_BW": 0.025,
+    "cop_to_toe_cm": 16.1,
+    "hip": [
+     -0.147,
+     0.83
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.242,
+    "shank": 15,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.017,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 16.1,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.21,
+    "shank": 15,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": -0.018,
+    "hand_z_BW": 0.232,
+    "cop_to_toe_cm": 11.1,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.232,
+    "shank": 5,
+    "trunk": 65,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.003,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 21.1,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P1 cap25",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.214,
+    "shank": 5,
+    "trunk": 70,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": -0.031,
+    "hand_z_BW": 0.245,
+    "cop_to_toe_cm": 14.9,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 0,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.155,
+    "shank": 30,
+    "trunk": 5,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.053,
+    "hand_z_BW": 0.061,
+    "cop_to_toe_cm": 5.4,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 0,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.229,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.369,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.038,
+    "hand_z_BW": 0.093,
+    "cop_to_toe_cm": 8.8,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 5,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.155,
+    "shank": 20,
+    "trunk": 5,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.061,
+    "hand_z_BW": 0.058,
+    "cop_to_toe_cm": 5.3,
+    "hip": [
+     -0.25,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 5,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.222,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.372,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.037,
+    "hand_z_BW": 0.091,
+    "cop_to_toe_cm": 6.0,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 10,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.152,
+    "shank": 20,
+    "trunk": 10,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.025,
+    "hand_z_BW": 0.061,
+    "cop_to_toe_cm": 4.3,
+    "hip": [
+     -0.25,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 10,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.214,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.383,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.026,
+    "hand_z_BW": 0.083,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 15,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.148,
+    "shank": -10,
+    "trunk": 10,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.04,
+    "hand_z_BW": 0.064,
+    "cop_to_toe_cm": 14.8,
+    "hip": [
+     -0.456,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P1 cap25",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 15,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.207,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.423,
+    "pad_BW": 0.0,
+    "hand_x_BW": -0.024,
+    "hand_z_BW": 0.054,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.334,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.028,
+    "hand_z_BW": 0.206,
+    "cop_to_toe_cm": 15.0,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.05,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.31,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.024,
+    "hand_z_BW": 0.211,
+    "cop_to_toe_cm": 11.8,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.05,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.32,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.021,
+    "hand_x_BW": 0.025,
+    "hand_z_BW": 0.216,
+    "cop_to_toe_cm": 13.7,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.304,
+    "shank": 20,
+    "trunk": 60,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.004,
+    "hand_z_BW": 0.198,
+    "cop_to_toe_cm": 9.9,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.1,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.311,
+    "shank": 20,
+    "trunk": 65,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.078,
+    "hand_x_BW": -0.022,
+    "hand_z_BW": 0.223,
+    "cop_to_toe_cm": 12.9,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.15,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.287,
+    "shank": 20,
+    "trunk": 65,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": -0.021,
+    "hand_z_BW": 0.208,
+    "cop_to_toe_cm": 8.0,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.58,
+   "pad_cap": 0.15,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.311,
+    "shank": 20,
+    "trunk": 65,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.078,
+    "hand_x_BW": -0.022,
+    "hand_z_BW": 0.223,
+    "cop_to_toe_cm": 12.9,
+    "hip": [
+     -0.177,
+     0.67
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.297,
+    "shank": 20,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.212,
+    "hand_z_BW": 0.014,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.05,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.289,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.213,
+    "hand_z_BW": 0.014,
+    "cop_to_toe_cm": 4.3,
+    "hip": [
+     -0.185,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.05,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.292,
+    "shank": 20,
+    "trunk": 5,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.046,
+    "hand_x_BW": 0.163,
+    "hand_z_BW": 0.027,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.142,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.279,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.212,
+    "hand_z_BW": 0.014,
+    "cop_to_toe_cm": 17.6,
+    "hip": [
+     -0.362,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.1,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.284,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.081,
+    "hand_x_BW": 0.186,
+    "hand_z_BW": 0.021,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.185,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.15,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.259,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.202,
+    "hand_z_BW": 0.014,
+    "cop_to_toe_cm": 15.3,
+    "hip": [
+     -0.362,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.62,
+   "pad_cap": 0.15,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.272,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.163,
+    "hand_z_BW": 0.026,
+    "cop_to_toe_cm": 17.3,
+    "hip": [
+     -0.362,
+     0.71
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.251,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.181,
+    "hand_z_BW": 0.019,
+    "cop_to_toe_cm": 7.1,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.05,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.228,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.17,
+    "hand_z_BW": 0.02,
+    "cop_to_toe_cm": 4.7,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.05,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.234,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.05,
+    "hand_x_BW": 0.157,
+    "hand_z_BW": 0.024,
+    "cop_to_toe_cm": 5.4,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.218,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.167,
+    "hand_z_BW": 0.019,
+    "cop_to_toe_cm": 18.0,
+    "hip": [
+     -0.321,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.1,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.219,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.092,
+    "hand_x_BW": 0.138,
+    "hand_z_BW": 0.028,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.15,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.195,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.157,
+    "hand_z_BW": 0.02,
+    "cop_to_toe_cm": 15.6,
+    "hip": [
+     -0.321,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "A",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "pad_cap": 0.15,
+   "dz": 0.1,
+   "res": {
+    "effort": 0.211,
+    "shank": -10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.15,
+    "hand_x_BW": 0.119,
+    "hand_z_BW": 0.032,
+    "cop_to_toe_cm": 17.7,
+    "hip": [
+     -0.321,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.251,
+    "shank": 15,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.181,
+    "hand_z_BW": 0.019,
+    "cop_to_toe_cm": 7.1,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.216,
+    "shank": 10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.166,
+    "hand_z_BW": 0.023,
+    "cop_to_toe_cm": 5.2,
+    "hip": [
+     -0.184,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.77,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.232,
+    "shank": 10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.167,
+    "hand_z_BW": 0.016,
+    "cop_to_toe_cm": 10.2,
+    "hip": [
+     -0.158,
+     0.77
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.77,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.184,
+    "shank": 10,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.143,
+    "hand_z_BW": 0.018,
+    "cop_to_toe_cm": 5.5,
+    "hip": [
+     -0.158,
+     0.77
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.205,
+    "shank": 5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.147,
+    "hand_z_BW": 0.015,
+    "cop_to_toe_cm": 13.5,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.156,
+    "shank": 5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.123,
+    "hand_z_BW": 0.018,
+    "cop_to_toe_cm": 8.7,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.81,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.174,
+    "shank": 0,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.112,
+    "hand_z_BW": 0.01,
+    "cop_to_toe_cm": 17.6,
+    "hip": [
+     -0.168,
+     0.81
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.81,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.125,
+    "shank": 0,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.084,
+    "hand_z_BW": 0.012,
+    "cop_to_toe_cm": 13.0,
+    "hip": [
+     -0.168,
+     0.81
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.83,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.111,
+    "shank": -5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.076,
+    "hand_z_BW": 0.019,
+    "cop_to_toe_cm": 20.8,
+    "hip": [
+     -0.147,
+     0.83
+    ]
+   }
+  },
+  {
+   "kind": "B",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.83,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "res": {
+    "effort": 0.063,
+    "shank": -5,
+    "trunk": 0,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.043,
+    "hand_z_BW": 0.02,
+    "cop_to_toe_cm": 16.4,
+    "hip": [
+     -0.147,
+     0.83
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.296,
+    "shank": 15,
+    "trunk": 65,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": -0.022,
+    "hand_z_BW": 0.216,
+    "cop_to_toe_cm": 18.5,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.75,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.283,
+    "shank": 15,
+    "trunk": 30,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.026,
+    "hand_z_BW": 0.078,
+    "cop_to_toe_cm": 9.0,
+    "hip": [
+     -0.141,
+     0.75
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.0,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.306,
+    "shank": 5,
+    "trunk": 30,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.029,
+    "hand_z_BW": 0.073,
+    "cop_to_toe_cm": 19.3,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "C",
+   "arm": "P2 arm x0.5",
+   "h": 0.66,
+   "hip_z": 0.79,
+   "pad_cap": 0.1,
+   "dz": -0.05,
+   "trunk_min": 30,
+   "res": {
+    "effort": 0.291,
+    "shank": 5,
+    "trunk": 30,
+    "Fs_BW": 0.0,
+    "pad_BW": 0.1,
+    "hand_x_BW": 0.029,
+    "hand_z_BW": 0.071,
+    "cop_to_toe_cm": 11.3,
+    "hip": [
+     -0.168,
+     0.79
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 0,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.166,
+    "shank": 30,
+    "trunk": 5,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.04,
+    "hand_z_BW": 0.048,
+    "cop_to_toe_cm": 7.0,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 0,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.267,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.344,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.029,
+    "hand_z_BW": 0.067,
+    "cop_to_toe_cm": 10.2,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 5,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.163,
+    "shank": 25,
+    "trunk": 5,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.046,
+    "hand_z_BW": 0.046,
+    "cop_to_toe_cm": 4.7,
+    "hip": [
+     -0.215,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 5,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.259,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.348,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.028,
+    "hand_z_BW": 0.066,
+    "cop_to_toe_cm": 7.8,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 10,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.164,
+    "shank": 15,
+    "trunk": 5,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.055,
+    "hand_z_BW": 0.043,
+    "cop_to_toe_cm": 4.6,
+    "hip": [
+     -0.284,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 10,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.251,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.351,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.028,
+    "hand_z_BW": 0.064,
+    "cop_to_toe_cm": 5.4,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 15,
+   "trunk_min": 0,
+   "res": {
+    "effort": 0.162,
+    "shank": -10,
+    "trunk": 5,
+    "Fs_BW": 0.5,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.063,
+    "hand_z_BW": 0.041,
+    "cop_to_toe_cm": 13.9,
+    "hip": [
+     -0.456,
+     0.51
+    ]
+   }
+  },
+  {
+   "kind": "D",
+   "arm": "P2 arm x0.5",
+   "h": 0.42,
+   "seat_cap": 0.5,
+   "tilt": 15,
+   "trunk_min": 20,
+   "res": {
+    "effort": 0.242,
+    "shank": 30,
+    "trunk": 20,
+    "Fs_BW": 0.372,
+    "pad_BW": 0.0,
+    "hand_x_BW": 0.005,
+    "hand_z_BW": 0.051,
+    "cop_to_toe_cm": 4.0,
+    "hip": [
+     -0.18,
+     0.51
+    ]
+   }
+  }
+ ]
+}
