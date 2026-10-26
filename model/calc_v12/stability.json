@@ -1,0 +1,128 @@
+{
+ "assumptions": {
+  "user_kg": 60.0,
+  "station_kg": 35.0,
+  "station_com_x": 0.25,
+  "footprint": [
+   0.0,
+   0.8,
+   -0.33,
+   0.33
+  ],
+  "segment_model": "Winter-type fractions; poses from proposal animation"
+ },
+ "fully_on_station_sagittal": [
+  {
+   "posture": "Seated on seat (flush)",
+   "user_com_x": 0.233,
+   "combined_x": 0.239,
+   "margin_rear": 0.239,
+   "margin_front": 0.561
+  },
+  {
+   "posture": "Ready, holding bar",
+   "user_com_x": 0.252,
+   "combined_x": 0.251,
+   "margin_rear": 0.251,
+   "margin_front": 0.549
+  },
+  {
+   "posture": "Seat-off at 0.66 m",
+   "user_com_x": 0.288,
+   "combined_x": 0.274,
+   "margin_rear": 0.274,
+   "margin_front": 0.526
+  },
+  {
+   "posture": "Standing",
+   "user_com_x": 0.301,
+   "combined_x": 0.282,
+   "margin_rear": 0.282,
+   "margin_front": 0.518
+  },
+  {
+   "posture": "Sits back, upright (0.66)",
+   "user_com_x": 0.133,
+   "combined_x": 0.176,
+   "margin_rear": 0.176,
+   "margin_front": 0.624
+  },
+  {
+   "posture": "Sits back, leaning back 20\u00b0",
+   "user_com_x": 0.067,
+   "combined_x": 0.134,
+   "margin_rear": 0.134,
+   "margin_front": 0.666
+  }
+ ],
+ "fully_on_station_lateral": [
+  {
+   "case": "centred",
+   "user_com_y": 0.0,
+   "combined_y": 0.0,
+   "margin": 0.33
+  },
+  {
+   "case": "hip at seat edge",
+   "user_com_y": 0.16999999999999998,
+   "combined_y": 0.107,
+   "margin": 0.223
+  },
+  {
+   "case": "leaning out of the seat",
+   "user_com_y": 0.3,
+   "combined_y": 0.189,
+   "margin": 0.141
+  },
+  {
+   "case": "extreme slump",
+   "user_com_y": 0.45,
+   "combined_y": 0.284,
+   "margin": 0.046
+  }
+ ],
+ "user_offset_to_tip_sideways_m": 0.523,
+ "partly_on_station_pull": [
+  {
+   "case": "Forward pull on front bar (raised, 1.06 m)",
+   "force_N": 177,
+   "height_m": 1.06,
+   "unanchored_capacity_N": 178,
+   "sf_unanchored": 1.01,
+   "anchor_holddown_for_SF1p5_N": 116
+  },
+  {
+   "case": "Sideways pull on side rail, low (0.64 m)",
+   "force_N": 177,
+   "height_m": 0.64,
+   "unanchored_capacity_N": 177,
+   "sf_unanchored": 1.0,
+   "anchor_holddown_for_SF1p5_N": 86
+  },
+  {
+   "case": "Sideways pull on side rail, high (0.88 m)",
+   "force_N": 177,
+   "height_m": 0.88,
+   "unanchored_capacity_N": 129,
+   "sf_unanchored": 0.73,
+   "anchor_holddown_for_SF1p5_N": 182
+  },
+  {
+   "case": "Pull towards the bed on side rail (0.64 m)",
+   "force_N": 177,
+   "height_m": 0.64,
+   "unanchored_capacity_N": 134,
+   "sf_unanchored": 0.76,
+   "anchor_holddown_for_SF1p5_N": 105
+  },
+  {
+   "case": "Grab-bar level load, sideways high (0.88 m)",
+   "force_N": 1112,
+   "height_m": 0.88,
+   "unanchored_capacity_N": 129,
+   "sf_unanchored": 0.12,
+   "anchor_holddown_for_SF1p5_N": 2052
+  }
+ ],
+ "note": "Pulling towards the bed: the bed itself is right behind the station, so with the station anchored this case is not critical."
+}

@@ -1,0 +1,75 @@
+{
+ "envelope": {
+  "collapsed_height_available": 0.302,
+  "stroke": 0.24,
+  "seat_depth": 0.14,
+  "seat_width": 0.44
+ },
+ "loads_60kg": {
+  "BW": 588.6,
+  "lift_default": 392.40000000000003,
+  "lift_max": 451.26000000000005,
+  "hold": 981.0000000000001
+ },
+ "loads_100kg": {
+  "BW": 981.0,
+  "lift_default": 588.6,
+  "lift_max": 686.7,
+  "hold": 1569.6
+ },
+ "options": {
+  "Scissor, horizontal actuator": {
+   "name": "Scissor, horizontal actuator",
+   "L": 0.4,
+   "theta0_deg": 14.477512185929925,
+   "theta1_deg": 58.211669382948365,
+   "collapsed_height": 0.13,
+   "act_stroke": 0.1765852595636868,
+   "ratio_start": 3.8729833462074175,
+   "ratio_end": 0.6197443384031027,
+   "speed_ratio_start": 3.8729833462074175,
+   "speed_ratio_end": 0.6197443384031027,
+   "F_lift_60kg_peak": 1747.7224648095594,
+   "F_hold_60kg_flush": 3799.396662629477,
+   "F_hold_100kg_flush": 6079.034660207162
+  },
+  "Scissor, inclined actuator": {
+   "name": "Scissor, inclined actuator",
+   "L": 0.4,
+   "px": 0.25739130434782603,
+   "f": 1.0,
+   "theta0_deg": 14.477512185929925,
+   "theta1_deg": 58.211669382948365,
+   "ratio_peak": 2.745047923221366,
+   "ratio_start": 2.745047923221366,
+   "ratio_end": 1.2509104356085772,
+   "act_stroke": 0.15030453480714306,
+   "act_retracted": 0.2761345388644369,
+   "F_lift_60kg_peak": 1238.7303258328739,
+   "F_hold_60kg_flush": 2692.8920126801604,
+   "F_hold_100kg_flush": 4308.627220288256
+  },
+  "Inline actuator or column (ratio 1)": {
+   "name": "Inline actuator or column (ratio 1)",
+   "ratio": 1.0,
+   "act_stroke": 0.24,
+   "retracted_needed": [
+    0.33999999999999997,
+    0.44
+   ],
+   "fits_under_seat": false,
+   "note": "Needs a retracted length of about stroke + body length; does not fit under the seat, so it would sit beside the seat (e.g. inside the side-rail post) and carry the seat as a cantilever.",
+   "F_lift_60kg": 451.26000000000005,
+   "F_hold_60kg": 981.0000000000001,
+   "F_hold_100kg": 1569.6,
+   "cantilever_moment_60kg_Nm": 245.25000000000003,
+   "cantilever_moment_100kg_Nm": 392.4
+  }
+ },
+ "design_notes": [
+  "Space under the seat (collapsed) is about 0.30 m; an inline actuator needs about stroke + 0.10-0.20 m = 0.34-0.44 m, so it does not fit under the seat.",
+  "A scissor fits (collapsed about 0.13 m) but multiplies the actuator force by about 2.7-3.9 near the flush position.",
+  "Let the seat rest on a mechanical end stop when flush, so the actuator only ever pushes up to the force cap at the start of a lift.",
+  "With the admittance rule the actuator never pushes more than F_cap x ratio; holding loads at height are 0.6-1.3 x the seat load."
+ ]
+}

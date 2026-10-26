@@ -1,0 +1,19 @@
+digraph G { rankdir=LR; node [shape=box, style="rounded,filled", fillcolor="#f4f6f8", fontname="Helvetica", fontsize=11]; edge [fontname="Helvetica", fontsize=9];
+IDLE -> SEATED [label="seat load > 40% BW"];
+SEATED -> LIFTING [label="grip switch + hand on bar\n+ feet on plate + COP ok"];
+LIFTING -> STANDING_HOLD [label="seat-off\n(seat load < 5% BW, 0.3 s)"];
+LIFTING -> STOPPED [label="release / condition lost /\nat cap > 2 s / power loss"];
+STOPPED -> LIFTING [label="grip again + conditions ok"];
+STOPPED -> LOWERING [label="occupied and\n(DOWN or 10 s no input)"];
+STOPPED -> STANDING_HOLD [label="seat-off"];
+SEATED -> LOWERING [label="DOWN (seat raised)\nor 10 s no input"];
+LOWERING -> SEATED [label="reached flush"];
+LOWERING -> STOPPED [label="seat unloaded"];
+STANDING_HOLD -> SEATED [label="sits back\n(seat level, holds)"];
+STANDING_HOLD -> RESET_EMPTY [label="seat + footplate empty 5 s"];
+RESET_EMPTY -> IDLE [label="flush"];
+RESET_EMPTY -> STOPPED [label="load detected"];
+ANY [shape=plaintext, fillcolor=none, label="any state"];
+ANY -> LOCKED [label="sensor sum != BW\n(only slow DOWN allowed)", style=dashed];
+LIFTING [fillcolor="#dff3ea"]; STOPPED [fillcolor="#fdf3e2"]; LOCKED [fillcolor="#f9e0dd"];
+}

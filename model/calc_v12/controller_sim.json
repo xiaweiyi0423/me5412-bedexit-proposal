@@ -1,0 +1,83 @@
+{
+ "params": {
+  "F_cap_BW": 0.5,
+  "vmax_m_s": 0.03,
+  "k": "vmax / (0.2 BW)",
+  "a_max": 0.05,
+  "v_down": 0.02
+ },
+ "results": [
+  {
+   "scenario": "Normal user",
+   "final_state": "STANDING_HOLD",
+   "final_height": 0.611,
+   "max_height": 0.611,
+   "max_speed_cm_s": 3.0,
+   "seat_off_time_s": 11.9,
+   "last_message": "seat-off: hold height, seat level"
+  },
+  {
+   "scenario": "Slow user, personal max 1.5 cm/s",
+   "final_state": "STANDING_HOLD",
+   "final_height": 0.606,
+   "max_height": 0.606,
+   "max_speed_cm_s": 1.5,
+   "seat_off_time_s": 25.18,
+   "last_message": "seat-off: hold height, seat level"
+  },
+  {
+   "scenario": "Fast user, personal max 4 cm/s",
+   "final_state": "STANDING_HOLD",
+   "final_height": 0.615,
+   "max_height": 0.615,
+   "max_speed_cm_s": 4.0,
+   "seat_off_time_s": 8.36,
+   "last_message": "seat-off: hold height, seat level"
+  },
+  {
+   "scenario": "Weak user (cannot stand even at 0.66 m)",
+   "final_state": "LOWERING",
+   "final_height": 0.522,
+   "max_height": 0.66,
+   "max_speed_cm_s": 3.0,
+   "seat_off_time_s": null,
+   "last_message": "occupied: lower with the user"
+  },
+  {
+   "scenario": "Sits back mid-lift",
+   "final_state": "SEATED",
+   "final_height": 0.42,
+   "max_height": 0.463,
+   "max_speed_cm_s": 1.62,
+   "seat_off_time_s": null,
+   "last_message": ""
+  },
+  {
+   "scenario": "Faints: lets go mid-lift",
+   "final_state": "SEATED",
+   "final_height": 0.42,
+   "max_height": 0.463,
+   "max_speed_cm_s": 1.62,
+   "seat_off_time_s": null,
+   "last_message": ""
+  },
+  {
+   "scenario": "Footplate sensor stuck high",
+   "final_state": "LOCKED",
+   "final_height": 0.448,
+   "max_height": 0.448,
+   "max_speed_cm_s": 1.38,
+   "seat_off_time_s": null,
+   "last_message": "sensor check failed (sum != body weight)"
+  },
+  {
+   "scenario": "Power loss mid-lift",
+   "final_state": "STOPPED",
+   "final_height": 0.42,
+   "max_height": 0.463,
+   "max_speed_cm_s": 1.62,
+   "seat_off_time_s": null,
+   "last_message": "power loss: brake holds; battery lowering on DOWN"
+  }
+ ]
+}
