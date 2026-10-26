@@ -2,7 +2,7 @@
 import json, os
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.join(HERE, "..", "..")
-D = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/design.json")))
+D = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/page.json")))
 
 # step 3 note: medians for the 1.60 m / average-build users (all habits and foot positions)
 a = D["assist"]; pts = a["points"]
