@@ -24,16 +24,17 @@ from seat_1dof_fourbar import sim_mech, with_prefix
 from model import G, Subject
 
 OUT = os.path.join(HERE, "seat_1dof"); W = 0.24; STAGES = (0.15, 0.35, 0.55, 0.70)
-FB = json.load(open(os.path.join(OUT, "fourbar.json")))["mech"]["1000.0"]
-V = np.array(FB["A"] + FB["B"] + FB["c1"] + FB["c2"])
+# the four-bar used here: the adopted bed-safe one (layout.json); "prev" (fourbar.json, v2) kept for the record
+MECH = os.environ.get("CUSH_MECH", "layout")
+if MECH == "layout":
+    V = np.array(json.load(open(os.path.join(OUT, "layout.json")))["x"])
+else:
+    FB = json.load(open(os.path.join(OUT, "fourbar.json")))["mech"]["1000.0"]; V = np.array(FB["A"] + FB["B"] + FB["c1"] + FB["c2"])
 
 def fourbar_sim(top, n=900):
-    """the flat-seat four-bar, run from the flush seat until the seat centre reaches `top` (it can go past the design top)."""
-    import seat_1dof_fourbar as F
-    A, B, c1, c2 = V[:2], V[2:4], V[4:6], V[6:8]; P10, P20 = F.QT[0] + c1, F.QT[0] + c2
-    L1, L2 = np.hypot(*(P10 - A)), np.hypot(*(P20 - B)); a0 = np.arctan2(*(P10 - A)[::-1])
-    s = F.sim_partial(A, L1, B, L2, c1, c2, a0, a0 - np.radians(125), n, P20)
-    k = next(i for i, p in enumerate(s) if p[0][1] >= top); return s[:k + 1]
+    """the flat-seat four-bar, run from the flush seat until the seat centre reaches `top`."""
+    import seat_1dof_fourbar2 as FB2
+    return [p[:5] for p in FB2.run(V, top=top, n=n)]
 
 SIMS = {t: fourbar_sim(t) for t in (0.6285, 0.66)}
 CVS = {t: with_prefix(np.array([p[0] for p in s]), np.array([p[1] for p in s])) for t, s in SIMS.items()}

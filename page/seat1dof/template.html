@@ -124,7 +124,8 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <a href="#layout">6 支撑与干涉</a><span class="sep">›</span>
   <a href="#cushion">7 坐垫刚度</a><span class="sep">›</span>
   <a href="#check">8 验证</a><span class="sep">›</span>
-  <a href="#limits">9 局限</a>
+  <a href="#limits">9 局限</a><span class="sep">›</span>
+  <a href="#audit">10 审计</a>
   <div class="picker" aria-label="选择用户">
     <label for="selH">身高<select id="selH"></select></label>
     <label for="selR">臀部厚度<select id="selR"></select></label>
@@ -263,7 +264,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
 <section id="check">
   <div class="step">步骤 8</div>
   <h2>验证：用四连杆实际走出的轨迹，重跑 81 人</h2>
-  <div class="prose"><p>四连杆走出的轨迹和设计曲线不完全一样（前倾角最多差约 9°），所以最后一步用它实际的轨迹重新检查每个人：往前滑多少、坐回能否落在座面、坐板最后支撑到多高、放手那一刻多费力。和现方案（竖直升降、座面水平）放在一起比。</p></div>
+  <div class="prose"><p>四连杆走出的轨迹和设计曲线不完全一样（中心最多差约 11 mm，前倾角最多差约 12°），所以最后一步用它实际的轨迹重新检查每个人：往前滑多少、坐回能否落在座面、坐板最后支撑到多高、放手那一刻多费力。和现方案（竖直升降、座面水平）放在一起比。</p></div>
   <div class="kpis" id="checkKpis"></div>
   <div class="fig">
     <div class="tabs" role="group" aria-label="筛选"><button type="button" data-f="all" aria-pressed="true">全部 81 人</button><button type="button" data-f="bad" aria-pressed="false">有不合格项</button><button type="button" data-f="p0.6" aria-pressed="false">髋早前移</button><button type="button" data-f="p2.5" aria-pressed="false">髋晚前移</button></div>
@@ -277,13 +278,54 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <h2>局限与下一步</h2>
   <div class="grid3">
     <div class="card"><h3>模型假设</h3><ul><li>人体后侧是刚体轮廓：以髋为圆心的臀部圆弧，加大腿后侧直线；骨盆假设保持直立</li><li>起身路径只有 3 种代表习惯，需要真实起身动作数据核对</li><li>静力学，不含速度和冲击；坐板接触按无摩擦算</li><li>坐垫按独立弹簧床算，人体软组织当刚体；真实下陷会更大一些、压力更分散</li></ul></div>
-    <div class="card"><h3>待验证</h3><ul><li>托腿垫压在大腿后侧的压强和舒适度（0.5 倍体重分到约 8 × 24 cm²，约 15 kPa）</li><li>前倾 30° 时如果人往回坐，需要控制器迅速放平座面，否则会顺坡下滑</li><li>杆件、铰链按 100 kg、1.5 倍体重静载复核强度</li><li>床按实心块处理；有床下空间的床更宽松。腿的横向宽度按臀宽估计，需要用人体测量数据核对</li></ul></div>
+    <div class="card"><h3>待验证</h3><ul><li>托腿垫压在大腿后侧的压强和舒适度（0.5 倍体重分到约 8 × 24 cm²，约 15 kPa）</li><li>多数人放手时座板仍前倾 20–27°，这时往回坐会顺坡下滑；单自由度加自锁推杆不能快速放平（见审计第 1 项）</li><li>杆件、铰链按 100 kg、1.5 倍体重静载复核强度</li><li>床按实心块处理；有床下空间的床更宽松。腿的横向宽度按臀宽估计，需要用人体测量数据核对</li></ul></div>
     <div class="card"><h3>交给 CAD / 仿真</h3><ul id="cadList"></ul></div>
   </div>
 </section>
 
+<section id="audit">
+  <div class="step">步骤 10 · Gemini 审计（2026-10-26）</div>
+  <h2>审计：运动学站得住，接进整机后有三件事要先定</h2>
+  <div class="prose">
+    <p>用 Gemini 从五个角度审了这一版：建模与推理、机构与结构、安全与人因、代码与数字、老师与答辩。每条结论都回到代码和网页核对，涉及数字的都重算过。原文和综合报告在 <span class="mono">page/seat1dof/audit/</span>。</p>
+    <p><b>站得住的部分：</b>用户集 → 设计曲线 → 四连杆 → 81 人验证这条链。三个看似严重的代码指控重算后都不改变结论：</p>
+    <ul>
+      <li>给竖直方案同样的托腿垫后，仍只有 23/81 合格；</li>
+      <li>前滑按“从最低点反弹”重算，最大 1.8 cm，仍合格；</li>
+      <li>支撑段最大费力 0.319，低于放手时的 0.331。</li>
+    </ul>
+  </div>
+  <div class="note"><b>需要先拍板的三件事（拍板后再改机构）</b>
+    <ol style="margin:0;padding-left:1.3em;display:grid;gap:4px">
+      <li><b>放手时座板大多还是前倾的</b>：中位 24°，81 人中 64 人超过 20°。这时人往回坐，坐垫摩擦可能拉不住，人会顺坡下滑。单自由度的倾角由高度决定，自锁推杆也来不及放平。这正是 README 第 12 版改回竖直升降的理由。可选的方向：
+        <ul><li>把前倾上限压到约 15° 重新综合；</li><li>回到竖直升降；</li><li>加一个坐回时自动放平的被动铰。</li></ul></li>
+      <li><b>扶手怎么动</b>：模型按扶手竖直升降计算，但四连杆带不动这样的扶手。要么固定在底座上（然后重算费力），要么另设连杆带动。</li>
+      <li><b>两侧连杆挡住回床时腿的转动</b>，与 13.1 定的“开口一侧敞开”冲突。要么改成单侧悬臂连杆，要么接受“先退回床面再转腿”的流程。</li>
+    </ol></div>
+  <div class="fig"><div class="ttl">前 10 项（按严重度）</div><div class="tscroll"><table>
+    <thead><tr><th>#</th><th>问题</th><th>复核</th><th>处理</th></tr></thead><tbody>
+    <tr><td>1</td><td>放手时座板仍前倾 20–27°，坐回会顺坡下滑；“控制器迅速放平”做不到</td><td><span class="chip bad">已核实</span> 64/81 人 &gt; 20°</td><td>需拍板（见上）；页面错误说法已删</td></tr>
+    <tr><td>2</td><td>扶手如何随机构运动未定义</td><td><span class="chip bad">已核实</span></td><td>需拍板</td></tr>
+    <tr><td>3</td><td>两侧连杆、立板挡住回床时腿的转动</td><td><span class="chip bad">已核实</span></td><td>需拍板</td></tr>
+    <tr><td>4</td><td>横管穿过摇杆 A 所在平面，起始位置相撞（间隙 −0.1 cm）</td><td><span class="chip bad">已核实</span></td><td>摇杆 A、B 内外对调</td></tr>
+    <tr><td>5</td><td>夹手点：横管–座板底面 1.1 cm，横管–立柱 A 3.2 cm，两摇杆平面相距 3 cm，座板与床垫 5 mm</td><td><span class="chip bad">已核实</span>（自查）</td><td>座板下加整圈软护罩；能拉开的间隙拉到 ≥ 25 mm；与床留 ≥ 15 mm</td></tr>
+    <tr><td>6</td><td>推力计算漏了座板转动项；座板上两铰点只距 41 mm</td><td><span class="chip bad">已核实</span> 推杆最大 3.8 kN、铰点最大 6.0 kN</td><td>重新综合时铰点间距 ≥ 80 mm；推杆按 ≥ 4 kN 选型</td></tr>
+    <tr><td>7</td><td>坐着下陷 3.9 cm，接近压到底；“空载比床高 4 cm”的说法错</td><td><span class="chip bad">已核实</span></td><td>文字已改；坐垫改 6–7 cm 或双密度</td></tr>
+    <tr><td>8</td><td>网页数字过时：前倾差、推杆上端位置、页脚来源、坐垫一节用旧连杆</td><td><span class="chip bad">已核实</span></td><td><span class="chip good">已修正</span> 坐垫已按第四版重算（推荐方案托不住 0/3 人）</td></tr>
+    <tr><td>9</td><td>座板前倾时座下测力单元测的是法向力，体重自检要修正</td><td><span class="chip bad">已核实</span></td><td>交给控制组：按推杆位置换算倾角</td></tr>
+    <tr><td>10</td><td>“4 cm 最好”部分来自模型硬分界；“圆弧座面不好”说得过头</td><td><span class="chip">部分成立</span></td><td><span class="chip good">文字已改</span></td></tr>
+    </tbody></table></div>
+    <p class="cap">另外几项不改变结论但要跟进：
+      <br>· 横管中点弯矩约 404 N·m，需要校核。
+      <br>· 自锁推杆要带手动应急下降。
+      <br>· 腿的横向宽度：立板建议外扩到 |y| ≥ 0.30 m 并加软垫，再用人体测量数据核对。
+      <br>· 扶手在底座前端之外，底座前端建议伸到 ≥ 0.75 m。
+      <br>· 体重和肌力没有随身高缩放。
+      <br>· 皮肤累计剪切位移中位约 10 cm，坐垫表层建议用可滑动的面套。</p></div>
+</section>
+
 <footer>
-  <p>数据来源：<span class="mono">model/calc_v13/seat_1dof_design.py</span> → <span class="mono">seat_1dof/design.json</span>；人体力学模型同 v13（2D 准静态，关节力矩 / 力量的最大值即“费力”）。</p>
+  <p>数据来源：<span class="mono">model/calc_v13/seat_1dof_page_data.py</span> → <span class="mono">seat_1dof/page.json</span>（汇总 design / fourbar2 / layout / cushion 各步结果）；人体力学模型同 v13（2D 准静态，关节力矩 / 力量的最大值即“费力”）。</p>
   <p>前一轮对比（竖直 vs 曲线的相对运动）：<span class="mono">model/calc_v13/seat_trajectory_summary.md</span></p>
 </footer>
 </div>
@@ -491,7 +533,7 @@ function drawMechStatic(){
    <p><b>连杆能不能全部收进座板下面？</b>座板全程要向前走 ${(tv.dx*100).toFixed(0)} cm、向上走 ${(tv.dz*100).toFixed(0)} cm，摇杆转 70–100° 才能走完，所以摇杆至少要 20 cm 左右。把底座铰点限制在起始座板的正下方（床沿前 0–14 cm）时，要么轨迹误差大，要么接近死点（传动角只有个位数度，推力会无穷大）。座板加长、让支架向前伸出也不解决问题，因为瓶颈在摇杆长度，不在座板上两个铰点的间距。</p>
    <p>可行的折中是：<b>底座铰点放在座板走过的范围内</b>（床沿前 0–30 cm），起身时座板一直盖在连杆上方；同时把座板下的支架从 25 cm 浅到 15 cm。上一版还有一个问题：起始位置座板支架的后铰点伸进了床体，这一版把“刚性零件不进床体”作为硬约束重新合成（最后一行）。下表是各种布置的比较：</p>
    <div class="tscroll"><table><thead><tr><th>连杆布置</th><th class=n>合格</th><th class=n>轨迹误差</th><th class=n>前倾误差</th><th class=n>传动角 最小</th><th class=n>占用空间</th><th class=n>离小腿（同一平面）</th></tr></thead><tbody>
-   ${ORDER.filter(k=>P[k]).map(k=>{const p=P[k];const bad=p.transmission_deg[0]<35||p.n_ok<81;return `<tr${k===m.name?' style="background:var(--amber-bg)"':''}><td>${NAME[k]}${k===m.name?' <span class="chip good">采用</span>':''}</td><td class=n>${p.n_ok}/81</td><td class=n>${p.centre_err_mm.toFixed(0)} mm</td><td class=n>${p.tilt_err_deg.toFixed(0)}°</td><td class="n" style="color:${p.transmission_deg[0]<35?'var(--bad)':'inherit'}">${p.transmission_deg[0].toFixed(0)}°</td><td class=n>x ${(p.space_x[0]*100).toFixed(0)}–${(p.space_x[1]*100).toFixed(0)}，z ${(p.space_z[0]*100).toFixed(0)}–${(p.space_z[1]*100).toFixed(0)} cm</td><td class="n" style="color:${p.clear_calf_cm<2?'var(--bad)':'inherit'}">${sg(p.clear_calf_cm)} cm</td></tr>`}).join("")}
+   ${ORDER.filter(k=>P[k]).map(k=>{const p=P[k];return `<tr${k===m.name?' style="background:var(--amber-bg)"':''}><td>${NAME[k]}${k===m.name?' <span class="chip good">采用</span>':''}</td><td class=n>${p.n_ok}/81</td><td class=n>${p.centre_err_mm.toFixed(0)} mm</td><td class=n>${p.tilt_err_deg.toFixed(0)}°</td><td class="n" style="color:${p.transmission_deg[0]<35?'var(--bad)':'inherit'}">${p.transmission_deg[0].toFixed(0)}°</td><td class=n>x ${(p.space_x[0]*100).toFixed(0)}–${(p.space_x[1]*100).toFixed(0)}，z ${(p.space_z[0]*100).toFixed(0)}–${(p.space_z[1]*100).toFixed(0)} cm</td><td class="n" style="color:${p.clear_calf_cm!=null&&p.clear_calf_cm<2?'var(--bad)':'inherit'}">${p.clear_calf_cm==null?"在腿外侧":sg(p.clear_calf_cm)+" cm"}</td></tr>`}).join("")}
    </tbody></table></div>
    <p>采用的布置下，铰点向前挪到了小腿所在的前后位置，所以连杆要做成<b>两侧各一套、装在腿的外侧</b>（座板宽 44 cm，两侧板之间留给双腿），不和小腿在同一平面。</p>
    <p><b>动力源：建议用两端带转动副的电动推杆</b>（丝杠式、可自锁），而不是在铰点 A 装电机。100 kg 的人坐下时，A 点要承受约 ${Math.max(...m.torque_hold100_Nm.map(Math.abs)).toFixed(0)} N·m 的静载，电机方案需要大速比、能自锁的减速器，体积和成本都高；推杆本身能自锁、断电能停住，自带位置反馈，是护理床和起身椅常用的标准件。推杆放在两套连杆之间的中间平面：下端铰在底座 (${act.D.map(v=>(v*100).toFixed(1)).join(", ")}) cm，上端铰在摇杆 B 上，两侧摇杆用一根横管连成一体，一根推杆就能驱动。推杆离小腿最近 ${m.summary.clear_act_calf_cm} cm。</p>`;
@@ -500,7 +542,7 @@ function drawMechStatic(){
     ["座板上铰点 1 / 2（座板坐标，原点为座面中心）",`(${m.c1.map(v=>(v*1000).toFixed(0)).join(", ")}) / (${m.c2.map(v=>(v*1000).toFixed(0)).join(", ")}) mm`],
     ["支架深度（座面以下）",`${m.bracket_depth_mm.toFixed(0)} mm`],["传动角",`${m.transmission_deg[0]}–${m.transmission_deg[1]}°`],
     ["机构占用空间",`x ${(m.space_x[0]*100).toFixed(0)}–${(m.space_x[1]*100).toFixed(0)} cm，z ${(m.space_z[0]*100).toFixed(0)}–${(m.space_z[1]*100).toFixed(0)} cm`],
-    ["推杆底座铰点（x, z）",`${act.D.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],["推杆上端","摇杆 B 末端外侧 60 mm"],
+    ["推杆底座铰点（x, z）",`${act.D.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],["推杆上端",`摇杆 B 上距铰点 B ${(act.t*100).toFixed(0)}% 处（${(m.L2*act.t*1000).toFixed(0)} mm），垂直偏置 ${(act.o*1000).toFixed(0)} mm`],
     ["推杆长度（收回 → 伸出）",`${(act.L[0]*1000).toFixed(0)} → ${(act.L[1]*1000).toFixed(0)} mm`],["推杆行程",`${(act.stroke*1000).toFixed(0)} mm`],
     ["推力，起身（60 kg，坐板推 0.5 倍体重）",`${act.F_lift60_N[0]}–${act.F_lift60_N[1]} N`],["推力，静载（100 kg 坐下，1.5 倍体重）",`${act.F_hold100_N[0]}–${act.F_hold100_N[1]} N`]];
   $("#dimTable").innerHTML="<tbody>"+r.map(x=>`<tr><td>${x[0]}</td><td class=n>${x[1]}</td></tr>`).join("")+"</tbody>";
@@ -529,7 +571,7 @@ function drawMechStatic(){
    加了 3 cm 行程后，起身到 55% / 70% 时托不住的人数从 ${mid.lost_by_stage["0.55"]} / ${mid.lost_by_stage["0.7"]} 降到 ${rec.lost_by_stage["0.55"]} / ${rec.lost_by_stage["0.7"]}。
    <br>软坐垫（1.5 kPa/cm）压强最低，但下陷约 ${(soft.sink_med_mm/10).toFixed(1)} cm，起身到 55% 就有 ${soft.lost_by_stage["0.55"]} 人托不住，响应时间超过 1 s，而且一半情况会压到底。硬坐垫响应最快，但峰值压强约 ${hard.p_med_kPa.toFixed(0)} kPa。
    <br>分区（后部硬、前部软）能让更多推力落在骨盆上，是值得在样件上试的方向；前部要够厚，否则会压到底。
-   <br>坐垫刚度还牵动两个机构参数：一是坐着时会下陷约 4 cm，坐板未受压时的高度应比床面高出这么多，这样坐上去后才和床面齐平；二是力跟随控制的增益要按这个刚度来定。`;
+   <br>坐垫刚度还牵动两个机构参数：一是坐垫未受压时的顶面应和未受压的床垫齐平（人坐床沿时床垫也下陷），下陷吃掉的约 3 cm 由行程末端多走的 3 cm 补；二是力跟随控制的增益要按这个刚度来定。60 kg 的人坐着时下陷约 3.9 cm，已接近 5 cm 坐垫的压到底点，更重的用户需要 6–7 cm 或双密度坐垫（见审计）。`;
 }
 
 /* ---------- step 6 ---------- */
