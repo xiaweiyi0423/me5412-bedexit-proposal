@@ -69,7 +69,12 @@ def bar_at(hz):
 def effort(sub, pz, bar, contact=None, cap=CAP):
     K, Hp, A = pz["K"], pz["Hp"], pz["A"]; BW = sub.M * G; best = None
     P = np.asarray(bar, float); foot = sub.foot_len; heel, toe = A[0] - 0.25 * foot, A[0] + 0.75 * foot
-    if contact is not None:
+    if isinstance(contact, dict):              # distributed load: per unit of seat force, list of (point, force share, on pelvis)
+        fx = fz = hc = kc = mc = 0.0
+        for C, f, pel in contact["parts"]:
+            fx += f[0]; fz += f[1]; kc += -cross(C - K, f); mc += cross(C, f)
+            if pel: hc += -cross(C - Hp, f)
+    elif contact is not None:
         C, f, pel = contact; fx, fz = f
         hc = -cross(C - Hp, f) if pel else 0.0; kc = -cross(C - K, f); mc = cross(C, f)
     else:

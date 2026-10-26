@@ -22,30 +22,23 @@ OUT = os.path.join(HERE, "seat_1dof"); TOP = 0.66
 
 os.environ["CUSH_MECH"] = "slider"
 import seat_cushion as SC
-CUSH_REC = next(c for c in SC.CUSH if c[0] == "中硬 + 行程到 0.66 m")
+import seat_cushion_zoned as Z
+# cushions shown in the animation (step 5 toggle): uniform (v5), zoned (v5.1 recommended), zoned + 2 cm front step
+CUSHIONS = {"u": Z.C_("均匀 6/6，5 cm（现推荐）", 6, 6), "z1": Z.C_("后 10 / 前 3，分界 -2 cm", 10, 3, 0.05, 0.08, -0.02),
+            "z2": Z.C_("后 15 / 前 2，分界 -2 cm，前区顶面低 2 cm", 15, 2, 0.05, 0.08, -0.02, 0.02)}
 
-def cushion_patch(sub, pz, k0):
-    """recommended cushion, seat pushing 0.5 BW: slide the seat along the curve (SC.CVS[top] = the slider curve) from the
-    rigid touch index k0 until the cushion force reaches the target; return the contact strip on the body."""
-    P, A, ds = SC.dense_outline(pz); target = 0.5 * sub.M * G; CV = SC.CVS[CUSH_REC[5]]; n = len(CV[0]) - 1
-    u = max(k0 - 3.0, 0.0); prev = u; L = SC.load(u, P, A, ds, CUSH_REC)
-    while L["Fm"] < target:
-        prev = u; u += 0.5
-        if u >= n: return dict(lost=True)
-        L = SC.load(u, P, A, ds, CUSH_REC)
-    lo, hi = prev, u
-    for _ in range(25):
-        mid = (lo + hi) / 2
-        if SC.load(mid, P, A, ds, CUSH_REC)["Fm"] >= target: hi = mid
-        else: lo = mid
-    L = SC.load(hi, P, A, ds, CUSH_REC); idx = L["idx"]
+def cushion_patch(sub, pz, k0, c):
+    """seat pushing 0.5 BW through cushion c: slide the seat along the curve (Z.CV = the animation curve) from the rigid
+    touch index until the cushion force reaches the target; return the contact strip on the body."""
+    res, (P, A, ds) = Z.solve(sub, pz, c, max(k0 - 4.0, 0.0))
+    if res is None: return dict(lost=True)
+    u, L = res; idx = L["idx"]
     if len(idx) == 0: return dict(lost=True)
-    Q, phi = SC.pose_at(hi, CV); pts = P[idx]; step = max(1, len(pts) // 12)
-    strip = np.vstack([pts[::step], pts[-1:]])
-    p = L["p"][idx] / 1000; pk = p[::step].tolist() + [float(p[-1])]
-    return dict(lost=False, Q=np.round(Q, 4).tolist(), phi=round(float(phi), 1), strip=np.round(strip, 4).tolist(), p=np.round(pk, 1).tolist(),
+    Q, phi = SC.pose_at(u, Z.CV); pts = P[idx]; step = max(1, len(pts) // 12); sel = list(range(0, len(pts), step)) + [len(pts) - 1]
+    p = L["p"][idx] / 1000; fm = np.hypot(*L["f"].T); pel = A[idx] <= Z.PA
+    return dict(lost=False, Q=np.round(Q, 4).tolist(), phi=round(float(phi), 1), strip=np.round(pts[sel], 3).tolist(), p=np.round(p[sel], 1).tolist(),
                 len_cm=round(100 * float(ds[idx].sum()), 1), a=[round(100 * float(A[idx].min()), 1), round(100 * float(A[idx].max()), 1)],
-                p_max=round(float(p.max()), 1), sink_mm=round(1000 * float(L["sq"].max()), 1), bottom=L["bott"])
+                p_max=round(float(p.max()), 1), sink_mm=round(1000 * float(L["sq"].max()), 1), pel=round(float(fm[pel].sum() / fm.sum()), 2))
 
 def anim_job(args):
     u, cv = args; ST.A_MAX = PAD_AMAX; sub, p = path_of(u); rows = track(sub, p, Seat(r_e=0.03), cv); fr = []
@@ -56,7 +49,7 @@ def anim_job(args):
         if r and r.get("contact") and r.get("ok"):
             k = min(int(r["k"]), len(cv[1]) - 1)
             d.update(seat=dict(Q=np.round(cv[1][k], 4).tolist(), phi=round(float(cv[2][k]), 1)), C=np.round(r["P"], 3).tolist(),
-                     a=round(r["a"], 3), slip=round(r["slip"], 3), catch=round(r["catch"], 3), cush=cushion_patch(sub, pz, int(r["k"])))
+                     a=round(r["a"], 3), slip=round(r["slip"], 3), catch=round(r["catch"], 3), cush={k_: cushion_patch(sub, pz, int(r["k"]), c_) for k_, c_ in CUSHIONS.items()})
         fr.append(d)
     return ukey(u), dict(L=[round(sub.L_shank, 3), round(sub.L_thigh, 3), round(sub.L_trunk, 3), round(sub.L_uarm, 3), round(sub.L_farm, 3)],
                          foot=round(sub.foot_len, 3), frames=fr)
@@ -64,6 +57,18 @@ def anim_job(args):
 def env_job(u):
     H, rb, p, xa = u; _, path = rise(H, xa, p, r_b=rb); q, Q, phi = curve_fit(path, V5.PHI_CAP)
     return ukey(u), dict(Q=np.round(Q[15:], 4).tolist(), phi=np.round(phi[15:], 2).tolist())
+
+def zoned_thigh():
+    """thigh inclination vs seat tilt at the moment the uniform cushion carries 0.5 BW, per rise stage (medians over 81)."""
+    c = CUSHIONS["u"]; out = {}
+    for st in Z.STAGES:
+        th, ph = [], []
+        for u in USERS:
+            sub, pz = Z.stage_pose(u, st); res, _ = Z.solve(sub, pz, c)
+            if res is None: continue
+            th.append(pz["theta"]); ph.append(float(np.interp(res[0], np.arange(len(Z.CV[2])), Z.CV[2])))
+        out[str(st)] = dict(thigh=round(float(np.median(th)), 1), seat=round(float(np.median(ph)), 1))
+    return out
 
 def screw_curve(sim, Fs, kg=10.0):
     """lead-screw force along the rail (N, + = push up the rail), worst over load positions on the seat."""
@@ -81,10 +86,12 @@ if __name__ == "__main__":
     SLJ = json.load(open(os.path.join(OUT, "slider.json"))); CK = json.load(open(os.path.join(OUT, "v5_checks.json")))
     V5J = json.load(open(os.path.join(OUT, "v5.json"))); CU = json.load(open(os.path.join(OUT, "cushion.json")))
     D = json.load(open(os.path.join(OUT, "design.json"))); FB = json.load(open(os.path.join(OUT, "fourbar.json")))
+    ZJ = json.load(open(os.path.join(OUT, "cushion_zoned.json"))); ZB = {(r["user"], r["stage"]): r["effort_all"] for r in ZJ["effort"]["均匀 6/6，5 cm（现推荐）"]["rows"]}
+    ZT = zoned_thigh()
     sim, g = SL.simulate(SLJ["x"], 700); c1, c2 = np.array(SLJ["x"][:2]), np.array(SLJ["x"][2:4]); M = SLJ["mech"]
     cv = with_prefix(np.array([p[0] for p in sim]), np.array([p[1] for p in sim]))
     zs = [round(float(p[0][1]), 3) for p in sim]
-    mech = dict(M, kind="slider", name="v5-slider", top=TOP, rail_lo=CK["rail"]["lo"], rail_hi=CK["rail"]["hi"], columns=CK["rail"]["columns"],
+    mech = dict(M, kind="slider", name="v5-slider", top=M.get("top", TOP), rail_lo=CK["rail"]["lo"], rail_hi=CK["rail"]["hi"], columns=CK["rail"]["columns"],
                 travel=dict(dx=round(float(sim[-1][0][0] - sim[0][0][0]), 3), dz=round(float(sim[-1][0][1] - sim[0][0][1]), 3)),
                 bracket_depth_mm=round(-1000 * min(c1[1], c2[1])),
                 frames=[dict(Q=np.round(p[0], 4).tolist(), phi=round(float(p[1]), 2), P1=np.round(p[2], 4).tolist(), P2=np.round(p[3], 4).tolist()) for p in sim[::12]],
@@ -96,11 +103,11 @@ if __name__ == "__main__":
         if q is None: users[k] = dict(release_hz=None, fwd_slip_max_cm=99, min_catch_cm=-99); continue
         users[k] = dict(release_hz=q["release_hz"], fwd_slip_max_cm=q["fwd_slip_cm"], min_catch_cm=q["catch_min_cm"], E0_release=q["E_release"],
                         E0_release_stooped=q["E_release_stooped"], phi_release=q["phi_release"], shear_path_cm=q["shear_path_cm"], E_supported_max=q["E_supported_max"])
-    SC.CVS[CUSH_REC[5]] = cv                  # the cushion solve runs on the same curve (and index) as the animation
+    Z.CV = cv                                  # the cushion solve runs on the same curve (and index) as the animation
     with Pool() as pool: AN = dict(pool.map(anim_job, [(u, cv) for u in USERS]))
-    cs = [f["seat"] and f.get("cush") for a_ in AN.values() for f in a_["frames"] if "seat" in f]
-    ok = [c for c in cs if c and not c["lost"]]
-    print("cushion frames", len(cs), "lost", sum(1 for c in cs if c and c["lost"]), "len med", np.median([c["len_cm"] for c in ok]), "p med", np.median([c["p_max"] for c in ok]))
+    for k_ in CUSHIONS:
+        cs = [f["cush"][k_] for a_ in AN.values() for f in a_["frames"] if "seat" in f]; ok = [c for c in cs if not c["lost"]]
+        print("cushion", k_, "frames", len(cs), "lost", len(cs) - len(ok), "len med", np.median([c["len_cm"] for c in ok]), "p med", np.median([c["p_max"] for c in ok]), "pel med", np.median([c["pel"] for c in ok]))
     with Pool() as pool: ENV = dict(pool.map(env_job, USERS))
     frames = []
     for fr in sim[::35] + [sim[-1]]:
@@ -120,9 +127,15 @@ if __name__ == "__main__":
     placements["v5-slider"] = dict(n_ok=SLJ["summary"]["n_ok"], fwd_max=SLJ["summary"]["fwd_max"], catch_min=SLJ["summary"]["catch_min"], centre_err_mm=M["centre_err_mm"],
                                    phi_max=M["phi_run_max"], bracket_mm=mech["bracket_depth_mm"], force_kN=round(mech["F_hold100_N"] / 1000, 1), leg=None)
     page = dict(users=D["users"], assist=D["assist"], envelope=ENV, design_curve=dict(D["design_curve"], poses=V5J["design_curve"], phi_max=V5.PHI_CAP),
-                consts=dict(D["consts"], top=TOP, phi_max=V5.PHI_CAP, pole=dict(x=0.69, z=[0.75, 1.10])), mech=mech, anim=AN,
+                consts=dict(D["consts"], top=M.get("top", TOP), phi_max=V5.PHI_CAP, pole=dict(x=0.69, z=[0.75, 1.10])), mech=mech, anim=AN,
                 check=dict(design=users, vertical=D["check"]["vertical"]), shapes=dict(table=FB["table"]),
                 cushion=dict(cushions=CU["cushions"], summary=CU["summary"], sitdown=CU["sitdown"]), placements=placements,
+                zoned=dict(grid={k_: dict(c=v_["c"], all={q: v_["all"].get(q) for q in ("lost", "pel_share", "cop_a_cm", "peak_a_cm", "p_peak_kPa", "sink_mm", "bottom_share", "peak_on_pelvis_share", "junction_seat_x_cm")},
+                                          by_stage={s_: {q: b_.get(q) for q in ("lost", "pel_share", "junction_seat_x_cm")} for s_, b_ in v_["by_stage"].items()}, sitdown=v_["sitdown"]) for k_, v_ in ZJ["grid"].items()},
+                           effort={k_: dict(all={q: v_["all"].get(q) for q in ("effort_all", "effort_free", "lost", "pel_share")}, by_stage={s_: {q: b_.get(q) for q in ("effort_all", "lost", "pel_share")} for s_, b_ in v_["by_stage"].items()},
+                                            worse=sum(1 for r in v_["rows"] if r["effort_all"] > ZB[(r["user"], r["stage"])] + 0.005), max_worse=round(max(r["effort_all"] - ZB[(r["user"], r["stage"])] for r in v_["rows"]), 3))
+                                   for k_, v_ in ZJ["effort"].items()},
+                           thigh=ZT, ids={k_: c_["name"] for k_, c_ in CUSHIONS.items()}),
                 layout=dict(frames=frames, clear_rows=clear_rows, pinch=CK["pinch_cm"], tipping=CK["tipping"], emergency=CK["emergency"], kind="slider", legs_worst=CK["bracket_vs_legs_cm"], bed_floor_cm=CK["bed_floor_cm"],
                             Y=dict(seat=0.22, rail=0.28, link=0.31, base=0.27), sizes=dict(PLATE_T=0.045, LIP=V5.LIP)))
     json.dump(page, open(os.path.join(OUT, "page.json"), "w"), ensure_ascii=False, separators=(",", ":"))

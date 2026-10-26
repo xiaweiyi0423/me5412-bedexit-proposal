@@ -20,6 +20,12 @@ from seat_1dof_design import USERS, resample_curve
 from model import G
 OUT = V5.OUT
 Qd, Pd = resample_curve(V5.CVD, 80)
+# rail run past the end of the design curve (m). 0.06 in the synthesis; v5.1 extends it to 0.09 so that a zoned cushion,
+# which needs more seat travel, still reaches 0.5 BW late in the rise. Stored in slider.json, overridable by RAIL_EXT.
+try:
+    EXT = float(os.environ.get("RAIL_EXT", json.load(open(os.path.join(OUT, "slider.json"))).get("rail_ext", 0.06)))
+except FileNotFoundError:
+    EXT = 0.06
 # extend the curve to the 0.66 m top along its last direction, tilt easing to 5 deg (the run beyond the design curve)
 def line_fit(P):
     m = P.mean(0); U, S, Vt = np.linalg.svd(P - m); d = Vt[0]; n = np.array([-d[1], d[0]]); return m, d, (P - m) @ n
@@ -29,7 +35,7 @@ def simulate(v, n=300):
     c1, c2 = np.array(v[:2]), np.array(v[2:4])
     P1 = world(Qd, Pd, c1); P2 = world(Qd, Pd, c2); m, d, r1 = line_fit(P1); Bc, R, r2 = circle_fit(P2)
     s0 = (P1[0] - m) @ d; s1 = (P1[-1] - m) @ d; Lc = np.hypot(*(c2 - c1)); loc = np.arctan2(*(c2 - c1)[::-1]); out = []; prev = P2[0]
-    ext = 0.06 * np.sign(s1 - s0)
+    ext = EXT * np.sign(s1 - s0); stop = V5.TOP if EXT <= 0.06 else 9.9
     for s in np.linspace(s0, s1 + ext, n):
         X = m + s * d; dv = Bc - X; dd = np.hypot(*dv)
         if dd > R + Lc or dd < abs(R - Lc): break
@@ -37,7 +43,7 @@ def simulate(v, n=300):
         ca, cb = X + a * e + h * nn, X + a * e - h * nn; Y = ca if np.hypot(*(ca - prev)) <= np.hypot(*(cb - prev)) else cb; prev = Y
         phi = np.degrees(loc - np.arctan2(*(Y - X)[::-1])); Q = X - rot(phi) @ c1
         out.append((Q, phi, X, Y, s))
-        if Q[1] >= V5.TOP: break
+        if Q[1] >= stop: break
     return out, dict(m=m, d=d, B=Bc, R=R, res1=float(np.abs(r1).max()), res2=float(np.abs(r2).max()))
 
 def cost(v):
@@ -70,14 +76,18 @@ def synth(seed):
 
 if __name__ == "__main__":
     t0 = time.time()
-    with Pool() as p: SY = p.map(synth, range(4))
-    f, v = min(SY); s, g = simulate(v, 700)
+    if len(sys.argv) > 1 and sys.argv[1] == "eval":       # keep the synthesised geometry, re-evaluate (e.g. with a longer rail)
+        old = json.load(open(os.path.join(OUT, "slider.json"))); v = old["x"]; f = old["mech"]["cost"]
+    else:
+        with Pool() as p: SY = p.map(synth, range(4))
+        f, v = min(SY)
+    s, g = simulate(v, 700)
     Qs = np.array([p[0] for p in s]); ph = np.array([p[1] for p in s])
     dist = np.hypot(*(Qs[None, :, :] - Qd[:, None, :]).transpose(2, 0, 1)); j = dist.argmin(1)
     rail = [s[0][2].tolist(), s[-1][2].tolist()]
     info = dict(c1=np.round(v[:2], 4).tolist(), c2=np.round(v[2:4], 4).tolist(), rail=np.round(rail, 4).tolist(), rail_angle_deg=round(float(np.degrees(np.arctan2(g["d"][0], g["d"][1]))) % 180, 1),
                 stroke=round(float(abs(s[-1][4] - s[0][4])), 3), B=np.round(g["B"], 4).tolist(), link=round(float(g["R"]), 4), centre_err_mm=round(1000 * float(dist[np.arange(len(Qd)), j].max()), 1),
-                tilt_err_deg=round(float(np.abs(ph[j] - Pd).max()), 1), phi_run_max=round(float(ph.max()), 1), phi_end=round(float(ph[-1]), 1), cost=round(f, 4))
+                tilt_err_deg=round(float(np.abs(ph[j] - Pd).max()), 1), phi_run_max=round(float(ph.max()), 1), phi_end=round(float(ph[-1]), 1), cost=round(f, 4), rail_ext=EXT, top=round(float(Qs[-1][1]), 3))
     print("slider", info, round(time.time() - t0), "s")
     cv = with_prefix(Qs, ph)
     with Pool() as p: R = dict(p.map(V5.user_job, [(u, cv, "sides", None, None) for u in USERS]))
@@ -108,5 +118,5 @@ if __name__ == "__main__":
             worst = dict(screw=max(worst["screw"], abs(fs)), link=max(worst["link"], abs(fl)), normal=max(worst["normal"], abs(fn)), moment=worst["moment"])
     info["forces_hold100_N"] = {k: round(v) for k, v in worst.items() if k != "moment"}
     info["torsion_hold100_Nm"] = round(1.5 * 100 * G * 0.25); info["frames"] = [dict(Q=np.round(p[0], 4).tolist(), phi=round(float(p[1]), 2), P1=np.round(p[2], 4).tolist(), P2=np.round(p[3], 4).tolist()) for p in s[::14]]
-    json.dump(dict(note=__doc__, x=v, mech=info, summary=summ, users=R), open(os.path.join(OUT, "slider.json"), "w"), ensure_ascii=False, separators=(",", ":"))
+    json.dump(dict(note=__doc__, x=v, rail_ext=EXT, mech=info, summary=summ, users=R), open(os.path.join(OUT, "slider.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     print("summary", summ, "screw force", info["screw_force_hold100_N"]); print("done", round(time.time() - t0), "s")
