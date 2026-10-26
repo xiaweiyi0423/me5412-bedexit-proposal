@@ -1,4 +1,4 @@
-"""Build the v13 proposal page: inject model and simulation results into template.html -> ../bedexit_proposal_v13.html"""
+"""Build the v13 proposal page: inject model and simulation results into template.html -> ../rise_station_v13.html"""
 import json, os
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.join(HERE, "..", "..")
 ss = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_support.json")))
@@ -22,5 +22,5 @@ for s in cs["scenarios"]:
 data = dict(eff=eff, sims=sims, states=SN)
 tpl = open(os.path.join(HERE, "template.html")).read()
 out = tpl.replace("/*__DATA__*/{}", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
-open(os.path.join(ROOT, "page/bedexit_proposal_v13.html"), "w").write(out)
+open(os.path.join(ROOT, "page/rise_station_v13.html"), "w").write(out)
 print(len(out), "bytes")
