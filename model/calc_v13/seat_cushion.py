@@ -28,6 +28,8 @@ OUT = os.path.join(HERE, "seat_1dof"); W = 0.24; STAGES = (0.15, 0.35, 0.55, 0.7
 MECH = os.environ.get("CUSH_MECH", "layout")
 if MECH == "layout":
     V = np.array(json.load(open(os.path.join(OUT, "layout.json")))["x"])
+elif MECH == "slider":
+    V = None
 elif MECH.startswith("v5-"):
     V = np.array(json.load(open(os.path.join(OUT, "v5.json")))["layouts"][MECH[3:]]["x"])
 else:
@@ -35,6 +37,10 @@ else:
 
 def fourbar_sim(top, n=900):
     """the flat-seat four-bar, run from the flush seat until the seat centre reaches `top`."""
+    if MECH == "slider":
+        import seat_1dof_slider as SL
+        sim, _ = SL.simulate(json.load(open(os.path.join(OUT, "slider.json")))["x"], n)
+        k = next((i for i, p in enumerate(sim) if p[0][1] >= top - 1e-4), len(sim) - 1); return [p[:5] for p in sim[:k + 1]]
     import seat_1dof_fourbar2 as FB2
     return [p[:5] for p in FB2.run(V, top=top, n=n)]
 

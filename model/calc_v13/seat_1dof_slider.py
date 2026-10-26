@@ -51,8 +51,12 @@ def cost(v):
     e = dist[np.arange(len(Qd)), j].max() + 0.1 * np.abs(np.radians(ph[j] - Pd)).max()
     pen = 0.05 * max(0, ph.max() - V5.PHI_RUN_MAX) + 0.05 * max(0, -ph.min() - 2)
     # rail must reach down to the base (lower end above floor, in front of the bed); ground pivot B on the base region
-    lo = min(s[0][2], s[-1][2], key=lambda p: p[1]); pen += max(0, -lo[0] + 0.02) + max(0, 0.03 - g["B"][0]) + max(0, g["B"][1] - 0.40) + max(0, 0.04 - g["B"][1])
-    # rigid parts vs bed: plate, bracket, link B-c2, rail segment
+    lo = min(s[0][2], s[-1][2], key=lambda p: p[1]); pen += max(0, 0.03 - g["B"][0]) + max(0, g["B"][0] - 0.50) + max(0, g["B"][1] - 0.40) + max(0, 0.04 - g["B"][1])
+    # rail incl. carriage margin (6 cm past both ends of the carriage travel) must stay off the bed
+    d_ = g["d"]; lo_ = s[0][2] - 0.06 * d_ * np.sign((s[-1][2] - s[0][2]) @ d_); hi_ = s[-1][2] + 0.06 * d_ * np.sign((s[-1][2] - s[0][2]) @ d_)
+    rb = float(LY.bed_d(LY.seg_pts(lo_, hi_, 30)).min()) - 0.02
+    if rb < V5.CLR_BED: pen += 5 * (V5.CLR_BED - rb)
+    # rigid parts vs bed: plate, bracket, link B-c2
     for f in s[::10]:
         plate, br = LY.seat_polys(f[0], f[1], c1, c2)
         for pts, r in ((LY.poly_pts(plate, 0.01), 0), (LY.poly_pts(br, 0.01), 0), (LY.seg_pts(g["B"], f[3]), 0.02)):
@@ -61,7 +65,7 @@ def cost(v):
     return e + pen
 
 def synth(seed):
-    r = differential_evolution(cost, [(-0.085, 0.085), (-0.26, -0.03), (-0.085, 0.085), (-0.26, -0.03)], seed=seed, popsize=25, maxiter=300, tol=1e-9, polish=False)
+    r = differential_evolution(cost, [(-0.085, 0.085), (-0.22, -0.03), (-0.085, 0.085), (-0.22, -0.03)], seed=seed, popsize=25, maxiter=300, tol=1e-9, polish=False)
     return float(r.fun), r.x.tolist()
 
 if __name__ == "__main__":
@@ -88,6 +92,21 @@ if __name__ == "__main__":
             n_ = rot(s[i][1]) @ np.array([0, 1.0]); Fv = -1.5 * 100 * G * n_
             Cn = s[i + 1][0] + rot(s[i + 1][1]) @ np.array([xo, 0]); Cp = s[i - 1][0] + rot(s[i - 1][1]) @ np.array([xo, 0])
             F.append(abs(-(Fv @ (Cn - Cp)) / (s[i + 1][4] - s[i - 1][4])))
-    info["screw_force_hold100_N"] = round(max(F)); info["frames"] = [dict(Q=np.round(p[0], 4).tolist(), phi=round(float(p[1]), 2), P1=np.round(p[2], 4).tolist(), P2=np.round(p[3], 4).tolist()) for p in s[::14]]
+    info["screw_force_hold100_N"] = round(max(F))
+    # statics of the seat body: link B-c2 is a two-force member; carriage reacts force normal to the rail + moment (in-plane);
+    # the screw takes the force along the rail. Out of plane: the seat load acts ~0.25 m from the rail plane -> torsion/roll moment.
+    m2 = lambda r, w: r[0] * w[1] - r[1] * w[0]; worst = dict(screw=0, link=0, normal=0, moment=0)
+    for xo in V5.XOFF:
+        for i in range(0, len(s), 10):
+            Q, phi, X, Y = s[i][0], s[i][1], s[i][2], s[i][3]; n_ = rot(phi) @ np.array([0, 1.0]); Fv = -1.5 * 100 * G * n_
+            C = Q + rot(phi) @ np.array([xo, 0]); uL = (Y - g["B"]) / np.hypot(*(Y - g["B"])); d_ = g["d"]; nr = np.array([-d_[1], d_[0]])
+            # unknowns: link force fl (along uL at Y), rail force: screw fs (along d at X), normal fn (along nr at X), moment Mc
+            # take the carriage able to resist moment (profile guide): solve fs, fn, fl with Mc = moment balance remainder about X using fl
+            # choose fl so the carriage moment is zero if possible (link takes the rotation): moment about X: (C-X)xFv + (Y-X)x(fl uL) = 0
+            fl = -m2(C - X, Fv) / m2(Y - X, uL)
+            rest = -(Fv + fl * uL); fs = rest @ d_; fn = rest @ nr
+            worst = dict(screw=max(worst["screw"], abs(fs)), link=max(worst["link"], abs(fl)), normal=max(worst["normal"], abs(fn)), moment=worst["moment"])
+    info["forces_hold100_N"] = {k: round(v) for k, v in worst.items() if k != "moment"}
+    info["torsion_hold100_Nm"] = round(1.5 * 100 * G * 0.25); info["frames"] = [dict(Q=np.round(p[0], 4).tolist(), phi=round(float(p[1]), 2), P1=np.round(p[2], 4).tolist(), P2=np.round(p[3], 4).tolist()) for p in s[::14]]
     json.dump(dict(note=__doc__, x=v, mech=info, summary=summ, users=R), open(os.path.join(OUT, "slider.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     print("summary", summ, "screw force", info["screw_force_hold100_N"]); print("done", round(time.time() - t0), "s")
