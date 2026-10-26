@@ -28,6 +28,8 @@ OUT = os.path.join(HERE, "seat_1dof"); W = 0.24; STAGES = (0.15, 0.35, 0.55, 0.7
 MECH = os.environ.get("CUSH_MECH", "layout")
 if MECH == "layout":
     V = np.array(json.load(open(os.path.join(OUT, "layout.json")))["x"])
+elif MECH.startswith("v5-"):
+    V = np.array(json.load(open(os.path.join(OUT, "v5.json")))["layouts"][MECH[3:]]["x"])
 else:
     FB = json.load(open(os.path.join(OUT, "fourbar.json")))["mech"]["1000.0"]; V = np.array(FB["A"] + FB["B"] + FB["c1"] + FB["c2"])
 
