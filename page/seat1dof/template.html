@@ -1,0 +1,527 @@
+<title>单自由度坐板</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column for the argument, wide bands for the sagittal drawings; a sticky person picker shared by every
+   step so the same user is followed from posture to mechanism. Palette kept from the project's v13 page (night indigo, amber
+   seat), plus a steel tone for links and pivots. */
+:root{
+  --bg:#f1f2f5; --surface:#ffffff; --sunk:#e8eaf0; --ink:#151b2c; --ink2:#4a5368; --muted:#7d8598; --line:#dde1ea;
+  --night:#2c3b6b; --amber:#b86e0c; --amber-bg:#fbf0dc; --amber-line:#ecd2a6;
+  --good:#1f7a52; --bad:#b4352f; --good-bg:#e3f2ea; --bad-bg:#f8e4e2;
+  --body:#d9c6b0; --body-edge:#9a7b5c; --limb:#c4ab90; --bed:#d4d9e3; --mat:#e7eaf1; --seat:#e09a3a; --pad:#b45f0a;
+  --steel:#4f6787; --steel2:#8ea0b8; --path:#2a78d6; --env:#9aa6bd; --chosen:#eb6834;
+  --font-display:"Noto Serif SC","Songti SC","STSong",serif;
+  --font-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d111d; --surface:#151b2b; --sunk:#10162a; --ink:#e8ebf3; --ink2:#b3b9ca; --muted:#7f869a; --line:#273049;
+  --night:#9fb2ec; --amber:#f0a63c; --amber-bg:#2a2416; --amber-line:#5a4826;
+  --good:#5cc999; --bad:#ef7a72; --good-bg:#14291f; --bad-bg:#2f1715;
+  --body:#6e5f50; --body-edge:#b39577; --limb:#7d6b59; --bed:#2c3550; --mat:#36405e; --seat:#d9973f; --pad:#f0b060;
+  --steel:#8fa6c6; --steel2:#5a6d88; --path:#5b9cf0; --env:#4c587a; --chosen:#f08050;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d111d; --surface:#151b2b; --sunk:#10162a; --ink:#e8ebf3; --ink2:#b3b9ca; --muted:#7f869a; --line:#273049;
+  --night:#9fb2ec; --amber:#f0a63c; --amber-bg:#2a2416; --amber-line:#5a4826;
+  --good:#5cc999; --bad:#ef7a72; --good-bg:#14291f; --bad-bg:#2f1715;
+  --body:#6e5f50; --body-edge:#b39577; --limb:#7d6b59; --bed:#2c3550; --mat:#36405e; --seat:#d9973f; --pad:#f0b060;
+  --steel:#8fa6c6; --steel2:#5a6d88; --path:#5b9cf0; --env:#4c587a; --chosen:#f08050;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15.5px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1120px;margin:0 auto}
+.col{max-width:760px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.3;margin:0}
+h1{font-size:clamp(32px,5vw,48px);letter-spacing:.02em}
+h2{font-size:clamp(22px,3vw,28px)}
+h3{font-size:16.5px}
+p{margin:0}
+.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .ink2{color:var(--ink2)}
+header.top{padding-block:48px 28px;display:grid;gap:18px}
+.eyebrow{font-size:12.5px;letter-spacing:.14em;color:var(--amber);font-weight:500}
+.lede{font-size:17.5px;color:var(--ink2);max-width:760px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:6px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:2px;min-width:0}
+.kpi .v{font-family:var(--font-mono);font-size:26px;font-weight:500;line-height:1.2}
+.kpi .k{font-size:13px;color:var(--ink2)}
+.kpi .c{font-size:12.5px;color:var(--muted)}
+.v.good{color:var(--good)} .v.bad{color:var(--bad)}
+nav.steps{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  padding-block:10px;display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
+nav.steps a{color:var(--ink2);text-decoration:none;font-size:13.5px;white-space:nowrap}
+nav.steps a:hover,nav.steps a:focus-visible{color:var(--night)}
+nav.steps .sep{color:var(--line)}
+.picker{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px;margin-left:auto}
+.picker label{display:flex;gap:6px;align-items:center;color:var(--ink2)}
+select,button,input[type=range]{font:inherit;color:var(--ink)}
+select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-size:13px}
+button{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 12px;cursor:pointer;font-size:13px}
+button:hover{border-color:var(--night)}
+:focus-visible{outline:2px solid var(--night);outline-offset:2px}
+section{padding-block:44px 8px;display:grid;gap:18px;scroll-margin-top:110px}
+.step{font-family:var(--font-mono);font-size:13px;color:var(--amber);letter-spacing:.06em}
+.prose{display:grid;gap:12px;max-width:760px}
+.prose b{font-weight:600}
+.band{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.band{grid-template-columns:minmax(0,1fr)}}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:8px;min-width:0}
+.fig .cap{font-size:13px;color:var(--ink2);line-height:1.6}
+.fig .ttl{font-size:13.5px;font-weight:500}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--font-body)}
+.player{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px}
+.player input[type=range]{flex:1 1 180px;min-width:0;accent-color:var(--amber)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px 14px;font-size:12.5px}
+.readout div{display:grid;min-width:0}
+.readout span:first-child{color:var(--muted)}
+.readout span:last-child{font-family:var(--font-mono);font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:500;color:var(--ink2);white-space:nowrap;background:var(--surface)}
+#checkTable thead th{position:sticky;top:0;z-index:1}
+td.n,th.n{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tscroll{overflow-x:auto}
+.chip{display:inline-block;font-size:11.5px;padding:0 7px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.chip.good{background:var(--good-bg);color:var(--good);border-color:transparent}
+.chip.bad{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+.note{background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--r);padding:12px 16px;font-size:14px;display:grid;gap:6px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:6px;min-width:0;align-content:start}
+.card h3{font-size:15px}
+.card p,.card li{font-size:13.5px;color:var(--ink2)}
+ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button[aria-pressed=true]{background:var(--night);color:var(--surface);border-color:var(--night)}
+footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+@media (max-width:640px){nav.steps{position:static}.picker{margin-left:0}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">床边起身台 · 坐板设计 · 矢状面</div>
+  <h1>单自由度坐板</h1>
+  <p class="lede" id="lede"></p>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<nav class="steps" aria-label="设计步骤">
+  <a href="#plan">1 轨迹规划</a><span class="sep">›</span>
+  <a href="#posture">2 姿势轨迹</a><span class="sep">›</span>
+  <a href="#assist">3 助力位置</a><span class="sep">›</span>
+  <a href="#seat">4 坐垫位置</a><span class="sep">›</span>
+  <a href="#mech">5 机构</a><span class="sep">›</span>
+  <a href="#check">6 验证</a><span class="sep">›</span>
+  <a href="#limits">7 局限</a>
+  <div class="picker" aria-label="选择用户">
+    <label for="selH">身高<select id="selH"></select></label>
+    <label for="selR">臀部厚度<select id="selR"></select></label>
+    <label for="selP">起身习惯<select id="selP"></select></label>
+    <label for="selX">脚位<select id="selX"></select></label>
+  </div>
+</nav>
+
+<section id="plan">
+  <div class="step">步骤 1</div>
+  <h2>轨迹规划：先定义要服务的人</h2>
+  <div class="prose">
+    <p>坐板只有一个自由度，意味着它只能沿<b>一条</b>固定曲线运动，曲线上每个位置的前倾角也是固定的。所以设计顺序必须反过来：先列出要服务的人，看他们起身时身体怎么走，再决定坐板该推哪里、该在哪里，最后才是用什么机构走出这条曲线。</p>
+    <p>用户集按三类差异组合，共 81 人。另外把驼背（躯干至少前倾 30°）作为体态变体，只影响放手时的费力，不影响坐板几何。</p>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3>体型</h3><ul><li>身高 1.50 / 1.60 / 1.75 m（下肢、躯干按身高比例）</li><li>臀部厚度 7 / 9 / 11 cm：偏瘦 / 一般 / 偏胖。它同时决定坐着时髋关节离座面多高，以及大腿后侧轮廓的位置</li></ul></div>
+    <div class="card"><h3>体态（起身习惯）</h3><ul><li>髋早前移：先前倾、髋先往前，再起身</li><li>髋匀速前移：髋前移与升高同步</li><li>髋晚前移：先直着往上，接近站直才往前</li><li>驼背：躯干至少前倾 30°</li></ul></div>
+    <div class="card"><h3>脚位</h3><ul><li>踝关节在床沿前 25 / 29 / 33 cm</li><li>坐板与床面齐平（0.42 m），坐时髋在床沿前 10 cm</li><li>坐标：x 从床沿向前，z 从地面向上，单位 m</li></ul></div>
+  </div>
+</section>
+
+<section id="posture">
+  <div class="step">步骤 2</div>
+  <h2>人的姿势轨迹</h2>
+  <div class="prose"><p>每个人从坐到站，髋从床沿前 10 cm 走到踝关节正上方，同时升高 30–45 cm。不同的人，这条路径差别很大：起身习惯决定髋什么时候往前，身高决定站直时髋有多高。坐板要跟着的，正是这一束路径。</p></div>
+  <div class="band">
+    <div class="fig">
+      <div class="ttl">选中用户的起身过程（矢状面）</div>
+      <svg id="svgPose" viewBox="0 0 560 560" role="img" aria-label="选中用户起身的矢状面火柴人"></svg>
+      <div class="player"><button id="play1" type="button">播放</button><input id="prog1" type="range" min="0" max="1000" value="0" aria-label="起身进度"><span class="mono" id="progLbl1">0%</span></div>
+    </div>
+    <div class="fig">
+      <div class="ttl">81 人的髋关节路径</div>
+      <svg id="svgHip" viewBox="0 0 440 400" role="img" aria-label="81 位用户的髋关节轨迹"></svg>
+      <div class="legend"><span><i style="background:var(--env)"></i>其他 80 人</span><span><i style="background:var(--path)"></i>选中用户</span></div>
+      <p class="cap">横轴为髋到床沿的水平距离，纵轴为髋高。同样升到 0.70 m，髋早前移的人已经在床沿前 20 cm 以上，髋晚前移的人还在 12 cm 左右。竖直升降的坐板（前缘在 14 cm）只能服务后一种人。</p>
+    </div>
+  </div>
+</section>
+
+<section id="assist">
+  <div class="step">步骤 3</div>
+  <h2>助力位置：坐板该推身体哪里</h2>
+  <div class="prose">
+    <p>坐板最多推 0.5 倍体重。同样大的力，推在身体不同位置，省下的力气不同：推在骨盆上（臀部、坐骨），髋和膝都省力；推在大腿上，只有膝省力，髋还得自己撑。所以接触点越靠近臀部越好，往大腿下方走就开始变差。</p>
+    <p>下图是 5 个候选位置在起身不同阶段的费力（最吃力关节用到的力量比例，越低越好），取该组用户的中位数。</p>
+  </div>
+  <div class="band">
+    <div class="fig">
+      <div class="ttl">费力 vs 助力位置</div>
+      <svg id="svgAssist" viewBox="0 0 520 330" role="img" aria-label="不同助力位置的费力"></svg>
+      <div class="legend" id="assistLegend"></div>
+    </div>
+    <div class="fig">
+      <div class="ttl">身体后侧轮廓上的 5 个候选点（选中用户，起身 1/3）</div>
+      <svg id="svgAssistBody" viewBox="0 0 420 330" role="img" aria-label="身体轮廓上的助力点"></svg>
+      <p class="cap" id="assistCap"></p>
+    </div>
+  </div>
+  <div class="note" id="assistNote"></div>
+</section>
+
+<section id="seat">
+  <div class="step">步骤 4</div>
+  <h2>坐垫位置：81 人各自需要的坐板轨迹，和我们选的那一条</h2>
+  <div class="prose">
+    <p>对每个人，求出“理想坐板”：坐板保持坐着时和大腿的相对位置，跟着大腿往前、往上、前倾，前倾到 30° 就不再继续倾斜，最高到 0.66 m。81 人就有 81 条曲线。</p>
+    <p>单自由度只能选一条。选法：在“髋早前移”的候选人里逐一试，用他的曲线去服务全部 81 人，挑出既不让任何人往前滑出座面（≤ 2 cm），坐回时也都能落在座面上，放手费力又最低的那一条。按这条曲线走，坐板对其他人只会“跑到人下面”，相对运动都在安全方向；代价是对髋晚前移的人，接触点会落到大腿更下方，所以坐板前缘要做成加长的软托腿垫。</p>
+  </div>
+  <div class="band">
+    <div class="fig">
+      <div class="ttl">坐板中心轨迹包络（81 人）与设计曲线</div>
+      <svg id="svgEnv" viewBox="0 0 520 420" role="img" aria-label="坐板轨迹包络与设计曲线"></svg>
+      <div class="legend"><span><i style="background:var(--env)"></i>每人的理想坐板中心轨迹</span><span><i style="background:var(--chosen)"></i>设计曲线（每隔一段画出坐板姿态）</span><span><i style="background:var(--path)"></i>选中用户</span></div>
+    </div>
+    <div class="fig">
+      <div class="ttl">候选曲线比较</div>
+      <div class="tscroll"><table id="candTable"></table></div>
+      <p class="cap">每行代表“用这个人的曲线去服务全部 81 人”。前滑：人往前滑出座面的最大距离；坐回余量：坐回时臀部落点离坐板前缘的最小距离（负 = 落到前缘外）；托腿：接触点最远落在大腿后侧多远。</p>
+    </div>
+  </div>
+</section>
+
+<section id="mech">
+  <div class="step">步骤 5</div>
+  <h2>机构：双曲线导轨 + 一个推杆</h2>
+  <div class="prose" id="mechProse"></div>
+  <div class="band">
+    <div class="fig">
+      <div class="ttl">机构与人一起动（选中用户）</div>
+      <svg id="svgMech" viewBox="0 0 560 560" role="img" aria-label="双导轨坐板随起身运动"></svg>
+      <div class="player"><button id="play2" type="button">播放</button><input id="prog2" type="range" min="0" max="1000" value="350" aria-label="起身进度"><span class="mono" id="progLbl2">35%</span></div>
+      <div class="readout" id="mechRead"></div>
+    </div>
+    <div class="fig">
+      <div class="ttl">尺寸（交给 CAD）</div>
+      <div class="tscroll"><table id="dimTable"></table></div>
+      <div class="ttl" style="margin-top:6px">推杆力与导轨受力</div>
+      <svg id="svgTorque" viewBox="0 0 440 230" role="img" aria-label="推杆力随坐板高度"></svg>
+      <svg id="svgMu" viewBox="0 0 440 200" role="img" aria-label="两条导轨的受力随坐板高度"></svg>
+    </div>
+  </div>
+</section>
+
+<section id="check">
+  <div class="step">步骤 6</div>
+  <h2>验证：按设计曲线重跑 81 人</h2>
+  <div class="prose"><p>双导轨能精确走出设计曲线，所以最后一步直接用这条曲线重新检查每个人：往前滑多少、坐回能否落在座面、坐板最后支撑到多高、放手那一刻多费力。和现方案（竖直升降、座面水平）放在一起比。</p></div>
+  <div class="kpis" id="checkKpis"></div>
+  <div class="fig">
+    <div class="tabs" role="group" aria-label="筛选"><button type="button" data-f="all" aria-pressed="true">全部 81 人</button><button type="button" data-f="bad" aria-pressed="false">有不合格项</button><button type="button" data-f="p0.6" aria-pressed="false">髋早前移</button><button type="button" data-f="p2.5" aria-pressed="false">髋晚前移</button></div>
+    <div class="tscroll" style="max-height:560px;overflow-y:auto"><table id="checkTable"></table></div>
+    <p class="cap">点击行可在上面的图里切换到该用户。合格线：前滑 ≤ 2 cm，坐回余量 ≥ 0，坐板有有效支撑。费力为放手那一刻的值，驼背列为躯干至少前倾 30° 时的值。</p>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="step">步骤 7</div>
+  <h2>局限与下一步</h2>
+  <div class="grid3">
+    <div class="card"><h3>模型假设</h3><ul><li>人体后侧是刚体轮廓：以髋为圆心的臀部圆弧，加大腿后侧直线；骨盆假设保持直立</li><li>起身路径只有 3 种代表习惯，需要真实起身动作数据核对</li><li>静力学，不含速度和冲击；坐板接触按无摩擦算</li></ul></div>
+    <div class="card"><h3>待验证</h3><ul><li>托腿垫压在大腿后侧的压强和舒适度（0.5 倍体重分到约 8 × 24 cm²，约 15 kPa）</li><li>前倾 30° 时如果人往回坐，需要控制器迅速放平座面，否则会顺坡下滑</li><li>杆件、铰链按 100 kg、1.5 倍体重静载复核强度</li></ul></div>
+    <div class="card"><h3>交给 CAD / 仿真</h3><ul id="cadList"></ul></div>
+  </div>
+</section>
+
+<footer>
+  <p>数据来源：<span class="mono">model/calc_v13/seat_1dof_design.py</span> → <span class="mono">seat_1dof/design.json</span>；人体力学模型同 v13（2D 准静态，关节力矩 / 力量的最大值即“费力”）。</p>
+  <p>前一轮对比（竖直 vs 曲线的相对运动）：<span class="mono">model/calc_v13/seat_trajectory_summary.md</span></p>
+</footer>
+</div>
+
+<script>
+const D = /*__DATA__*/{};
+const $ = s => document.querySelector(s);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function txt(parent,x,y,s,attrs){const t=el("text",Object.assign({x,y,fill:"var(--ink2)","font-size":11},attrs||{}),parent);t.textContent=s;return t;}
+const fmt=(v,d=1)=>v==null?"—":(+v).toFixed(d);
+const sg=v=>v==null?"—":((v>0?"+":"")+(+v).toFixed(1));
+const HABIT={0.6:"髋早前移",1:"髋匀速前移",2.5:"髋晚前移"}; const RBN={0.07:"偏瘦 7 cm",0.09:"一般 9 cm",0.11:"偏胖 11 cm"};
+const U = D.users; const key=(H,r,p,x)=>`H${H.toFixed(2)} r${r.toFixed(2)} p${Number.isInteger(p)?p.toFixed(1):p} xa${x.toFixed(2)}`;
+let sel = {H:1.60,r:0.09,p:1,x:0.29};
+const userKey=()=>key(sel.H,sel.r,sel.p,sel.x);
+function uniq(a){return [...new Set(a)].sort((x,y)=>x-y)}
+function fillSel(id,vals,lab,cur,f){const s=$(id);s.innerHTML="";vals.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=lab(v);if(v==cur)o.selected=true;s.appendChild(o)});s.onchange=()=>{f(+s.value);renderAll()}}
+fillSel("#selH",uniq(U.map(u=>u.H)),v=>v.toFixed(2)+" m",sel.H,v=>sel.H=v);
+fillSel("#selR",uniq(U.map(u=>u.r_b)),v=>RBN[v]||v,sel.r,v=>sel.r=v);
+fillSel("#selP",uniq(U.map(u=>u.p)),v=>HABIT[v],sel.p,v=>sel.p=v);
+fillSel("#selX",uniq(U.map(u=>u.x_a)),v=>(v*100).toFixed(0)+" cm",sel.x,v=>sel.x=v);
+function syncSel(){$("#selH").value=sel.H;$("#selR").value=sel.r;$("#selP").value=sel.p;$("#selX").value=sel.x;}
+
+/* ---------- world -> svg for the sagittal drawings ---------- */
+function frameMap(svg,x0,x1,z0,z1,pad){const vb=svg.viewBox.baseVal;const sx=(vb.width-2*pad)/(x1-x0), sz=(vb.height-2*pad)/(z1-z0), s=Math.min(sx,sz);
+  return {X:x=>pad+(x-x0)*s, Z:z=>vb.height-pad-(z-z0)*s, s};}
+const rotv=(phi,lx,lz)=>{const p=phi*Math.PI/180;return [Math.cos(p)*lx+Math.sin(p)*lz, -Math.sin(p)*lx+Math.cos(p)*lz]};
+function poly(g,M,pts,attrs){return el("polygon",Object.assign({points:pts.map(p=>M.X(p[0])+","+M.Z(p[1])).join(" ")},attrs),g)}
+function line(g,M,a,b,attrs){return el("line",Object.assign({x1:M.X(a[0]),y1:M.Z(a[1]),x2:M.X(b[0]),y2:M.Z(b[1])},attrs),g)}
+function pline(g,M,pts,attrs){return el("polyline",Object.assign({points:pts.map(p=>M.X(p[0])+","+M.Z(p[1])).join(" "),fill:"none"},attrs),g)}
+
+function scene(g,M){
+  poly(g,M,[[-0.6,0],[0,0],[0,0.42],[-0.6,0.42]],{fill:"var(--bed)"});
+  poly(g,M,[[-0.6,0.36],[0,0.36],[0,0.42],[-0.6,0.42]],{fill:"var(--mat)"});
+  txt(g,M.X(-0.30),M.Z(0.2),"床",{"text-anchor":"middle",fill:"var(--muted)","font-size":12});
+  line(g,M,[-0.6,0],[1.0,0],{stroke:"var(--muted)","stroke-width":1});
+  poly(g,M,[[0.10,0],[0.62,0],[0.62,0.013],[0.10,0.013]],{fill:"var(--steel2)",opacity:.6});
+}
+function interp(frames,f){let i=0;while(i<frames.length-1&&frames[i+1].f<f)i++;return frames[Math.min(i,frames.length-1)];}
+function ik(S,P,L1,L2){const dx=P[0]-S[0],dz=P[1]-S[1],d=Math.hypot(dx,dz);if(d>L1+L2-1e-4)return null;const a=Math.atan2(dz,dx);const b=Math.acos(Math.max(-1,Math.min(1,(L1*L1+d*d-L2*L2)/(2*L1*d))));return [S[0]+L1*Math.cos(a-b),S[1]+L1*Math.sin(a-b)];}
+function person(g,M,A,fr,u){
+  const [Ls,Lt,Ltr,Lua,Lfa]=A.L, rb=u.r_b, Hp=fr.Hp, K=fr.K, An=fr.A;
+  const th=Math.atan2(-(K[1]-Hp[1]),K[0]-Hp[0]); const uu=[Math.cos(th),-Math.sin(th)];
+  const tr=fr.tr*Math.PI/180, ut=[Math.sin(tr),Math.cos(tr)], S=[Hp[0]+Ltr*ut[0],Hp[1]+Ltr*ut[1]];
+  const foot=A.foot; poly(g,M,[[An[0]-0.25*foot,0.013],[An[0]+0.75*foot,0.013],[An[0]+0.03,An[1]+0.02],[An[0]-0.03,An[1]+0.025]],{fill:"var(--limb)"});
+  // back outline: buttock arc then back of thigh
+  const pts=[]; const thd=th*180/Math.PI;
+  for(let gdeg=-95;gdeg<=-thd;gdeg+=5){const gg=gdeg*Math.PI/180;pts.push([Hp[0]+rb*Math.sin(gg),Hp[1]-rb*Math.cos(gg)])}
+  const T0=[Hp[0]-rb*Math.sin(th),Hp[1]-rb*Math.cos(th)]; const Lk=Math.hypot(K[0]-T0[0],K[1]-T0[1]);
+  pts.push([T0[0]+uu[0]*Lk*0.92,T0[1]+uu[1]*Lk*0.92]);
+  const nf=[Math.sin(th),Math.cos(th)];
+  const body=pts.concat([[K[0]+nf[0]*0.05,K[1]+nf[1]*0.05],[Hp[0]+nf[0]*0.07+ut[0]*0.05,Hp[1]+nf[1]*0.07+ut[1]*0.05]]);
+  poly(g,M,body,{fill:"var(--body)"}); pline(g,M,pts,{stroke:"var(--body-edge)","stroke-width":1.2});
+  line(g,M,An,K,{stroke:"var(--limb)","stroke-width":M.s*0.09,"stroke-linecap":"round"});
+  line(g,M,Hp,S,{stroke:"var(--body)","stroke-width":M.s*0.2,"stroke-linecap":"round"});
+  el("circle",{cx:M.X(S[0]+0.12*ut[0]),cy:M.Z(S[1]+0.12*ut[1]),r:M.s*0.085,fill:"var(--body)"},g);
+  const bar=[D.consts.bar_x,Math.min(Hp[1]-0.09,D.consts.top)+0.40]; const E=ik(S,bar,Lua,Lfa);
+  if(E){pline(g,M,[S,E,bar],{stroke:"var(--limb)","stroke-width":M.s*0.05,"stroke-linecap":"round","stroke-linejoin":"round"})}
+  el("circle",{cx:M.X(bar[0]),cy:M.Z(bar[1]),r:M.s*0.02,fill:"var(--ink)"},g);
+  [An,K,Hp].forEach(p=>el("circle",{cx:M.X(p[0]),cy:M.Z(p[1]),r:2.6,fill:"var(--body-edge)"},g));
+  return {T0,uu,th};
+}
+function seatShape(g,M,Q,phi,attrs){
+  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2, re=0.02, t=0.045, loc=[[-h,0]];
+  for(let a=0;a<=90;a+=15){const r=a*Math.PI/180;loc.push([h-re+re*Math.sin(r),-re+re*Math.cos(r)])}
+  loc.push([h-0.01,-t],[-h,-t]);
+  const W=loc.map(p=>{const v=rotv(phi,p[0],p[1]);return [Q[0]+v[0],Q[1]+v[1]]});
+  poly(g,M,W,Object.assign({fill:"var(--seat)"},attrs||{}));
+  const pad=[[h-0.035,0.0],[h,-0.004],[h,-0.03],[h-0.03,-0.045]].map(p=>{const v=rotv(phi,p[0],p[1]);return [Q[0]+v[0],Q[1]+v[1]]});
+  poly(g,M,pad,{fill:"var(--pad)",opacity:.85});
+}
+function plate(g,M){
+  const m=D.mech, T=m.track1.concat(m.track2, [m.D]);
+  const xs=T.map(p=>p[0]), zs=T.map(p=>p[1]); const x0=Math.max(0.0,Math.min(...xs)-0.035),x1=Math.max(...xs)+0.035,z0=Math.min(...zs)-0.035,z1=Math.max(...zs)+0.035;
+  el("rect",{x:M.X(x0),y:M.Z(z1),width:M.X(x1)-M.X(x0),height:M.Z(z0)-M.Z(z1),rx:6,fill:"var(--steel2)",opacity:.22,stroke:"var(--steel2)"},g);
+  line(g,M,[x0+0.02,z0],[x0+0.02,0],{stroke:"var(--steel2)","stroke-width":5});line(g,M,[x1-0.02,z0],[x1-0.02,0],{stroke:"var(--steel2)","stroke-width":5});
+  [m.track1,m.track2].forEach(T=>{pline(g,M,T,{stroke:"var(--steel)","stroke-width":M.s*0.032,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.35});
+    pline(g,M,T,{stroke:"var(--surface)","stroke-width":M.s*0.022,"stroke-linecap":"round","stroke-linejoin":"round"})});
+}
+function seatOutline(g,M,Q,phi){
+  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2,t=0.045;
+  const W=[[-h,0],[h,0],[h,-t],[-h,-t]].map(p=>{const v=rotv(phi,p[0],p[1]);return [Q[0]+v[0],Q[1]+v[1]]});
+  poly(g,M,W,{fill:"var(--seat)","fill-opacity":.18,stroke:"var(--chosen)","stroke-width":1.4});
+  el("circle",{cx:M.X(Q[0]),cy:M.Z(Q[1]),r:3,fill:"var(--chosen)"},g);
+}
+function linkage(g,M,s){
+  const m=D.mech; const cw=[m.c1,m.c2].map(c=>{const v=rotv(s.phi,c[0],c[1]);return [s.Q[0]+v[0],s.Q[1]+v[1]]});
+  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2;
+  const under=[[-h+0.02,-0.045],[h-0.03,-0.045]].map(p=>{const v=rotv(s.phi,p[0],p[1]);return [s.Q[0]+v[0],s.Q[1]+v[1]]});
+  poly(g,M,[under[0],under[1],cw[1],cw[0]],{fill:"var(--steel)",opacity:.45});
+  // actuator: housing from D, rod to roller 1
+  const Dp=m.D, P=cw[0], L=Math.hypot(P[0]-Dp[0],P[1]-Dp[1]), u=[(P[0]-Dp[0])/L,(P[1]-Dp[1])/L], hl=Math.min(m.act_len[0]-0.03,L-0.02);
+  line(g,M,Dp,[Dp[0]+u[0]*hl,Dp[1]+u[1]*hl],{stroke:"var(--steel)","stroke-width":M.s*0.05,"stroke-linecap":"round"});
+  line(g,M,Dp,P,{stroke:"var(--steel)","stroke-width":M.s*0.018,"stroke-linecap":"round"});
+  el("circle",{cx:M.X(Dp[0]),cy:M.Z(Dp[1]),r:4.5,fill:"var(--surface)",stroke:"var(--steel)","stroke-width":2},g);
+  txt(g,M.X(Dp[0])-8,M.Z(Dp[1])+16,"推杆",{"text-anchor":"end",fill:"var(--steel)","font-size":11,"font-weight":600});
+  cw.forEach((P,i)=>{el("circle",{cx:M.X(P[0]),cy:M.Z(P[1]),r:M.s*0.016,fill:"var(--ink)",stroke:"var(--surface)","stroke-width":1.5},g);
+    txt(g,M.X(P[0])-10,M.Z(P[1])+4,i?"滚轮 2":"滚轮 1",{"text-anchor":"end",fill:"var(--steel)","font-size":10.5})});
+}
+/* ---------- step 2 ---------- */
+let t1=0,t2=0.35,anim1=null,anim2=null;
+function drawPose(){
+  const svg=$("#svgPose");svg.innerHTML="";const M=frameMap(svg,-0.30,0.95,-0.02,1.55,12);const g=el("g",{},svg);scene(g,M);
+  const A=D.anim[userKey()], u=U.find(x=>x.key===userKey()); const fr=interp(A.frames,t1);
+  pline(g,M,A.frames.map(f=>f.Hp),{stroke:"var(--path)","stroke-width":1.5,"stroke-dasharray":"4 4"});
+  person(g,M,A,fr,u);
+  txt(g,M.X(-0.28),M.Z(1.48),`髋高 ${fr.Hp[1].toFixed(2)} m · 髋在床沿前 ${(fr.Hp[0]*100).toFixed(0)} cm · 躯干前倾 ${fr.tr.toFixed(0)}°`,{"font-size":12,fill:"var(--ink)"});
+  $("#progLbl1").textContent=Math.round(t1*100)+"%";
+}
+function drawHip(){
+  const svg=$("#svgHip");svg.innerHTML="";const vb=svg.viewBox.baseVal;const L=48,R=12,T=12,B=40;
+  const x0=0.0,x1=0.40,z0=0.48,z1=1.0;const X=x=>L+(x-x0)/(x1-x0)*(vb.width-L-R),Z=z=>vb.height-B-(z-z0)/(z1-z0)*(vb.height-T-B);
+  const g=el("g",{},svg);
+  for(let z=0.5;z<=1.0001;z+=0.1){el("line",{x1:L,x2:vb.width-R,y1:Z(z),y2:Z(z),stroke:"var(--line)"},g);txt(g,L-6,Z(z)+4,z.toFixed(1),{"text-anchor":"end"})}
+  for(let x=0;x<=0.40001;x+=0.1){txt(g,X(x),vb.height-B+16,(x*100).toFixed(0),{"text-anchor":"middle"})}
+  txt(g,(L+vb.width)/2,vb.height-6,"髋在床沿前 (cm)",{"text-anchor":"middle"});txt(g,4,vb.height-B+16,"髋高 (m)",{"font-size":10});
+  el("rect",{x:Math.max(L,X(-0.03)),y:T,width:X(0.14)-Math.max(L,X(-0.03)),height:vb.height-T-B,fill:"var(--amber-bg)"},g);
+  txt(g,X(0.055),T+14,"竖直坐板范围",{"text-anchor":"middle",fill:"var(--amber)","font-size":10.5});
+  const k=userKey();
+  for(const kk in D.anim){if(kk===k)continue;el("polyline",{points:D.anim[kk].frames.map(f=>X(f.Hp[0])+","+Z(f.Hp[1])).join(" "),fill:"none",stroke:"var(--env)","stroke-width":1,opacity:.6},g)}
+  el("polyline",{points:D.anim[k].frames.map(f=>X(f.Hp[0])+","+Z(f.Hp[1])).join(" "),fill:"none",stroke:"var(--path)","stroke-width":2.5},g);
+  const fr=interp(D.anim[k].frames,t1); el("circle",{cx:X(fr.Hp[0]),cy:Z(fr.Hp[1]),r:4.5,fill:"var(--path)"},g);
+}
+
+/* ---------- step 3 ---------- */
+const STG=[0.1,0.3,0.5,0.65], STC=["#9fb7dd","#5f8fd0","#2a5fb0","#163a78"];
+function drawAssist(){
+  const svg=$("#svgAssist");svg.innerHTML="";const vb=svg.viewBox.baseVal;const L=150,R=16,T=10,B=34;
+  const pts=D.assist.points; const rows=D.assist.rows;
+  const med=(arr)=>{arr=arr.filter(v=>v!=null).sort((a,b)=>a-b);return arr.length?arr[Math.floor(arr.length/2)]:null};
+  const xmax=0.45; const X=v=>L+v/xmax*(vb.width-L-R); const rowH=(vb.height-T-B)/pts.length; const g=el("g",{},svg);
+  for(let v=0;v<=xmax+1e-9;v+=0.1){el("line",{x1:X(v),x2:X(v),y1:T,y2:vb.height-B,stroke:"var(--line)"},g);txt(g,X(v),vb.height-B+14,v.toFixed(1),{"text-anchor":"middle"})}
+  txt(g,(L+vb.width)/2,vb.height-4,"费力（最吃力关节用到的力量比例，越低越好）",{"text-anchor":"middle"});
+  pts.forEach((p,i)=>{const y0=T+i*rowH;txt(g,L-8,y0+rowH/2+4,p,{"text-anchor":"end",fill:"var(--ink)","font-size":11.5});
+    STG.forEach((f,j)=>{const v=med(rows.filter(r=>r.f===f&&r.user.includes("H1.60 r0.09")).map(r=>r.effort[i]));if(v==null)return;
+      const y=y0+6+j*(rowH-12)/STG.length; el("rect",{x:L,y,width:X(v)-L,height:(rowH-12)/STG.length-2,rx:2,fill:STC[j]},g);
+      if(j===STG.length-1||j===0)txt(g,X(v)+4,y+7,v.toFixed(2),{"font-size":9.5,fill:"var(--ink2)"});});});
+  $("#assistLegend").innerHTML=STG.map((f,j)=>`<span><i style="background:${STC[j]}"></i>起身 ${Math.round(f*100)}%</span>`).join("");
+  // body detail with the five points
+  const s2=$("#svgAssistBody");s2.innerHTML="";const A=D.anim[userKey()],u=U.find(x=>x.key===userKey());const fr=interp(A.frames,0.33);
+  const M=frameMap(s2,fr.Hp[0]-0.20,fr.Hp[0]+0.42,fr.Hp[1]-0.32,fr.Hp[1]+0.16,10);const g2=el("g",{},s2);
+  const o=person(g2,M,A,fr,u); const th=o.th, rb=u.r_b;
+  const P5=[]; {const gg=(-th*180/Math.PI-25)*Math.PI/180;P5.push([fr.Hp[0]+rb*Math.sin(gg),fr.Hp[1]-rb*Math.cos(gg)])}
+  [0,0.04,0.10,0.18].forEach(a=>P5.push([o.T0[0]+a*o.uu[0],o.T0[1]+a*o.uu[1]]));
+  const e=pts.map((_,i)=>med(rows.filter(r=>r.f===0.3&&r.user.includes("H1.60 r0.09")).map(r=>r.effort[i])));
+  const emin=Math.min(...e.filter(v=>v!=null)),emax=Math.max(...e.filter(v=>v!=null));
+  P5.forEach((p,i)=>{const w=(e[i]-emin)/(emax-emin+1e-9);el("circle",{cx:M.X(p[0]),cy:M.Z(p[1]),r:7,fill:w<0.34?"var(--good)":(w<0.67?"var(--amber)":"var(--bad)"),stroke:"var(--surface)","stroke-width":2},g2);
+    txt(g2,M.X(p[0])+(i?6:-10),M.Z(p[1])+(i?20:-10),String(i+1),{"font-size":12,"font-weight":700,fill:"var(--ink)","text-anchor":i?"start":"end"})});
+  $("#assistCap").textContent="编号同左图从上到下。颜色：绿 = 起身 30% 时费力最低的一档，红 = 最高一档。1、2 推在骨盆上，3–5 推在大腿上。";
+}
+
+/* ---------- step 4 ---------- */
+function drawEnv(){
+  const svg=$("#svgEnv");svg.innerHTML="";const M=frameMap(svg,-0.08,0.40,0.36,0.72,22);const g=el("g",{},svg);
+  for(let z=0.4;z<=0.70001;z+=0.05){line(g,M,[-0.08,z],[0.40,z],{stroke:"var(--line)"});txt(g,M.X(-0.08)+2,M.Z(z)-3,z.toFixed(2)+" m",{"font-size":10,fill:"var(--muted)"})}
+  for(let x=0;x<=0.40001;x+=0.1){line(g,M,[x,0.36],[x,0.72],{stroke:"var(--line)"});txt(g,M.X(x),M.Z(0.36)+14,(x*100).toFixed(0)+" cm",{"text-anchor":"middle","font-size":10,fill:"var(--muted)"})}
+  poly(g,M,[[-0.08,0.36],[0,0.36],[0,0.42],[-0.08,0.42]],{fill:"var(--bed)"});
+  for(const k in D.envelope){if(k===userKey())continue;pline(g,M,D.envelope[k].Q,{stroke:"var(--env)","stroke-width":1,opacity:.55})}
+  pline(g,M,D.envelope[userKey()].Q,{stroke:"var(--path)","stroke-width":2.2});
+  const P=D.design_curve.poses; pline(g,M,P.Q,{stroke:"var(--chosen)","stroke-width":3});
+  [0,12,23].forEach(i=>seatOutline(g,M,P.Q[i],P.phi[i]));
+  [0,12,23].forEach(i=>txt(g,M.X(P.Q[i][0])+12,M.Z(P.Q[i][1])-14,`前倾 ${P.phi[i].toFixed(0)}°`,{"font-size":11,fill:"var(--chosen)","font-weight":600}));
+  // candidate table
+  const C=D.design_curve.candidates, ch=D.design_curve.chosen; const keys=Object.keys(C).sort((a,b)=>C[a].E_max-C[b].E_max);
+  let h="<thead><tr><th>曲线来自</th><th class=n>前滑</th><th class=n>坐回余量</th><th class=n>托腿</th><th class=n>费力 中位/最差</th></tr></thead><tbody>";
+  keys.forEach(k=>{const c=C[k];const u=U.find(x=>x.key===k);const ok=c.fwd_max<=2&&c.catch_min>=0;
+    h+=`<tr${k===ch?' style="background:var(--amber-bg)"':''}><td style="white-space:nowrap">${u.H.toFixed(2)} m / 臀 ${(u.r_b*100).toFixed(0)} / 脚 ${(u.x_a*100).toFixed(0)}${k===ch?' <span class="chip good">选用</span>':''}</td><td class=n>${sg(c.fwd_max)}</td><td class="n" style="color:${c.catch_min<0?'var(--bad)':'inherit'}">${sg(c.catch_min)}</td><td class=n>${fmt(c.a_max,0)} cm</td><td class=n>${fmt(c.E_med,3)} / ${fmt(c.E_max,3)}</td></tr>`});
+  $("#candTable").innerHTML=h+"</tbody>";
+}
+
+/* ---------- step 5 ---------- */
+function seatAt(A,f){const fr=interp(A.frames,f);if(fr.seat)return fr;let last=null;for(const x of A.frames){if(x.seat&&x.f<=f)last=x}return Object.assign({},fr,{seat:last?last.seat:null,released:true});}
+function drawMech(){
+  const svg=$("#svgMech");svg.innerHTML="";const M=frameMap(svg,-0.30,0.95,-0.02,1.55,12);const g=el("g",{},svg);scene(g,M);
+  const A=D.anim[userKey()],u=U.find(x=>x.key===userKey());const fr=seatAt(A,t2);
+  plate(g,M); pline(g,M,D.mech.frames.map(f=>f.Q),{stroke:"var(--chosen)","stroke-width":1.4,"stroke-dasharray":"3 4"});
+  const s=fr.seat||D.mech.frames[0]; linkage(g,M,s); seatShape(g,M,s.Q,s.phi);
+  person(g,M,A,fr,u);
+  if(fr.C&&!fr.released){el("circle",{cx:M.X(fr.C[0]),cy:M.Z(fr.C[1]),r:5,fill:"var(--good)",stroke:"var(--surface)","stroke-width":1.5},g)}
+  txt(g,M.X(-0.28),M.Z(1.48),fr.released?"坐板已放手，停在最后支撑位置":"坐板随起身支撑中",{"font-size":12,fill:fr.released?"var(--amber)":"var(--good)","font-weight":600});
+  $("#progLbl2").textContent=Math.round(t2*100)+"%";
+  const ck=D.check.design[userKey()];
+  $("#mechRead").innerHTML=[["座面高度",s.Q[1].toFixed(3)+" m"],["座面前倾",s.phi.toFixed(1)+"°"],["累计前滑",fr.slip!=null&&!fr.released?sg(fr.slip*100)+" cm":"—"],["坐回余量",fr.catch!=null&&!fr.released?sg(fr.catch*100)+" cm":"—"],["最后支撑髋高",ck.release_hz?ck.release_hz.toFixed(2)+" m":"—"],["放手费力",fmt(ck.E0_release,3)]]
+    .map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("");
+}
+function lineChart(svg,xs,series,opt){
+  svg.innerHTML="";const vb=svg.viewBox.baseVal;const L=48,R=12,T=26,B=34;const g=el("g",{},svg);
+  const x0=opt.x0,x1=opt.x1,y0=opt.y0,y1=opt.y1;const X=x=>L+(x-x0)/(x1-x0)*(vb.width-L-R),Y=y=>vb.height-B-(y-y0)/(y1-y0)*(vb.height-T-B);
+  opt.yt.forEach(y=>{el("line",{x1:L,x2:vb.width-R,y1:Y(y),y2:Y(y),stroke:"var(--line)"},g);txt(g,L-6,Y(y)+4,String(y),{"text-anchor":"end"})});
+  opt.xt.forEach(x=>txt(g,X(x),vb.height-B+15,x.toFixed(2),{"text-anchor":"middle"}));
+  txt(g,(L+vb.width)/2,vb.height-4,opt.xl,{"text-anchor":"middle"});txt(g,4,12,opt.yl,{});
+  if(opt.band)el("rect",{x:L,width:vb.width-L-R,y:Y(opt.band[1]),height:Y(opt.band[0])-Y(opt.band[1]),fill:"var(--good-bg)"},g);
+  series.forEach(s=>{el("polyline",{points:xs.map((x,i)=>X(x)+","+Y(s.y[i])).join(" "),fill:"none",stroke:s.c,"stroke-width":2},g);
+    const i=s.labelAt??xs.length-1; txt(g,X(xs[i])-4,Y(s.y[i])-6,s.name,{"text-anchor":"end",fill:s.c,"font-size":11,"font-weight":600})});
+}
+function drawMechStatic(){
+  const m=D.mech, fa=D.fourbar_attempt, tv=m.travel;
+  $("#mechProse").innerHTML=`<p>坐板是刚体，既要到正确位置，又要有正确前倾角。全程它要往前走 <b class="num">${(tv.dx*100).toFixed(0)} cm</b>、往上走 <b class="num">${(tv.dz*100).toFixed(0)} cm</b>，同时前倾 <b class="num">${tv.phi}°</b>。</p>
+   <p>先试了四连杆（两根摇杆铰在底座上，坐板支架当连杆）。在床前、小腿后这块空间里，最好的四连杆仍有 <b class="num">${Math.max(...fa.circle_residual_mm).toFixed(0)} mm</b> 的轨迹偏差，前倾角也跟不准，达不到 1 cm 的要求，所以没有采用。</p>
+   <p>采用<b>双曲线导轨</b>：坐板支架上装两个滚轮，各自在左右侧板上的一条曲线槽里滚动；一个电动推杆从底座推滚轮 1。两个点各被一条槽约束，坐板就只剩一个自由度：推杆伸多少，坐板就在曲线上的哪个位置、前倾多少度。槽的形状就是两个滚轮在设计曲线上走过的路径，所以轨迹是精确的。侧板在坐板宽度之外，人的腿在两块侧板之间，不与槽干涉。</p>`;
+  const r=[["滚轮 1（坐板坐标，原点为座面中心）",`${m.c1.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],["滚轮 2（坐板坐标）",`${m.c2.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],
+    ["槽的最小曲率半径（槽 1 / 槽 2）",`${m.R_min.map(v=>(v*1000).toFixed(0)).join(" / ")} mm`],["推杆底座铰点（x, z）",`${m.D.map(v=>(v*1000).toFixed(0)).join(", ")} mm`],
+    ["推杆长度（收回 → 伸出）",`${(m.act_len[0]*1000).toFixed(0)} → ${(m.act_len[1]*1000).toFixed(0)} mm`],["推杆行程",`${(m.stroke*1000).toFixed(0)} mm`],
+    ["坐板中心路径长度",`${(tv.path_len*1000).toFixed(0)} mm`],
+    ["推杆力，起身（60 kg，推 0.5 倍体重）",`${m.F_act_lift60_N[0]} – ${m.F_act_lift60_N[1]} N`],
+    ["推杆力，静载（100 kg 坐下，1.5 倍体重）",`${m.F_act_hold100_N[0]} – ${m.F_act_hold100_N[1]} N`],["导轨槽最大法向力（静载）",`${m.N_slot_hold100_N} N`]];
+  $("#dimTable").innerHTML="<tbody>"+r.map(x=>`<tr><td>${x[0]}</td><td class=n>${x[1]}</td></tr>`).join("")+"</tbody>";
+  const fc=m.force_curve, zt=[0.42,0.48,0.54,0.60].filter(z=>z>=Math.min(...fc.z)-0.01&&z<=Math.max(...fc.z)+0.01);
+  const all=fc.hold100.concat(fc.lift60); const ymax=Math.ceil(Math.max(...all)/500)*500, ymin=Math.min(0,Math.floor(Math.min(...all)/500)*500);
+  lineChart($("#svgTorque"),fc.z,[{name:"静载 100 kg ×1.5",y:fc.hold100,c:"var(--bad)"},{name:"起身 60 kg ×0.5",y:fc.lift60,c:"var(--path)"}],
+    {x0:Math.min(...fc.z),x1:Math.max(...fc.z),y0:ymin,y1:ymax,yt:[ymin,ymax/2,ymax].filter((v,i,a)=>a.indexOf(v)===i),xt:zt,xl:"座面中心高度 (m)",yl:"推杆力 (N)，正 = 推"});
+  const nn=fc.N1.concat(fc.N2).map(Math.abs); const nmax=Math.ceil(Math.max(...nn)/500)*500;
+  lineChart($("#svgMu"),fc.z,[{name:"槽 1",y:fc.N1.map(Math.abs),c:"var(--steel)"},{name:"槽 2",y:fc.N2.map(Math.abs),c:"var(--chosen)",labelAt:Math.floor(fc.z.length/2)}],
+    {x0:Math.min(...fc.z),x1:Math.max(...fc.z),y0:0,y1:nmax,yt:[0,nmax/2,nmax],xt:zt,xl:"座面中心高度 (m)",yl:"导轨槽法向力，静载 (N)"});
+}
+
+/* ---------- step 6 ---------- */
+let filt="all";
+const okRow=c=>c.release_hz!=null&&c.fwd_slip_max_cm<=2&&c.min_catch_cm>=0;
+function drawCheck(){
+  const F=D.check.design,V=D.check.vertical; const ks=Object.keys(F);
+  const st=(o,k,fn)=>{const a=ks.map(x=>o[x][k]).filter(v=>v!=null);return a.length?fn(a):null};
+  const med=a=>{a=[...a].sort((x,y)=>x-y);return a[Math.floor(a.length/2)]};
+  const nok=ks.filter(k=>okRow(F[k])).length, nokV=ks.filter(k=>okRow(V[k])).length;
+  $("#checkKpis").innerHTML=[
+    [`${nok} / ${ks.length}`,"新坐板：全部合格的人数",`竖直升降：${nokV} / ${ks.length}`,nok===ks.length?"good":""],
+    [sg(st(F,"fwd_slip_max_cm",a=>Math.max(...a)))+" cm","最大往前滑",`竖直升降：${sg(st(V,"fwd_slip_max_cm",a=>Math.max(...a)))} cm`,""],
+    [sg(st(F,"min_catch_cm",a=>Math.min(...a)))+" cm","最小坐回余量",`竖直升降：${sg(st(V,"min_catch_cm",a=>Math.min(...a)))} cm`,""],
+    [fmt(st(F,"E0_release",med),3)+" / "+fmt(st(F,"E0_release",a=>Math.max(...a)),3),"放手费力 中位 / 最差",`竖直升降：${fmt(st(V,"E0_release",med),3)} / ${fmt(st(V,"E0_release",a=>Math.max(...a)),3)}`,""]]
+    .map(([v,k,c,cl])=>`<div class="kpi"><span class="v ${cl}">${v}</span><span class="k">${k}</span><span class="c">${c}</span></div>`).join("");
+  let rowsK=ks.filter(k=>filt==="all"||(filt==="bad"&&!okRow(F[k]))||(filt.startsWith("p")&&k.includes(" "+filt+" ")));
+  let h="<thead><tr><th>用户</th><th class=n>前滑 最大</th><th class=n>坐回余量</th><th class=n>最后支撑髋高</th><th class=n>放手费力</th><th class=n>驼背</th><th class=n>竖直：前滑 / 余量 / 费力</th><th>结论</th></tr></thead><tbody>";
+  rowsK.forEach(k=>{const c=F[k],v=V[k],u=U.find(x=>x.key===k);const ok=okRow(c);
+    const why=[];if(c.release_hz==null)why.push("无支撑");else{if(c.fwd_slip_max_cm>2)why.push("前滑");if(c.min_catch_cm<0)why.push("坐回落空")}
+    h+=`<tr data-k="${k}" style="cursor:pointer"${k===userKey()?' class="cur"':''}><td>${u.H.toFixed(2)} m · ${RBN[u.r_b].split(" ")[0]} · ${HABIT[u.p]} · 脚 ${(u.x_a*100).toFixed(0)}</td>
+      <td class=n>${sg(c.fwd_slip_max_cm)}</td><td class="n" style="color:${c.min_catch_cm<0?'var(--bad)':'inherit'}">${sg(c.min_catch_cm)}</td><td class=n>${fmt(c.release_hz,2)}</td>
+      <td class=n>${fmt(c.E0_release,3)}</td><td class=n>${fmt(c.E0_release_stooped,3)}</td>
+      <td class="n muted">${sg(v.fwd_slip_max_cm)} / ${sg(v.min_catch_cm)} / ${fmt(v.E0_release,3)}</td>
+      <td>${ok?'<span class="chip good">合格</span>':'<span class="chip bad">'+why.join("、")+'</span>'}</td></tr>`});
+  $("#checkTable").innerHTML=h+"</tbody>";
+  document.querySelectorAll("#checkTable tr[data-k]").forEach(tr=>tr.onclick=()=>{const u=U.find(x=>x.key===tr.dataset.k);sel={H:u.H,r:u.r_b,p:u.p,x:u.x_a};syncSel();renderAll();document.getElementById("mech").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})});
+  document.querySelectorAll("#checkTable tr.cur td").forEach(td=>td.style.background="var(--amber-bg)");
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{filt=b.dataset.f;document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));drawCheck()});
+
+/* ---------- header, notes, CAD list ---------- */
+function drawStatic(){
+  const F=D.check.design,V=D.check.vertical,ks=Object.keys(F);const nok=ks.filter(k=>okRow(F[k])).length;
+  const fwd=Math.max(...ks.map(k=>F[k].fwd_slip_max_cm)), ctc=Math.min(...ks.map(k=>F[k].min_catch_cm).filter(v=>v!=null));
+  const fwdV=Math.max(...ks.map(k=>V[k].fwd_slip_max_cm)), ctcV=Math.min(...ks.map(k=>V[k].min_catch_cm).filter(v=>v!=null));
+  const E=ks.map(k=>F[k].E0_release).filter(v=>v!=null).sort((a,b)=>a-b), EV=ks.map(k=>V[k].E0_release).filter(v=>v!=null).sort((a,b)=>a-b);
+  $("#lede").innerHTML=`坐板由一个推杆驱动，两个滚轮沿两条固定曲线槽运动，沿一条固定曲线前移、上升、前倾（最多 ${D.consts.phi_max}°）。这条曲线从 81 位不同身高、胖瘦、起身习惯、脚位的用户里定出来，再用机构实际走出的轨迹回头检查每个人。下面按设计顺序展开：先看人怎么起身，再定推哪里、坐板放哪里，最后是机构。`;
+  $("#kpis").innerHTML=[[sg(fwd)+" cm","最大往前滑（人滑出座面）",`竖直升降为 ${sg(fwdV)} cm`,fwd<=2?"good":"bad"],[sg(ctc)+" cm","最小坐回余量（负 = 坐回落到前缘外）",`竖直升降为 ${sg(ctcV)} cm`,ctc>=0?"good":"bad"],
+    [E[Math.floor(E.length/2)].toFixed(3),"放手费力中位数",`竖直升降为 ${EV[Math.floor(EV.length/2)].toFixed(3)}`,""],[`${nok} / ${ks.length}`,"全部指标合格的用户","",nok===ks.length?"good":""]]
+    .map(([v,k,c,cl])=>`<div class="kpi"><span class="v ${cl}">${v}</span><span class="k">${k}</span><span class="c">${c}</span></div>`).join("");
+  $("#assistNote").innerHTML=D.assistNote;
+  const m=D.mech;
+  $("#cadList").innerHTML=[`两条槽的中心线坐标：design.json → mech.track1 / track2（x 从床沿，z 从地面，单位 m）`,
+    `滚轮 1 (${m.c1.map(v=>(v*1000).toFixed(0)).join(", ")}) mm、滚轮 2 (${m.c2.map(v=>(v*1000).toFixed(0)).join(", ")}) mm，在坐板坐标里；槽宽按滚轮直径 ≤ ${Math.round(Math.min(...m.R_min)*1000*0.6)} mm 选`,
+    `推杆：行程 ${(m.stroke*1000).toFixed(0)} mm，收回长度 ≤ ${(m.act_len[0]*1000).toFixed(0)} mm，额定推力 ≥ ${Math.max(...m.F_act_lift60_N.map(Math.abs))} N（起身），静载 ${Math.max(...m.F_act_hold100_N.map(Math.abs))} N 要靠自锁丝杠承受`,
+    `坐板前缘：圆角软托腿垫，覆盖大腿后侧约 ${Math.round(D.consts.pad*100)} cm`,`运动动画：用“机构”图的 ${m.frames.length} 帧坐板姿态`].map(x=>`<li>${x}</li>`).join("");
+}
+
+function renderAll(){drawPose();drawHip();drawAssist();drawEnv();drawMech();drawCheck();}
+function loop(which){return ts=>{if(which===1){t1+=0.006;if(t1>1)t1=0;$("#prog1").value=t1*1000;drawPose();drawHip();anim1=requestAnimationFrame(loop(1))}else{t2+=0.006;if(t2>1)t2=0;$("#prog2").value=t2*1000;drawMech();anim2=requestAnimationFrame(loop(2))}}}
+$("#prog1").oninput=e=>{t1=e.target.value/1000;drawPose();drawHip()};
+$("#prog2").oninput=e=>{t2=e.target.value/1000;drawMech()};
+$("#play1").onclick=()=>{if(anim1){cancelAnimationFrame(anim1);anim1=null;$("#play1").textContent="播放"}else{$("#play1").textContent="暂停";anim1=requestAnimationFrame(loop(1))}};
+$("#play2").onclick=()=>{if(anim2){cancelAnimationFrame(anim2);anim2=null;$("#play2").textContent="播放"}else{$("#play2").textContent="暂停";anim2=requestAnimationFrame(loop(2))}};
+drawStatic();drawMechStatic();renderAll();
+</script>

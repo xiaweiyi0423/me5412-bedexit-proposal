@@ -54,16 +54,16 @@ def solve_s(sub, x_a, hz, hip_x):
         else: hi = m
     return (lo + hi) / 2
 
-def rise(H, x_a, p, hip0=0.10):
+def rise(H, x_a, p, hip0=0.10, r_b=R_B):
     """hip goes from (hip0, seated) to above the ankle at standing; x(f) = hip0 + (x_a - hip0) f^p, f = rise fraction.
     p < 1: hip forward early (lean-first); p = 1: proportional; p > 1: hip stays back, moves forward late."""
-    sub = Subject(H=H); hz0 = Z0 + R_B; hz1 = sub.ankle_h + sub.L_shank + sub.L_thigh - 0.012
+    sub = Subject(H=H); hz0 = Z0 + r_b; hz1 = sub.ankle_h + sub.L_shank + sub.L_thigh - 0.012
     out = []
     for hz in np.arange(hz0, hz1 + 1e-9, DH):
         f = (hz - hz0) / (hz1 - hz0); hx = hip0 + (x_a - hip0) * f ** p
         s = solve_s(sub, x_a, hz, hx)
         if s is None: continue
-        pz = pose(sub, x_a, hz, s); pz["f"] = f; out.append(pz)
+        pz = pose(sub, x_a, hz, s); pz["f"] = f; pz["r_b"] = r_b; out.append(pz)
     return sub, out
 
 # ---------------------------------------------------------------- seat curves

@@ -122,12 +122,12 @@ def map_job(args):
 def body_points(pz):
     """sample points on the back outline: (points, kind) kind 0 = pelvis, 1 = thigh (accepted), 2 = not accepted;
     a = distance along the thigh line from the buttock tangent point (arc points: a <= 0)."""
-    Hp, u, th = pz["Hp"], pz["u"], pz["theta"]
+    Hp, u, th = pz["Hp"], pz["u"], pz["theta"]; rb = pz.get("r_b", R_B)
     g = np.radians(np.linspace(-90.0, -th, 40)) if th < 90 else np.radians(np.array([-90.0]))
-    arc = Hp + R_B * np.stack([np.sin(g), -np.cos(g)], 1)
-    a_arc = -R_B * (np.radians(-th) - g)
+    arc = Hp + rb * np.stack([np.sin(g), -np.cos(g)], 1)
+    a_arc = -rb * (np.radians(-th) - g)
     kind_arc = np.where(np.degrees(g) < BACK_LIMIT, 2, 0)
-    a = np.linspace(0.005, 0.30, 60); T0 = Hp + R_B * np.array([np.sin(np.radians(-th)), -np.cos(np.radians(-th))])
+    a = np.linspace(0.005, 0.30, 60); T0 = Hp + rb * np.array([np.sin(np.radians(-th)), -np.cos(np.radians(-th))])
     line = T0 + a[:, None] * u
     kind_line = np.where(a <= PELVIS_A, 0, np.where(a <= A_MAX, 1, 2))
     return np.vstack([arc, line]), np.concatenate([kind_arc, kind_line]), np.concatenate([a_arc, a])
