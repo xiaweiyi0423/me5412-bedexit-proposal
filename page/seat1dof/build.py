@@ -20,6 +20,23 @@ D["assistNote"] = (
     f"<br>这条结论依赖一个模型假设：离臀腿交界 4 cm 以内的力算作作用在骨盆上（髋、膝都省力），更远的算作作用在大腿上（只帮膝）。"
     f"这条分界是按解剖位置估的，不是测出来的。设计曲线让坐板保持坐着时与大腿的相对位置，所以接触点大多停在交界处约 5 cm，正好在这条分界附近。")
 
+# 5.3: one-side four-bar kill test and the same-footing bed comparison
+C = os.path.join(ROOT, "model/calc_v13/seat_1dof")
+FBO = json.load(open(os.path.join(C, "fourbar_oneside.json"))); BB = json.load(open(os.path.join(C, "bed_baseline.json")))
+SLU = json.load(open(os.path.join(C, "slider.json")))["users"]
+K72 = [k for k, v in BB["users"].items() if v["0.58"]["handle"] is not None and SLU[k].get("E_release")]
+md = lambda xs: round(float(np.median(xs)), 3)
+sv = lambda bed, k: md([1 - SLU[u]["E_release"] / BB["users"][u][bed][k] for u in K72])
+fails = [k for k, q in FBO["users"].items() if not q or q["fwd_slip_cm"] > 2 or q["catch_min_cm"] < 0]
+D["v53"] = dict(fb=dict(mech=FBO["mech"], act={k: FBO["act"][k] for k in ("stroke", "F_hold100_N", "F_lift100_N", "F_lift60_N")}, box=FBO["box"],
+                        cant=FBO["cantilever"], summary=FBO["summary"], fails=[[k, FBO["users"][k]["fwd_slip_cm"]] for k in fails]),
+                # rail housing variants: seat_1dof_v5_checks.housing() with RAIL_GAP / CARR_SPAN changed in memory (2026-10-27)
+                box_variants=[["现方案：双导轨相距 150 mm，滑块相距 150 mm", 2749, 0.80], ["单导轨", 2554, 0.82], ["双导轨，滑块相距 100 mm", 2589, 0.76]],
+                bed=dict(n=len(K72), noff=81 - len(K72), low=md([BB["users"][k]["0.42"]["L_bar"] for k in K72]), high_L=md([BB["users"][k]["0.58"]["L_bar"] for k in K72]),
+                         high_best=md([BB["users"][k]["0.58"]["handle"] for k in K72]), seat=md([SLU[k]["E_release"] for k in K72]),
+                         save_low=sv("0.42", "L_bar"), save_hl=sv("0.58", "L_bar"), save_hb=sv("0.58", "handle"), worse=BB["summary"]["bed0.58_handle"]["n_worse"],
+                         phi_rel=md([v["phi_release"] for v in SLU.values()])))
+
 tpl = open(os.path.join(HERE, "template.html")).read()
 out = tpl.replace("/*__DATA__*/{}", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
 open(os.path.join(ROOT, "page/seat_1dof.html"), "w").write(out)

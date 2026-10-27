@@ -135,6 +135,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <a href="#audit">10 审计</a><span class="sep">›</span>
   <a href="#v5">11 第五版修订</a><span class="sep">›</span>
   <a href="#r2">12 第二轮审计</a>
+  <a href="#r3">13 机构空间与对比</a>
   <div class="picker" aria-label="选择用户">
     <label for="selH">身高<select id="selH"></select></label>
     <label for="selR">臀部厚度<select id="selR"></select></label>
@@ -367,6 +368,18 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <div class="prose"><p>用 Gemini 从同样五个角度审了第五版（含 5.1）。原文在 <span class="mono">page/seat1dof/audit/v5/</span>。每条都回到代码和数据核对，确认的问题改了设计或代码，并重新计算。下表逐条列出：问题 → 怎么处理 → 改后的数字。</p></div>
   <div class="fig"><div class="tscroll"><table id="r2Table"></table></div></div>
   <div class="note" id="r2Open"></div>
+</section>
+
+<section id="r3">
+  <div class="step">步骤 13 · 机构空间、单侧四连杆、和抬高床比（5.3，2026-10-27）</div>
+  <h2>双导轨不是箱子大的原因；单侧四连杆箱子小一半，但扛不好悬臂</h2>
+  <div class="prose"><p>这一节回答三个问题：双导轨是不是太占地方？当时为什么不用四连杆？起身台到底比抬高床省多少力？三个问题都用同一套约束和同一批用户重算。</p></div>
+  <div class="fig"><div class="ttl">机构箱有多大（侧视面积 = 导轨、滑块、电机、连杆扫过范围的外廓 + 2 cm 壁）</div><div class="tscroll"><table id="r3Box"></table></div></div>
+  <div class="note" id="r3BoxNote"></div>
+  <div class="fig"><div class="ttl">单侧四连杆和斜导轨：同样的约束（升到 0.69 m、末端前倾 0–8°、全程 ≤ 16°、离床 1.5 cm），同样 81 人</div><div class="tscroll"><table id="r3Mech"></table></div></div>
+  <div class="note" id="r3MechNote"></div>
+  <div class="fig"><div class="ttl">和床比：起身最吃力那一刻的 effort 中位数（同一模型、同一 L 形扶手、同一批用户）</div><div class="tscroll"><table id="r3Bed"></table></div></div>
+  <div class="note" id="r3BedNote"></div>
 </section>
 
 <footer>
@@ -979,6 +992,34 @@ function drawR2(){
     <li><b>固定件：</b>和床的连接方式（床腿夹或床垫下压板），按表中的拉力设计。</li>
     <li><b>人体模型：</b>体重和肌力没有随身高缩放；骨盆段 4 cm 的分界和 24 cm 的接触宽度都是估计值。</li></ol>`;
 }
+function drawR3(){
+  const V=D.v53, F=V.fb, Fm=F.mech, Fc=F.cant["载荷偏向敞开一侧 10 cm"], m=D.mech, L=D.layout, Fo=L.forces["载荷偏向敞开一侧 10 cm"], B=V.bed, Ks=Object.keys(D.check.design);
+  const nok=Ks.filter(k=>okRow(D.check.design[k])).length, pc=v=>(100*v).toFixed(0)+"%";
+  $("#r3Box").innerHTML="<thead><tr><th>方案</th><th>侧视面积</th><th>箱顶高度</th></tr></thead><tbody>"+
+    V.box_variants.map(r=>`<tr><td>${r[0]}</td><td class="mono">${r[1]} cm²</td><td class="mono">${r[2].toFixed(2)} m</td></tr>`).join("")+
+    `<tr><td>单侧四连杆（下表）</td><td class="mono">${F.box.area_cm2} cm²</td><td class="mono">${F.box.z_top.toFixed(2)} m</td></tr></tbody>`;
+  $("#r3BoxNote").innerHTML=`<b>双导轨只多占 7%。</b>两根导轨装在同一块侧板上，箱子横向厚度（11 cm）不变；前后范围也不变。箱子大，是因为导轨要装下 ${Math.round(m.stroke*1000)} mm 行程加滑块，斜着有约 0.58 m 长，一直伸到 0.80 m 高。第二根导轨也去不掉：偏载时绕导轨轴线的扭矩约 ${Fo.about_rail_axis_Nm} N·m，15 号滑块的样本值只有约 120 N·m，要靠两根导轨变成一对力。<br>能省的是滑块间距：150 → 100 mm，箱顶降 4 cm；每个滑块的力升到约 4 kN，仍远低于 15 号滑块约 17–23 kN 的额定静载（两份第三方样本数字不一致，选型时按厂家样本核对）。`;
+  const rows=[["合格（不往前滑 ≤ 2 cm，坐回余量 ≥ 0）",`${nok}/81`,`${F.summary.n_ok}/81`],
+    ["最大前滑 / 最小坐回余量",`${sg(D.check.design?Math.max(...Ks.map(k=>D.check.design[k].fwd_slip_max_cm).filter(v=>v<50)):0)} / ${sg(Math.min(...Ks.map(k=>D.check.design[k].min_catch_cm).filter(v=>v>-50)))} cm`,`${sg(F.summary.fwd_max)} / ${sg(F.summary.catch_min)} cm`],
+    ["轨迹误差（座板中心）",`${m.centre_err_mm.toFixed(0)} mm`,`${Fm.centre_err_mm.toFixed(0)} mm`],
+    ["驱动静载（100 kg × 1.5 猛坐）",`${(m.F_hold100_N/1000).toFixed(1)} kN（丝杠）`,`${(F.act.F_hold100_N/1000).toFixed(1)} kN（推杆）`],
+    ["起身推力（100 kg）",`${m.F_lift100_N} N`,`${F.act.F_lift100_N} N`],
+    ["机构箱",`2749 cm²，顶 0.80 m`,`${F.box.area_cm2} cm²，顶 ${F.box.z_top.toFixed(2)} m`],
+    [`偏载悬臂（${Fo.moment_Nm} / ${Fc.moment_Nm} N·m）由谁扛`,`两根导轨 × 两个滑块，支点在侧板平面里拉开 150 mm；每滑块约 ${(Fo.per_carriage_lateral_N/1000).toFixed(1)} kN`,`座板两铰点相距 ${Math.round(Fm.coupler*1000)} mm 的 y 向力偶（${(Fc.Fy_pin_N/1000).toFixed(1)} kN），再由连杆面外弯曲传到地面铰点；铰点轴承对（间距 80 mm）约 ${(Fc.bearing_ground_N_b80/1000).toFixed(0)} kN`],
+    ["连杆弯曲应力（方钢管）","—（连杆只受轴向力）",`40×40×3：${Fc["stress_MPa_40x40x3"]} MPa；60×60×4：${Fc["stress_MPa_60x60x4"]} MPa`],
+    ["回床转腿","床尾一侧敞开","床尾一侧敞开"]];
+  $("#r3Mech").innerHTML="<thead><tr><th>项目</th><th>斜导轨 + 倾角连杆（采用）</th><th>单侧四连杆</th></tr></thead><tbody>"+rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")+"</tbody>";
+  $("#r3MechNote").innerHTML=`<b>结论：保留斜导轨。</b>单侧四连杆的好处是真的：铰点都在座面以下，机构箱小约一半，箱顶只有 ${F.box.z_top.toFixed(2)} m。它输在三处：<ol style="margin:4px 0 0;padding-left:1.3em;display:grid;gap:4px">
+    <li><b>悬臂（主要原因）：</b>导轨能把支点在侧板平面里拉开；四连杆只有座板上两个相距 ${Math.round(Fm.coupler*1000)} mm 的铰点，偏载变成很大的面外力，还要靠连杆弯曲传下去。地面铰点轴承对要扛约 ${(Fc.bearing_ground_N_b80/1000).toFixed(0)} kN，是导轨方案每个滑块的 ${Math.round(Fc.bearing_ground_N_b80/Fo.per_carriage_lateral_N)} 倍；60×60×4 方管的应力仍有 ${Fc["stress_MPa_60x60x4"]} MPa，超过 Q235 屈服的一半。</li>
+    <li><b>轨迹：</b>四根杆要同时管位置和倾角，误差 ${Fm.centre_err_mm.toFixed(0)} mm（导轨 ${m.centre_err_mm.toFixed(0)} mm）；${F.fails.length} 位“髋早前移 + 脚靠前”的用户前滑 ${Math.min(...F.fails.map(r=>r[1])).toFixed(1)}–${Math.max(...F.fails.map(r=>r[1])).toFixed(1)} cm，超过 2 cm 的线。</li>
+    <li><b>驱动：</b>推杆静载 ${(F.act.F_hold100_N/1000).toFixed(1)} kN，是丝杠的 ${(F.act.F_hold100_N/m.F_hold100_N).toFixed(1)} 倍。</li></ol>
+    悬臂载荷是按“偏载力矩全部由两铰点的 y 向力偶和铰点弯矩分担”估的上限式算法，没有算箱体侧板的分担；真做时数字会小一些，但量级差距（约 ${Math.round(Fc.bearing_ground_N_b80/Fo.per_carriage_lateral_N)} 倍）不会消失。如果以后箱顶高度变成硬约束（比如床头柜挡着），单侧四连杆是备选。`;
+  $("#r3Bed").innerHTML="<thead><tr><th>起身方式</th><th>effort 中位数</th></tr></thead><tbody>"+
+    [["低床 0.42 m + L 形扶手",B.low],["抬高床 0.58 m + L 形扶手",B.high_L],["抬高床 0.58 m + 最佳扶手（35 个位置里最好的）",B.high_best],["起身台：坐板放手那一刻",B.seat]].map(r=>`<tr><td>${r[0]}</td><td class="mono">${r[1].toFixed(3)}</td></tr>`).join("")+"</tbody>";
+  $("#r3BedNote").innerHTML=`<b>比低床省 ${pc(B.save_low)}（每个人都省）；比抬高床只省 ${pc(B.save_hb)}–${pc(B.save_hl)}，${B.n} 人里 ${B.worse} 人反而略费力。</b>另有 ${B.noff} 位用户（1.50 m、臀部厚）坐在 0.58 m 的床上脚踩不实，没法比。<br>
+    原因：多数人在座板前倾最大（中位 ${B.phi_rel.toFixed(0)}°）时就离开坐垫，那时髋部只比坐在 0.58 m 床上高约 4 cm，导轨上段基本没用来托人。早先“比抬高床省 13–20%”来自竖直升到 0.66 m 的旧模型（手上最多出 25% 体重、扶手随座板升），这次同口径重算后不成立。<br>
+    所以起身台相对抬高床的价值主要在别处：平时 0.42 m，人人脚踩得实；起身全程有托、不往前滑、坐回接得住。要再省力，得让座板在上段继续托住大腿，这和 15° 防滑上限冲突，是下一步要权衡的。`;
+}
 function renderAll(){drawPose();drawHip();drawAssist();drawEnv();drawMech();drawLayout();drawCheck();}
 function loop(which){return ts=>{if(which===1){t1+=0.006;if(t1>1)t1=0;$("#prog1").value=t1*1000;drawPose();drawHip();anim1=requestAnimationFrame(loop(1))}else{t2+=0.006;if(t2>1)t2=0;$("#prog2").value=t2*1000;drawMech();anim2=requestAnimationFrame(loop(2))}}}
 $("#prog1").oninput=e=>{t1=e.target.value/1000;drawPose();drawHip()};
@@ -986,5 +1027,5 @@ $("#prog2").oninput=e=>{t2=e.target.value/1000;drawMech()};
 $("#play1").onclick=()=>{if(anim1){cancelAnimationFrame(anim1);anim1=null;$("#play1").textContent="播放"}else{$("#play1").textContent="暂停";anim1=requestAnimationFrame(loop(1))}};
 $("#play2").onclick=()=>{if(anim2){cancelAnimationFrame(anim2);anim2=null;$("#play2").textContent="播放"}else{$("#play2").textContent="暂停";anim2=requestAnimationFrame(loop(2))}};
 document.querySelectorAll("#cushTabs button").forEach(b=>b.onclick=()=>{cushSel=b.dataset.c;document.querySelectorAll("#cushTabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));drawMech()});
-drawStatic();drawMechStatic();renderAll();
+drawStatic();drawMechStatic();drawR3();renderAll();
 </script>
