@@ -3,11 +3,11 @@
 <p style="font-size:26px;color:#9A5408;letter-spacing:2px">4 · 控制</p>
 <h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">状态机：出了意外先停住；只有人按住才会往下动</h2>
 </div>
-<img src="/_blob/4cb5dcac7f043eef91945b4b97d9274d" alt="状态机：待机、已坐上、抬升、停住、站立保持、下降、空座板停住、锁定，以及它们之间的切换条件" style="width:1664px;height:520px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
+<img src="/_blob/fb032623b7ee847723d66d8c02bf7c87" alt="状态机：待机、已坐上、抬升、停住、站立保持、下降、空座板停住、锁定，以及它们之间的切换条件" style="width:1664px;height:520px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
 <div style="background:#F7F5F0;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:#9A5408">松手即停</h3><p style="font-size:26px;line-height:1.5;color:#3F4A57">松手或任何故障，立即停住并制动，座板停在当前位置</p></div>
 <div style="background:#F7F5F0;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:#9A5408">按住“降”才降</h3><p style="font-size:26px;line-height:1.5;color:#3F4A57">松开就停；坐着很久不动只提醒、呼叫家属，座板不自己动</p></div>
-<div style="background:#F7F5F0;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:#9A5408">离座后停住</h3><p style="font-size:26px;line-height:1.5;color:#3F4A57">座板停在放手处接人；回床时按住“降”把空座板降到齐平</p></div>
+<div style="background:#F7F5F0;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:#9A5408">离座后停住</h3><p style="font-size:26px;line-height:1.5;color:#3F4A57">座板停在放手处接人；回床时按住“降”，空座板停在 0.50 m，坐上后再降到床面</p></div>
 </div>
-<aside>控制部分我们用一个状态机。核心是三条规则。第一，松手或者出任何故障，立即停住并制动。第二，座板往下动必须有人按住“降”，松开就停；如果有人坐在升起的座板上很久不动，系统只提醒并呼叫家属，不会自己把人降下去，因为一个晕过去或很虚弱的人，在动着的座板上更容易滑落。第三，人站起来以后，座板停在放手的位置，万一坐回去也接得住；空座板也只在按住“降”时才动，回床时自己按住把它降到和床齐平，再坐上去往后挪回床面。自检有两层：空着的时候检查各个测力单元的零点；抬升中，座板、踏板和横杆三处的力加起来应该约等于体重，差超过 15% 并持续半秒才锁定，锁定后只能按住“降”慢慢下。</aside>
+<aside>控制部分我们用一个状态机。核心是三条规则。第一，松手或者出任何故障，立即停住并制动。第二，座板往下动必须有人按住“降”，松开就停；如果有人坐在升起的座板上很久不动，系统只提醒并呼叫家属，不会自己把人降下去，因为一个晕过去或很虚弱的人，在动着的座板上更容易滑落。第三，人站起来以后，座板停在放手的位置，万一坐回去也接得住；空座板也只在按住“降”时才动。回床时按住“降”，空座板先停在 0.50 米这个回床高度，人坐上去比坐到床面高度省约两成力，坐稳后再按住“降”，带着人降到床面，往后挪回床上。自检有两层：空着的时候检查各个测力单元的零点；抬升中，座板、踏板和横杆三处的力加起来应该约等于体重，差超过 15% 并持续半秒才锁定，锁定后只能按住“降”慢慢下。</aside>
 </section>

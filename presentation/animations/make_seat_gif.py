@@ -250,9 +250,9 @@ def render_statemachine(path):
     _arrow(ax, e("已坐上", -0.3, -0.39), e("下降", -0.3, 0.39), "按住“降”\n（座板高于齐平）", lxy=(2.5, 2.05))
     _arrow(ax, e("下降", 0.3, 0.39), e("已坐上", 0.3, -0.39), "到齐平", lxy=(4.4, 2.05))
     _arrow(ax, e("站立保持", -0.5, -0.39), e("停住", 0.95, 0.1), "坐回：座板不动，接住人", rad=-0.15, lxy=(10.6, 1.75))
-    ax.plot([14.5, 14.5, 0.5], [3.8, 4.38, 4.38], color=MUTED, lw=1.8, zorder=2)
-    _arrow(ax, (0.5, 4.38), e("待机", 0.0, 0.40), "", col=MUTED)
-    ax.text(7.5, 4.38, "回床：按住“降”把空座板降到齐平（只在按住时动）", ha="center", va="center", fontsize=12.5, color=INK, zorder=5,
+    ax.plot([14.5, 14.5, 3.6], [3.8, 4.38, 4.38], color=MUTED, lw=1.8, zorder=2)
+    _arrow(ax, (3.6, 4.38), e("已坐上", 0.0, 0.40), "", col=MUTED)
+    ax.text(9.0, 4.38, "回床：按住“降”，空座板降到回床高度（默认 0.50 m）停住，坐上去；再按住“降”降到床面", ha="center", va="center", fontsize=12.5, color=INK, zorder=5,
             bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none"))
     ax.text(14.5, 2.15, "任意状态", ha="center", va="center", fontsize=13, color=MUTED)
     _arrow(ax, (14.5, 1.95), e("锁定", 0, 0.42), "", col=RED, ls="--")
@@ -280,6 +280,8 @@ def render_top(path):
     ax.text(0.0, (sx[0] + sx[1]) / 2, "座板（与床齐平）", fontsize=12.5, color=INK, ha="center", va="center", zorder=6)
     ax.text(-0.02, sx[1] + dx - 0.035, f"升到顶时前移 {100 * dx:.0f} cm", fontsize=11.5, color=ACC, ha="center", va="center", zorder=6)
     ax.plot([0.30, -0.05], [BAR["x"], BAR["x"]], color=INK, lw=7, solid_capstyle="round", zorder=6); ax.add_patch(Circle((0.30, BAR["x"]), 0.035, color=INK, zorder=7))
+    ax.add_patch(Circle((-0.05, BAR["x"]), 0.03, facecolor="#E3A92E", edgecolor=INK, lw=1.2, zorder=8))
+    ax.annotate("末端圆头软包 + 夜光", xy=(-0.07, BAR["x"]), xytext=(-0.42, BAR["x"] + 0.16), fontsize=11.5, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED), zorder=8)
     ax.text(0.12, BAR["x"] - 0.05, "L 形扶手横杆（握把开关在这里）", fontsize=12, color=INK, ha="center", va="bottom", zorder=7)
     ax.add_patch(Circle((0.0, 0.42), 0.05, facecolor=BODY, edgecolor=LIMB, zorder=6)); ax.text(0.07, 0.42, "人站起时的位置", fontsize=11.5, color=INK, va="center", zorder=6)
     from matplotlib.patches import FancyArrowPatch
@@ -287,7 +289,7 @@ def render_top(path):
     R(-0.88, -0.62, 0.50, 0.86, facecolor="none", edgecolor=GOOD, lw=1.6, zorder=8); ax.text(-0.75, 0.68, "助行器", fontsize=12.5, color=GOOD, ha="center", va="center")
     ax.text(-0.72, 0.36, "站稳后转向床尾一侧\n走下底座、扶助行器", fontsize=12, color=GOOD, ha="center", va="center", zorder=8)
     ax.add_patch(FancyArrowPatch((-0.30, -0.06), (-0.62, -0.30), connectionstyle="arc3,rad=0.25", arrowstyle="-|>", mutation_scale=18, lw=2.0, color=ACC, ls="--", zorder=8))
-    ax.text(-0.72, -0.17, "回床：按住“降”让座板回到齐平 → 坐上 →\n往后挪回床面 → 腿向床尾一侧转上床", fontsize=11.5, color=ACC, ha="center", va="center", zorder=8)
+    ax.text(-0.52, -0.17, "回床：按住“降”，座板停在 0.50 m → 坐上 →\n按住“降”降到床面 → 往后挪、腿向床尾转上床", fontsize=11.5, color=ACC, ha="center", va="center", zorder=8)
     ax.annotate("", xy=(Y["base_open"], 0.95), xytext=(Y["base_head"], 0.95), arrowprops=dict(arrowstyle="<->", color=INK, lw=1.2))
     ax.text((Y["base_open"] + Y["base_head"]) / 2 - 0.05, 0.93, f"台架沿床长占 {100 * (Y['base_head'] - Y['base_open']):.0f} cm", fontsize=12, color=INK, ha="center", va="bottom")
     fig.savefig(path, facecolor=BG); plt.close(fig)

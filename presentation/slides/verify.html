@@ -7,7 +7,7 @@
 <tr><th style="width:30%">设计要求</th><th style="width:24%">怎么验证</th><th style="width:32%">目前结果</th><th style="width:14%">状态</th></tr>
 <tr><td>1a 床不用垫高，起身省力达到抬高床的水平</td><td>2D 起身模型，同一扶手、同一批用户</td><td>比低床省 32%；和抬高床相当（中位 0.29 vs 0.30）</td><td><b style="color:#2F7A55">初步完成</b></td></tr>
 <tr><td>1b 座板跟着人走：不往前滑、坐回接得住</td><td>81 人 × 机构实际轨迹</td><td>81/81 合格（竖直升降 19/81）；按坐垫压下后的位置 81/81；腿一软全程接得住 81/81</td><td><b style="color:#2F7A55">初步完成</b></td></tr>
-<tr><td>2 推力不超过约半个体重</td><td>速度规则 + 场景仿真</td><td>坐板版 14 个场景都没有超过上限</td><td><b style="color:#2F7A55">初步完成</b></td></tr>
+<tr><td>2 推力不超过约半个体重</td><td>速度规则 + 场景仿真</td><td>坐板版 15 个场景都没有超过上限</td><td><b style="color:#2F7A55">初步完成</b></td></tr>
 <tr><td>3 手握 + 力分布确认后才抬；松手即停</td><td>状态机仿真</td><td>松手后立即停住</td><td><b style="color:#2F7A55">初步完成</b></td></tr>
 <tr><td>4 机构放得下、推得动、撑得住</td><td>尺寸、干涉、选型、FEA</td><td>机构箱离床 2.1 cm；[待补] FEA</td><td><b style="color:#9A5408">进行中</b></td></tr>
 <tr><td>5 人坐上、挪动、坐回时不翻</td><td>合重心和倾翻计算</td><td>人在台上余量足；人在地上要和床固定；[待补] 真实质量复核</td><td><b style="color:#9A5408">进行中</b></td></tr>

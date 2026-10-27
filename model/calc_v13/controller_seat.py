@@ -12,6 +12,8 @@ Rules (v5.3, after the deck audit; differences from controller_v13 marked *):
   * no automatic lowering of a seated user: seated or stopped with no input -> alert after 17 s (chime + call), no motion
   * lowering a seated user only while DOWN is held; the empty seat moves only while UP / DOWN is held (EMPTY_MOVE)
   * no column-sync check (one screw)
+  * return to bed (v5.5): the empty seat, held DOWN, pauses at the personal return height (default 0.50 m: sitting onto it
+    costs about 20 % less effort than onto 0.42 m); seated, the user holds DOWN again to ride to flush
   * 'still sitting' threshold 0.10 BW (was 0.15): on the seat a user mid-rise can be down to 0.15 BW and must still be able to resume
   power loss: brake holds; held DOWN lowers on the battery at half speed.
 Output: controller_seat.json, controller_seat_all.png (all scenarios), controller_seat_main.png (three for the slide).
@@ -47,7 +49,7 @@ def min_seat(h, c):
     return float(np.interp(h, HS, v))
 
 class Params:
-    def __init__(self, bw_kg=60.0, cap=0.5, vmax=0.03, ret_h=H0):
+    def __init__(self, bw_kg=60.0, cap=0.5, vmax=0.03, ret_h=0.50):
         self.BW = bw_kg * g; self.F_cap = cap * self.BW; self.vmax = vmax; self.k = vmax / (0.35 * self.BW)
         self.a_max = 0.05; self.v_down = 0.02; self.v_empty = 0.015
         self.seated_thr = 0.40 * self.BW; self.occ_stay = 0.10 * self.BW; self.seatoff_thr = 0.05 * self.BW; self.feet_thr = 0.30 * self.BW
@@ -138,7 +140,7 @@ class Controller:
         self.v = v_cmd if v_cmd == 0.0 else self.v + dv
         self.h = float(np.clip(self.h + self.v * DT, H0, H1))
 
-def sc(key, name, c=0.28, T=40.0, rise_T=3.0, h0=H0, state0="IDLE", ret_h=H0, **ev):
+def sc(key, name, c=0.28, T=40.0, rise_T=3.0, h0=H0, state0="IDLE", ret_h=0.50, **ev):
     return dict(key=key, name=name, c=c, T=T, rise_T=rise_T, h0=h0, state0=state0, ret_h=ret_h, ev=ev)
 def hold(*spans): return lambda t: any(a <= t < b for a, b in spans)
 
@@ -154,7 +156,8 @@ SCEN = [
  sc("pullup", "起身时双手往上拉横杆（0.2 倍体重）", pull=0.2),
  sc("hang", "把体重压在横杆上（0.4 倍体重）：只按 30% 速度升；借横杆离座后座板停住接人", hang=0.4, T=40.0),
  sc("cop", "抬升中坐偏 1 s，重新握紧后继续", cop_off=(6.5, 7.5), regrip=(8.0, 8.5)),
- sc("return", "回床：按住“降”让空座板降到床面，再坐下挪回床上", h0=0.57, state0="EMPTY_HOLD", ret="flush", T=36.0),
+ sc("return", "回床（默认回床高度 0.50 m）：按住“降”，空座板停在 0.50 m；坐上后再按住“降”降到床面", h0=0.57, state0="EMPTY_HOLD", ret="mid", T=36.0),
+ sc("return_flush", "回床高度设成床面：按住“降”让空座板降到床面，再坐下挪回床上", h0=0.57, state0="EMPTY_HOLD", ret="flush", ret_h=H0, T=36.0),
  sc("stuck", "踏板传感器卡在高读数：锁定，按住“降”慢降", feet_stuck=6.0, down=hold((12.0, 40.0))),
  sc("power", "抬升中断电：按住“降”用电池慢降", power_off=7.0, down=hold((12.0, 45.0)), T=45.0),
 ]
@@ -167,12 +170,13 @@ def run(s):
         cphi = np.cos(np.radians(phi_of(C.h)))
         mat = ev.get("mattress", 0.0) if C.h < H0 + 0.02 else 0.0
         if ev.get("ret"):
-            sit_t = 16.0
+            mid = ev["ret"] == "mid"; sit_t = 11.5 if mid else 16.0
             if t < 1.0: F_seat, F_feet, F_bar = 0.0, 0.0, 0.0; down = False
             elif t < sit_t: F_seat, F_bar = 0.0, 0.1 * BW; F_feet = BW - F_bar; down = 2.0 <= t < sit_t - 0.5
             elif t < sit_t + 1.0: F_bar = 0.05 * BW; F_seat = (t - sit_t) * 0.6 * BW; F_feet = BW - F_seat * cphi - F_bar; down = False
             else:
-                F_bar = 0.05 * BW; down = False; share = min(1.0, max(0.0, (t - 22.0) / 4.0)) if C.h <= H0 + 1e-3 else 0.0
+                F_bar = 0.05 * BW; down = mid and ((13.0 <= t < 14.5) or (15.5 <= t < 22.0))      # hold, let go once, hold again
+                share = min(1.0, max(0.0, (t - (24.0 if mid else 22.0)) / 4.0)) if C.h <= H0 + 1e-3 else 0.0
                 F_seat = 0.6 * BW * (1 - share); F_bar *= (1 - share); F_feet = max(0.0, BW - F_seat * cphi - F_bar - share * BW * 0.9)
             z = dict(F_seat=F_seat, F_feet=F_feet, F_bar=F_bar, grip=False, down=down, cop_ok=True, power=True)
         else:

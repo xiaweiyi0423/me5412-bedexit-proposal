@@ -109,7 +109,7 @@ S["stability"] = sec("stability", PAPER,
   + img("seat_top", "俯视示意：床、台架底座、床头一侧的机构箱、座板、L 形扶手、站起后走向床尾的路线和回床路线", 690, 495) + '\n</div>\n'
   + todo("用 CAD 的真实质量和质心复核；固定件锁在床架或床腿上（床垫下的压板拉不住 2.3 kN，不用）") + "\n"
   + foot(f"底座 x 3–78 cm、y {cm(T['base']['y'][0])} … +{cm(T['base']['y'][1])} cm；机构箱在床头一侧，台架质心偏床头一侧 {cm(T['base']['device_com'][1])} cm"),
-  f"人坐上去、挪动位置时，台架会不会翻？分两种情况。第一种，人在台架上，坐在座板上或站在踏板上，这时手拉扶手是人和台架之间的内力，翻不了；表里几种最不利的情况，合力离底座边缘都还有余量。第二种是真正的危险：人不在台上，比如夜里走回床边时扶了一下横杆，这时台架只有自己大约 {T['base']['device_kg']:.0f} 公斤压着，{min(fl.values())} 牛、也就是十几公斤的力就能把它拉翻。所以台架必须和床固定，固定件按扶手的设计载荷 1112 牛、安全系数 1.5 来设计，大约需要 {anchor} 牛的拉力，所以要锁在床架或床腿上。右边是俯视图：台架沿床长占 65 厘米，机构箱在床头一侧，人站起来后转向床尾一侧走下底座，助行器放在那里。",
+  f"人坐上去、挪动位置时，台架会不会翻？分两种情况。第一种，人在台架上，坐在座板上或站在踏板上，这时手拉扶手是人和台架之间的内力，翻不了；表里几种最不利的情况，合力离底座边缘都还有余量。第二种是真正的危险：人不在台上，比如夜里走回床边时扶了一下横杆，这时台架只有自己大约 {T['base']['device_kg']:.0f} 公斤压着，{min(fl.values())} 牛、也就是十几公斤的力就能把它拉翻。所以台架必须和床固定，固定件按扶手的设计载荷 1112 牛、安全系数 1.5 来设计，大约需要 {anchor} 牛的拉力，所以要锁在床架或床腿上。右边是俯视图：台架沿床长占 65 厘米，机构箱在床头一侧，人站起来后转向床尾一侧走下底座，助行器放在那里。横杆露在外面的那一头做成圆头软包、带夜光，夜里不容易撞上。",
   pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:36px")
 
 S["risk"] = sec("risk", PAPER,
@@ -120,7 +120,7 @@ S["risk"] = sec("risk", PAPER,
   f'<tr><td><b>抬升中头晕、往回坐</b></td><td>速度降到 0、停住接人；只有按住“降”才降；久坐不动只提醒、呼叫家属</td></tr>\n'
   f'<tr><td><b>传感器失效</b></td><td>空载查零点；抬升中三处力之和与体重差 >15% 就锁住；开关用双通道触点</td></tr>\n'
   f'<tr><td><b>断电、卡住</b></td><td>失电制动抱住；电池按住“降”；控制器坏了拉带护盖的拨杆（先断电机），限速 3 cm/s</td></tr>\n'
-  f'<tr><td><b>扶一下就把台架拉翻</b></td><td>台架和床固定（人不在台上时 {tipmin} N 就会翻）</td></tr>\n</table>\n'
+  f'<tr><td><b>扶一下就把台架拉翻</b></td><td>台架和床固定（人不在台上时 {tipmin} N 就会翻）；横杆末端圆头软包、夜光</td></tr>\n</table>\n'
   f'<div style="display:flex;flex-direction:column;gap:14px">{img("seat_step5", "示意：站稳后座板停在放手时的位置，坐回也接得住", 600, 500)}<p style="font-size:24px;line-height:1.5;color:#66707C">放手后座板停在原处：头晕坐回时接得住</p></div>\n</div>\n'
   + foot("[待补] 完整风险表（严重度、发生可能性、检测方式）放附录；适用标准：IEC 60601-1-11、ISO 13482、EN 12182"),
   f"这一页是我们认为最重要的六个风险。夹手夹腿：机构全部封闭在床头一侧的箱子里，只留一条带毛刷的竖槽让座板支架伸出来，座板侧边到箱壁有 {cm(L['Y']['wall_in'] - L['Y']['seat'])} 厘米，手指夹不住。从座板上滑下来：全程前倾不超过 16 度，面料用高摩擦的，压力中心偏出安全区就不抬。抬升中头晕往回坐：速度降到零，座板停在原处接住人；只有按住“降”才会往下，久坐不动只提醒、呼叫家属。传感器失效：空着时查零点，抬升中三处力之和和体重对不上就锁住。断电或卡住：制动器抱住，先用电池按住“降”；控制器也坏了，拉带护盖的拨杆，先断电机，再慢慢降。最后，人不在台上时扶一下横杆就可能把台架拉翻，所以台架和床固定。",
@@ -237,8 +237,8 @@ S["statemachine"] = sec("statemachine", PAPER,
   f'\n<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">\n'
   f'<div style="background:{LIGHT};border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:{ACC}">松手即停</h3><p style="font-size:26px;line-height:1.5;color:{BODY}">松手或任何故障，立即停住并制动，座板停在当前位置</p></div>\n'
   f'<div style="background:{LIGHT};border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:{ACC}">按住“降”才降</h3><p style="font-size:26px;line-height:1.5;color:{BODY}">松开就停；坐着很久不动只提醒、呼叫家属，座板不自己动</p></div>\n'
-  f'<div style="background:{LIGHT};border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:{ACC}">离座后停住</h3><p style="font-size:26px;line-height:1.5;color:{BODY}">座板停在放手处接人；回床时按住“降”把空座板降到齐平</p></div>\n</div>',
-  "控制部分我们用一个状态机。核心是三条规则。第一，松手或者出任何故障，立即停住并制动。第二，座板往下动必须有人按住“降”，松开就停；如果有人坐在升起的座板上很久不动，系统只提醒并呼叫家属，不会自己把人降下去，因为一个晕过去或很虚弱的人，在动着的座板上更容易滑落。第三，人站起来以后，座板停在放手的位置，万一坐回去也接得住；空座板也只在按住“降”时才动，回床时自己按住把它降到和床齐平，再坐上去往后挪回床面。自检有两层：空着的时候检查各个测力单元的零点；抬升中，座板、踏板和横杆三处的力加起来应该约等于体重，差超过 15% 并持续半秒才锁定，锁定后只能按住“降”慢慢下。",
+  f'<div style="background:{LIGHT};border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:32px;font-weight:700;color:{ACC}">离座后停住</h3><p style="font-size:26px;line-height:1.5;color:{BODY}">座板停在放手处接人；回床时按住“降”，空座板停在 0.50 m，坐上后再降到床面</p></div>\n</div>',
+  "控制部分我们用一个状态机。核心是三条规则。第一，松手或者出任何故障，立即停住并制动。第二，座板往下动必须有人按住“降”，松开就停；如果有人坐在升起的座板上很久不动，系统只提醒并呼叫家属，不会自己把人降下去，因为一个晕过去或很虚弱的人，在动着的座板上更容易滑落。第三，人站起来以后，座板停在放手的位置，万一坐回去也接得住；空座板也只在按住“降”时才动。回床时按住“降”，空座板先停在 0.50 米这个回床高度，人坐上去比坐到床面高度省约两成力，坐稳后再按住“降”，带着人降到床面，往后挪回床上。自检有两层：空着的时候检查各个测力单元的零点；抬升中，座板、踏板和横杆三处的力加起来应该约等于体重，差超过 15% 并持续半秒才锁定，锁定后只能按住“降”慢慢下。",
   layout="display:flex;flex-direction:column;gap:30px")
 
 S["sensing"] = sec("sensing", LIGHT,
@@ -326,6 +326,7 @@ S["mechanism"] = sec("mechanism", PAPER,
   pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:30px")
 
 REPL.pop("statemachine", None)   # v5.3 rewrites the whole slide
+REPL["limits"].append(("<li>人体按二维刚体轮廓、坐垫按独立弹簧床算；分区坐垫和面料摩擦要样件实测</li>", "<li>人体按二维刚体轮廓、坐垫按独立弹簧床算；分区坐垫和面料摩擦要样件实测</li>\n<li>横杆固定：回来要从床尾一侧侧身走进约 0.46 m 深的空间，助行器进不去。备选：可掀起的翻转横杆（要加锁扣和“已锁住”检测，可能忘了放下）</li>"))
 REPL["limits"].append(("<li>评估占地和夜里走动时的绊倒风险；控制仿真按坐板重跑</li>", "<li>评估占地和夜里走动时的绊倒风险；摔倒方式（腿软、往后倒）要用实测动作核对</li>"))
 
 if __name__ == "__main__":
