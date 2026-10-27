@@ -222,14 +222,20 @@ def figure(R, path):
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
     plt.rcParams["font.sans-serif"] = ["Noto Sans CJK SC", "WenQuanYi Zen Hei", "DejaVu Sans"]; plt.rcParams["axes.unicode_minus"] = False
     fbins = np.linspace(0, 1, 21); fig, axs = plt.subplots(1, 2, figsize=(11, 4.2))
-    cols = dict(none="#6B7480", current="#B3261E", M1="#1E5AA8"); lab = dict(none="不算手", current="手在现横杆（−0.04/+0.16）", M1="横杆加长（−0.10/+0.10）")
-    for hv in HANDS:
+    V = [("none", "不算手", "#6B7480"), ("current_force", "现横杆，双手出力", "#B3261E"), ("M1_force", "横杆加长到 −0.25，双手出力", "#1E5AA8")]
+    for hv, lb, col in V:
         for side, ls in (("open", "-"), ("head", "--")):
+            if hv == "none" and side == "head": continue
             med = []
             for a, b in zip(fbins[:-1], fbins[1:]):
                 v = [x[hv]["v_" + side] for r in R.values() for x in r["frames"] if hv in x and a <= x["f"] < b]
                 med.append(np.median(v) if v else np.nan)
-            axs[0].plot((fbins[:-1] + fbins[1:]) / 2, med, ls, color=cols[hv], lw=2 if side == "open" else 1.2, label=f"{lab[hv]}，{'敞开侧' if side == 'open' else '床头侧'}")
+            axs[0].plot((fbins[:-1] + fbins[1:]) / 2, med, ls, color=col, lw=2 if side == "open" else 1.2, label=f"{lb}，{'敞开侧' if side == 'open' else '床头侧'}")
+    med = []
+    for a, b in zip(fbins[:-1], fbins[1:]):
+        v = [x["M2_v_open"] for r in R.values() for x in r["frames"] if x["seated"] and x.get("M2_v_open") is not None and a <= x["f"] < b]
+        med.append(min(np.median(v), 3.0) if v else np.nan)
+    axs[0].plot((fbins[:-1] + fbins[1:]) / 2, med, ":", color="#2E7D4F", lw=2, label="敞开侧加挡板（只在坐着时有效）")
     axs[0].set_xlabel("起身进度 f（0 坐着 → 1 站直）"); axs[0].set_ylabel("把人推倒所需的侧向速度 v_crit（m/s），中位"); axs[0].axhline(0.2, color="#999", lw=0.8, ls=":")
     axs[0].text(0.01, 0.21, "约 0.2 m/s：轻推 / 小踉跄", fontsize=8, color="#666"); axs[0].legend(fontsize=7); axs[0].set_ylim(0, None); axs[0].grid(alpha=0.25)
     hz = []

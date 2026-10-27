@@ -147,10 +147,10 @@ def fea_c1():
     R(288, 308, -42, 110, "plate hot"); R(250, 253, 43.5, 115, "swall"); R(250, 253, -110, -43.5, "swall")
     for vv in (0.0, 80.0): R(308, 324, vv - 30.7, vv + 30.7, "carr")
     for vv in (0.0, 80.0): f.hatch_fix((324, vv - 30), (324, vv + 30), side=-1)
-    for p in ((306, 37.5), (306, -37.5), (290, 45)): f.poly([(p[0], p[1]), (p[0] + 8, p[1] + 8), (p[0] + 8, p[1] - 8)], "weld")
+    for p in ((280, 37.5), (280, -37.5)): f.poly([(p[0], p[1]), (p[0] + 8, p[1] + 8), (p[0] + 8, p[1] - 8)], "weld")
     f.arrow((205, 60), (205, 10)); f.text((200, 66), "−F₁", "lab", "end")
     f.o.append(f'<path class="marc" d="M {f.X(180):.1f} {f.Y(-20):.1f} A 26 26 0 1 1 {f.X(180):.1f} {f.Y(22):.1f}" marker-end="url(#fa)"/>'); f.text((160, -40), "−M₁", "lab", "middle")
-    f.text((270, -60), "窗口（60°）", "lab", "middle"); f.text((330, 118), "滑块面固定", "lab", "middle")
+    f.text((260, -60), "窗口（80°）", "lab", "middle"); f.text((330, 118), "滑块面固定", "lab", "middle")
     f.text((250, 122), "▲ = 焊缝", "lab", "middle")
     return f.end()
 
