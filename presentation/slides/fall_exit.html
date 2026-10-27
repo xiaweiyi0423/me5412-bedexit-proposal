@@ -1,0 +1,28 @@
+<section id="fall_exit" data-transition="fade" style="background:#F7F5F0;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:26px;color:#9A5408;letter-spacing:2px">4 · 防跌倒 ② 离开台子时摔倒</p>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">用完离开踏板时摔倒：现有的踏板和横杆测力，原理上能认出来；但只在合成数据上验证过</h2>
+</div>
+<div style="display:grid;grid-template-columns:860px 1fr;gap:56px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:18px">
+<p style="font-size:24px;color:#66707C">正常迈下去 vs 摔下去，踏板上看到的区别（中位数）</p>
+<table style="font-size:24px;color:#3F4A57;border-collapse:collapse;width:100%">
+<tr><th style="text-align:left;padding:10px 12px;border-bottom:2px solid #E2DED5;font-size:22px;color:#66707C">信号</th><th style="text-align:left;padding:10px 12px;border-bottom:2px solid #E2DED5;font-size:22px;color:#66707C">正常离开</th><th style="text-align:left;padding:10px 12px;border-bottom:2px solid #E2DED5;font-size:22px;color:#66707C">摔倒</th></tr>
+<tr><td style="padding:10px 12px;border-bottom:1px solid #E2DED5">脚下的力卸掉用时</td><td style="padding:10px 12px;border-bottom:1px solid #E2DED5">0.54 s</td><td style="padding:10px 12px;border-bottom:1px solid #E2DED5;font-weight:700;color:#18202A">0.37 s（更快）</td></tr>
+<tr><td style="padding:10px 12px;border-bottom:1px solid #E2DED5">压力中心离脚中心多远（0 中心，1 脚边）</td><td style="padding:10px 12px;border-bottom:1px solid #E2DED5">0.24</td><td style="padding:10px 12px;border-bottom:1px solid #E2DED5;font-weight:700;color:#18202A">0.70（压在脚边）</td></tr>
+<tr><td style="padding:10px 12px;border-bottom:1px solid #E2DED5">膝盖、髋砸到踏板的冲击</td><td style="padding:10px 12px;border-bottom:1px solid #E2DED5">无</td><td style="padding:10px 12px;border-bottom:1px solid #E2DED5;font-weight:700;color:#18202A">腿软时 1.5–3 倍体重</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.5;color:#3F4A57">单看任何一个信号都分不清（区分度最好的也只有 0.79；0.5 等于瞎猜，1.0 完全分开）；几个合起来才行</p>
+<p style="font-size:24px;line-height:1.5;color:#9A5408"><b>认出来以后只能报警</b>（开灯、语音、呼叫家属），挡不住这一次摔倒</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;color:#66707C">每 100 次正常离开误报 5 次时，摔倒检出率</p>
+<div style="background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:6px"><p style="font-size:44px;font-weight:700;color:#18202A">98%</p><p style="font-size:22px;line-height:1.4;color:#3F4A57">基本情况（逻辑回归，7 个特征）</p></div>
+<div style="background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:6px"><p style="font-size:44px;font-weight:700;color:#B4620A">80%</p><p style="font-size:22px;line-height:1.4;color:#3F4A57">最坏情况：压力中心噪声加倍 + 正常人也快步、踩脚边 + 慢慢倒</p></div>
+<div style="background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:6px"><p style="font-size:44px;font-weight:700;color:#18202A">75%</p><p style="font-size:22px;line-height:1.4;color:#3F4A57">三条阈值规则（误报 3.9 次 / 100），不用训练</p></div>
+<p style="font-size:22px;line-height:1.45;color:#66707C">双脚都离开踏板后再摔：这些传感器看不到，要靠雷达或可穿戴，不在本项目范围</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">合成数据：正常离开和摔倒各约 500 次，摔倒过程用倒立摆模型生成，所以结果偏乐观。下一步：志愿者在软垫上做摔倒动作 + 老人正常离开，检出 ≥ 80%、误报 ≤ 5 次/100 才继续</p>
+<aside>第二个防跌倒问题：用完起身台、离开踏板的时候摔倒，我们能不能知道？我们没有加新的传感器，只用设计里已有的踏板四个测力单元和横杆测力。正常迈下去，脚下的力是慢慢转移走的，压力中心停在支撑脚的中间；摔倒时，力卸得更快，压力中心先跑到脚的边上，腿软的话膝盖还会砸到踏板。单看任何一个信号都分不清，几个合起来，在我们生成的数据上，每一百次正常离开误报五次时能认出约 98% 的摔倒；把条件设得很不利，也有约 80%。要强调两点。第一，这些数据是我们自己用模型生成的，结果偏乐观，必须用真人数据验证：志愿者在软垫上做摔倒动作，再录老人的正常离开，检出率到 80%、误报不超过每百次五次才继续。第二，认出来以后只能报警、开灯、呼叫家属，挡不住这一次摔倒。人已经走下踏板以后再摔，这些传感器看不到，不在我们的范围。</aside>
+</section>

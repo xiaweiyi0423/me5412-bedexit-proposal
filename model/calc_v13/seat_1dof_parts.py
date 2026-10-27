@@ -276,7 +276,7 @@ def screw_drive(nut_N, m_move):
     Pcr = 2.0 * np.pi ** 2 * E * I / L ** 2                                                         # fixed - supported, if ever in compression
     w = 3.927 ** 2 / L ** 2 * np.sqrt(E * I / (7850 * A)); n_crit = w * 60 / (2 * np.pi)
     life_rev = (9.1e3 / (1.2 * 700)) ** 3 * 1e6; cycles = life_rev / (2 * VC.M["stroke"] / lead)
-    return dict(screw="滚珠丝杠 Ø16 导程 10（HIWIN R16-10K3-FSCDIN 或同级），螺纹长约 400，总长约 500；上端固定支撑 BK12，下端浮动支撑 BF12",
+    return dict(screw="滚珠丝杠 Ø16 导程 10（HIWIN R16-10K3-FSCDIN 或同级），螺纹长约 400，总长约 500；上端固定支撑 BK12，下端不支撑（人坐着时丝杠受拉）",
                 static_sf=round(19.3e3 / nut_N, 1), lift_force_N=round(F_lift), screw_torque_Nm=round(T_screw, 2), motor_torque_Nm=round(T_motor, 2),
                 screw_rpm=round(rpm_s), motor_rpm=round(rpm_s * ratio), motor_power_W=round(T_motor * rpm_s * ratio * 2 * np.pi / 60),
                 euler_kN=round(Pcr / 1000, 1), crit_rpm=round(n_crit), life_cycles=f"{cycles:.1e}",
@@ -352,7 +352,7 @@ if __name__ == "__main__":
                          allow_MPa=round(355 / SF), corner_mm=W["beam_corner_mm"]["value"]),
                c1=dict(bearings="圆锥滚子轴承 32006 X ×2（30×55×17，背对背，KM6 锁紧螺母预紧）", spacing_mm=round(1000 * S_BRG, 1), C0_kN=44.0,
                        P0_kN=round(W["brg_P0_N"]["value"] / 1000, 1), sf=round(44e3 / W["brg_P0_N"]["value"], 2),
-                       cartridge=f"钢管 Ø{CART['D'] * 1000:.0f} / 内孔 Ø{CART['d'] * 1000:.0f}，焊在滑块板上后一起精加工两个轴承孔；中段开 60° 窗口让铰点 2 摆臂穿出",
+                       cartridge=f"钢管 Ø{CART['D'] * 1000:.0f} / 内孔 Ø{CART['d'] * 1000:.0f}，焊在滑块板上后一起精加工两个轴承孔；中段开 80° 窗口让铰点 2 摆臂穿出",
                        shaft=shaft_check(W["shaft_M_at_B_Nm"]["value"], W["shaft_torsion_Nm"]["value"]),
                        why_not_crossed_roller=dict(RU66=dict(OD_mm=95, dp_mm=66, C0_kN=22.3, P0_kN=round((W["c1_force_N"]["value"] + 2 * W["c1_moment_Nm"]["value"] / 0.066) / 1000, 1)),
                                                    RU85=dict(OD_mm=120, dp_mm=85, C0_kN=29.5, bed_gap_cm=0.9))),

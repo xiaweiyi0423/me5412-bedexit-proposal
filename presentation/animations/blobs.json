@@ -12,5 +12,21 @@
  "seat_statemachine": "/_blob/2765b1b6474fcf1c070b4644f4d3356a",
  "seat_top": "/_blob/98e4b9b0ff77c8e05effd749c72af2e3",
  "ctrl_seat_main": "/_blob/bceb7034716f8e5a81583ea3da9be392",
- "mech_3d_slide": "/_blob/a4c9cf2cc77de9682974c6410322acc9"
+ "mech_3d_slide": "/_blob/a4c9cf2cc77de9682974c6410322acc9",
+ "cad_3d_shell": "/_blob/3d292be079d99bda41ed6a03686db2b3",
+ "cad_3d_open": "/_blob/cce29011ddde24c7ec79959b8e6e2495",
+ "cad_poses": "/_blob/f86377b05d96d054f2490b3a42ce1098",
+ "cad_joint": "/_blob/767b488d093bd6b9cc7201793c6767ff",
+ "fig_section": "/_blob/16f223eb4ef6384984b93ad2efeb6168",
+ "fea_c1": "/_blob/8fca01ced7de315e720e4cedc6354b3c",
+ "fea_beam": "/_blob/52a3609e185b1006682b78f3d55bc7e6",
+ "fea_house": "/_blob/b1435ad16eb52cdd58c7120ba4cb1026",
+ "fea_rail": "/_blob/d4f5478be8499f19095922d7d069f369",
+ "dw_assembly": "/_blob/5d4177b1e4f65c71d8567777f1872c28",
+ "dw_C1": "/_blob/ae7045eb7ad5fb03b9533b91bad4b6b1",
+ "dw_J3": "/_blob/9ea13000597290ed1f658e3c9f6e6a6c",
+ "dw_S7": "/_blob/dc0e16a2bd566b78bb281eaa48a30a53",
+ "dw_J1": "/_blob/b642adee077d4fbd21f5c65fdff1f462",
+ "fig_side": "/_blob/38a73515d77cdc78c51a713b6b0aa24f",
+ "fig_top": "/_blob/50cef8e46983e79d3826540b9a4ea3cc"
 }
