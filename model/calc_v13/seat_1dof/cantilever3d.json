@@ -1,0 +1,142 @@
+{
+ "link_axial_N": {
+  "value": 1638,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": 0.0,
+   "load": "normal+fwd"
+  }
+ },
+ "nut_axial_N": {
+  "value": 1967,
+  "at": {
+   "z": 0.416,
+   "xo": -0.06,
+   "y": -0.1,
+   "load": "normal+back"
+  }
+ },
+ "c1_moment_Nm": {
+  "value": 611,
+  "at": {
+   "z": 0.686,
+   "xo": -0.06,
+   "y": -0.1,
+   "load": "normal+back"
+  }
+ },
+ "c1_force_N": {
+  "value": 3215,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": 0.0,
+   "load": "normal+fwd"
+  }
+ },
+ "carriage_radial_y_N": {
+  "value": 3344,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": -0.1,
+   "load": "normal+fwd"
+  }
+ },
+ "carriage_lateral_inplane_N": {
+  "value": 1792,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": 0.0,
+   "load": "normal+fwd"
+  }
+ },
+ "carriage_resultant_N": {
+  "value": 3794,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": -0.1,
+   "load": "normal+fwd"
+  }
+ },
+ "c1_bearing_radial_N_s60": {
+  "value": 11319,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": -0.1,
+   "load": "normal+fwd"
+  }
+ },
+ "c1_bearing_radial_N_s80": {
+  "value": 8886,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": -0.1,
+   "load": "normal+fwd"
+  }
+ },
+ "c1_bearing_radial_N_s100": {
+  "value": 7426,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": -0.1,
+   "load": "normal+fwd"
+  }
+ },
+ "c1_bearing_radial_N_s140": {
+  "value": 5759,
+  "at": {
+   "z": 0.686,
+   "xo": 0.085,
+   "y": -0.1,
+   "load": "normal+fwd"
+  }
+ },
+ "variant_plain_pin_link_side_force_N": {
+  "value": 5224,
+  "at": {
+   "z": 0.686,
+   "xo": -0.06,
+   "y": -0.1,
+   "load": "normal+back"
+  }
+ },
+ "assumptions": {
+  "c1_shaft_centre_y": 0.269,
+  "plate_y": 0.2975,
+  "screw_y": 0.291,
+  "link_y": 0.28,
+  "rail_y": 0.32,
+  "carriage_centres": "P1, P1 + 0.15 e on rail 1; same + 0.15 nf on rail 2",
+  "bearing_spacing_m": [
+   0.06,
+   0.08,
+   0.1,
+   0.14
+  ]
+ },
+ "old_forces_v5_checks": {
+  "载荷在座板中线": {
+   "moment_Nm": 502,
+   "about_rail_axis_Nm": 282,
+   "about_normal_Nm": 416,
+   "rail_pair_N": 1878,
+   "carriage_pair_N": 2772,
+   "per_carriage_lateral_N": 2325
+  },
+  "载荷偏向敞开一侧 10 cm": {
+   "moment_Nm": 659,
+   "about_rail_axis_Nm": 370,
+   "about_normal_Nm": 546,
+   "rail_pair_N": 2465,
+   "carriage_pair_N": 3639,
+   "per_carriage_lateral_N": 3052
+  }
+ }
+}

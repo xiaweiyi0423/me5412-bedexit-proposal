@@ -15,6 +15,14 @@ Rules (v5.3, after the deck audit; differences from controller_v13 marked *):
   * return to bed (v5.5): the empty seat, held DOWN, pauses at the personal return height (default 0.50 m: sitting onto it
     costs about 20 % less effort than onto 0.42 m); seated, the user holds DOWN again to ride to flush
   * 'still sitting' threshold 0.10 BW (was 0.15): on the seat a user mid-rise can be down to 0.15 BW and must still be able to resume
+  * v5.6 (open audit): feet interlock actually implemented: the seat rises only as fast as the shed load shows up at the
+    feet: v = k min(F_cap - F_seat_vert, F_feet - (BW - F_cap) + 0.15 BW) (0.15 BW allowance for the hands); before, only the
+    0.30 BW footplate threshold was checked, so a user leaning back onto the mattress would also have unloaded the seat
+  * v5.6: graded sum check: 15-35 % off for 0.5 s -> speed limited to 30 % and a voice prompt; > 35 % for 0.5 s -> LOCKED
+    (friction on a 16 deg seat alone can shift the vertical sum by up to ~17 % of the seat force; a calf touching the seat
+    front or a heel on the bed should not lock a user mid-air). Round 4b: the first tier widens with the seat force and the
+    tilt by the friction it can hide ((1 - cos phi) + 0.5 sin phi of the seat force); LOWERING also slows on a warning; the
+    footplate force is low-pass filtered like the seat force before it enters the speed rule
   power loss: brake holds; held DOWN lowers on the battery at half speed.
 Output: controller_seat.json, controller_seat_all.png (all scenarios), controller_seat_main.png (three for the slide).
 """
@@ -55,11 +63,12 @@ class Params:
         self.seated_thr = 0.40 * self.BW; self.occ_stay = 0.10 * self.BW; self.seatoff_thr = 0.05 * self.BW; self.feet_thr = 0.30 * self.BW
         self.grip_thr = 20.0; self.sum_tol = 0.15; self.sum_persist = 0.5; self.stall_t = 2.0; self.alert_t = 17.0
         self.empty_t = 5.0; self.stand_persist = 0.3; self.ret_h = ret_h; self.tau_f = 0.08; self.hang = 0.30 * self.BW
+        self.sum_lock = 0.35; self.feet_allow = 0.15 * self.BW
 
 class Controller:
     def __init__(self, P, h=H0, state="IDLE"):
         self.P = P; self.state = state; self.h = h; self.v = 0.0; self.t_in = 0.0
-        self.t_stall = self.t_seatoff = self.t_empty = self.t_idle = self.t_top = self.t_sum = self.t_stand = 0.0
+        self.t_stall = self.t_seatoff = self.t_empty = self.t_idle = self.t_top = self.t_sum = self.t_stand = self.t_sum_hi = 0.0; self.warn = False
         self.prev_grip = False; self.prev_down = False; self.alert = False; self.events = []; self.fs_f = None; self.paused = False; self.limited = False
     def go(self, s, msg=""):
         if s != self.state: self.state, self.t_in = s, 0.0; self.events.append((s, msg))
@@ -71,12 +80,17 @@ class Controller:
         occupied = z["F_seat"] > (P.occ_stay if stay else P.seated_thr)
         total = fs_v + z["F_feet"] + z["F_bar"]
         check = ((self.state == "LIFTING") or (self.state == "LOWERING" and occupied)) and self.h > H0 + 0.03
-        self.t_sum = self.t_sum + DT if (check and abs(total - P.BW) / P.BW > P.sum_tol) else 0.0
+        err = abs(total - P.BW) / P.BW; ph = np.radians(phi_of(self.h))
+        tol = P.sum_tol + (1 - np.cos(ph) + 0.5 * np.sin(ph)) * z["F_seat"] / P.BW       # what seat friction alone can hide
+        self.ff = z["F_feet"] if getattr(self, "ff", None) is None else self.ff + (z["F_feet"] - self.ff) * DT / P.tau_f
+        self.t_sum = self.t_sum + DT if (check and err > tol) else 0.0
+        self.t_sum_hi = self.t_sum_hi + DT if (check and err > P.sum_lock) else 0.0
+        self.warn = self.t_sum > P.sum_persist
         grip_edge = z["grip"] and not self.prev_grip; self.prev_grip = z["grip"]
         down_edge = z["down"] and not self.prev_down; self.prev_down = z["down"]
         bar_mag = abs(z["F_bar"]); ready = z["grip"] and bar_mag > P.grip_thr and z["F_feet"] > P.feet_thr and z["cop_ok"]
         if not z["power"] and self.state not in ("STOPPED", "LOCKED"): self.go("STOPPED", "断电：制动抱住；按住“降”用电池慢降")
-        if self.t_sum > P.sum_persist and self.state != "LOCKED": self.go("LOCKED", "自检不过：锁定，只能按住“降”慢降")
+        if self.t_sum_hi > P.sum_persist and self.state != "LOCKED": self.go("LOCKED", "自检严重不符（>35%）：锁定，只能按住“降”慢降")
         s = self.state
         if s == "IDLE":
             if occupied: self.go("SEATED")
@@ -91,8 +105,9 @@ class Controller:
             if not z["grip"] or bar_mag < P.grip_thr or not z["cop_ok"] or z["F_feet"] < P.feet_thr:
                 self.go("STOPPED", "松手或条件不满足：停住并制动")
             else:
-                v_cmd = float(np.clip(P.k * (P.F_cap - self.fs_f), 0, P.vmax))
-                if z["F_bar"] > P.hang: v_cmd = min(v_cmd, 0.3 * P.vmax); self.limited = True
+                shed = min(P.F_cap - self.fs_f, self.ff - (P.BW - P.F_cap) + P.feet_allow)        # shed load must reach the feet
+                v_cmd = float(np.clip(P.k * shed, 0, P.vmax))
+                if z["F_bar"] > P.hang or self.warn: v_cmd = min(v_cmd, 0.3 * P.vmax); self.limited = True
                 if self.h >= H1 - 1e-4: v_cmd = 0.0
                 self.t_stall = self.t_stall + DT if (v_cmd == 0.0 and self.h < H1 - 1e-4 and occupied) else 0.0
                 self.t_seatoff = self.t_seatoff + DT if z["F_seat"] < P.seatoff_thr else 0.0
@@ -135,7 +150,7 @@ class Controller:
             elif not z["cop_ok"]: self.go("STOPPED", "下降中压力中心偏出：停住")
             elif not z["down"]: self.go("STOPPED", "松开“降”：停住")
             else:
-                v_cmd = -P.v_down
+                v_cmd = -P.v_down * (0.5 if self.warn else 1.0); self.limited = self.limited or self.warn
                 if self.h <= H0 + 1e-4: self.go("SEATED", "到床面"); v_cmd = 0.0
         elif s == "LOCKED":
             if z["down"] and z["power"]: v_cmd = -P.v_down * 0.5
@@ -161,6 +176,7 @@ SCEN = [
  sc("cop", "抬升中坐偏 1 s，重新握紧后继续", cop_off=(6.5, 7.5), regrip=(8.0, 8.5)),
  sc("return", "回床（默认回床高度 0.50 m）：按住“降”，空座板停在 0.50 m；坐上后再按住“降”降到床面", h0=0.57, state0="EMPTY_HOLD", ret="mid", T=36.0),
  sc("return_flush", "回床高度设成床面：按住“降”让空座板降到床面，再坐下挪回床上", h0=0.57, state0="EMPTY_HOLD", ret="flush", ret_h=H0, T=36.0),
+ sc("leanback", "握着开关却往后靠回床垫（座板力降、脚上没增加）：座板不升", leanback=(4.0, 12.0), T=20.0),
  sc("stuck", "踏板传感器卡在高读数：锁定，按住“降”慢降", feet_stuck=6.0, down=hold((12.0, 40.0))),
  sc("power", "抬升中断电：按住“降”用电池慢降", power_off=7.0, down=hold((12.0, 45.0)), T=45.0),
 ]
@@ -200,6 +216,8 @@ def run(s):
                 if t > t_so + 3.0: F_bar = 0.0; F_feet = 0.5 * BW
                 if t > t_so + 4.5: F_feet = 0.0
             if ev.get("feet_stuck") and t >= ev["feet_stuck"]: F_feet = 1.3 * BW
+            if ev.get("leanback") and ev["leanback"][0] <= t < ev["leanback"][1]:      # weight back onto the mattress, feet barely loaded
+                F_seat = 0.35 * BW; F_feet = 0.32 * BW
             if ev.get("cop_off") and ev["cop_off"][0] <= t < ev["cop_off"][1]: cop_ok = False
             grip = hands and not (ev.get("regrip") and ev["regrip"][0] <= t < ev["regrip"][1])
             dfun = ev.get("down")

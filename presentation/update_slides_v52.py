@@ -409,6 +409,36 @@ REPL.setdefault("users", []).append(("<li>只有确认有人坐着才下降；�
 REPL.setdefault("limits", []).append(("往前挪二三十厘米对老人是否可行，也还没有验证。", "挪上座板约十到二十厘米、回床时往后挪，对老人是否可行，也还没有验证；座板后缘在往后摔时会被碰到，软包要做好。"))
 REPL.setdefault("appendix", []).append(("<tr><td>8 个仿真场景的逐个说明</td>", f"<tr><td>{N_SCEN} 个控制仿真场景的逐个说明</td>"))
 
+# ---------------------------------------------------------------- v5.6c: open audit round 4 (3-D joint statics, controller interlocks, lever position)
+C3 = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/cantilever3d.json"))); kN = lambda k: f'{C3[k]["value"] / 1000:.1f}'
+def _rep(sid, pairs):
+    for a, b in pairs:
+        assert a in S[sid], (sid, a[:40]); S[sid] = S[sid].replace(a, b)
+_rep("sizing", [
+  (f"猛坐静载 ≤ {M['F_hold100_N']} N", f"猛坐静载 ≤ {kN('nut_axial_N')} kN（含沿座面的力）"),
+  (f"<b>双导轨、每轨两个滑块：</b>偏载悬臂 {FO['moment_Nm']} N·m，每个滑块约 {FO['per_carriage_lateral_N'] / 1000:.1f} kN",
+   f"<b>偏载约 {C3['c1_moment_Nm']['value']} N·m：</b>先经铰点 1，铰点 1 要用能承受力矩的轴承（交叉滚子轴承，或相距约 14 cm 的双轴承）；双导轨每个滑块 ≤ {kN('carriage_resultant_N')} kN；连杆两端球铰只受拉压"),
+  ("拉立柱侧带护盖的拨杆", "拉横杆拐角下带翻盖的拨杆"),
+  ("如果控制器也坏了，拉立柱侧面带护盖的拨杆，", "如果控制器也坏了，拉横杆和立柱拐角下面带翻盖的拨杆，坐着就够得到，"),
+  (f"100 公斤的人猛坐下来时约 {M['F_hold100_N']} 牛", f"100 公斤的人猛坐下来、再算上沿座面的力，约 {kN('nut_axial_N')} 千牛"),
+  (f"偏载时导轨要扛 {FO['moment_Nm']} 牛米的力矩，所以用两根导轨、每根两个滑块。",
+   f"偏载时有约 {C3['c1_moment_Nm']['value']} 牛米的力矩，它先经过铰点 1 才到滑块板，所以铰点 1 要用能承受力矩的轴承，再由两根导轨、四个滑块扛住；连杆两端用球铰，只受拉压。")])
+_rep("sizing", [("载荷可在座面任意位置（虚功法）", f"载荷可在座面任意位置（虚功法）；图里只算沿座面法向，算上沿座面的力约 {kN('nut_axial_N')} kN")])
+_rep("risk", [
+  ("空载查零点；抬升中三处力之和与体重差 >15% 就锁住；开关用双通道触点", "空载查零点；抬升中三处力之和与体重差 15–35% 减速并语音提示，>35% 才锁住；开关用双通道触点"),
+  ("控制器坏了拉带护盖的拨杆（先断电机）", "控制器坏了拉横杆拐角下带翻盖的拨杆（先断电机）"),
+  ("抬升中三处力之和和体重对不上就锁住。", "抬升中三处力之和和体重对不上，差得不多就减速提醒，差得多才锁住。"),
+  ("控制器也坏了，拉带护盖的拨杆，先断电机，再慢慢降。", "控制器也坏了，拉横杆拐角下面带翻盖的拨杆，坐着就够得到，先断电机，再慢慢降。")])
+_rep("speed", [
+  ("<li>座板力按倾角折算成竖直方向；人挂在横杆上就限速</li>", "<li>座板卸掉的力要在踏板上出现才提速；人挂在横杆上就限速</li>"),
+  ("座板会前倾，控制器按丝杠编码器知道的倾角，把座板的力折算成竖直方向；", "座板卸掉的力必须同时出现在踏板上才提速，所以人往后靠回床垫时，座板不会升；座板会前倾，控制器按丝杠编码器知道的倾角，把座板的力折算成竖直方向；")])
+_rep("statemachine", [("差超过 15% 并持续半秒才锁定，", "差 15% 到 35% 只减速并语音提醒，超过 35% 并持续半秒才锁定，")])
+_rep("mechanism", [("<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；第二根导轨和 4 个滑块只扛单侧偏载</li>",
+                    "<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；单侧偏载经铰点 1 的轴承传进滑块板，由第二根导轨和 4 个滑块扛住</li>")])
+
+# the motion slide was re-laid-out by hand in the deck editor (10/27): keep the deck's version, do not regenerate it
+S.pop("motion", None)
+
 if __name__ == "__main__":
     for sid, html in S.items():
         if html: open(os.path.join(OUT, f"{sid}.html"), "w").write(html)

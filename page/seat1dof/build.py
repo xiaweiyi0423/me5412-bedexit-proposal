@@ -55,6 +55,7 @@ D["v56"] = dict(n_cut_on_seat=42,          # users still on the seat where the o
                 ss_efree=json.load(open(os.path.join(C, "seat_support_slider.json")))["release"]["E_free"],
                 thigh={k.replace("1.50", "1.50").replace("1.60", "1.60"): v for k, v in BT["thigh_slope_deg"].items()}, reach_in10=BT["reach_from_bed"]["-0.10"])
 
+D["v56"]["c3d"] = json.load(open(os.path.join(C, "cantilever3d.json")))
 tpl = open(os.path.join(HERE, "template.html")).read()
 out = tpl.replace("/*__DATA__*/{}", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
 open(os.path.join(ROOT, "page/seat_1dof.html"), "w").write(out)

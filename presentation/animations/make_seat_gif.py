@@ -278,7 +278,7 @@ def render_statemachine(path):
             bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none"))
     ax.text(14.5, 2.15, "任意状态", ha="center", va="center", fontsize=13, color=MUTED)
     _arrow(ax, (14.5, 1.95), e("锁定", 0, 0.42), "", col=RED, ls="--")
-    ax.text(14.25, 1.45, "自检不过（空载零点 / 抬升中\n力之和与体重差 >15%，0.5 s）\n→ 只能按住“降”慢降", ha="right", va="center", fontsize=12, color=INK, linespacing=1.3)
+    ax.text(14.25, 1.62, "自检：抬升中力之和与体重差\n15–35%：减速 + 语音提示\n>35% 或空载零点不过（0.5 s）\n→ 锁定，只能按住“降”慢降", ha="right", va="center", fontsize=12, color=INK, linespacing=1.3)
     ax.text(7.4, -0.12, "停住时坐着很久不动：提醒并呼叫家属，座板不会自己动", ha="center", va="center", fontsize=13, color=ACC, fontweight="bold")
     fig.savefig(path, facecolor="#FFFFFF"); plt.close(fig)
 

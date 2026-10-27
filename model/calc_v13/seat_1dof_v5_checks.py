@@ -10,8 +10,10 @@ Changes after the round-2 audit (page/seat1dof/audit/v5/):
     1.2 cm board, flush tops.
   - every frame is checked (no sub-sampling).
   - drive: ball screw (back-drivable) + power-off brake + centrifugal speed limiter. Emergency lowering = release the brake
-    with a cable lever at the handrail grip; the seat sinks under the user's weight at the limiter speed, stops when the lever
-    is let go; no re-engagement. A battery also lowers the seat.
+    with a covered cable lever (v5.3: moved off the grip; v5.6: under the bar-post corner, reachable when seated, behind a
+    flip cover; its first travel cuts motor power); the seat sinks under the user's weight at the limiter speed (3 cm/s),
+    stops when the lever is let go; no re-engagement. A battery also lowers the seat (held DOWN first).
+  - forces(): shortcut kept for the record; the joint-by-joint 3-D statics are in seat_1dof_cantilever3d.py (v5.6).
 Layout across the width (y, + = head side): seat |y| <= 0.22; housing 0.25 .. 0.36; base beams at y -0.27 (foot side) and
 +0.38 (under the housing); L-handrail: post on the head side in front of the housing, bar across the user's front.
 Checks

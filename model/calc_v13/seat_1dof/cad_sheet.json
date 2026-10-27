@@ -1,0 +1,427 @@
+{
+ "note": "v5.6: dimension sheet for the CAD model (role 3). Everything is read from the model, nothing typed by hand except the\nassumed section sizes that the model never needed (marked \"假设\" in the sheet).\n\nFrame (same as every model file): origin on the floor under the bed's long edge, at the seat's centre plane.\n  x  out from the bed edge (bed at x < 0), y along the bed (+ = head side, where the housing is), z up.\nSeat frame: origin Q = middle of the seat's top surface (cushion top), x forward along the seat, z normal to it; the seat is\ntilted forward by phi (deg), world = Q + R(phi) (x_s, z_s) with R(phi) = [[cos, sin], [-sin, cos]].\n\nOutputs: ../../cad/travel_table.csv (screw stroke every 10 mm), ../../cad/key_poses.csv, seat_1dof/cad_sheet.json\n",
+ "frame": "x 离床方向（床沿 x=0，床在 x<0），y 沿床长（+ 为床头一侧），z 向上（地面 z=0）；y=0 是座板中面",
+ "bed": {
+  "top_z": 0.42,
+  "note": "床垫面 0.42 m；床沿在 x = 0"
+ },
+ "seat": {
+  "x_world_at_flush": [
+   -0.03,
+   0.14
+  ],
+  "half_len": 0.085,
+  "width_y": [
+   -0.22,
+   0.22
+  ],
+  "lip": 0.045,
+  "foam_board_t": {
+   "rear": 0.062,
+   "front": 0.092,
+   "split": -0.02
+  },
+  "split_x_s": -0.02,
+  "pins_seat_frame": {
+   "c1": [
+    0.0078,
+    -0.0697
+   ],
+   "c2": [
+    -0.0243,
+    -0.1822
+   ],
+   "spacing": 0.117
+  }
+ },
+ "rail1": {
+  "lo": [
+   0.0406,
+   0.305
+  ],
+  "hi": [
+   0.3666,
+   0.7862
+  ],
+  "length": 0.5813,
+  "angle_from_vertical_deg": 34.11,
+  "y": 0.32
+ },
+ "rail2": {
+  "lo": [
+   0.1648,
+   0.2208
+  ],
+  "hi": [
+   0.4908,
+   0.7021
+  ],
+  "offset": 0.15,
+  "y": 0.32
+ },
+ "carriages": {
+  "per_rail": 2,
+  "span_along_rail": 0.15,
+  "assumed_len": 0.06,
+  "block_from_pin": [
+   -0.03,
+   0.18
+  ]
+ },
+ "screw": {
+  "stroke": 0.3311,
+  "lead_mm": 10.0,
+  "axis": "两根导轨之间、与导轨平行，螺母经浮动接头连滑块板",
+  "axis_lo": [
+   0.1195,
+   0.2877
+  ],
+  "axis_hi": [
+   0.395,
+   0.6945
+  ],
+  "y": 0.291
+ },
+ "link": {
+  "ground_pivot_B": [
+   0.487,
+   0.1261
+  ],
+  "length": 0.4647,
+  "y": 0.28
+ },
+ "housing": {
+  "outline_xz": [
+   [
+    0.0266,
+    0.04
+   ],
+   [
+    0.5026,
+    0.04
+   ],
+   [
+    0.5049,
+    0.7163
+   ],
+   [
+    0.3744,
+    0.8046
+   ],
+   [
+    0.3538,
+    0.7749
+   ],
+   [
+    0.1982,
+    0.5605
+   ],
+   [
+    0.1638,
+    0.5179
+   ],
+   [
+    0.0702,
+    0.3697
+   ],
+   [
+    0.0496,
+    0.3351
+   ],
+   [
+    0.024,
+    0.2938
+   ],
+   [
+    0.0212,
+    0.2198
+   ]
+  ],
+  "y": [
+   0.25,
+   0.36
+  ],
+  "wall": 0.02,
+  "motor_xz": [
+   [
+    0.3339,
+    0.6755
+   ],
+   [
+    0.39,
+    0.7583
+   ],
+   [
+    0.4562,
+    0.7134
+   ],
+   [
+    0.4001,
+    0.6306
+   ]
+  ]
+ },
+ "base": {
+  "x": [
+   0.03,
+   0.78
+  ],
+  "y": [
+   -0.27,
+   0.38
+  ],
+  "tube_h": 0.035
+ },
+ "handrail": {
+  "post": {
+   "x": 0.7,
+   "y": 0.3,
+   "top_z": 0.95
+  },
+  "bar": {
+   "z": 0.95,
+   "y": [
+    -0.05,
+    0.3
+   ]
+  }
+ },
+ "footplate": {
+  "x": [
+   0.2,
+   0.62
+  ],
+  "y": [
+   -0.22,
+   0.22
+  ],
+  "z": [
+   0.035,
+   0.047
+  ]
+ },
+ "loads": {
+  "screw_hold100_N": 1779,
+  "link_hold100_N": 1306,
+  "seat_normal_hold100_N": 2080,
+  "offset10cm": {
+   "moment_Nm": 659,
+   "about_rail_axis_Nm": 370,
+   "about_normal_Nm": 546,
+   "rail_pair_N": 2465,
+   "carriage_pair_N": 3639,
+   "per_carriage_lateral_N": 3052
+  },
+  "centre": {
+   "moment_Nm": 502,
+   "about_rail_axis_Nm": 282,
+   "about_normal_Nm": 416,
+   "rail_pair_N": 1878,
+   "carriage_pair_N": 2772,
+   "per_carriage_lateral_N": 2325
+  },
+  "anchor_N": 2282,
+  "brake_torque_Nm": 5.7
+ },
+ "clearances": {
+  "bed_floor_cm": {
+   "机构箱（导轨、滑块、电机、连杆）": 2.1,
+   "座板（刚性部分）": 2.1,
+   "座板支架": 2.1,
+   "全部活动零件—地面": 23.4
+  },
+  "pinch_cm": {
+   "座板侧缘—机构箱内壁（平行滑过，间隙不变）": 3.0,
+   "座板底面—底座（最低处）": 28.3,
+   "支架穿过内壁的竖槽": "毛刷密封，手指进不去",
+   "机构箱内部（滑块、连杆、丝杠、电机）": "全封闭"
+  },
+  "legs_cm": {
+   "min": 2.0,
+   "worst_user": "H1.75 r0.07 p0.6 xa0.25"
+  }
+ },
+ "key_poses": {
+  "齐平（起点）": {
+   "stroke_mm": 0.0,
+   "Q": [
+    0.0618,
+    0.4162
+   ],
+   "phi": 0.79,
+   "P1": [
+    0.0687,
+    0.3464
+   ],
+   "P2": [
+    0.035,
+    0.2343
+   ]
+  },
+  "回床高度 0.50 m": {
+   "stroke_mm": 101.5,
+   "Q": [
+    0.134,
+    0.5
+   ],
+   "phi": 13.28,
+   "P1": [
+    0.1256,
+    0.4304
+   ],
+   "P2": [
+    0.0685,
+    0.3282
+   ]
+  },
+  "离座中位": {
+   "stroke_mm": 181.6,
+   "Q": [
+    0.1817,
+    0.5659
+   ],
+   "phi": 15.6,
+   "P1": [
+    0.1705,
+    0.4967
+   ],
+   "P2": [
+    0.1093,
+    0.3969
+   ]
+  },
+  "前倾最大": {
+   "stroke_mm": 169.2,
+   "Q": [
+    0.1749,
+    0.5557
+   ],
+   "phi": 15.68,
+   "P1": [
+    0.1635,
+    0.4864
+   ],
+   "P2": [
+    0.1022,
+    0.3867
+   ]
+  },
+  "离座最高": {
+   "stroke_mm": 318.5,
+   "Q": [
+    0.2428,
+    0.68
+   ],
+   "phi": 2.73,
+   "P1": [
+    0.2473,
+    0.61
+   ],
+   "P2": [
+    0.2099,
+    0.4991
+   ]
+  },
+  "顶（终点）": {
+   "stroke_mm": 331.1,
+   "Q": [
+    0.2466,
+    0.6902
+   ],
+   "phi": 0.06,
+   "P1": [
+    0.2543,
+    0.6204
+   ],
+   "P2": [
+    0.2221,
+    0.5079
+   ]
+  }
+ },
+ "rail_dirs": {
+  "e": [
+   0.5608,
+   0.8279
+  ],
+  "nf_rail1_to_rail2": [
+   0.8279,
+   -0.5608
+  ]
+ },
+ "carriage_plate": {
+  "along_rail_from_pin1": [
+   -0.04,
+   0.19
+  ],
+  "across_from_rail1": [
+   -0.02,
+   0.16999999999999998
+  ],
+  "y": [
+   0.29000000000000004,
+   0.305
+  ],
+  "note": "假设尺寸"
+ },
+ "seat_arm": {
+  "seat_frame_x": [
+   -0.035,
+   0.05500000000000001
+  ],
+  "seat_frame_z": [
+   -0.092,
+   -0.062
+  ],
+  "y": [
+   -0.19,
+   0.25
+  ],
+  "note": "座板下的悬臂托架（假设截面），从座板下伸进竖槽"
+ },
+ "joints": {
+  "c1": {
+   "type": "转动副（绕 y）",
+   "must_carry": {
+    "moment_Nm": 611,
+    "force_N": 3215
+   },
+   "options": [
+    "A 薄型交叉滚子轴承贴装在滑块板侧面（厚约 2 cm，外径 12–15 cm）",
+    "B 短轴穿过竖槽，两个轴承相距约 14 cm（每个约 5759 N）"
+   ],
+   "bearing_radial_N": {
+    "s60": 11319,
+    "s80": 8886,
+    "s100": 7426,
+    "s140": 5759
+   }
+  },
+  "c2": {
+   "type": "球铰（杆端关节轴承）",
+   "link_axial_N": 1638
+  },
+  "B": {
+   "type": "球铰（杆端关节轴承），固定在机构箱底部"
+  },
+  "nut": {
+   "type": "浮动接头，只传轴向",
+   "axial_N": 1967
+  },
+  "carriages": {
+   "radial_N": 3344,
+   "lateral_N": 1792,
+   "resultant_N": 3794,
+   "note": "假设滑块板刚性、4 个滑块一样硬；离铰点 1 最近的那个实际更大，选型乘 1.3–1.5"
+  }
+ },
+ "lever": "应急拉索拨杆：横杆与立柱拐角下方，带翻盖；坐着伸手够得到，不在握把正下方（位置待 CAD 和真人核对）",
+ "fea": {
+  "deflection_target_mm": 5,
+  "cases": [
+   "100 kg × 1.5 偏向敞开一侧 10 cm，方向：法向 / 竖直 / 法向 ± 0.3 沿座面",
+   "猛坐座板 + 同时拉横杆 0.25 倍体重",
+   "固定件 2282 N（ADA 1112 N × 1.5）"
+  ]
+ }
+}
