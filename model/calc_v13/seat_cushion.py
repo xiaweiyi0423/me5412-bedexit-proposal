@@ -100,21 +100,23 @@ def solve_stage(args):
     w = L["p"][L["idx"]] * ds[L["idx"]]; a_cop = float((A[L["idx"]] * w).sum() / w.sum())
     cop = (P[L["idx"]] * w[:, None]).sum(0) / w.sum()
     fdir = L["F"] / L["Fm"]; pel = a_cop <= ST.PELVIS_A
-    e = effort(sub, pz, bar_at(pz["Hp"][1]), (cop, fdir, pel), cap=0.5)
+    import seat_1dof_handrail as HR                      # v5.2: both hands on the fixed L-handrail bar
+    e = HR.bar_effort(sub, pz, (cop, fdir, pel), cap=0.5)
     clen = float(ds[L["idx"]].sum())
     return dict(user=ukey(user), stage=stage, sink_mm=round(1000 * float(L["sq"].max()), 1), p_peak_kPa=round(float(L["p"].max()) / 1000, 1),
                 contact_cm=round(100 * clen, 1), cop_a_cm=round(100 * a_cop, 1), extra_travel_mm=round(1000 * float(np.hypot(*(Q1 - Q0))), 1),
-                bottom=L["bott"], tau_s=None if tau is None else round(tau, 2), effort=None if e is None else round(e[0], 3))
+                bottom=L["bott"], tau_s=None if tau is None else round(tau, 2), effort=None if e is None else round(e, 3))
 
 def sitdown(c):
     """60 kg, 0.75 BW on the level seat at bed height (typical user): squeeze and bottoming."""
     sub, path = path_of((1.60, 0.09, 1.0, 0.29)); pz = path[0]; P, A, ds = dense_outline(pz); target = 0.75 * 60 * G
-    for dz in np.arange(-0.03, 0.12, 0.0005):
+    for dz in np.arange(-0.03, 0.15, 0.0002):
         Q = CV[1][15] + np.array([0, dz]); name, kf, kr, t, split, top = c
         loc = P - Q; x, z = loc[:, 0], loc[:, 1]; inside = (x >= -SEAT.h) & (x <= SEAT.h)
         sq = np.clip(np.where(inside, SEAT.top(x) - z, 0), 0, None); k = np.where(x < split, kr, kf) * 1e5
-        F = float((k * np.minimum(sq, 0.8 * t) * ds * W).sum())
-        if F >= target or (sq > 0.8 * t).any(): return dict(sink_mm=round(1000 * float(sq.max()), 1), bottom=bool((sq > 0.8 * t).any()), F_BW=round(F / (60 * G), 2))
+        bott = sq > 0.8 * t; p = k * np.minimum(sq, 0.8 * t) + np.where(bott, 50 * k * (sq - 0.8 * t), 0)      # v5.2: bottoming stiffness,
+        F = float((p * ds * W).sum())                                                                             # solved to balance
+        if F >= target: return dict(sink_mm=round(1000 * float(sq.max()), 1), bottom=bool(bott.any()), F_BW=round(F / (60 * G), 2), p_peak_kPa=round(float(p.max()) / 1000, 1))
     return None
 
 if __name__ == "__main__":

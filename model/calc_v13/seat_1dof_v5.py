@@ -176,12 +176,10 @@ def actuator_search(v, s, layout, bins):
 
 # ---------------------------------------------------------------- user checks with the fixed pole
 def pole_effort(sub, pz, contact=None):
-    best = None
-    for z in POLE["z"]:
-        for x in POLE["x"]:
-            r = effort(sub, pz, np.array([x, z]), contact, cap=0.5) if contact else effort(sub, pz, np.array([x, z]))
-            if r and (best is None or r[0] < best): best = r[0]
-    return best
+    """v5.2: both hands on the fixed L-handrail bar (seat_1dof_handrail.py): one grip for the whole rise, trunk angles that
+    clear the bar. (v5 took the best of 3 x 8 grip points on a vertical pole at every instant: a regrip the user cannot do.)"""
+    import seat_1dof_handrail as HR
+    return HR.bar_effort(sub, pz, contact)
 
 def user_job(args):
     u, cv, layout, v, act = args; ST.A_MAX = PAD_AMAX; sub, path = path_of(u)
@@ -189,15 +187,12 @@ def user_job(args):
     if not good: return ukey(u), None
     last = good[-1]; sl = np.array([r["slip"] for r in good])
     sh = solve_s(sub, u[3], last["hz"], last["hip_x"]) or 0.0; pz = pose(sub, u[3], last["hz"], sh)
-    E_rel = pole_effort(sub, pz)
-    ST.TRUNKS = tuple(range(30, 81, 5)); E_st = pole_effort(sub, pz); ST.TRUNKS = tuple(range(0, 81, 5))
+    import seat_1dof_handrail as HR
+    E_rel = HR.bar_effort(sub, pz); E_st = HR.bar_effort(sub, pz, stooped=True)
     E_sup = 0.0
     for r, p_ in list(zip(rows, path))[:len(good)][::4]:
         k = min(int(r["k"]), len(cv[1]) - 1); n_ = rot(cv[2][k]) @ np.array([0, 1.0])
-        e = None
-        for zb in (0.85, 0.95, 1.05):
-            rr_ = effort(sub, p_, np.array([0.69, zb]), (np.array(r["P"]), n_, r["pelvis"]), cap=0.5)
-            if rr_ and (e is None or rr_[0] < e): e = rr_[0]
+        e = HR.bar_effort(sub, p_, (np.array(r["P"]), n_, r["pelvis"]))
         E_sup = max(E_sup, e if e else 9)
     out = dict(release_hz=round(last["hz"], 3), phi_release=round(last["phi"], 1), fwd_slip_cm=round(100 * float(max(sl[j] - sl[:j + 1].min() for j in range(len(sl)))), 1),
                catch_min_cm=round(100 * min(r["catch"] for r in good), 1), shear_path_cm=round(100 * float(np.abs(np.diff(sl)).sum()), 1),

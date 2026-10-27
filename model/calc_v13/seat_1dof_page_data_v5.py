@@ -38,7 +38,8 @@ def cushion_patch(sub, pz, k0, c):
     p = L["p"][idx] / 1000; fm = np.hypot(*L["f"].T); pel = A[idx] <= Z.PA
     return dict(lost=False, Q=np.round(Q, 4).tolist(), phi=round(float(phi), 1), strip=np.round(pts[sel], 3).tolist(), p=np.round(p[sel], 1).tolist(),
                 len_cm=round(100 * float(ds[idx].sum()), 1), a=[round(100 * float(A[idx].min()), 1), round(100 * float(A[idx].max()), 1)],
-                p_max=round(float(p.max()), 1), sink_mm=round(1000 * float(L["sq"].max()), 1), pel=round(float(fm[pel].sum() / fm.sum()), 2))
+                p_max=round(float(p.max()), 1), sink_mm=round(1000 * float(L["sq"].max()), 1), pel=round(float(fm[pel].sum() / fm.sum()), 2),
+                a_split=round(100 * float(np.interp(c["split"], np.sort(L["x"]), A[np.argsort(L["x"])])), 1))
 
 def anim_job(args):
     u, cv = args; ST.A_MAX = PAD_AMAX; sub, p = path_of(u); rows = track(sub, p, Seat(r_e=0.03), cv); fr = []
@@ -88,10 +89,14 @@ if __name__ == "__main__":
     D = json.load(open(os.path.join(OUT, "design.json"))); FB = json.load(open(os.path.join(OUT, "fourbar.json")))
     ZJ = json.load(open(os.path.join(OUT, "cushion_zoned.json"))); ZB = {(r["user"], r["stage"]): r["effort_all"] for r in ZJ["effort"]["均匀 6/6，5 cm（现推荐）"]["rows"]}
     ZT = zoned_thigh()
+    import seat_1dof_handrail as HR
+    import seat_1dof_v5_checks as VC
+    HRJ = json.load(open(os.path.join(OUT, "handrail.json"))); VJ = json.load(open(os.path.join(OUT, "vertical_v52.json")))
+    TRK = ZJ.get("track", {})
     sim, g = SL.simulate(SLJ["x"], 700); c1, c2 = np.array(SLJ["x"][:2]), np.array(SLJ["x"][2:4]); M = SLJ["mech"]
     cv = with_prefix(np.array([p[0] for p in sim]), np.array([p[1] for p in sim]))
     zs = [round(float(p[0][1]), 3) for p in sim]
-    mech = dict(M, kind="slider", name="v5-slider", top=M.get("top", TOP), rail_lo=CK["rail"]["lo"], rail_hi=CK["rail"]["hi"], columns=CK["rail"]["columns"],
+    mech = dict(M, kind="slider", name="v5-slider", top=M.get("top", TOP), rail_lo=CK["rail"]["lo"], rail_hi=CK["rail"]["hi"], rail2=[CK["rail"]["lo2"], CK["rail"]["hi2"]],
                 travel=dict(dx=round(float(sim[-1][0][0] - sim[0][0][0]), 3), dz=round(float(sim[-1][0][1] - sim[0][0][1]), 3)),
                 bracket_depth_mm=round(-1000 * min(c1[1], c2[1])),
                 frames=[dict(Q=np.round(p[0], 4).tolist(), phi=round(float(p[1]), 2), P1=np.round(p[2], 4).tolist(), P2=np.round(p[3], 4).tolist()) for p in sim[::12]],
@@ -111,14 +116,14 @@ if __name__ == "__main__":
     with Pool() as pool: ENV = dict(pool.map(env_job, USERS))
     frames = []
     for fr in sim[::35] + [sim[-1]]:
-        plate, br = LY.seat_polys(fr[0], fr[1], c1, c2)
+        plate, br = VC.seat_body(fr[0], fr[1])
         frames.append(dict(Q=np.round(fr[0], 4).tolist(), phi=round(float(fr[1]), 2), P1=np.round(fr[2], 4).tolist(), P2=np.round(fr[3], 4).tolist(),
                            plate=np.round(plate, 4).tolist(), bracket=np.round(br, 4).tolist()))
     b = CK["bed_floor_cm"]
-    clear_rows = [["导轨（含滑块余量）", "床", "床头侧平面", b["导轨（含滑块余量）"], "全行程"], ["导轨立柱", "床", "床头侧平面", b["导轨立柱"], "固定件"],
-                  ["座板、支架", "床", "全宽", min(b["座板（刚性部分）"], b["座板支架"]), "坐着时（座板后缘软唇边 4.5 cm 搭在床垫上）"],
-                  ["倾角连杆", "床", "床头侧平面", b["倾角连杆"], "全行程"], ["全部零件", "地面", "全部", b["全部零件—地面"], "全行程"],
-                  ["座板支架（全宽）", "小腿、脚", "全宽", CK["bracket_vs_legs_cm"]["min"], "81 人，按各自时刻"]]
+    clear_rows = [["机构箱（双导轨、滑块、电机、连杆）", "床", "床头一侧", b["机构箱（导轨、滑块、电机、连杆）"], "固定件，含 2 cm 箱壁"],
+                  ["座板（刚性部分）", "床", "全宽", b["座板（刚性部分）"], "坐着时（座板后缘软唇边 4.5 cm 搭在床垫上）"], ["座板支架", "床", "全宽", b["座板支架"], "全行程"],
+                  ["全部活动零件", "地面", "全部", b["全部活动零件—地面"], "全行程"],
+                  ["座板与支架（全宽，含前区下沉台阶）", "小腿、脚", "全宽", CK["bracket_vs_legs_cm"]["min"], "81 人，按各自时刻，逐帧"]]
     placements = {}
     for n, Vv in V5J["layouts"].items():
         m_ = Vv["mech"]; placements["v5-" + n] = dict(n_ok=Vv["summary"]["n_ok"], fwd_max=Vv["summary"]["fwd_max"], catch_min=Vv["summary"]["catch_min"],
@@ -127,8 +132,12 @@ if __name__ == "__main__":
     placements["v5-slider"] = dict(n_ok=SLJ["summary"]["n_ok"], fwd_max=SLJ["summary"]["fwd_max"], catch_min=SLJ["summary"]["catch_min"], centre_err_mm=M["centre_err_mm"],
                                    phi_max=M["phi_run_max"], bracket_mm=mech["bracket_depth_mm"], force_kN=round(mech["F_hold100_N"] / 1000, 1), leg=None)
     page = dict(users=D["users"], assist=D["assist"], envelope=ENV, design_curve=dict(D["design_curve"], poses=V5J["design_curve"], phi_max=V5.PHI_CAP),
-                consts=dict(D["consts"], top=M.get("top", TOP), phi_max=V5.PHI_CAP, pole=dict(x=0.69, z=[0.75, 1.10])), mech=mech, anim=AN,
-                check=dict(design=users, vertical=D["check"]["vertical"]), shapes=dict(table=FB["table"]),
+                consts=dict(D["consts"], top=M.get("top", TOP), phi_max=V5.PHI_CAP, handrail=HR.bar_now()), mech=mech, anim=AN,
+                check=dict(design=users, vertical={k: (dict(release_hz=None, fwd_slip_max_cm=99, min_catch_cm=-99) if q is None else
+                                                       dict(release_hz=q["release_hz"], fwd_slip_max_cm=q["fwd_slip_cm"], min_catch_cm=q["catch_min_cm"], E0_release=q["E_release"]))
+                                                   for k, q in VJ["users"].items()}, vertical_summary=VJ["summary"],
+                           cushion={nm: dict(summary=t["summary"], users=t["users"]) for nm, t in TRK.items()}),
+                handrail=dict(bar=HRJ["bar"], chosen=HRJ["chosen"], grid=HRJ["grid"]), shapes=dict(table=FB["table"]),
                 cushion=dict(cushions=CU["cushions"], summary=CU["summary"], sitdown=CU["sitdown"]), placements=placements,
                 zoned=dict(grid={k_: dict(c=v_["c"], all={q: v_["all"].get(q) for q in ("lost", "pel_share", "cop_a_cm", "peak_a_cm", "p_peak_kPa", "sink_mm", "bottom_share", "peak_on_pelvis_share", "junction_seat_x_cm")},
                                           by_stage={s_: {q: b_.get(q) for q in ("lost", "pel_share", "junction_seat_x_cm")} for s_, b_ in v_["by_stage"].items()}, sitdown=v_["sitdown"]) for k_, v_ in ZJ["grid"].items()},
@@ -136,7 +145,9 @@ if __name__ == "__main__":
                                             worse=sum(1 for r in v_["rows"] if r["effort_all"] > ZB[(r["user"], r["stage"])] + 0.005), max_worse=round(max(r["effort_all"] - ZB[(r["user"], r["stage"])] for r in v_["rows"]), 3))
                                    for k_, v_ in ZJ["effort"].items()},
                            thigh=ZT, ids={k_: c_["name"] for k_, c_ in CUSHIONS.items()}),
-                layout=dict(frames=frames, clear_rows=clear_rows, pinch=CK["pinch_cm"], tipping=CK["tipping"], emergency=CK["emergency"], kind="slider", legs_worst=CK["bracket_vs_legs_cm"], bed_floor_cm=CK["bed_floor_cm"],
-                            Y=dict(seat=0.22, rail=0.28, link=0.31, base=0.27), sizes=dict(PLATE_T=0.045, LIP=V5.LIP)))
+                layout=dict(frames=frames, clear_rows=clear_rows, pinch=CK["pinch_cm"], tipping=CK["tipping"], emergency=CK["emergency"], forces=CK["forces"], kind="slider",
+                            legs_worst=CK["bracket_vs_legs_cm"], bed_floor_cm=CK["bed_floor_cm"], housing=CK["rail"]["housing"], motor=CK["rail"]["motor"],
+                            rail2=[CK["rail"]["lo2"], CK["rail"]["hi2"]], Y=CK["Y"], seat_t=CK["seat_t"], rail_gap=CK["rail_gap"], carriage_span=CK["carriage_span"],
+                            sizes=dict(LIP=V5.LIP)))
     json.dump(page, open(os.path.join(OUT, "page.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     print("done", round(time.time() - t0), "s", {k: mech[k] for k in ("F_lift60_N", "F_lift100_N", "F_hold100_N")})

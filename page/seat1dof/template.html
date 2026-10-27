@@ -115,6 +115,13 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <div class="kpis" id="kpis"></div>
 </header>
 
+<section id="final">
+  <div class="step">最终方案一览（第五版 5.2）</div>
+  <h2>现在的设计是什么</h2>
+  <div class="fig"><div class="tscroll"><table id="finalTable"></table></div>
+    <p class="cap">下面各步按设计顺序展开推理；第 10–12 节记录三轮修订（审计 → 复核 → 处理），想看结论只读这一张表即可。</p></div>
+</section>
+
 <nav class="steps" aria-label="设计步骤">
   <a href="#plan">1 轨迹规划</a><span class="sep">›</span>
   <a href="#posture">2 姿势轨迹</a><span class="sep">›</span>
@@ -126,7 +133,8 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <a href="#check">8 验证</a><span class="sep">›</span>
   <a href="#limits">9 局限</a><span class="sep">›</span>
   <a href="#audit">10 审计</a><span class="sep">›</span>
-  <a href="#v5">11 第五版修订</a>
+  <a href="#v5">11 第五版修订</a><span class="sep">›</span>
+  <a href="#r2">12 第二轮审计</a>
   <div class="picker" aria-label="选择用户">
     <label for="selH">身高<select id="selH"></select></label>
     <label for="selR">臀部厚度<select id="selR"></select></label>
@@ -203,11 +211,10 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
       <svg id="svgEnv" viewBox="0 0 520 420" role="img" aria-label="坐板轨迹包络与设计曲线"></svg>
       <div class="legend"><span><i style="background:var(--env)"></i>每人的理想坐板中心轨迹</span><span><i style="background:var(--chosen)"></i>设计曲线（每隔一段画出坐板姿态）</span><span><i style="background:var(--path)"></i>选中用户</span><span><i style="background:var(--steel)"></i>斜导轨机构实际轨迹（虚线）</span></div>
     </div>
-    <div class="fig">
-      <div class="ttl">候选曲线比较</div>
+    <div class="fig"><details><summary class="ttl" style="cursor:pointer">候选曲线比较（第四版选曲线时的表，点开）</summary>
       <div class="tscroll"><table id="candTable"></table></div>
       <p class="cap">每行代表“用这个人的曲线去服务全部 81 人”。前滑：人往前滑出座面的最大距离；坐回余量：坐回时臀部落点离坐板前缘的最小距离（负 = 落到前缘外）；托腿：接触点最远落在大腿后侧多远。这张表是第四版（30° 上限）选曲线时的比较；第五版沿用同一个人（1.50 m、臀 9 cm、髋早前移、脚 33 cm）的曲线，只把前倾上限改成 15°，再用机构实际轨迹重跑了 81 人（第 8 步）。</p>
-    </div>
+    </details></div>
   </div>
 </section>
 
@@ -221,7 +228,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
       <svg id="svgMech" viewBox="0 0 560 560" role="img" aria-label="斜导轨坐板随起身运动"></svg>
       <div class="player"><button id="play2" type="button">播放</button><input id="prog2" type="range" min="0" max="1000" value="350" aria-label="起身进度"><span class="mono" id="progLbl2">35%</span></div>
       <div class="ttl" style="margin-top:4px">坐垫与臀部、大腿的接触（当前时刻）</div>
-      <div class="tabs" id="cushTabs" role="group" aria-label="坐垫"><button type="button" data-c="u" aria-pressed="false">均匀 6 kPa/cm</button><button type="button" data-c="z1" aria-pressed="true">分区 后 10 / 前 3（推荐）</button><button type="button" data-c="z2" aria-pressed="false">分区 后 15 / 前 2 + 前区低 2 cm</button></div>
+      <div class="tabs" id="cushTabs" role="group" aria-label="坐垫"><button type="button" data-c="u" aria-pressed="false">均匀 6 kPa/cm</button><button type="button" data-c="z1" aria-pressed="true">分区 后 10 / 前 3（推荐）</button><button type="button" data-c="z2" aria-pressed="false">分区 后 15 / 前 2 + 前区低 2 cm（不采用）</button></div>
       <svg id="svgCush" viewBox="0 0 560 220" role="img" aria-label="坐垫接触区放大与压强分布"></svg>
       <div class="readout" id="mechRead"></div>
       <p class="cap">大腿和臀部下的彩色条：坐垫与身体的接触区，颜色越深压强越高（满色 = 20 kPa 及以上）。按上面选中的坐垫（默认第 7 步推荐的分区坐垫）、坐板推 0.5 倍体重算：坐板沿机构曲线多走一段把坐垫压下去，直到坐垫力达到 0.5 倍体重，座板也画在这个压下后的位置。模型是矢状面的，只算得出接触<b>长度</b>；面积 = 长度 × 假设的接触宽度 24 cm（两侧臀部、大腿），真实宽度要靠压力垫实测。人体软组织按刚体算，真实接触会更长、压强更低。没有坐垫数据的时刻（刚接触前、放手后）退回刚体接触点（绿点）。扶手是固定在底座上的竖直立杆（x = 0.69 m，可抓 0.75–1.10 m）；图中手的位置只是示意，费力按立杆上最省力的抓握点计算。</p>
@@ -250,14 +257,16 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
     <p class="cap">“同一平面”的零件才可能相撞：横跨全宽的座板和支架要避开床、地面和腿；床头一侧的导轨、立柱和连杆在腿外侧，只需避开床和地面，和腿的横向关系看下面的正视图。床按实心块处理，零件离床的目标是 ≥ 1.5 cm。</p></div>
   <div class="band">
     <div class="fig"><div class="ttl">夹手点（闭合间隙 &lt; 25 mm 就可能夹到手指）</div><div class="tscroll"><table id="pinchTable"></table></div></div>
-    <div class="fig"><div class="ttl">抗倾翻（机构 40 kg 偏在床头一侧）</div><div class="tscroll"><table id="tipTable"></table></div><p class="cap" id="tipCap"></p></div>
+    <div class="fig"><div class="ttl">抗倾翻和与床固定</div><div class="tscroll"><table id="tipTable"></table></div><p class="cap" id="tipCap"></p></div>
   </div>
+  <div class="fig"><div class="ttl">单侧悬臂怎么扛：双导轨 + 每轨两个滑块</div><div class="tscroll"><table id="forceTable"></table></div>
+    <p class="cap">座板挂在床头一侧，载荷到导轨平面有一段横向距离，形成悬臂力矩。导轨是斜的，这个力矩分成两部分：绕导轨轴线的部分由两根导轨之间的力偶承担，绕导轨平面法线的部分由同一导轨上两个滑块之间的力偶承担。滑块间距和导轨间距都取 150 mm。表中的力用来查滑块样本的额定载荷（再乘安全系数），选 15 或 20 号直线导轨。丝杠螺母和滑块板之间用浮动接头，只传沿导轨的推力，不承受这些侧向力。</p></div>
   <div class="note" id="emergNote"></div>
   <div class="band">
     <div class="fig"><div class="ttl">正视图（从用户前方看，坐着时）</div>
       <svg id="svgFront" viewBox="0 0 520 420" role="img" aria-label="正视图"></svg><p class="cap" id="frontCap"></p></div>
     <div class="fig"><div class="ttl">俯视图（坐着时实线，升到顶时虚线）</div>
-      <svg id="svgTop" viewBox="0 0 520 420" role="img" aria-label="俯视图"></svg><p class="cap">床在左侧（x &lt; 0），上方是床头一侧。导轨、立柱、连杆和扶手立杆都在床头一侧；床尾一侧只有贴地的底座纵梁（高 4 cm）。回床时人坐在床沿把腿转向床尾，腿扫过的区域（虚线扇形）在座面高度以上没有任何零件。</p></div>
+      <svg id="svgTop" viewBox="0 0 520 420" role="img" aria-label="俯视图"></svg><p class="cap">床在左侧（x &lt; 0），上方是床头一侧。机构箱和扶手立柱在床头一侧，横杆从立柱伸到人正前方；床尾一侧只有贴地的底座侧梁（高 4 cm）。回床时人坐在床沿把腿转向床尾，腿扫过的区域（虚线扇形）在座面高度以上没有任何零件；横杆在 0.9 m 左右，在转腿区域上方。</p></div>
   </div>
 </section>
 
@@ -265,10 +274,10 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <div class="step">步骤 7</div>
   <h2>坐垫刚度：它决定压力、推力落点和机构要多走的行程</h2>
   <div class="prose" id="cushProse"></div>
-  <div class="fig"><div class="tscroll"><table id="cushTable"></table></div>
-    <p class="cap">坐垫按“每处压缩量 × 刚度 = 压强”计算（独立弹簧床），身体接触宽度 24 cm，坐板推 0.5 倍体重。81 人 × 起身 15 / 35 / 55 / 70% 四个时刻。“托不住”= 坐板走到行程终点也压不出 0.5 倍体重（下陷吃掉了行程）。响应时间 = 速度规则 v = k(F上限 − F座) 下，座垫力跟上变化所需的时间常数。</p></div>
-  <div class="note" id="cushNote"></div>
-  <h3 style="margin-top:18px">分区坐垫：能不能把推力移到骨盆上（第五版 5.1）</h3>
+  <details class="fig"><summary class="ttl" style="cursor:pointer">均匀坐垫的比较（第五版的表，点开）</summary><div class="tscroll"><table id="cushTable"></table></div>
+    <p class="cap">坐垫按“每处压缩量 × 刚度 = 压强”计算（独立弹簧床），身体接触宽度 24 cm，坐板推 0.5 倍体重。81 人 × 起身 15 / 35 / 55 / 70% 四个时刻。“托不住”= 坐板走到行程终点也压不出 0.5 倍体重（下陷吃掉了行程）。响应时间 = 速度规则 v = k(F上限 − F座) 下，座垫力跟上变化所需的时间常数。坐着下陷按 5.2 修正后的算法（压到底的刚度计入、一直压到力平衡）。</p>
+  <div class="note" id="cushNote"></div></details>
+  <h3 style="margin-top:18px">分区坐垫：能不能把推力移到骨盆上（5.1，5.2 修正后重算）</h3>
   <div class="prose" id="zoneProse"></div>
   <div class="band">
     <div class="fig"><div class="ttl">推在骨盆段上的力占比（中位），按起身阶段</div><svg id="svgZone" viewBox="0 0 520 250" role="img" aria-label="不同坐垫下骨盆段受力占比"></svg><div class="legend" id="zoneLegend"></div></div>
@@ -287,8 +296,9 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <div class="fig">
     <div class="tabs" role="group" aria-label="筛选"><button type="button" data-f="all" aria-pressed="true">全部 81 人</button><button type="button" data-f="bad" aria-pressed="false">有不合格项</button><button type="button" data-f="p0.6" aria-pressed="false">髋早前移</button><button type="button" data-f="p2.5" aria-pressed="false">髋晚前移</button></div>
     <div class="tscroll" style="max-height:560px;overflow-y:auto"><table id="checkTable"></table></div>
-    <p class="cap">点击行可在上面的图里切换到该用户。合格线：前滑 ≤ 2 cm，坐回余量 ≥ 0，坐板有有效支撑。费力为放手那一刻的值（手抓固定立杆），驼背列为躯干至少前倾 30° 时的值。竖直升降一列仍是旧的对照数据（手抓随座板升降的扶手）。</p>
+    <p class="cap">点击行可在上面的图里切换到该用户。合格线：前滑 ≤ 2 cm，坐回余量 ≥ 0，坐板有有效支撑。费力为放手那一刻的值（双手握固定 L 形扶手的横杆，从坐到放手不换手），驼背列为躯干至少前倾 30° 时的值。竖直升降一列用同一扶手、同一抓握规则重算（5.2）。“坐垫”列是坐板跟着推荐分区坐垫压下后的实际位置重算的结果（见下）。</p>
   </div>
+  <div class="note" id="cushCheckNote"></div>
 </section>
 
 <section id="limits">
@@ -296,7 +306,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <h2>局限与下一步</h2>
   <div class="grid3">
     <div class="card"><h3>模型假设</h3><ul><li>人体后侧是刚体轮廓：以髋为圆心的臀部圆弧，加大腿后侧直线；骨盆假设保持直立</li><li>起身路径只有 3 种代表习惯，需要真实起身动作数据核对</li><li>静力学，不含速度和冲击；坐板接触按无摩擦算</li><li>坐垫按独立弹簧床算，人体软组织当刚体；真实下陷会更大一些、压力更分散</li></ul></div>
-    <div class="card"><h3>待验证</h3><ul><li>托腿垫压在大腿后侧的压强和舒适度（0.5 倍体重分到约 8 × 24 cm²，约 15 kPa）</li><li>放手时座板前倾中位 15°：往回坐时不顺坡下滑，要求坐垫面料与衣物的摩擦系数 ≥ tan 15° ≈ 0.27，需要样件实测</li><li>导轨、滑块、连杆和座板悬臂按 100 kg、1.5 倍体重静载复核强度，包括单侧悬臂带来的约 370 N·m 扭矩</li><li>床按实心块处理；有床下空间的床更宽松。腿的横向宽度按臀宽估计，需要用人体测量数据核对</li></ul></div>
+    <div class="card"><h3>待验证</h3><ul><li>托腿垫压在大腿后侧的压强和舒适度（0.5 倍体重分到约 8 × 24 cm²，约 15 kPa）</li><li>放手时座板前倾中位约 15°：往回坐时不顺坡下滑，静力学上要求面料与衣物的摩擦系数 ≥ tan 15° ≈ 0.27；坐回有冲击、睡衣可能很滑，所以面料按 μ ≥ 0.5 的高摩擦纹理面料选，样件实测。风险是“大幅缓解”，不是“解决”</li><li>导轨、滑块、连杆和座板悬臂按 100 kg、1.5 倍体重静载复核强度；载荷偏向敞开一侧 10 cm 时悬臂力矩约 660 N·m，由双导轨、每轨两滑块承担（第 6 步），支架下垂要在 CAD 里算</li><li>床按实心块处理；有床下空间的床更宽松。腿的横向宽度按臀宽估计，需要用人体测量数据核对</li></ul></div>
     <div class="card"><h3>交给 CAD / 仿真</h3><ul id="cadList"></ul></div>
   </div>
 </section>
@@ -351,6 +361,14 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <div class="note" id="v5Open"></div>
 </section>
 
+<section id="r2">
+  <div class="step">步骤 12 · 第二轮审计与修订（5.2，2026-10-27）</div>
+  <h2>第二轮审计：把单侧机构、扶手、应急和模型口径补齐</h2>
+  <div class="prose"><p>用 Gemini 从同样五个角度审了第五版（含 5.1）。原文在 <span class="mono">page/seat1dof/audit/v5/</span>。每条都回到代码和数据核对，确认的问题改了设计或代码，并重新计算。下表逐条列出：问题 → 怎么处理 → 改后的数字。</p></div>
+  <div class="fig"><div class="tscroll"><table id="r2Table"></table></div></div>
+  <div class="note" id="r2Open"></div>
+</section>
+
 <footer>
   <p>数据来源：<span class="mono">model/calc_v13/seat_1dof_page_data_v5.py</span> → <span class="mono">seat_1dof/page.json</span>（汇总 design / slider / v5_checks / v5 / cushion 各步结果）；人体力学模型同 v13（2D 准静态，关节力矩 / 力量的最大值即“费力”）。第四版（两侧四连杆）的计算保留在 <span class="mono">seat_1dof_layout.py</span>、<span class="mono">seat_1dof_page_data.py</span>。</p>
   <p>前一轮对比（竖直 vs 曲线的相对运动）：<span class="mono">model/calc_v13/seat_trajectory_summary.md</span></p>
@@ -366,6 +384,7 @@ function el(tag, attrs, parent){const e=document.createElementNS(NS,tag);for(con
 function txt(parent,x,y,s,attrs){const t=el("text",Object.assign({x,y,fill:"var(--ink2)","font-size":11},attrs||{}),parent);t.textContent=s;return t;}
 const fmt=(v,d=1)=>v==null?"—":(+v).toFixed(d);
 const sg=v=>v==null?"—":((v>0?"+":"")+(+v).toFixed(1));
+const median=a=>{a=a.filter(v=>v!=null).sort((x,y)=>x-y);const n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):null};
 const HABIT={0.6:"髋早前移",1:"髋匀速前移",2.5:"髋晚前移"}; const RBN={0.07:"偏瘦 7 cm",0.09:"一般 9 cm",0.11:"偏胖 11 cm"};
 const U = D.users; const key=(H,r,p,x)=>`H${H.toFixed(2)} r${r.toFixed(2)} p${Number.isInteger(p)?p.toFixed(1):p} xa${x.toFixed(2)}`;
 let sel = {H:1.60,r:0.09,p:1,x:0.29};
@@ -392,11 +411,12 @@ function scene(g,M){
   txt(g,M.X(-0.30),M.Z(0.2),"床",{"text-anchor":"middle",fill:"var(--muted)","font-size":12});
   line(g,M,[-0.6,0],[1.0,0],{stroke:"var(--muted)","stroke-width":1});
   poly(g,M,[[0.03,0],[0.78,0],[0.78,0.013],[0.03,0.013]],{fill:"var(--steel2)",opacity:.6});
-  pole(g,M);
+  handrail(g,M);
 }
-function pole(g,M){const p=D.consts.pole;
-  line(g,M,[p.x,0.013],[p.x,p.z[1]+0.03],{stroke:"var(--steel2)","stroke-width":M.s*0.032,"stroke-linecap":"round"});
-  line(g,M,[p.x,p.z[0]],[p.x,p.z[1]],{stroke:"var(--steel)","stroke-width":M.s*0.04,"stroke-linecap":"round",opacity:.8});}
+/* L-handrail fixed on the base: post on the head side, bar across the user's front (seen end-on here) */
+function handrail(g,M){const b=D.consts.handrail;
+  line(g,M,[b.x,0.013],[b.x,b.z],{stroke:"var(--steel2)","stroke-width":M.s*0.03,"stroke-linecap":"round"});
+  el("circle",{cx:M.X(b.x),cy:M.Z(b.z),r:Math.max(3.5,M.s*0.022),fill:"var(--steel)",stroke:"var(--surface)","stroke-width":1.5},g);}
 function interp(frames,f){let i=0;while(i<frames.length-1&&frames[i+1].f<f)i++;return frames[Math.min(i,frames.length-1)];}
 function ik(S,P,L1,L2){const dx=P[0]-S[0],dz=P[1]-S[1],d=Math.hypot(dx,dz);if(d>L1+L2-1e-4)return null;const a=Math.atan2(dz,dx);const b=Math.acos(Math.max(-1,Math.min(1,(L1*L1+d*d-L2*L2)/(2*L1*d))));return [S[0]+L1*Math.cos(a-b),S[1]+L1*Math.sin(a-b)];}
 function person(g,M,A,fr,u){
@@ -404,7 +424,6 @@ function person(g,M,A,fr,u){
   const th=Math.atan2(-(K[1]-Hp[1]),K[0]-Hp[0]); const uu=[Math.cos(th),-Math.sin(th)];
   const tr=fr.tr*Math.PI/180, ut=[Math.sin(tr),Math.cos(tr)], S=[Hp[0]+Ltr*ut[0],Hp[1]+Ltr*ut[1]];
   const foot=A.foot; poly(g,M,[[An[0]-0.25*foot,0.013],[An[0]+0.75*foot,0.013],[An[0]+0.03,An[1]+0.02],[An[0]-0.03,An[1]+0.025]],{fill:"var(--limb)"});
-  // back outline: buttock arc then back of thigh
   const pts=[]; const thd=th*180/Math.PI;
   for(let gdeg=-95;gdeg<=-thd;gdeg+=5){const gg=gdeg*Math.PI/180;pts.push([Hp[0]+rb*Math.sin(gg),Hp[1]-rb*Math.cos(gg)])}
   const T0=[Hp[0]-rb*Math.sin(th),Hp[1]-rb*Math.cos(th)]; const Lk=Math.hypot(K[0]-T0[0],K[1]-T0[1]);
@@ -415,21 +434,29 @@ function person(g,M,A,fr,u){
   line(g,M,An,K,{stroke:"var(--limb)","stroke-width":M.s*0.09,"stroke-linecap":"round"});
   line(g,M,Hp,S,{stroke:"var(--body)","stroke-width":M.s*0.2,"stroke-linecap":"round"});
   el("circle",{cx:M.X(S[0]+0.12*ut[0]),cy:M.Z(S[1]+0.12*ut[1]),r:M.s*0.085,fill:"var(--body)"},g);
-  const pl=D.consts.pole, bar=[pl.x,Math.max(pl.z[0],Math.min(pl.z[1],S[1]-0.25))]; const E=ik(S,bar,Lua,Lfa);
+  const b=D.consts.handrail, bar=[b.x,b.z]; const E=ik(S,bar,Lua,Lfa);       // both hands on the fixed bar, one grip for the whole rise
   if(E){pline(g,M,[S,E,bar],{stroke:"var(--limb)","stroke-width":M.s*0.05,"stroke-linecap":"round","stroke-linejoin":"round"})}
   else{const d=Math.hypot(bar[0]-S[0],bar[1]-S[1]),r=(Lua+Lfa)*0.98/d;line(g,M,S,[S[0]+(bar[0]-S[0])*r,S[1]+(bar[1]-S[1])*r],{stroke:"var(--limb)","stroke-width":M.s*0.05,"stroke-linecap":"round"})}
-  if(E)el("circle",{cx:M.X(bar[0]),cy:M.Z(bar[1]),r:M.s*0.022,fill:"var(--ink)"},g);
   [An,K,Hp].forEach(p=>el("circle",{cx:M.X(p[0]),cy:M.Z(p[1]),r:2.6,fill:"var(--body-edge)"},g));
   return {T0,uu,th};
 }
+/* zoned seat: rear foam 5 cm (firm), front foam 8 cm (soft) on a board stepped 3 cm down under the front zone; tops flush */
 function seatShape(g,M,Q,phi,attrs){
-  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2, re=0.02, t=0.045, loc=[[-h,0]];
-  for(let a=0;a<=90;a+=15){const r=a*Math.PI/180;loc.push([h-re+re*Math.sin(r),-re+re*Math.cos(r)])}
-  loc.push([h-0.01,-t],[-h,-t]);
-  const W=loc.map(p=>{const v=rotv(phi,p[0],p[1]);return [Q[0]+v[0],Q[1]+v[1]]});
-  poly(g,M,W,Object.assign({fill:"var(--seat)"},attrs||{}));
-  const pad=[[h-0.035,0.0],[h,-0.004],[h,-0.03],[h-0.03,-0.045]].map(p=>{const v=rotv(phi,p[0],p[1]);return [Q[0]+v[0],Q[1]+v[1]]});
-  poly(g,M,pad,{fill:"var(--pad)",opacity:.85});
+  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2, T=D.layout.seat_t, sp=T.split, re=0.02;
+  const W_=L=>L.map(p=>{const v=rotv(phi,p[0],p[1]);return [Q[0]+v[0],Q[1]+v[1]]});
+  const front=[[sp,0]]; for(let a=0;a<=90;a+=15){const r=a*Math.PI/180;front.push([h-re+re*Math.sin(r),-re+re*Math.cos(r)])}
+  front.push([h,-0.08],[sp,-0.08]);
+  poly(g,M,W_([[-h,0],[sp,0],[sp,-0.05],[-h,-0.05]]),Object.assign({fill:"var(--seat)"},attrs||{}));
+  poly(g,M,W_(front),Object.assign({fill:"var(--pad)"},attrs||{}));
+  poly(g,M,W_([[-h+0.03,-0.05],[sp,-0.05],[sp,-T.rear],[-h+0.03,-T.rear]]),{fill:"var(--steel2)"});
+  poly(g,M,W_([[sp,-0.08],[h-0.01,-0.08],[h-0.01,-T.front],[sp,-T.front]]),{fill:"var(--steel2)"});
+}
+/* the uncompressed cushion top (dashed): where the body overlaps it, the foam is squeezed */
+function seatTop(g,M,Q,phi,drop){
+  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2, sp=D.layout.seat_t.split, pts=[];
+  for(let x=-h;x<=h+1e-9;x+=0.005){const z=-(drop||0)*Math.max(0,Math.min(1,(x-sp)/0.01));const v=rotv(phi,x,z);pts.push([Q[0]+v[0],Q[1]+v[1]])}
+  pline(g,M,pts,{stroke:"var(--ink2)","stroke-width":1.3,"stroke-dasharray":"4 3"});
+  const a=rotv(phi,sp,0.012),b=rotv(phi,sp,-0.03); line(g,M,[Q[0]+a[0],Q[1]+a[1]],[Q[0]+b[0],Q[1]+b[1]],{stroke:"var(--ink2)","stroke-width":1.3});
 }
 function seatOutline(g,M,Q,phi){
   const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2,t=0.045;
@@ -437,27 +464,33 @@ function seatOutline(g,M,Q,phi){
   poly(g,M,W,{fill:"var(--seat)","fill-opacity":.18,stroke:"var(--chosen)","stroke-width":1.4});
   el("circle",{cx:M.X(Q[0]),cy:M.Z(Q[1]),r:3,fill:"var(--chosen)"},g);
 }
-function railGeom(){const m=D.mech,lo=m.rail_lo,hi=m.rail_hi,d=[hi[0]-lo[0],hi[1]-lo[1]],L=Math.hypot(...d),e=[d[0]/L,d[1]/L];return {lo,hi,e,n:[-e[1],e[0]]}}
-function carriage(g,M,P1,attrs){const {e,n}=railGeom();const c=[[-0.045,-0.024],[0.045,-0.024],[0.045,0.024],[-0.045,0.024]].map(([a,b])=>[P1[0]+a*e[0]+b*n[0],P1[1]+a*e[1]+b*n[1]]);
-  poly(g,M,c,Object.assign({fill:"var(--steel)",stroke:"var(--surface)","stroke-width":1},attrs||{}))}
+function railGeom(){const m=D.mech,lo=m.rail_lo,hi=m.rail_hi,d=[hi[0]-lo[0],hi[1]-lo[1]],L=Math.hypot(...d),e=[d[0]/L,d[1]/L];return {lo,hi,e,n:[-e[1],e[0]],nf:[e[1],-e[0]]}}
+/* the carriage plate on the twin rails: two carriages per rail, 150 mm apart; the seat pin c1 is at its lower end */
+function carriage(g,M,P1,attrs){const {e,nf}=railGeom(),gap=D.layout.rail_gap,sp=D.layout.carriage_span;
+  const P=(a,b)=>[P1[0]+a*e[0]+b*nf[0],P1[1]+a*e[1]+b*nf[1]];
+  poly(g,M,[P(-0.03,-0.015),P(sp+0.03,-0.015),P(sp+0.03,gap+0.015),P(-0.03,gap+0.015)],Object.assign({fill:"var(--steel)",opacity:.35},attrs||{}));
+  for(const o of [0,gap])for(const a of [0,sp])poly(g,M,[P(a-0.03,o-0.012),P(a+0.03,o-0.012),P(a+0.03,o+0.012),P(a-0.03,o+0.012)],Object.assign({fill:"var(--steel)"},attrs||{}));}
 function railFixed(g,M,labels){
-  const m=D.mech,{lo,hi,e,n}=railGeom();
-  m.columns.forEach(([a,b])=>line(g,M,a,b,{stroke:"var(--steel2)","stroke-width":M.s*0.04,opacity:.5,"stroke-linecap":"round"}));
-  line(g,M,lo,hi,{stroke:"var(--steel2)","stroke-width":M.s*0.032,"stroke-linecap":"round"});
-  line(g,M,lo,hi,{stroke:"var(--amber)","stroke-width":1.4,"stroke-dasharray":"3 2"});
-  const mo=[[-0.10,-0.026],[-0.02,-0.026],[-0.02,0.026],[-0.10,0.026]].map(([a,b])=>[lo[0]+a*e[0]+b*n[0],lo[1]+a*e[1]+b*n[1]]);
-  poly(g,M,mo,{fill:"var(--amber)",opacity:.85});
+  const m=D.mech,L_=D.layout,{e,nf}=railGeom(),gap=L_.rail_gap;
+  poly(g,M,L_.housing,{fill:"var(--steel2)",opacity:.16,stroke:"var(--steel)","stroke-width":1.1,"stroke-dasharray":"6 3"});
+  [[m.rail_lo,m.rail_hi],L_.rail2].forEach(([a,b])=>line(g,M,a,b,{stroke:"var(--steel2)","stroke-width":M.s*0.02,"stroke-linecap":"round"}));
+  const s0=[m.rail_lo[0]+gap/2*nf[0],m.rail_lo[1]+gap/2*nf[1]],s1=[m.rail_hi[0]+gap/2*nf[0],m.rail_hi[1]+gap/2*nf[1]];
+  line(g,M,s0,s1,{stroke:"var(--amber)","stroke-width":1.6,"stroke-dasharray":"3 2"});
+  poly(g,M,L_.motor,{fill:"var(--amber)",opacity:.9});
   el("circle",{cx:M.X(m.B[0]),cy:M.Z(m.B[1]),r:4.5,fill:"var(--surface)",stroke:"var(--steel)","stroke-width":2},g);
   if(labels)rigLabels(g,M);
 }
 function rigLabels(g,M,P2){
-  const m=D.mech,{lo,hi,e,n}=railGeom(),H={stroke:"var(--surface)","stroke-width":3,"paint-order":"stroke","font-size":11,"font-weight":600};
-  const mo=[lo[0]-0.02*e[0]+0.026*n[0],lo[1]-0.02*e[1]+0.026*n[1]];
+  const m=D.mech,L_=D.layout,{e,nf}=railGeom(),H={stroke:"var(--surface)","stroke-width":3,"paint-order":"stroke","font-size":11,"font-weight":600};
   txt(g,M.X(m.B[0])+8,M.Z(m.B[1])+14,"B",Object.assign({},H,{fill:"var(--steel)","font-weight":700}));
-  const rm=[(lo[0]+hi[0])/2,(lo[1]+hi[1])/2];
-  txt(g,M.X(rm[0])-10,M.Z(rm[1]),"斜导轨 + 丝杠",Object.assign({},H,{fill:"var(--steel)","text-anchor":"end"}));
-  txt(g,M.X(lo[0])-10,M.Z(lo[1])+16,"电机",Object.assign({},H,{fill:"var(--amber)","text-anchor":"end"}));
+  const lo=m.rail_lo,hi=m.rail_hi,rm=[(lo[0]+hi[0])/2,(lo[1]+hi[1])/2];
+  txt(g,M.X(rm[0])-10,M.Z(rm[1]),"双导轨 + 滚珠丝杠",Object.assign({},H,{fill:"var(--steel)","text-anchor":"end"}));
+  const mc=L_.motor.reduce((a,p)=>[a[0]+p[0]/4,a[1]+p[1]/4],[0,0]);
+  txt(g,M.X(mc[0])+12,M.Z(mc[1])-4,"电机 + 失电制动",Object.assign({},H,{fill:"var(--amber)"}));
+  const top=L_.housing.reduce((a,p)=>p[1]>a[1]?p:a,[0,0]);
+  txt(g,M.X(top[0]),M.Z(top[1])-6,"机构箱（全封闭，床头一侧）",Object.assign({},H,{fill:"var(--steel)","text-anchor":"middle","font-weight":500}));
   if(P2)txt(g,M.X((m.B[0]+P2[0])/2)+8,M.Z((m.B[1]+P2[1])/2)+16,"倾角连杆",Object.assign({},H,{fill:"var(--steel)"}));
+  const b=D.consts.handrail; txt(g,M.X(b.x)+8,M.Z(b.z)-8,"L 形扶手横杆（握把开关）",Object.assign({},H,{fill:"var(--steel)"}));
 }
 const pCol=w=>`color-mix(in oklab, var(--bad) ${Math.round(25+75*Math.max(0,Math.min(1,w)))}%, var(--surface))`;
 function cushStrip(g,M,cu,wd){for(let i=0;i<cu.strip.length-1;i++)line(g,M,cu.strip[i],cu.strip[i+1],{stroke:pCol((cu.p[i]+cu.p[i+1])/40),"stroke-width":wd,"stroke-linecap":"round"});}
@@ -468,7 +501,7 @@ function drawCush(cu,s,A,fr,u){
   const M2={s:sc,X:x=>iw/2+(x-mid0[0])*sc,Z:z=>ih*0.42-(z-mid0[1])*sc};
   const defs=el("defs",{},g),cp=el("clipPath",{id:"clipCu"},defs);el("rect",{x:1,y:1,width:iw,height:ih-2,rx:8},cp);
   el("rect",{x:1,y:1,width:iw,height:ih-2,rx:8,fill:"var(--surface)",stroke:"var(--line)"},g);
-  const gi=el("g",{"clip-path":"url(#clipCu)"},g);seatShape(gi,M2,s.Q,s.phi);person(gi,M2,A,fr,u);cushStrip(gi,M2,cu,10);
+  const gi=el("g",{"clip-path":"url(#clipCu)"},g);seatShape(gi,M2,s.Q,s.phi);person(gi,M2,A,fr,u);seatTop(gi,M2,s.Q,s.phi,cushSel==="z2"?0.02:0);cushStrip(gi,M2,cu,10);
   [cu.strip[0],cu.strip[cu.strip.length-1]].forEach(p=>el("circle",{cx:M2.X(p[0]),cy:M2.Z(p[1]),r:3.2,fill:"var(--bad)"},gi));
   txt(g,9,17,"放大（窗口宽 30 cm）",{"font-size":11,"font-weight":600,fill:"var(--ink)",stroke:"var(--surface)","stroke-width":3,"paint-order":"stroke"});
   const L=iw+52,R=vb.width-10,T=34,B=ih-36,a0=Math.min(Math.floor(cu.a[0])-1,-4),a1=Math.max(Math.ceil(cu.a[1])+1,20),pm=Math.max(25,Math.ceil(cu.p_max/5)*5);
@@ -482,14 +515,21 @@ function drawCush(cu,s,A,fr,u){
   for(let i=0;i<n-1;i++)el("polygon",{points:[[as[i],0],[as[i],cu.p[i]],[as[i+1],cu.p[i+1]],[as[i+1],0]].map(q=>X(q[0])+","+Y(q[1])).join(" "),fill:pCol((cu.p[i]+cu.p[i+1])/40)},g);
   el("polyline",{points:as.map((a,i)=>X(a)+","+Y(cu.p[i])).join(" "),fill:"none",stroke:"var(--bad)","stroke-width":2},g);
   el("line",{x1:X(cu.a[0]),x2:X(cu.a[1]),y1:B,y2:B,stroke:"var(--bad)","stroke-width":3},g);
+  if(cu.a_split!=null&&cu.a_split>a0&&cu.a_split<a1){el("line",{x1:X(cu.a_split),x2:X(cu.a_split),y1:T+16,y2:B,stroke:"var(--ink2)","stroke-dasharray":"4 3"},g);
+    txt(g,X(cu.a_split)+4,T+28,"坐垫分区线（后硬 | 前软）",{"font-size":10,fill:"var(--ink2)"});}
   txt(g,R,14,`接触长 ${cu.len_cm.toFixed(1)} cm → 面积 ≈ ${Math.round(cu.len_cm*24)} cm²（× 24 cm 宽）`,{"text-anchor":"end","font-size":11,"font-weight":600,fill:"var(--bad)"});
+}
+function bracketPoly(Q,phi,P1,P2){
+  const h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2,T=D.layout.seat_t,W_=c=>{const v=rotv(phi,c[0],c[1]);return [Q[0]+v[0],Q[1]+v[1]]};
+  const pts=[W_([-h+0.045,-T.rear]),W_([T.split,-T.rear]),W_([T.split,-T.front]),W_([h-0.03,-T.front]),P1,P2];
+  const c=pts.reduce((a,p)=>[a[0]+p[0]/pts.length,a[1]+p[1]/pts.length],[0,0]);
+  return pts.sort((a,b)=>Math.atan2(a[1]-c[1],a[0]-c[0])-Math.atan2(b[1]-c[1],b[0]-c[0]));
 }
 function linkage(g,M,s){
   const m=D.mech; const W=c=>{const v=rotv(s.phi,c[0],c[1]);return [s.Q[0]+v[0],s.Q[1]+v[1]]};
-  const P1=W(m.c1),P2=W(m.c2),h=(D.consts.seat_x[1]-D.consts.seat_x[0])/2;
+  const P1=W(m.c1),P2=W(m.c2);
   railFixed(g,M,false);
-  const under=[[-h+0.02,-0.045],[h-0.03,-0.045]].map(W);
-  poly(g,M,[under[0],under[1],P1,P2],{fill:"var(--steel2)",opacity:.6});
+  poly(g,M,bracketPoly(s.Q,s.phi,P1,P2),{fill:"var(--steel2)",opacity:.6});
   line(g,M,m.B,P2,{stroke:"var(--steel)","stroke-width":6,"stroke-linecap":"round"});
   carriage(g,M,P1);
   [P1,P2].forEach(P=>el("circle",{cx:M.X(P[0]),cy:M.Z(P[1]),r:3.5,fill:"var(--surface)",stroke:"var(--steel)","stroke-width":2},g));
@@ -525,7 +565,7 @@ const STG=[0.1,0.3,0.5,0.65], STC=["#9fb7dd","#5f8fd0","#2a5fb0","#163a78"];
 function drawAssist(){
   const svg=$("#svgAssist");svg.innerHTML="";const vb=svg.viewBox.baseVal;const L=150,R=16,T=10,B=34;
   const pts=D.assist.points; const rows=D.assist.rows;
-  const med=(arr)=>{arr=arr.filter(v=>v!=null).sort((a,b)=>a-b);return arr.length?arr[Math.floor(arr.length/2)]:null};
+  const med=median;
   const xmax=0.45; const X=v=>L+v/xmax*(vb.width-L-R); const rowH=(vb.height-T-B)/pts.length; const g=el("g",{},svg);
   for(let v=0;v<=xmax+1e-9;v+=0.1){el("line",{x1:X(v),x2:X(v),y1:T,y2:vb.height-B,stroke:"var(--line)"},g);txt(g,X(v),vb.height-B+14,v.toFixed(1),{"text-anchor":"middle"})}
   txt(g,(L+vb.width)/2,vb.height-4,"费力（最吃力关节用到的力量比例，越低越好）",{"text-anchor":"middle"});
@@ -608,20 +648,20 @@ function drawMechStatic(){
   const LEG={"v5-mid":"连杆与小腿同平面，相撞","v5-sides":"两侧都被挡","v5-slider":"床尾一侧敞开"};
   $("#mechProse").innerHTML=`<p>坐板和人体在几何上都按刚体算，坐垫的软在第 7 步单独算。动画里大腿下的彩色条是坐垫的接触区（下方有放大图和压强分布）。</p>
    <p><b>机构怎么走出这条曲线。</b>座板下的支架上有两个铰点。<b>铰点 1</b> 装在滑块上，滑块沿一根直的斜导轨走，导轨与竖直方向成 ${m.rail_angle_deg.toFixed(0)}°，由导轨里的丝杠推动（一个电机）。<b>铰点 2</b> 用一根连杆拉到底座上的固定铰点 B，所以它只能绕 B 走圆弧。两个点的位置一定，座板的位置和前倾角就都定了，所以整个机构仍然只有一个自由度：丝杠转多少，座板就在曲线上走到哪里。</p>
-   <p>能这样做，是因为设计曲线上有一个点（铰点 1）走的几乎是直线，另一个点（铰点 2）走的几乎是圆弧。合成就是在座板坐标里找这两个点，让“直线 + 圆弧”与设计曲线的偏差最小。结果：座板中心最多偏 ${m.centre_err_mm.toFixed(0)} mm，前倾角最多差 ${m.tilt_err_deg.toFixed(1)}°。座板中心全程前移 ${(tv.dx*100).toFixed(0)} cm、上升 ${(tv.dz*100).toFixed(0)} cm。前倾先增后减：升到约 0.55 m 时最大 ${m.phi_run_max.toFixed(1)}°，到 0.66 m 附近回到约 5°。导轨末端为分区坐垫加长了 3 cm（第 7 步）：这一段座板继续升到 ${m.top.toFixed(2)} m，并略后仰到 ${m.phi_end.toFixed(0)}°（右下图）。后仰时人坐回不会往前滑。</p>
+   <p>能这样做，是因为设计曲线上有一个点（铰点 1）走的几乎是直线，另一个点（铰点 2）走的几乎是圆弧。合成就是在座板坐标里找这两个点，让“直线 + 圆弧”与设计曲线的偏差最小。结果：座板中心最多偏 ${m.centre_err_mm.toFixed(0)} mm，前倾角最多差 ${m.tilt_err_deg.toFixed(1)}°。座板中心全程前移 ${(tv.dx*100).toFixed(0)} cm、上升 ${(tv.dz*100).toFixed(0)} cm。前倾先增后减：升到 0.55 m 左右时最大 ${m.phi_run_max.toFixed(1)}°，之后回落，到顶 ${m.top.toFixed(2)} m 时为 ${m.phi_end.toFixed(0)}°（右下图）。行程设计到 ${m.top.toFixed(2)} m，是因为分区坐垫的软前区下陷多，坐板要多走约 3 cm 才托得住 0.5 倍体重（第 7 步）；5.2 把“到顶不后仰”直接写进机构综合（5.1 曾把旧导轨外推 3 cm，末端后仰到 −3.4°，已弃用）。</p>
    <p><b>为什么换掉四连杆。</b>第五版先把前倾上限压到 15°，并约束座板上两铰点间距 ≥ 80 mm（第四版只有 41 mm，铰点受力过大），然后比较了三种布置：</p>
    <div class="tscroll"><table><thead><tr><th>机构</th><th class=n>合格</th><th class=n>最大前滑</th><th class=n>最小坐回余量</th><th class=n>轨迹误差</th><th class=n>全程最大前倾</th><th class=n>支架深度</th><th class=n>驱动力（100 kg 静载）</th><th>回床转腿</th></tr></thead><tbody>
    ${["v5-mid","v5-sides","v5-slider"].filter(k=>P[k]).map(k=>{const p=P[k],cur=k===m.name;return `<tr${cur?' style="background:var(--amber-bg)"':''}><td>${NAME[k]}${cur?' <span class="chip good">采用</span>':''}</td><td class="n" style="color:${p.n_ok<81?'var(--bad)':'inherit'}">${p.n_ok}/81</td><td class=n>${sg(p.fwd_max)} cm</td><td class="n" style="color:${p.catch_min<0?'var(--bad)':'inherit'}">${sg(p.catch_min)} cm</td><td class=n>${p.centre_err_mm.toFixed(0)} mm</td><td class=n>${p.phi_max.toFixed(1)}°</td><td class=n>${p.bracket_mm.toFixed(0)} mm</td><td class=n>${p.force_kN==null?"—":p.force_kN.toFixed(1)+" kN"}</td><td>${LEG[k]}</td></tr>`}).join("")}
    </tbody></table></div>
-   <p>中间平面的四连杆在“不进床体”的约束下找不到好解（轨迹误差 6 cm，只有 ${P["v5-mid"]?P["v5-mid"].n_ok:"—"}/81 合格）。两侧四连杆可行，但两边都被连杆挡住，推杆要 ${P["v5-sides"]?P["v5-sides"].force_kN.toFixed(1):"—"} kN。斜导轨方案轨迹误差最小、驱动力约减半，而且全部零件都能放在床头一侧，床尾一侧留给回床转腿。代价有两个：座板是悬臂挂在一侧导轨上的，导轨要承受约 ${m.torsion_hold100_Nm} N·m 的扭矩；导轨下端和立柱离床较近（第 6 步）。</p>
-   <p><b>驱动和应急。</b>丝杠能自锁，断电停在原位，丝杠位置同时给出座板高度和前倾角。丝杠螺母带一个<b>手动快速释放</b>：拉下手柄后滑块与丝杠脱开，座板在人的重量下沿导轨缓慢下沉（第 6 步核对过：任何位置、任何坐法都只会往下沉），由阻尼器限速，只能手动复位。<b>扶手是固定在底座上的竖直立杆</b>，不随座板动。</p>`;
+   <p>中间平面的四连杆在“不进床体”的约束下找不到好解（轨迹误差 6 cm，只有 ${P["v5-mid"]?P["v5-mid"].n_ok:"—"}/81 合格）。两侧四连杆可行，但两边都被连杆挡住，推杆要 ${P["v5-sides"]?P["v5-sides"].force_kN.toFixed(1):"—"} kN。斜导轨方案轨迹误差最小、驱动力约减半，而且全部零件都能放在床头一侧，床尾一侧留给回床转腿。代价是座板悬臂挂在一侧：载荷偏向敞开一侧 10 cm 时悬臂力矩约 ${D.layout.forces["载荷偏向敞开一侧 10 cm"].moment_Nm} N·m，要用双导轨、每轨两个滑块承担（第 6 步）。</p>
+   <p><b>驱动和应急。</b>滚珠丝杠在两根导轨中间，丝杠位置同时给出座板高度和前倾角。滚珠丝杠不自锁，平时由失电常闭制动器抱住，断电也抱住。应急时拉握把旁的拉索拨杆，制动器松开，人的重量反推丝杠，离心限速器把下沉速度限在约 10 cm/s，松手即停，不用复位（第 6 步核对过：任何位置、任何坐法都只会往下沉）。另有电池可以慢慢降。<b>扶手是固定在底座上的 L 形扶手</b>，横杆在人正前方。</p>`;
   const W=(c,f)=>{const v=rotv(f.phi,c[0],c[1]);return [f.Q[0]+v[0],f.Q[1]+v[1]]};
   const mm=v=>(v*1000).toFixed(0), pt=p=>`(${mm(p[0])}, ${mm(p[1])})`;
   const r=[["导轨（含滑块余量）下端 → 上端（x, z）",`${pt(m.rail_lo)} → ${pt(m.rail_hi)} mm`],["导轨倾角",`与竖直方向 ${m.rail_angle_deg.toFixed(1)}°`],["丝杠行程",`${mm(m.stroke)} mm`],
     ["铰点 1（滑块）/ 铰点 2（连杆）在座板坐标",`${pt(m.c1)} / ${pt(m.c2)} mm，相距 ${mm(pd)} mm`],["连杆底座铰点 B（x, z）",`${pt(m.B)} mm`],["连杆长度",`${mm(m.link)} mm`],
     ["支架深度（座面以下）",`${m.bracket_depth_mm.toFixed(0)} mm`],["轨迹误差（中心 / 前倾）",`${m.centre_err_mm.toFixed(1)} mm / ${m.tilt_err_deg.toFixed(1)}°`],["全程最大前倾 / 到顶时",`${m.phi_run_max.toFixed(1)}° / ${m.phi_end.toFixed(1)}°`],
     ["丝杠推力，起身（60 / 100 kg，坐板推 0.5 倍体重）",`≤ ${m.F_lift60_N} / ${m.F_lift100_N} N`],["丝杠推力，静载（100 kg 坐下，1.5 倍体重）",`≤ ${m.F_hold100_N} N`],
-    ["连杆轴力 / 滑块法向力（同一静载）",`${m.forces_hold100_N.link} / ${m.forces_hold100_N.normal} N`],["单侧悬臂扭矩（同一静载）",`${m.torsion_hold100_Nm} N·m`]];
+    ["连杆轴力 / 滑块法向力（同一静载）",`${m.forces_hold100_N.link} / ${m.forces_hold100_N.normal} N`],["单侧悬臂力矩（同一静载，载荷在中线 / 偏向敞开一侧 10 cm）",`${D.layout.forces["载荷在座板中线"].moment_Nm} / ${D.layout.forces["载荷偏向敞开一侧 10 cm"].moment_Nm} N·m`],["每个滑块的侧向力（偏载）",`约 ${(D.layout.forces["载荷偏向敞开一侧 10 cm"].per_carriage_lateral_N/1000).toFixed(1)} kN`]];
   $("#dimTable").innerHTML="<tbody>"+r.map(x=>`<tr><td>${x[0]}</td><td class=n>${x[1]}</td></tr>`).join("")+"</tbody>";
   const zt=[0.42,0.48,0.54,0.60,0.66].filter(z=>z<=Math.max(...fc.z)+0.005), ymax=Math.ceil(Math.max(...fc.hold100)/500)*500;
   lineChart($("#svgTorque"),fc.z,[{name:"静载 100 kg ×1.5",y:fc.hold100,c:"var(--bad)",labelAt:Math.floor(fc.z.length*0.45)},{name:"起身 100 kg ×0.5",y:fc.lift100,c:"var(--steel)",labelAt:Math.floor(fc.z.length*0.45)},{name:"起身 60 kg ×0.5",y:fc.lift60,c:"var(--path)"}],
@@ -661,7 +701,7 @@ function drawZone(){
    <p><b>结论：前半程能移过去，后半程移不过去。</b>起身 15% 时，推荐的分区坐垫把骨盆段受力占比从 ${Math.round(pel(U0,"0.15")*100)}% 提到 ${Math.round(pel(Z1,"0.15")*100)}%，更激进的方案到 ${Math.round(pel(Z2,"0.15")*100)}%；到 55% 以后，所有方案都接近 0。</p>
    <p><b>原因在几何，不在刚度。</b>分区只能重新分配“已经压在坐垫上”的那部分身体之间的力。起身过程中大腿越来越陡（右表：${th["0.15"].thigh}° → ${th["0.7"].thigh}°），座板却被限制在 15° 左右。两者夹角从 ${(th["0.15"].thigh-th["0.15"].seat).toFixed(0)}° 增大到 ${(th["0.7"].thigh-th["0.7"].seat).toFixed(0)}°，身体后侧越靠近髋，离座面越远：夹角 30° 时，往髋方向走 5 cm，身体就比座面高出约 2.5 cm。后半程骨盆根本没压在坐垫上，后区再硬也推不到它。要在后半程推骨盆，座板得跟着大腿一起倾到 40–50°，这和为了坐回安全定的 15° 上限冲突。</p>
    <p><b>省力是真的，但主要不是因为“推在骨盆上”。</b>分区后费力中位从 ${ea(U0).med.toFixed(3)} 降到 ${ea(Z1).med.toFixed(3)}（推荐）/ ${ea(Z2).med.toFixed(3)}（激进）。把“骨盆段”的分界从 4 cm 改成 3 cm 或 6 cm，费力几乎不变，所以收益不是靠模型里那条分界线算出来的。比较合理的推断是：压力中心往后移、离膝更远，同样 0.5 倍体重对膝的帮助更大。这一点还没单独验证。</p>
-   <p><b>代价有两个。</b>一是后区硬，坐着时坐骨下的峰值压强变大：激进方案 ${sit(Z2).p_peak_kPa} kPa，均匀坐垫 ${sit(U0).p_peak_kPa} kPa。二是前区软、下陷多，坐板要多走一段才托得住 0.5 倍体重。所以导轨末端加长了 3 cm（${D.mech.stroke*1000|0} mm 行程，顶到 ${D.mech.top.toFixed(2)} m）。不加长时，激进方案在起身 70% 有 19/81 人托不住，加长后剩 ${E[Z2].by_stage["0.7"].lost}/81。</p>`;
+   <p><b>代价有两个。</b>一是后区硬，坐着时坐骨下的峰值压强变大：激进方案 ${sit(Z2).p_peak_kPa} kPa，均匀坐垫 ${sit(U0).p_peak_kPa} kPa。二是前区软、下陷多，坐板要多走一段才托得住 0.5 倍体重。所以机构行程设计到 ${D.mech.top.toFixed(2)} m（${D.mech.stroke*1000|0} mm 丝杠行程）；只到 0.66 m 时，激进方案在起身 70% 有 19/81 人托不住，现在剩 ${E[Z2].by_stage["0.7"].lost}/81。</p>`;
   // grouped bars: pelvis share by stage
   const svg=$("#svgZone");svg.innerHTML="";const vb=svg.viewBox.baseVal,L=44,R=10,T=14,B=36,g=el("g",{},svg);
   const X0=i=>L+i*(vb.width-L-R)/4, bw=(vb.width-L-R)/4, Y=v=>vb.height-B-v*(vb.height-T-B);
@@ -678,15 +718,15 @@ function drawZone(){
   const ORDER=Object.keys(E);
   let h="<thead><tr><th>坐垫</th><th class=n>骨盆段受力 15 / 35 / 55 / 70%</th><th class=n>费力 中位 / 最差</th><th class=n>比均匀更费力</th><th class=n>托不住</th><th class=n>起身峰值压强 中位 / 最大</th><th class=n>坐着峰值压强</th><th class=n>坐着下陷</th></tr></thead><tbody>";
   ORDER.forEach(nm=>{const e=E[nm],gg=G[nm],rec=nm===Z1,agg=nm===Z2,sd=gg.sitdown||{};
-    h+=`<tr${rec?' style="background:var(--amber-bg)"':''}><td>${nm}${rec?' <span class="chip good">推荐</span>':''}${agg?' <span class="chip">样件可试</span>':''}</td>
+    h+=`<tr${rec?' style="background:var(--amber-bg)"':''}><td>${nm}${rec?' <span class="chip good">推荐</span>':''}${agg?' <span class="chip">不采用</span>':''}</td>
       <td class=n>${ST.map(s_=>Math.round(pel(nm,s_)*100)).join(" / ")}%</td><td class=n>${e.all.effort_all.med.toFixed(3)} / ${e.all.effort_all.max.toFixed(3)}</td>
       <td class=n>${e.worse} 次${e.worse?"（最多 +"+e.max_worse.toFixed(3)+"）":""}</td><td class=n>${e.all.lost} / 324</td>
       <td class=n>${gg.all.p_peak_kPa.med.toFixed(0)} / ${gg.all.p_peak_kPa.max.toFixed(0)} kPa</td><td class="n" style="color:${sd.p_peak_kPa>35?'var(--bad)':'inherit'}">${sd.p_peak_kPa!=null?sd.p_peak_kPa.toFixed(0)+" kPa":"—"}</td><td class=n>${sd.sink_mm!=null?(sd.sink_mm/10).toFixed(1)+" cm":"—"}</td></tr>`});
   $("#zoneTable").innerHTML=h+"</tbody>";
   $("#zoneNote").innerHTML=`<div><b>推荐：后 10 / 前 3 kPa/cm，分界在座板中心后 2 cm（离后缘 6.5 cm），后区厚 5 cm、前区厚 8 cm；导轨末端加长 3 cm。</b>它几乎没有代价：
     费力中位 ${ea(U0).med.toFixed(3)} → ${ea(Z1).med.toFixed(3)}，最差 ${ea(U0).max.toFixed(3)} → ${ea(Z1).max.toFixed(3)}；起身时峰值压强中位 ${pk(U0).med.toFixed(0)} → ${pk(Z1).med.toFixed(0)} kPa；坐着时峰值压强 ${sit(U0).p_peak_kPa} → ${sit(Z1).p_peak_kPa} kPa，基本不变。
-    前区比后区厚 3 cm，座板骨架在前区要做成下沉 3 cm 的台阶，两区顶面齐平。</div>
-    <div><b>样件可试：后 15 / 前 2，前区顶面再低 2 cm。</b>费力中位降到 ${ea(Z2).med.toFixed(3)}，起身 15% 时 ${Math.round(pel(Z2,"0.15")*100)}% 的力压在骨盆段。但坐着时峰值压强 ${sit(Z2).p_peak_kPa} kPa，是均匀坐垫的两倍多；有 ${E[Z2].worse} 个情况比均匀坐垫更费力，主要是 1.75 m、偏瘦、髋早前移的人在后半程。上样件时要用压力垫实测坐骨下的压强再决定。</div>
+    前区比后区厚 3 cm，座板骨架在前区要做成下沉 3 cm 的台阶，两区顶面齐平；台阶做斜坡过渡，两块泡沫斜切粘接，上面再盖一层 1 cm 整体面层，避免分界处的硬棱。</div>
+    <div><b>不采用：后 15 / 前 2，前区顶面再低 2 cm。</b>费力中位能降到 ${ea(Z2).med.toFixed(3)}，起身 15% 时 ${Math.round(pel(Z2,"0.15")*100)}% 的力压在骨盆段；但坐着时峰值压强 ${sit(Z2).p_peak_kPa} kPa，是均匀坐垫的两倍多，而且有 ${E[Z2].worse} 个情况比均匀坐垫更费力（最多 +${E[Z2].max_worse.toFixed(3)}，集中在 1.75 m、偏瘦、髋早前移的人的后半程）。多省的力换不来这两项代价。</div>
     <div>模型限制：坐垫按独立弹簧床算，没有剪切耦合；人体软组织当刚体；“骨盆段 = 臀腿交界 4 cm 以内”是按解剖估的。这些只影响数值，不影响“后半程推不到骨盆”的几何结论。</div>`;
 }
 
@@ -696,9 +736,13 @@ const okRow=c=>c.release_hz!=null&&c.fwd_slip_max_cm<=2&&c.min_catch_cm>=0;
 function drawCheck(){
   const F=D.check.design,V=D.check.vertical; const ks=Object.keys(F);
   const st=(o,k,fn)=>{const a=ks.map(x=>o[x][k]).filter(v=>v!=null);return a.length?fn(a):null};
-  const med=a=>{a=[...a].sort((x,y)=>x-y);return a[Math.floor(a.length/2)]};
+  const med=median;
   const nok=ks.filter(k=>okRow(F[k])).length, nokV=ks.filter(k=>okRow(V[k])).length, m=D.mech;
+  const Z1n=D.zoned.ids.z1, CT=(D.check.cushion||{})[Z1n], CU=CT?CT.users:{}, okC=c=>c&&c.fwd_slip_cm<=2&&c.catch_min_cm>=0;
   $("#checkProse").innerHTML=`机构走出的轨迹和设计曲线不完全一样（中心最多差 ${m.centre_err_mm.toFixed(0)} mm，前倾角最多差 ${m.tilt_err_deg.toFixed(1)}°，导轨末段还多走了一段让前倾回落），所以最后一步用它实际的轨迹重新检查每个人：往前滑多少、坐回能否落在座面、坐板最后支撑到多高、放手时座板前倾多少、放手那一刻多费力。和现方案（竖直升降、座面水平）放在一起比。`;
+  if(CT){const cs=CT.summary,w=cs.why_end;
+    $("#cushCheckNote").innerHTML=`<b>坐垫一致性检查（5.2）。</b>上面的“刚体”结果假设坐板一碰到身体就停在那里。真实坐垫会被压下去，坐板要沿导轨多走一段，座板的位置和前倾都会变。所以按推荐分区坐垫逐帧重算：每一帧把坐板沿机构曲线推到坐垫托住 0.5 倍体重的位置，再用和刚体检查相同的定义算前滑（压力中心下的身体点相对座板的移动）和坐回余量（压下后的座板前缘）；压力中心超过臀腿交界 18 cm（托腿垫的边界）或行程用完，就算放手。
+      结果：${cs.n_ok}/81 合格，最大前滑 ${sg(cs.fwd_max)} cm，最小坐回余量 ${sg(cs.catch_min)} cm；放手原因：到托腿垫边界 ${w["thigh pad limit"]} 人、行程用完 ${w["travel"]} 人、起身走完 ${w["end of path"]} 人；放手费力中位 ${cs.E_rel_med.toFixed(3)}、最差 ${cs.E_rel_max.toFixed(3)}，支撑过程中最差 ${cs.E_sup_max.toFixed(3)}。表中“坐垫压下后”一列是逐人的结果。`;}
   $("#checkKpis").innerHTML=[
     [`${nok} / ${ks.length}`,"新坐板：全部合格的人数",`竖直升降：${nokV} / ${ks.length}`,nok===ks.length?"good":""],
     [sg(st(F,"fwd_slip_max_cm",a=>Math.max(...a)))+" cm","最大往前滑",`竖直升降：${sg(st(V,"fwd_slip_max_cm",a=>Math.max(...a)))} cm`,""],
@@ -707,19 +751,20 @@ function drawCheck(){
     [fmt(st(F,"phi_release",med),1)+"° / "+fmt(st(F,"phi_release",a=>Math.max(...a)),1)+"°","放手时座板前倾 中位 / 最大",`上限 ${D.consts.phi_max}°（第四版中位 24°）`,st(F,"phi_release",a=>Math.max(...a))<=16?"good":""]]
     .map(([v,k,c,cl])=>`<div class="kpi"><span class="v ${cl}">${v}</span><span class="k">${k}</span><span class="c">${c}</span></div>`).join("");
   let rowsK=ks.filter(k=>filt==="all"||(filt==="bad"&&!okRow(F[k]))||(filt.startsWith("p")&&k.includes(" "+filt+" ")));
-  let h="<thead><tr><th>用户</th><th class=n>前滑 最大</th><th class=n>坐回余量</th><th class=n>最后支撑髋高</th><th class=n>放手时前倾</th><th class=n>放手费力</th><th class=n>驼背</th><th class=n>竖直：前滑 / 余量 / 费力</th><th>结论</th></tr></thead><tbody>";
+  let h="<thead><tr><th>用户</th><th class=n>前滑 最大</th><th class=n>坐回余量</th><th class=n>最后支撑髋高</th><th class=n>放手时前倾</th><th class=n>放手费力</th><th class=n>驼背</th><th class=n>坐垫压下后：前滑 / 余量</th><th class=n>竖直：前滑 / 余量 / 费力</th><th>结论</th></tr></thead><tbody>";
   rowsK.forEach(k=>{const c=F[k],v=V[k],u=U.find(x=>x.key===k);const ok=okRow(c);
     const why=[];if(c.release_hz==null)why.push("无支撑");else{if(c.fwd_slip_max_cm>2)why.push("前滑");if(c.min_catch_cm<0)why.push("坐回落空")}
     h+=`<tr data-k="${k}" style="cursor:pointer"${k===userKey()?' class="cur"':''}><td>${u.H.toFixed(2)} m · ${RBN[u.r_b].split(" ")[0]} · ${HABIT[u.p]} · 脚 ${(u.x_a*100).toFixed(0)}</td>
       <td class=n>${sg(c.fwd_slip_max_cm)}</td><td class="n" style="color:${c.min_catch_cm<0?'var(--bad)':'inherit'}">${sg(c.min_catch_cm)}</td><td class=n>${fmt(c.release_hz,2)}</td><td class=n>${c.phi_release==null?"—":fmt(c.phi_release,1)+"°"}</td>
       <td class=n>${fmt(c.E0_release,3)}</td><td class=n>${fmt(c.E0_release_stooped,3)}</td>
+      <td class="n" style="color:${CU[k]&&!okC(CU[k])?'var(--bad)':'inherit'}">${CU[k]?sg(CU[k].fwd_slip_cm)+" / "+sg(CU[k].catch_min_cm):"—"}</td>
       <td class="n muted">${sg(v.fwd_slip_max_cm)} / ${sg(v.min_catch_cm)} / ${fmt(v.E0_release,3)}</td>
       <td>${ok?'<span class="chip good">合格</span>':'<span class="chip bad">'+why.join("、")+'</span>'}</td></tr>`});
   $("#checkTable").innerHTML=h+"</tbody>";
   document.querySelectorAll("#checkTable tr[data-k]").forEach(tr=>tr.onclick=()=>{const u=U.find(x=>x.key===tr.dataset.k);sel={H:u.H,r:u.r_b,p:u.p,x:u.x_a};syncSel();renderAll();document.getElementById("mech").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})});
   document.querySelectorAll("#checkTable tr.cur td").forEach(td=>td.style.background="var(--amber-bg)");
 }
-document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{filt=b.dataset.f;document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));drawCheck()});
+document.querySelectorAll("#check .tabs button").forEach(b=>b.onclick=()=>{filt=b.dataset.f;document.querySelectorAll("#check .tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));drawCheck()});
 
 /* ---------- header, notes, CAD list ---------- */
 function drawStatic(){
@@ -727,29 +772,47 @@ function drawStatic(){
   const fwd=Math.max(...ks.map(k=>F[k].fwd_slip_max_cm)), ctc=Math.min(...ks.map(k=>F[k].min_catch_cm).filter(v=>v!=null));
   const fwdV=Math.max(...ks.map(k=>V[k].fwd_slip_max_cm)), ctcV=Math.min(...ks.map(k=>V[k].min_catch_cm).filter(v=>v!=null));
   const E=ks.map(k=>F[k].E0_release).filter(v=>v!=null).sort((a,b)=>a-b), EV=ks.map(k=>V[k].E0_release).filter(v=>v!=null).sort((a,b)=>a-b);
-  $("#lede").innerHTML=`坐板挂在床头一侧的一根斜导轨上，再用一根连杆控制前倾，一个电机（丝杠）驱动，沿一条固定曲线前移、上升、前倾（上限 ${D.consts.phi_max}°）；扶手是固定在底座上的立杆。这条曲线从 81 位不同身高、胖瘦、起身习惯、脚位的用户里定出来，再用机构实际走出的轨迹回头检查每个人。下面按设计顺序展开：先看人怎么起身，再定推哪里、坐板放哪里，最后是机构。`;
+  $("#lede").innerHTML=`坐板装在床头一侧封闭箱里的斜导轨上，用一根连杆控制前倾，一个电机（滚珠丝杠）驱动，沿一条固定曲线前移、上升、前倾（上限 ${D.consts.phi_max}°）；扶手是固定在底座上的 L 形扶手，横杆在人正前方。这条曲线从 81 位不同身高、胖瘦、起身习惯、脚位的用户里定出来，再用机构实际走出的轨迹回头检查每个人。下面按设计顺序展开：先看人怎么起身，再定推哪里、坐板放哪里，最后是机构。`;
   $("#kpis").innerHTML=[[sg(fwd)+" cm","最大往前滑（人滑出座面）",`竖直升降为 ${sg(fwdV)} cm`,fwd<=2?"good":"bad"],[sg(ctc)+" cm","最小坐回余量（负 = 坐回落到前缘外）",`竖直升降为 ${sg(ctcV)} cm`,ctc>=0?"good":"bad"],
-    [E[Math.floor(E.length/2)].toFixed(3),"放手费力中位数",`竖直升降为 ${EV[Math.floor(EV.length/2)].toFixed(3)}`,""],[`${nok} / ${ks.length}`,"全部指标合格的用户","",nok===ks.length?"good":""]]
+    [median(E).toFixed(3),"放手费力中位数",`竖直升降（同一扶手）为 ${median(EV).toFixed(3)}`,""],[`${nok} / ${ks.length}`,"全部指标合格的用户","",nok===ks.length?"good":""]]
     .map(([v,k,c,cl])=>`<div class="kpi"><span class="v ${cl}">${v}</span><span class="k">${k}</span><span class="c">${c}</span></div>`).join("");
   $("#assistNote").innerHTML=D.assistNote;
   const m=D.mech, mm=v=>(v*1000).toFixed(0), pt=p=>`(${mm(p[0])}, ${mm(p[1])})`, L=D.layout;
-  $("#cadList").innerHTML=[`斜导轨（床头一侧，|y| ≈ ${(L.Y.rail*100).toFixed(0)} cm）：下端 ${pt(m.rail_lo)}、上端 ${pt(m.rail_hi)} mm（x 从床沿，z 从地面），与竖直 ${m.rail_angle_deg.toFixed(1)}°；丝杠行程 ${mm(m.stroke)} mm，静载推力 ≥ ${m.F_hold100_N} N，自锁，螺母带手动快速释放`,
-    `导轨承受侧翻力矩 ≥ ${m.torsion_hold100_Nm} N·m（再乘安全系数）：双导轨或宽型滑块；两根立柱 ${m.columns.map(c=>pt(c[0])+"→"+pt(c[1])).join("、")} mm`,
-    `座板支架铰点（座板坐标）：滑块 ${pt(m.c1)}、连杆 ${pt(m.c2)} mm，支架深 ${m.bracket_depth_mm} mm，横跨全宽，悬臂接到滑块`,
-    `倾角连杆（|y| ≈ ${(L.Y.link*100).toFixed(0)} cm）：底座铰点 B ${pt(m.B)} mm，长 ${mm(m.link)} mm，轴力 ≈ ${m.forces_hold100_N.link} N`,
-    `底座：x 3–78 cm、y ${(L.tipping.base.y[0]*100).toFixed(0)} … +${(L.tipping.base.y[1]*100).toFixed(0)} cm（床头一侧侧梁托住连杆铰点 B）；扶手立杆 x ${mm(D.consts.pole.x)} mm，可抓 ${D.consts.pole.z[0]}–${D.consts.pole.z[1]} m；恒流阻尼器（下沉 ≈ 0.1 m/s，与体重无关）`,
-    `坐垫（分区）：后区约 10 kPa/cm、厚 5 cm，前区约 3 kPa/cm、厚 8 cm，分界在座板中心后 2 cm；座板骨架在前区下沉 3 cm 使两区顶面齐平；前缘圆角软托腿垫覆盖大腿后侧约 ${Math.round(D.consts.pad*100)} cm`,`护罩：导轨风琴罩；立柱与连杆、支架之间的固定护板（第 6 步夹手点）`,`运动动画：用“机构”图的 ${m.frames.length} 帧座板姿态`].map(x=>`<li>${x}</li>`).join("");
+  const Fo=L.forces["载荷偏向敞开一侧 10 cm"], E=L.emergency, b=D.consts.handrail, T=L.tipping, Y=L.Y;
+  const hx=L.housing.map(p=>p[0]), hz=L.housing.map(p=>p[1]);
+  $("#cadList").innerHTML=[`机构箱（床头一侧）：y ${(Y.wall_in*100).toFixed(0)}–${(Y.wall_out*100).toFixed(0)} cm，x ${(Math.min(...hx)*100).toFixed(0)}–${(Math.max(...hx)*100).toFixed(0)} cm，高 ${Math.max(...hz).toFixed(2)} m；内壁开竖槽（毛刷）让座板支架穿过`,
+    `双导轨（在导轨平面内相距 ${L.rail_gap*1000|0} mm）：导轨 1 下端 ${pt(m.rail_lo)}、上端 ${pt(m.rail_hi)} mm，与竖直 ${m.rail_angle_deg.toFixed(1)}°；每轨 2 个滑块相距 ${L.carriage_span*1000|0} mm，按每滑块侧向 ${(Fo.per_carriage_lateral_N/1000).toFixed(1)} kN 再乘安全系数选型`,
+    `滚珠丝杠（导程 ${E.lead_mm} mm）在两轨之间，行程 ${mm(m.stroke)} mm，静载推力 ≥ ${m.F_hold100_N} N；电机 + 失电制动器（≥ ${E.brake_torque_Nm} N·m）在上端，同步带；离心限速器约 ${(E.limiter_speed_mps*100).toFixed(0)} cm/s；拉索拨杆在握把旁；螺母和滑块板之间用浮动接头`,
+    `座板支架铰点（座板坐标）：滑块 ${pt(m.c1)}、连杆 ${pt(m.c2)} mm，支架深 ${m.bracket_depth_mm} mm，横跨全宽，经竖槽接到滑块板`,
+    `倾角连杆（箱内）：底座铰点 B ${pt(m.B)} mm，长 ${mm(m.link)} mm，轴力 ≈ ${m.forces_hold100_N.link} N`,
+    `底座：x 3–78 cm、y ${(T.base.y[0]*100).toFixed(0)} … +${(T.base.y[1]*100).toFixed(0)} cm；<b>和床固定</b>，固定件拉力按 ${T["固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）"].anchor_N} N 设计`,
+    `L 形扶手：立柱在床头一侧 x ${mm(b.x)} mm，横杆高 ${mm(b.z)} mm、从 y +300 伸到 −50 mm，握把式开关在横杆中间`,
+    `坐垫（分区）：后区约 10 kPa/cm、厚 5 cm，前区约 3 kPa/cm、厚 8 cm，分界在座板中心后 2 cm；座板骨架在前区下沉 3 cm 使两区顶面齐平（台阶做斜坡过渡）；表层高摩擦纹理面料 μ ≥ 0.5`,
+    `传感：座板下测力单元只测法向力（用于速度规则）；体重自检用底座四角的测力单元`,`运动动画：用“机构”图的 ${m.frames.length} 帧座板姿态`].map(x=>`<li>${x}</li>`).join("");
+  const Fd=D.check.design, ks2=Object.keys(Fd), nok2=ks2.filter(k=>okRow(Fd[k])).length, Vs=D.check.vertical_summary;
+  const Z1n=D.zoned.ids.z1, CT=(D.check.cushion||{})[Z1n];
+  const fin=[["机构","单侧斜导轨 + 倾角连杆，一个电机",`座板中心前移 ${(m.travel.dx*100).toFixed(0)} cm、上升 ${(m.travel.dz*100).toFixed(0)} cm，到 ${m.top.toFixed(2)} m；前倾 ≤ ${m.phi_run_max.toFixed(1)}°，到顶 ${m.phi_end.toFixed(0)}°；轨迹误差 ${m.centre_err_mm.toFixed(0)} mm`],
+    ["结构","床头一侧封闭机构箱；双导轨、每轨两滑块；床尾一侧敞开",`机构箱离床 ${L.bed_floor_cm["机构箱（导轨、滑块、电机、连杆）"]} cm；偏载悬臂力矩 ${Fo.moment_Nm} N·m，每滑块侧向约 ${(Fo.per_carriage_lateral_N/1000).toFixed(1)} kN`],
+    ["驱动与应急","滚珠丝杠 + 失电制动 + 离心限速；拉索拨杆拉住才降；电池慢降",`丝杠静载 ≤ ${(m.F_hold100_N/1000).toFixed(1)} kN；最轻用户下沉推力是阻力的 ${E.margin} 倍；全行程约 ${E.time_full_sink_s} s`],
+    ["扶手","L 形固定扶手，横杆在人正前方",`x ${(b.x*100).toFixed(0)} cm、高 ${b.z.toFixed(2)} m；81 人坐着都够得着；从坐到放手只握一个点`],
+    ["坐垫","分区：后 10 / 前 3 kPa/cm，前区厚 8 cm",`费力中位 ${D.zoned.effort[D.zoned.ids.u].all.effort_all.med.toFixed(3)} → ${D.zoned.effort[Z1n].all.effort_all.med.toFixed(3)}；坐着峰值压强 ${D.zoned.grid[Z1n].sitdown.p_peak_kPa} kPa`],
+    ["与床固定","必须固定",`人不在台上时扶一下横杆，${T["结论"].min_tip_force_N} N 就会拉翻台架`],
+    ["验证（81 人）","刚体接触 / 坐垫压下后 / 竖直升降（同一扶手）",`${nok2}/81 / ${CT?CT.summary.n_ok:"—"}/81 / ${Vs.n_ok}/81 合格；放手费力中位 ${median(ks2.map(k=>Fd[k].E0_release)).toFixed(3)} vs 竖直 ${Vs.E_rel_med.toFixed(3)}`]];
+  $("#finalTable").innerHTML="<thead><tr><th>项目</th><th>方案</th><th>关键数字</th></tr></thead><tbody>"+fin.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")+"</tbody>";
+  drawR2();
   drawV5();
 }
 
 /* ---------- step 6: supports and interference ---------- */
 function hipB(u){return 0.235*u.H+2*(u.r_b-0.09)}
 function drawLayout(){
-  const L=D.layout, m=D.mech, Y=L.Y, fr0=L.frames[0], frN=L.frames[L.frames.length-1], E=L.emergency, T=L.tipping;
-  const u=U.find(x=>x.key===userKey()), B=hipB(u), legOut=B/2-0.02, carIn=Y.rail-0.025;
-  const cm=v=>(v*100).toFixed(0), By=T.base.y;
-  $("#layProse").innerHTML=`<p><b>支点怎么固定。</b>底座是一个贴地的矩形框（x 3–78 cm，高 4 cm），脚踏板夹在框里；床尾一侧的侧梁在 y = ${cm(By[0])} cm，床头一侧的侧梁外移到 y = +${cm(By[1])} cm，因为倾角连杆的底座铰点 B 在 |y| ≈ ${cm(Y.link)} cm 的平面上，要落在侧梁上。所有活动零件都在<b>床头一侧</b>：两根立柱立在底座侧梁上，托住斜导轨的上下两端；导轨在 |y| ≈ ${cm(Y.rail)} cm 的平面里，滑块在导轨上走，座板支架从滑块悬臂伸出、横跨座板全宽；倾角连杆在更外侧 |y| ≈ ${cm(Y.link)} cm 的平面，下端铰在底座侧梁上的 B 点 (${m.B.map(v=>(v*100).toFixed(1)).join(", ")}) cm。扶手立杆也立在床头一侧的底座上（x ${cm(D.consts.pole.x)} cm）。<b>床尾一侧</b>只有贴地的底座侧梁。</p>
-   <p><b>和床的关系。</b>床按实心块处理（床沿 x = 0 以后、床面 0.42 m 以下全是床）。座板后缘 ${(L.sizes.LIP*100).toFixed(1)} cm 是软唇边，可以搭在床垫上；导轨（含滑块余量）和连杆全程离床 ≥ 1.5 cm，座板刚性部分和支架 ≥ 2.0 cm；后立柱离床只有 ${L.bed_floor_cm["导轨立柱"]} cm，比 1.5 cm 的目标少 0.5 cm，立柱往前挪 0.5 cm 即可，不影响轨迹。</p>`;
+  const L=D.layout, m=D.mech, Y=L.Y, fr0=L.frames[0], frN=L.frames[L.frames.length-1], E=L.emergency, T=L.tipping, b=D.consts.handrail;
+  const u=U.find(x=>x.key===userKey()), B=hipB(u), legOut=B/2-0.02;
+  const cm=v=>(v*100).toFixed(0), By=T.base.y, hx=L.housing.map(p=>p[0]), hz=L.housing.map(p=>p[1]);
+  const Hx0=Math.min(...hx),Hx1=Math.max(...hx),Hz1=Math.max(...hz);
+  $("#layProse").innerHTML=`<p><b>机构装在床头一侧的封闭箱里。</b>箱体内壁在 y = ${cm(Y.wall_in)} cm、外壁在 ${cm(Y.wall_out)} cm，前后从 x = ${cm(Hx0)} 到 ${cm(Hx1)} cm，高到 ${Hz1.toFixed(2)} m。箱体侧板上装<b>两根平行导轨</b>（在导轨平面内相距 ${L.rail_gap*1000|0} mm），每根导轨上两个滑块（相距 ${L.carriage_span*1000|0} mm），四个滑块装在一块滑块板上，座板的铰点 1 就在滑块板下端；滚珠丝杠在两根导轨中间，电机和失电制动器折到导轨上端（同步带）。倾角连杆也在箱里，下端铰在箱底的 B 点 (${m.B.map(v=>(v*100).toFixed(1)).join(", ")}) cm。座板支架从箱体内壁的一条竖槽伸进箱里，竖槽两边是毛刷，手指伸不进去。第五版的两根立柱取消了：它们在侧视图里和支架、连杆交叉，加护板也挡不住。</p>
+   <p><b>底座</b>是贴地的矩形框（x 3–78 cm，y ${cm(By[0])} … +${cm(By[1])} cm，高 4 cm），床头一侧的侧梁在机构箱下面。<b>L 形扶手</b>的立柱立在床头一侧、机构箱前方（x ${cm(b.x)} cm），横杆在 ${b.z.toFixed(2)} m 高处从立柱伸到人正前方（y 从 +30 到约 −5 cm），握把开关装在横杆中间；床尾一侧仍然敞开。</p>
+   <p><b>和床的关系。</b>床按实心块处理（床沿 x = 0 以后、床面 0.42 m 以下全是床）。座板后缘 ${(L.sizes.LIP*100).toFixed(1)} cm 是软唇边，可以搭在床垫上。下表的间隙全部按逐帧计算，机构箱含 2 cm 箱壁。</p>`;
   // ---- sagittal
   const svg=$("#svgSag");svg.innerHTML="";const M=frameMap(svg,-0.20,1.05,-0.03,1.16,14);const g=el("g",{},svg);
   poly(g,M,[[-0.2,0],[0,0],[0,0.42],[-0.2,0.42]],{fill:"var(--bed)"});poly(g,M,[[-0.2,0.36],[0,0.36],[0,0.42],[-0.2,0.42]],{fill:"var(--mat)"});
@@ -757,8 +820,7 @@ function drawLayout(){
   line(g,M,[-0.2,0],[1.05,0],{stroke:"var(--muted)"});
   poly(g,M,[[0.03,0],[0.78,0],[0.78,0.04],[0.03,0.04]],{fill:"var(--steel2)",opacity:.5});
   txt(g,M.X(0.77),M.Z(0.06),"底座 / 脚踏板",{"text-anchor":"end",fill:"var(--muted)","font-size":10.5});
-  pole(g,M); txt(g,M.X(D.consts.pole.x)+8,M.Z(D.consts.pole.z[1]),"扶手立杆（固定）",{fill:"var(--steel)","font-size":11,"font-weight":600});
-  // user nearest to the seat bracket: seated and at release
+  handrail(g,M);
   const wk=L.legs_worst.worst_user, WA=D.anim[wk], wu=U.find(x=>x.key===wk);
   if(WA){const rel=[...WA.frames].reverse().find(f=>f.seat)||WA.frames[0];
     [[WA.frames[0],"坐着"],[rel,"放手"]].forEach(([f,lab],i)=>{const col=i?"var(--bad)":"var(--path)";
@@ -773,60 +835,66 @@ function drawLayout(){
     poly(g,M,f.bracket,{fill:"var(--steel2)",opacity:op*0.35});poly(g,M,f.plate,{fill:"var(--seat)",opacity:op*0.6});
     line(g,M,m.B,f.P2,{stroke:"var(--steel)","stroke-width":3,opacity:op*0.8});
     if(i===0||i===n-1)carriage(g,M,f.P1,{opacity:.9});else el("circle",{cx:M.X(f.P1[0]),cy:M.Z(f.P1[1]),r:2.5,fill:"var(--steel)",opacity:op},g);});
-  $("#sagLegend").innerHTML=[["var(--seat)","座板（刚性部分，全宽）"],["var(--steel2)","座板支架（全宽）、导轨、立柱"],["var(--steel)","滑块、倾角连杆（床头一侧）"],["var(--amber)","电机与丝杠"],["var(--path)","离支架最近的用户，坐着"],["var(--bad)","同一用户，放手时"]]
+  $("#sagLegend").innerHTML=[["var(--seat)","座板（全宽，含前区下沉台阶）"],["var(--steel2)","座板支架；虚线框 = 机构箱"],["var(--steel)","滑块板、倾角连杆（箱内）"],["var(--amber)","滚珠丝杠、电机 + 制动"],["var(--path)","离支架最近的用户，坐着"],["var(--bad)","同一用户，放手时"]]
     .map(([c,t])=>`<span><i style="background:${c}"></i>${t}</span>`).join("")+"<span>颜色由浅到深 = 从坐到升到顶</span>";
   // ---- clearance table
   const wkU=U.find(x=>x.key===wk);
   let h=`<thead><tr><th>零件</th><th>对象</th><th>所在平面</th><th class=n>最小间隙</th><th>出现在</th></tr></thead><tbody>`;
-  L.clear_rows.forEach(([a,b,pl,v,when])=>{const low=(b==="床"&&v<1.5);
-    h+=`<tr><td>${a}</td><td>${b}</td><td>${pl}</td><td class="n" style="color:${low?'var(--bad)':'inherit'}">${v.toFixed(1)} cm${low?' <span class="chip bad">&lt; 1.5</span>':''}</td><td>${when}${a.startsWith("座板支架（全宽）")&&wkU?`；最近：${wkU.H.toFixed(2)} m · ${HABIT[wkU.p]} · 脚 ${(wkU.x_a*100).toFixed(0)}`:""}</td></tr>`});
+  L.clear_rows.forEach(([a,o,pl,v,when])=>{const low=(o==="床"&&v<1.5);
+    h+=`<tr><td>${a}</td><td>${o}</td><td>${pl}</td><td class="n" style="color:${low?'var(--bad)':'inherit'}">${v.toFixed(1)} cm${low?' <span class="chip bad">&lt; 1.5</span>':''}</td><td>${when}${o==="小腿、脚"&&wkU?`；最近：${wkU.H.toFixed(2)} m · ${HABIT[wkU.p]} · 脚 ${(wkU.x_a*100).toFixed(0)}`:""}</td></tr>`});
   $("#clrTable").innerHTML=h+"</tbody>";
   // ---- pinch
-  const PN={"连杆—座板底面":["连杆扫过座板底面","—"],"连杆—导轨立柱":["连杆扫过前立柱（侧视图交叉，两者横向只隔约 1 cm）","立柱外侧加固定护板，或连杆外移到 |y| ≥ 0.34 m（横向 ≥ 25 mm）"],
-    "座板底面—底座":["座板降到底时与底座","—"],"支架—导轨立柱":["座板支架悬臂经过立柱","导轨加风琴罩，立柱与支架之间加固定护板"]};
-  $("#pinchTable").innerHTML="<thead><tr><th>位置</th><th class=n>最小间隙</th><th>处理</th></tr></thead><tbody>"+Object.entries(L.pinch).map(([k,v])=>{const bad=v<2.5,p=PN[k]||[k,""];
-    return `<tr><td>${p[0]}</td><td class="n" style="color:${bad?'var(--bad)':'inherit'}">${v.toFixed(1)} cm</td><td>${bad?'<span class="chip bad">需护罩</span> '+p[1]:'<span class="chip good">够</span>'}</td></tr>`}).join("")+"</tbody>";
+  $("#pinchTable").innerHTML="<thead><tr><th>位置</th><th class=n>间隙</th><th>判定</th></tr></thead><tbody>"+Object.entries(L.pinch).map(([k,v])=>{
+    const num=typeof v==="number", ok=!num||v>=2.5;
+    return `<tr><td>${k}</td><td class=n>${num?v.toFixed(1)+" cm":"—"}</td><td>${ok?'<span class="chip good">'+(num?"≥ 25 mm":v)+'</span>':'<span class="chip bad">&lt; 25 mm</span>'}</td></tr>`}).join("")+"</tbody>";
+  // ---- forces on the rails (cantilever)
+  const Fo=L.forces; let fh="<thead><tr><th>100 kg 猛坐（1.5 倍体重）+ 座板 10 kg</th><th class=n>悬臂力矩</th><th class=n>两导轨之间的力偶</th><th class=n>同一导轨两滑块之间</th><th class=n>每个滑块侧向力约</th></tr></thead><tbody>";
+  Object.entries(Fo).forEach(([k,v])=>fh+=`<tr><td>${k}</td><td class=n>${v.moment_Nm} N·m</td><td class=n>${(v.rail_pair_N/1000).toFixed(1)} kN</td><td class=n>${(v.carriage_pair_N/1000).toFixed(1)} kN</td><td class=n>${(v.per_carriage_lateral_N/1000).toFixed(1)} kN</td></tr>`);
+  $("#forceTable").innerHTML=fh+"</tbody>";
   // ---- tipping
-  let t="<thead><tr><th>工况</th><th class=n>向后</th><th class=n>向前</th><th class=n>向侧面</th></tr></thead><tbody>";
+  let t="<thead><tr><th>人在台上</th><th class=n>向后</th><th class=n>向前</th><th class=n>向侧面</th></tr></thead><tbody>";
   Object.entries(T).forEach(([k,v])=>{if(v.margin_rear_cm!=null){const lo=x=>x<5?' style="color:var(--bad)"':'';
       t+=`<tr><td>${k}</td><td class=n${lo(v.margin_rear_cm)}>${v.margin_rear_cm} cm</td><td class=n${lo(v.margin_front_cm)}>${v.margin_front_cm} cm</td><td class=n${lo(v.margin_side_cm)}>${v.margin_side_cm} cm</td></tr>`}});
+  const fl=T["人站在地上推拉横杆（只有台架自重）"];
+  t+=`<tr><th colspan=4 style="padding-top:12px">人站在地上、手扶横杆（台架只靠自重 ${T.base.device_kg} kg）</th></tr>
+      <tr><td>在横杆高度把台架往自己这边拉 / 往敞开一侧推 / 往床头一侧推</td><td class=n colspan=3 style="color:var(--bad)">${fl.pull_forward_N} / ${fl.push_to_open_side_N} / ${fl.push_to_head_side_N} N 就翻</td></tr>`;
+  Object.entries(T).forEach(([k,v])=>{if(v.anchor_N!=null)t+=`<tr><td>${k.replace("固定件拉力","和床固定后，固定件需要的拉力")}</td><td class=n colspan=3>${v.anchor_N} N</td></tr>`});
   $("#tipTable").innerHTML=t+"</tbody>";
-  const p60=T["侧推翻倒力（60 kg 在台上，扶手 1.06 m）"]||{}, p100=T["侧推翻倒力（100 kg 在台上，扶手 1.06 m）"]||{};
-  $("#tipCap").innerHTML=`余量 = 合力作用点到底座边缘的距离（底座 x 3–78 cm、y ${cm(By[0])} … +${cm(By[1])} cm；机构按 40 kg、质心偏床头一侧 8 cm 估）。后向余量看着小，但床就在后面，翻不过去。要注意的是<b>侧向</b>：人把 100 kg 全挂在立杆上时剩 ${T["100 kg 整个挂在扶手立杆上"].margin_side_cm} cm；人站在台上、在扶手高度（1.06 m）横推，60 kg 的人约 ${Math.min(p60.to_open_side_N,p60.to_head_side_N)} N（约 28 kg 力）、100 kg 的人约 ${Math.min(p100.to_open_side_N,p100.to_head_side_N)} N 就会翻（两个方向差不多）。这是“底座加人”自身的抗翻能力，起身台和床是否连在一起会改变结论，需要和整机一起核。`;
-  // ---- emergency
-  $("#emergNote").innerHTML=`<div><b>应急下降（手动快速释放）。</b>拉下释放手柄，丝杠螺母与滑块脱开，滑块只受导轨约束。座板上每 1 N 的压力，沿导轨向下的推力是 ${E.rail_force_per_N_seat_load[0]}–${E.rail_force_per_N_seat_load[1]} N，在全行程、座板上任意受力位置都朝下，所以${E.seat_sinks_under_load?"<b>座板只会往下沉，不会被顶起或卡住</b>":"<b>有位置不会自己下沉</b>"}；下沉途中前倾不超过 ${E.tilt_max_on_the_way}°。</div>
-    <div>限速：如果用普通线性阻尼器，按 100 kg、1.5 倍体重时下沉 ≤ 0.10 m/s 来定，阻尼系数约 ${(E.damper_Ns_per_m/1000).toFixed(1)} kN·s/m；这时 45 kg 的人轻坐（0.8 倍体重）只能以 ${(E.slowest_sink_mps*100).toFixed(1)} cm/s 下沉，走完 ${(E.stroke_m*100).toFixed(0)} cm 行程要 ${E.time_full_sink_s[1]} s，太慢。所以要用<b>恒流（压力补偿）阀</b>的阻尼器，下沉速度基本不随体重变，约 0.1 m/s、全行程约 ${E.time_full_sink_s[0]} s。复位只能手动：把滑块推回丝杠螺母处重新啮合。</div>
-    <div>不做“跌坐自动触发”：在第四版机构上算过，正常坐下时的载荷力矩（79–94 N·m）比坐回时（11–44 N·m）还大，靠过载自动脱开会误触发。斜导轨上没有重算这组数，但原因（正常坐下本来就是最大载荷）不随机构变。</div>`;
+  $("#tipCap").innerHTML=`余量 = 合力作用点到底座边缘的距离（底座 x 3–78 cm、y ${cm(By[0])} … +${cm(By[1])} cm；台架按 ${T.base.device_kg} kg、质心偏床头一侧 ${cm(T.base.device_com[1])} cm 估）。人在台上时，人拉横杆是人和台架之间的内力，翻不了；后向余量看着小，但床就在后面。<b>真正的危险是人不在台上</b>：夜里走回床边时扶一下横杆，台架只有自重压着，最小 ${T["结论"].min_tip_force_N} N（约 ${Math.round(T["结论"].min_tip_force_N/9.81)} kg 力）就会被拉翻。所以<b>台架必须和床固定</b>（与项目 README 的决定一致），固定件按表中的拉力设计。`;
+  // ---- emergency (ball screw)
+  $("#emergNote").innerHTML=`<div><b>应急下降：滚珠丝杠 + 失电制动 + 离心限速，拉住才降、松手即停。</b>丝杠用可反向驱动的滚珠丝杠（导程 ${E.lead_mm} mm），平时由失电常闭制动器抱住；断电时也抱住。应急时拉握把旁的拉索拨杆，制动器松开，人的重量通过座板反推丝杠，离心限速器把下沉速度限在约 ${(E.limiter_speed_mps*100).toFixed(0)} cm/s（丝杠约 ${E.screw_rpm_at_limit} rpm）；松开拨杆立刻停住。不用脱开螺母，也不用复位。另有电池，断电时可以按“降”慢慢降。</div>
+    <div><b>核算。</b>座板上每 1 N 的压力，沿导轨向下的推力是 ${E.rail_force_per_N_seat_load[0]}–${E.rail_force_per_N_seat_load[1]} N，全行程、座板上任意受力位置都朝下，所以${E.seat_sinks_under_load?"座板只会往下沉":"<b>有位置不会下沉</b>"}；途中前倾不超过 ${E.tilt_max_on_the_way}°。最轻的用户（45 kg，0.75 倍体重压在座板上）加上座板自重，沿导轨的下沉推力约 ${E.light_user_drive_N} N；滚珠丝杠反向驱动的损失、导轨摩擦（μ ≈ 0.005，按滑块侧向力估）和毛刷阻力合计约 ${E.resist_N} N，推力是阻力的 ${E.margin} 倍，降得下来。全行程约 ${E.time_full_sink_s} s。制动器保持力矩按最大静载丝杠力的 2 倍取，约 ${E.brake_torque_Nm} N·m。</div>
+    <div>不做“跌坐自动触发”：在第四版机构上算过，正常坐下时的载荷力矩（79–94 N·m）比坐回时（11–44 N·m）还大，靠过载自动松开会误触发。</div>`;
   // ---- front view (y horizontal, + = head side on the right; z up), seated
-  const sf=$("#svgFront");sf.innerHTML="";const MF=frameMap(sf,-0.44,0.46,-0.03,1.16,14);const gf=el("g",{},sf);const Xy=y=>MF.X(y);
+  const sf=$("#svgFront");sf.innerHTML="";const MF=frameMap(sf,-0.44,0.48,-0.03,1.16,14);const gf=el("g",{},sf);const Xy=y=>MF.X(y);
   const R=(y0,y1,z0,z1,at)=>el("rect",Object.assign({x:Xy(y0),y:MF.Z(z1),width:Xy(y1)-Xy(y0),height:MF.Z(z0)-MF.Z(z1)},at),gf);
-  line(gf,MF,[-0.44,0],[0.46,0],{stroke:"var(--muted)"});
-  const sz=fr0.Q[1], railTop=Math.max(...m.columns.map(c=>c[1][1]));
-  By.forEach(yb=>R(yb-0.02,yb+0.02,0,0.04,{fill:"var(--steel2)"}));
-  R(Y.rail-0.02,Y.rail+0.02,0.04,railTop,{fill:"var(--steel2)",opacity:.45});
-  R(Y.rail-0.01,Y.rail+0.01,m.rail_lo[1],m.rail_hi[1],{fill:"var(--steel2)"});
-  R(carIn,Y.rail+0.025,fr0.P1[1]-0.03,fr0.P1[1]+0.03,{fill:"var(--steel)",rx:3});
-  R(Y.link-0.01,Y.link+0.01,Math.min(m.B[1],fr0.P2[1])-0.01,Math.max(m.B[1],fr0.P2[1])+0.01,{fill:"var(--steel)",rx:3});
-  R(-0.20,carIn,sz-m.bracket_depth_mm/1000,sz-0.045,{fill:"var(--steel2)",opacity:.35});
-  R(-0.22,0.22,sz-0.045,sz,{fill:"var(--seat)"});
-  const py=0.25; line(gf,MF,[py,0.04],[py,D.consts.pole.z[1]],{stroke:"var(--steel)","stroke-width":MF.s*0.03,"stroke-dasharray":"6 4",opacity:.7});
+  line(gf,MF,[-0.44,0],[0.48,0],{stroke:"var(--muted)"});
+  const sz=fr0.Q[1];
+  [By[0],By[1]].forEach(yb=>R(yb-0.02,yb+0.02,0,0.04,{fill:"var(--steel2)"}));
+  R(Y.wall_in,Y.wall_out,0.04,Hz1,{fill:"var(--steel2)",opacity:.55,stroke:"var(--steel)","stroke-width":1});
+  line(gf,MF,[Y.wall_in,0.30],[Y.wall_in,Hz1-0.03],{stroke:"var(--ink2)","stroke-width":2,"stroke-dasharray":"2 2"});
+  R(-0.20,Y.wall_in+0.06,sz-0.15,sz-L.seat_t.front,{fill:"var(--steel2)",opacity:.35});
+  R(-0.22,0.22,sz-L.seat_t.front,sz,{fill:"var(--seat)"});
   R(-B/2,B/2,sz,sz+0.16,{rx:18,fill:"var(--body)",opacity:.85});
   [-1,1].forEach(sg_=>{const cx=sg_*(legOut-0.06);R(cx-0.06,cx+0.06,0.06,sz-0.01,{rx:10,fill:"var(--body)",opacity:.6});R(cx-0.05,cx+0.05,0.01,0.07,{rx:4,fill:"var(--limb)"});});
-  const gap=carIn-legOut, zg=0.30;
-  line(gf,MF,[legOut,zg],[carIn,zg],{stroke:gap>0.02?"var(--good)":"var(--bad)","stroke-width":2});
-  txt(gf,Xy((legOut+carIn)/2),MF.Z(zg)-6,`${(gap*100).toFixed(1)} cm`,{"text-anchor":"middle",fill:gap>0.02?"var(--good)":"var(--bad)","font-size":11,"font-weight":600});
-  txt(gf,Xy(0),MF.Z(sz+0.08),"大腿 / 臀",{"text-anchor":"middle",fill:"var(--ink)","font-size":11});
+  line(gf,MF,[0.30,0.04],[0.30,b.z],{stroke:"var(--steel)","stroke-width":MF.s*0.03,"stroke-linecap":"round",opacity:.75});
+  line(gf,MF,[-0.05,b.z],[0.30,b.z],{stroke:"var(--steel)","stroke-width":MF.s*0.035,"stroke-linecap":"round"});
+  R(0.04,0.14,b.z-0.02,b.z+0.02,{rx:4,fill:"var(--amber)"});
+  const gap=Y.wall_in-legOut, zg=0.30;
+  line(gf,MF,[legOut,zg],[Y.wall_in,zg],{stroke:gap>0.02?"var(--good)":"var(--bad)","stroke-width":2});
+  txt(gf,Xy((legOut+Y.wall_in)/2),MF.Z(zg)-6,`${(gap*100).toFixed(1)} cm`,{"text-anchor":"middle",fill:gap>0.02?"var(--good)":"var(--bad)","font-size":11,"font-weight":600});
   const HL={stroke:"var(--surface)","stroke-width":3,"paint-order":"stroke"};
-  txt(gf,Xy(0.45),MF.Z(railTop+0.10),"床头一侧：导轨 / 立柱 / 连杆",Object.assign({"text-anchor":"end",fill:"var(--steel)","font-size":11,"font-weight":600},HL));
-  txt(gf,Xy(py)-4,MF.Z(D.consts.pole.z[1])-6,"扶手立杆（在人前方）",Object.assign({"text-anchor":"end",fill:"var(--steel)","font-size":10.5},HL));
+  txt(gf,Xy(0),MF.Z(sz+0.08),"大腿 / 臀",{"text-anchor":"middle",fill:"var(--ink)","font-size":11});
+  txt(gf,Xy(Y.wall_out),MF.Z(Hz1)-8,"机构箱（全封闭）",Object.assign({"text-anchor":"end",fill:"var(--steel)","font-size":11,"font-weight":600},HL));
+  txt(gf,Xy(0.09),MF.Z(b.z+0.05),"横杆 + 握把开关（在人前方）",Object.assign({"text-anchor":"middle",fill:"var(--steel)","font-size":10.5},HL));
   txt(gf,Xy(-0.43),MF.Z(1.02),"床尾一侧：敞开",{fill:"var(--good)","font-size":11.5,"font-weight":600});
   txt(gf,Xy(-0.43),MF.Z(1.02)+15,"（只有 4 cm 高的底座侧梁）",{fill:"var(--muted)","font-size":10.5});
-  txt(gf,Xy(0),MF.Z(sz-m.bracket_depth_mm/1000)+14,"座板支架（全宽，在小腿后方）",{"text-anchor":"middle",fill:"var(--muted)","font-size":10.5});
-  $("#frontCap").innerHTML=`选中用户：坐姿臀宽约 ${(B*100).toFixed(0)} cm（假设 ≈ 0.235 × 身高，偏胖 +4 cm、偏瘦 −4 cm），座面以下的腿按外缘比臀宽每侧窄 2 cm 画。床头一侧的腿外缘到滑块内侧 ${(gap*100).toFixed(1)} cm。座板支架横跨全宽，在正视图里和小腿重叠，但它在小腿后方（侧视图里离小腿、脚至少 ${L.legs_worst.min} cm），不会相碰。扶手立杆在人前方 x = ${cm(D.consts.pole.x)} cm，图上用虚线表示。`;
+  txt(gf,Xy(Y.wall_in)-4,MF.Z(0.33),"竖槽（毛刷）",Object.assign({"text-anchor":"end",fill:"var(--ink2)","font-size":10},HL));
+  $("#frontCap").innerHTML=`选中用户：坐姿臀宽约 ${(B*100).toFixed(0)} cm（假设 ≈ 0.235 × 身高，偏胖 +4 cm、偏瘦 −4 cm），座面以下的腿按外缘比臀宽每侧窄 2 cm 画。床头一侧的腿外缘到机构箱内壁 ${(gap*100).toFixed(1)} cm；座板侧缘到箱壁 ${((Y.wall_in-Y.seat)*100).toFixed(0)} cm（座板平行滑过，这个间隙不变，大于 25 mm 的手指间隙）。横杆在人前方 x = ${cm(b.x)} cm、高 ${b.z.toFixed(2)} m，从床头一侧的立柱伸到人正前方，两只手对称地握着它（二维模型按双手算力，正是这个姿势）。`;
   // ---- top view (x horizontal, y vertical; + y = head side, up)
-  const st=$("#svgTop");st.innerHTML="";const MT=frameMap(st,-0.15,0.85,-0.42,0.42,14);const gt=el("g",{},st);
+  const st=$("#svgTop");st.innerHTML="";const MT=frameMap(st,-0.15,0.85,-0.42,0.44,14);const gt=el("g",{},st);
   const rect=(x0,x1,y0,y1,at)=>el("rect",Object.assign({x:MT.X(x0),y:MT.Z(y1),width:MT.X(x1)-MT.X(x0),height:MT.Z(y0)-MT.Z(y1)},at),gt);
-  rect(-0.15,0,-0.42,0.42,{fill:"var(--bed)"});txt(gt,MT.X(-0.075),MT.Z(0),"床",{"text-anchor":"middle",fill:"var(--muted)","font-size":12});
+  rect(-0.15,0,-0.42,0.44,{fill:"var(--bed)"});txt(gt,MT.X(-0.075),MT.Z(0),"床",{"text-anchor":"middle",fill:"var(--muted)","font-size":12});
   const hc=[0.05,0], rr=0.52, fan=[hc];for(let a=0;a>=-90;a-=5){const r_=a*Math.PI/180;fan.push([hc[0]+rr*Math.cos(r_),hc[1]+rr*Math.sin(r_)])}
   el("polygon",{points:fan.map(p=>MT.X(p[0])+","+MT.Z(p[1])).join(" "),fill:"var(--good-bg)",stroke:"var(--good)","stroke-dasharray":"5 4","stroke-width":1.2},gt);
   txt(gt,MT.X(0.02),MT.Z(-0.39),"回床转腿扫过区域（座面以上）",{fill:"var(--good)","font-size":10.5,"font-weight":600});
@@ -834,43 +902,41 @@ function drawLayout(){
   By.forEach(yb=>rect(0.03,0.78,yb-0.015,yb+0.015,{fill:"var(--steel2)"}));
   [0.05,0.765].forEach(x=>rect(x-0.015,x+0.015,By[0],By[1],{fill:"var(--steel2)",opacity:.7}));
   rect(0.10,0.62,-0.20,0.20,{fill:"var(--steel2)",opacity:.2});txt(gt,MT.X(0.60),MT.Z(-0.17),"脚踏板",{"text-anchor":"end",fill:"var(--muted)","font-size":10});
-  rect(m.rail_lo[0],m.rail_hi[0],Y.rail-0.02,Y.rail+0.02,{fill:"var(--steel2)"});
-  m.columns.forEach(c=>rect(c[0][0]-0.02,c[0][0]+0.02,Y.rail-0.025,Y.rail+0.025,{fill:"var(--steel)",opacity:.6}));
-  const lx=L.frames.map(f=>f.P2[0]).concat([m.B[0]]);rect(Math.min(...lx)-0.012,Math.max(...lx)+0.012,Y.link-0.01,Y.link+0.01,{fill:"var(--steel)",opacity:.75});
-  el("circle",{cx:MT.X(m.B[0]),cy:MT.Z(Y.link),r:3.5,fill:"var(--surface)",stroke:"var(--steel)","stroke-width":1.5},gt);
+  rect(Hx0,Hx1,Y.wall_in,Y.wall_out,{fill:"var(--steel2)",opacity:.75,stroke:"var(--steel)","stroke-width":1});
   const hs=(D.consts.seat_x[1]-D.consts.seat_x[0])/2;
   rect(fr0.Q[0]-hs,fr0.Q[0]+hs,-0.22,0.22,{fill:"var(--seat)",opacity:.75});
-  rect(fr0.P1[0]-0.03,fr0.P1[0]+0.03,0.22,Y.rail-0.02,{fill:"var(--steel)",opacity:.8});
   rect(frN.Q[0]-hs,frN.Q[0]+hs,-0.22,0.22,{fill:"none",stroke:"var(--seat)","stroke-width":2,"stroke-dasharray":"5 4"});
-  el("circle",{cx:MT.X(D.consts.pole.x),cy:MT.Z(0.25),r:MT.s*0.02,fill:"var(--steel)"},gt);
-  txt(gt,MT.X(D.consts.pole.x),MT.Z(0.25)-10,"扶手立杆",{"text-anchor":"middle",fill:"var(--steel)","font-size":10.5});
+  el("circle",{cx:MT.X(b.x),cy:MT.Z(0.30),r:MT.s*0.02,fill:"var(--steel)"},gt);
+  line(gt,MT,[b.x,0.30],[b.x,-0.05],{stroke:"var(--steel)","stroke-width":MT.s*0.03,"stroke-linecap":"round"});
+  rect(b.x-0.02,b.x+0.02,0.04,0.14,{fill:"var(--amber)",rx:3});
   const foot=0.152*u.H; [-1,1].forEach(sg_=>{const cy=sg_*(legOut-0.06);rect(u.x_a-0.25*foot,u.x_a+0.75*foot,cy-0.045,cy+0.045,{fill:"var(--limb)",rx:12});});
-  txt(gt,MT.X(0.40),MT.Z(0.39),"床头一侧：导轨、立柱、连杆、立杆",{"text-anchor":"middle",fill:"var(--steel)","font-size":10.5,"font-weight":600});
+  txt(gt,MT.X((Hx0+Hx1)/2),MT.Z(Y.wall_out)-6,"机构箱",{"text-anchor":"middle",fill:"var(--steel)","font-size":10.5,"font-weight":600});
+  txt(gt,MT.X(b.x)+8,MT.Z(-0.06),"L 形扶手横杆",{fill:"var(--steel)","font-size":10.5});
   txt(gt,MT.X(fr0.Q[0]),MT.Z(0.02),"座板",{"text-anchor":"middle",fill:"var(--ink)","font-size":10.5});
   txt(gt,MT.X(frN.Q[0]+hs)+4,MT.Z(-0.235),"升到顶",{fill:"var(--seat)","font-size":10.5});
 }
 
 function drawV5(){
   const F=D.check.design, ks=Object.keys(F), m=D.mech, L=D.layout, E=L.emergency, C=D.cushion.summary["中硬 + 行程到 0.66 m"];
-  const arr=k=>ks.map(x=>F[x][k]).filter(v=>v!=null).sort((a,b)=>a-b), med=a=>a[Math.floor(a.length/2)];
+  const arr=k=>ks.map(x=>F[x][k]).filter(v=>v!=null).sort((a,b)=>a-b), med=median;
   const phi=arr("phi_release"), Er=arr("E0_release"), sh=arr("shear_path_cm"), Es=arr("E_supported_max");
   const nok=ks.filter(k=>okRow(F[k])).length, P=D.placements;
   $("#v5Prose").innerHTML=`<p>Gemini 审计指出第四版有三件事没定：放手时座板前倾太大、扶手怎么动、两侧连杆挡腿。第五版按顺序做了三个决定，每一步都用 81 人重新检查：</p>
    <ol style="margin:0;padding-left:1.3em;display:grid;gap:6px">
    <li><b>前倾上限从 30° 压到 15°。</b>放手后人往回坐，座板前倾 φ 时，沿座面向下的分力与压力之比是 tan φ。第四版放手时中位 24°，要摩擦系数 ≥ tan 24° ≈ 0.45 才不滑；15° 只要 ≥ 0.27。前倾小了，坐板对“髋早前移”的人跟得没那么紧，但 81 人仍全部合格：坐板本来就主要靠前移和上升托人，最后十几度的前倾贡献很小。</li>
-   <li><b>扶手固定在底座上，做成竖直立杆。</b>四连杆带不动随座板升降的扶手；固定立杆最简单，人可以在 0.75–1.10 m 任意高度抓。按立杆上最省力的抓握点重算放手费力：中位 ${med(Er).toFixed(3)}（第四版随动横杆 0.251），最差 ${Er[Er.length-1].toFixed(3)}（第四版 0.331，略差）。</li>
+   <li><b>扶手固定在底座上，做成竖直立杆。</b>四连杆带不动随座板升降的扶手；固定立杆最简单，人可以在 0.75–1.10 m 任意高度抓。当时按立杆上最省力的抓握点重算放手费力，中位 0.233（第四版随动横杆 0.251）。<b>5.2 更正：</b>这个算法让手在立杆上逐帧换到最省力的高度，而且立杆偏在一侧、坐着够不着、开关没地方装，所以改成 L 形扶手，每人从坐到放手只握一个点，重算后的数字见第 12 节。</li>
    <li><b>机构换成单侧斜导轨 + 倾角连杆。</b>前倾上限一变，四连杆要重新综合。放在中间平面找不到既不碰床、又不碰腿的解；两侧各一套可行，但两边都被挡、驱动力 ${P["v5-sides"]?P["v5-sides"].force_kN.toFixed(1):"—"} kN。斜导轨把“位置”交给一根直导轨、把“前倾”交给一根连杆，全部放在床头一侧，床尾一侧留给回床转腿。</li></ol>`;
   const rows=[["前倾上限","30° → 15°","放手后往回坐会顺坡下滑（第四版中位 24°）",`81/81 合格；放手时前倾中位 ${med(phi).toFixed(1)}°、最大 ${phi[phi.length-1].toFixed(1)}°；最大前滑 ${sg(m.summary.fwd_max)} cm，最小坐回余量 ${sg(m.summary.catch_min)} cm`],
-    ["扶手","随座板升降的横杆 → 底座上的固定立杆","四连杆带不动随动扶手",`放手费力中位 ${med(Er).toFixed(3)}、最差 ${Er[Er.length-1].toFixed(3)}；支撑过程中最差 ${Es[Es.length-1].toFixed(3)}`],
+    ["扶手","随座板升降的横杆 → 底座上的固定立杆（<b>5.2 改为 L 形扶手</b>）","四连杆带不动随动扶手","当时算得放手费力中位 0.233。这个算法让手在立杆上逐帧换到最省力的高度，实际做不到；5.2 改成 L 形扶手、固定抓握重算（第 12 节）"],
     ["机构","两侧四连杆 + 中间推杆 + 横管 → 单侧斜导轨 + 倾角连杆 + 丝杠","两侧挡腿；横管撞摇杆；座板上两铰点只距 41 mm，铰点力 6 kN",`轨迹误差 ${m.centre_err_mm.toFixed(0)} mm / ${m.tilt_err_deg.toFixed(1)}°；两铰点相距 ${(Math.hypot(m.c1[0]-m.c2[0],m.c1[1]-m.c2[1])*1000).toFixed(0)} mm；丝杠静载 ${(m.F_hold100_N/1000).toFixed(1)} kN，连杆 ${(m.forces_hold100_N.link/1000).toFixed(1)} kN`],
     ["回床转腿","两侧被挡 → 床尾一侧敞开","与 13.1 定的“开口一侧敞开”一致","床尾一侧座面以上没有零件（俯视图扇形区）"],
-    ["应急下降","无 → 丝杠螺母手动快速释放 + 恒流阻尼，手动复位","人跌坐、断电或卡住时能把人慢慢放下",`释放后座板只会往下沉；途中前倾 ≤ ${E.tilt_max_on_the_way}°；约 0.1 m/s，全行程约 ${E.time_full_sink_s[0]} s`],
+    ["应急下降","无 → 丝杠螺母手动快速释放 + 恒流阻尼（<b>5.2 改为滚珠丝杠 + 失电制动 + 离心限速</b>）","人跌坐、断电或卡住时能把人慢慢放下",`带载拉脱螺母拉不动、阻尼器挂接矛盾、要手动复位，5.2 已换方案；现方案下沉推力是阻力的 ${E.margin} 倍，全行程约 ${E.time_full_sink_s} s（第 6 步）`],
     ["底座","前端伸到 0.78 m，立杆在底座内","人挂在立杆上不向前翻",`向前余量 ≥ ${Math.min(...Object.values(L.tipping).filter(v=>v.margin_front_cm!=null).map(v=>v.margin_front_cm))} cm`],
     ["坐垫（5.1）","均匀 6 kPa/cm → 分区：后 10 / 前 3 kPa/cm，分界在座板中心后 2 cm；导轨加长 3 cm","想把推力从大腿移到骨盆（第 7 步）",
       `起身 15% / 35% 时骨盆段受力占比 ${Math.round(D.zoned.effort[D.zoned.ids.u].by_stage["0.15"].pel_share.med*100)}% → ${Math.round(D.zoned.effort[D.zoned.ids.z1].by_stage["0.15"].pel_share.med*100)}%、${Math.round(D.zoned.effort[D.zoned.ids.u].by_stage["0.35"].pel_share.med*100)}% → ${Math.round(D.zoned.effort[D.zoned.ids.z1].by_stage["0.35"].pel_share.med*100)}%，后半程仍为 0（几何原因）；费力中位 ${D.zoned.effort[D.zoned.ids.u].all.effort_all.med.toFixed(3)} → ${D.zoned.effort[D.zoned.ids.z1].all.effort_all.med.toFixed(3)}；坐着峰值压强基本不变`],
-    ["导轨（5.1）",`行程 290 → ${Math.round(m.stroke*1000)} mm，顶 0.66 → ${m.top.toFixed(2)} m`,"软前区下陷多，要多走一段才托得住 0.5 倍体重",`末段座板后仰到 ${m.phi_end.toFixed(0)}°；81/81 仍合格；丝杠静载 ${(m.F_hold100_N/1000).toFixed(1)} kN；应急下沉最慢的人用线性阻尼要 ${E.time_full_sink_s[1]} s，恒流阀仍必要`],
+    ["行程（5.1 → 5.2）",`5.1 把旧导轨外推 3 cm（末段后仰 −3.4°）；5.2 按“到 0.69 m、末端不后仰”重新综合`,"软前区下陷多，要多走一段才托得住 0.5 倍体重",`丝杠行程 ${Math.round(m.stroke*1000)} mm，到顶 ${m.top.toFixed(2)} m、前倾 ${m.phi_end.toFixed(0)}°；81/81 仍合格；丝杠静载 ${(m.F_hold100_N/1000).toFixed(1)} kN`],
     (()=>{const cs={};["u","z1"].forEach(k=>{cs[k]=[];Object.values(D.anim).forEach(a_=>a_.frames.forEach(f=>{if(f.seat&&f.cush&&f.cush[k]&&!f.cush[k].lost)cs[k].push(f.cush[k])}))});
-      const med=a=>{a=[...a].sort((x,y)=>x-y);return a[Math.floor(a.length/2)]};
+      const med=median;
       const pa=c=>{const i=c.p.indexOf(Math.max(...c.p));return c.a[0]+(c.a[1]-c.a[0])*i/(c.p.length-1)};
       const st=k=>({n:cs[k].length,len:med(cs[k].map(c=>c.len_cm)),pk:med(cs[k].map(c=>c.p_max)),pel:med(cs[k].map(c=>c.pel)),pkA:med(cs[k].map(pa))});
       const a=st("u"),b=st("z1");
@@ -878,18 +944,41 @@ function drawV5(){
         `81 人全过程 ${a.n} 个时刻（中位，动画里前半程的时刻较多）。均匀坐垫：接触长 ${a.len.toFixed(0)} cm，峰值 ${a.pk.toFixed(0)} kPa，压强最高点在臀腿交界往膝 ${a.pkA.toFixed(0)} cm，骨盆段受力 ${Math.round(a.pel*100)}%。推荐分区坐垫：接触长 ${b.len.toFixed(0)} cm，峰值 ${b.pk.toFixed(0)} kPa，最高点 ${b.pkA.toFixed(0)} cm，骨盆段受力 ${Math.round(b.pel*100)}%`]})(),
     ["皮肤剪切","—","座板相对皮肤滑动的累计距离",`中位 ${med(sh).toFixed(1)} cm、最大 ${sh[sh.length-1].toFixed(1)} cm（第四版中位约 10 cm），坐垫表层仍建议用可滑动面套`]];
   $("#v5Table").innerHTML="<thead><tr><th>项目</th><th>改动</th><th>为什么</th><th>改后的数字</th></tr></thead><tbody>"+rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")+"</tbody>";
-  const T=L.tipping, p60=T["侧推翻倒力（60 kg 在台上，扶手 1.06 m）"]||{};
-  $("#v5Open").innerHTML=`<b>第五版还没收尾的事（按优先级）</b>
-   <ol style="margin:0;padding-left:1.3em;display:grid;gap:4px">
-   <li><b>单侧悬臂。</b>100 kg 猛坐时导轨要承受约 ${m.torsion_hold100_Nm} N·m 的侧翻力矩，座板支架也是悬臂。导轨用双导轨或宽型滑块，按样本的静力矩额定值核；支架的下垂和刚度要在 CAD 里算。</li>
-   <li><b>侧向稳定。</b>底座床头一侧的侧梁要外移到 y = +33 cm 才托得住连杆铰点 B。这样人整个挂在立杆上时侧向余量 ${T["100 kg 整个挂在扶手立杆上"].margin_side_cm} cm；60 kg 的人在扶手高度横推约 ${Math.min(p60.to_open_side_N,p60.to_head_side_N)} N 就会翻。是否够用取决于起身台和床是否连在一起，要和整机一起核。</li>
-   <li><b>两处剪切夹点</b>（连杆–立柱、支架–立柱）：加固定护板和导轨风琴罩。</li>
-   <li><b>后立柱离床 ${L.bed_floor_cm["导轨立柱"]} cm</b>，比目标少 0.5 cm：立柱前移 0.5 cm。</li>
-   <li><b>恒流阻尼阀选型</b>，以及释放手柄放在哪里（护理人员和用户都够得到）。</li>
-   <li><b>分区坐垫上样件</b>：用压力垫实测坐着和起身时坐骨、大腿下的压强。激进方案（后 15 / 前 2）坐着峰值约 ${D.zoned.grid[D.zoned.ids.z2].sitdown.p_peak_kPa} kPa，要实测后再定。</li>
-   <li><b>15° 下的防滑</b>：坐垫面料与常见衣物的摩擦系数要 ≥ 0.27，需要样件实测；“tan φ”只是静力学下限，人坐回时的冲击没算。</li></ol>`;
+  $("#v5Open").innerHTML=`<b>第五版当时列出的未收尾事项</b>：单侧悬臂、侧向稳定、两处剪切夹点、后立柱离床、恒流阻尼阀、15° 防滑、分区坐垫实测。前五项在 5.2 中改了设计（双导轨四滑块、和床固定、封闭机构箱、取消立柱、滚珠丝杠 + 制动 + 限速），见第 12 节；后两项仍待样件实测。`;
 }
 
+function drawR2(){
+  const m=D.mech,L=D.layout,E=L.emergency,T=L.tipping,b=D.consts.handrail,HRg=D.handrail,Fd=D.check.design,ks=Object.keys(Fd);
+  const Z=D.zoned,U0=Z.ids.u,Z1=Z.ids.z1,Z2=Z.ids.z2,CT=(D.check.cushion||{})[Z1],Vs=D.check.vertical_summary,Fo=L.forces["载荷偏向敞开一侧 10 cm"];
+  const hs=HRg.grid[HRg.chosen].summary, Er=ks.map(k=>Fd[k].E0_release).filter(v=>v!=null), Es=ks.map(k=>Fd[k].E_supported_max).filter(v=>v!=null);
+  const nok=ks.filter(k=>okRow(Fd[k])).length;
+  const rows=[
+    ["A2 C1 E1","扶手：x 0.69 m 的竖直独杆坐着够不着，只能单手侧拉，握把开关没地方装；模型却按双手在身前算","改成 L 形固定扶手：立柱在床头一侧，横杆在人正前方，开关在横杆上。按 81 人在横杆位置网格（x 0.40–0.70、高 0.80–1.05 m）里选：坐着都够得着、起身时躯干和头离横杆 ≥ 5 cm，放手费力中位最低",`横杆 x ${(b.x*100).toFixed(0)} cm、高 ${b.z.toFixed(2)} m；${hs.n_reach}/81 坐着够得着；放手费力中位 ${median(Er).toFixed(3)}、最差 ${Math.max(...Er).toFixed(3)}；支撑中最差 ${Math.max(...Es).toFixed(3)}`],
+    ["A3","立杆费力逐帧换最省力的抓握高度（x 也在三个值里挑），等于起身途中换手","每人从坐到放手只握横杆一个点；求解时只允许不碰横杆的躯干角度","上面的数字已是这个口径；比第五版 0.233 高，是更真实的值"],
+    ["A6 E2","竖直升降对照组还用旧的随动扶手，对比混了扶手的差别","竖直升降用同一 L 形扶手、同一抓握规则重跑 81 人",`竖直升降 ${Vs.n_ok}/81 合格，最大前滑 ${sg(Vs.fwd_max)} cm，最小坐回余量 ${sg(Vs.catch_min)} cm，放手费力中位 ${Vs.E_rel_med.toFixed(3)}；曲线坐板 ${nok}/81、中位 ${median(Er).toFixed(3)}`],
+    ["A1","验证用刚体接触，没用坐垫压下后的座板位置；托腿垫 18 cm 的限制在坐垫模型里没管",CT?"逐帧求坐垫托住 0.5 倍体重时的座板位置，用同样的定义重算前滑、坐回余量；压力中心超过 18 cm 或行程用完即放手":"—",CT?`${CT.summary.n_ok}/81 合格，最大前滑 ${sg(CT.summary.fwd_max)} cm，最小坐回余量 ${sg(CT.summary.catch_min)} cm（第 8 步）`:"—"],
+    ["B7 E4","5.1 外推旧导轨，末段座板后仰 −3.4°，前缘会顶大腿","把“到 0.69 m、末端前倾 0–8°”写进机构综合，重新求铰点",`到顶 ${m.top.toFixed(2)} m、前倾 ${m.phi_end.toFixed(0)}°；轨迹误差 ${m.centre_err_mm.toFixed(0)} mm / ${m.tilt_err_deg.toFixed(1)}°；81/81`],
+    ["B1 B5 C7","电机画进了床体；两根立柱和支架、连杆在侧视图里交叉，加护板做不到","取消立柱，整套机构装进床头一侧的封闭箱；电机折到导轨上端；支架从毛刷竖槽伸出",`机构箱离床 ${L.bed_floor_cm["机构箱（导轨、滑块、电机、连杆）"]} cm；剩下的夹点：座板侧缘到箱壁 ${L.pinch["座板侧缘—机构箱内壁（平行滑过，间隙不变）"]} cm（≥ 2.5）`],
+    ["B2 C5 E5","单侧悬臂只按载荷在中线算（368 N·m），没算偏载；单根导轨扛不住","载荷偏向敞开一侧 10 cm 重算；双导轨（相距 150 mm）、每轨两滑块（相距 150 mm）；丝杠螺母用浮动接头",`悬臂力矩 ${Fo.moment_Nm} N·m；导轨间力偶 ${(Fo.rail_pair_N/1000).toFixed(1)} kN，滑块间 ${(Fo.carriage_pair_N/1000).toFixed(1)} kN，每滑块约 ${(Fo.per_carriage_lateral_N/1000).toFixed(1)} kN`],
+    ["B3 C2 E5","“带载拉脱丝杠螺母 + 恒流阻尼”拉不动、阻尼器挂接矛盾、要手动复位，独居老人做不到","滚珠丝杠 + 失电制动 + 离心限速：拉握把旁的拉索拨杆就降，松手即停，不用复位；电池慢降",`下沉推力 ${E.light_user_drive_N} N（最轻用户）对阻力 ${E.resist_N} N，${E.margin} 倍；全行程 ${E.time_full_sink_s} s；制动 ≥ ${E.brake_torque_Nm} N·m`],
+    ["C6","台架只靠自重时扶一下扶手就会翻，网页却说“是否固定待定”","明确台架必须和床固定（与 README 一致），算人不在台上时的翻倒力和固定件拉力",`人站在地上时 ${T["结论"].min_tip_force_N} N 就翻；固定件拉力按 ${T["固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）"].anchor_N} N（ADA 1112 N × 1.5）设计`],
+    ["B4","分区坐垫前区下沉 3 cm 的台阶没进干涉检查；检查是隔帧采样","座板几何改成带台阶的实际形状；全部检查改为逐帧",`座板与支架离小腿、脚 ≥ ${L.legs_worst.min} cm；离床 ≥ ${Math.min(L.bed_floor_cm["座板（刚性部分）"],L.bed_floor_cm["座板支架"]).toFixed(1)} cm`],
+    ["D1","坐着下陷的算法一碰到压到底就停，不平衡，坐着峰值压强算错","按力平衡求解，压到底的刚度计入",`坐着峰值压强：均匀 ${Z.grid[U0].sitdown.p_peak_kPa}、推荐分区 ${Z.grid[Z1].sitdown.p_peak_kPa}、激进分区 ${Z.grid[Z2].sitdown.p_peak_kPa} kPa`],
+    ["D3 D4 D5","坐垫求解的热启动可能越过目标；台阶处法向用错；托不住的样本在部分指标里被剔除；网页中位数偶数时取偏","热启动越过就从头搜；法向按带台阶的顶面算；托不住的按导轨末端状态计入全部统计；中位数改为标准算法","第 7 步的数字已按修正后重算"],
+    ["D6","丝杠推力漏了座板自重；总结文档的行程、推力、下沉时间没跟着更新","推力计入 10 kg 座板；总结文档第五版各数字按 5.2 更新",`丝杠静载 ≤ ${m.F_hold100_N} N；行程 ${Math.round(m.stroke*1000)} mm`],
+    ["C4","建议“可滑动面套”，和 15° 防滑要摩擦相互矛盾","删掉；表层改用高摩擦纹理面料（μ ≥ 0.5）；15° 防滑的状态改为“大幅缓解”","—"],
+    ["C8","激进分区坐垫坐着 49 kPa，还有变差的人","不采用；推荐温和的后 10 / 前 3",`推荐方案费力中位 ${Z.effort[Z1].all.effort_all.med.toFixed(3)}（均匀 ${Z.effort[U0].all.effort_all.med.toFixed(3)}）`],
+    ["B6 E3","座下单轴测力单元测不到切向力，“各力之和 = 体重”的自检会误报","座下测力只用于速度规则（法向力）；体重自检改用底座四角的测力单元（对地总反力减去自重）","交给控制组"],
+    ["C3","回床流程没讲清：座板停在高处，人回来怎么坐","状态机：人离开、踏板也空了几秒后，座板降回与床齐平（空载复位）；回来时像坐普通椅子一样坐上去，再往后挪回床面","交给控制组；底座边缘做斜坡、贴夜光防滑条"],
+    ["E6","网页把设计历史和当前方案混在一起","页首加“最终方案一览”；第四版的历史表收起；修订记录放在最后","—"]];
+  $("#r2Table").innerHTML="<thead><tr><th>审计</th><th>问题</th><th>处理</th><th>改后的数字</th></tr></thead><tbody>"+rows.map(r=>`<tr><td class="mono" style="white-space:nowrap">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")+"</tbody>";
+  $("#r2Open").innerHTML=`<b>还没收尾的事（按优先级）</b><ol style="margin:0;padding-left:1.3em;display:grid;gap:4px">
+    <li><b>CAD：</b>机构箱、双导轨和滑块板、座板悬臂支架的刚度（下垂）和强度，按第 6 步的力。</li>
+    <li><b>样件实测：</b>分区坐垫的坐骨和大腿压强（压力垫）、面料与睡衣的摩擦系数、L 形扶手的高度是否顺手。</li>
+    <li><b>控制组：</b>空载复位的条件和时间；拉索拨杆与状态机的关系（拉下即进入“应急下降”，松开回到“停住”）。</li>
+    <li><b>固定件：</b>和床的连接方式（床腿夹或床垫下压板），按表中的拉力设计。</li>
+    <li><b>人体模型：</b>体重和肌力没有随身高缩放；骨盆段 4 cm 的分界和 24 cm 的接触宽度都是估计值。</li></ol>`;
+}
 function renderAll(){drawPose();drawHip();drawAssist();drawEnv();drawMech();drawLayout();drawCheck();}
 function loop(which){return ts=>{if(which===1){t1+=0.006;if(t1>1)t1=0;$("#prog1").value=t1*1000;drawPose();drawHip();anim1=requestAnimationFrame(loop(1))}else{t2+=0.006;if(t2>1)t2=0;$("#prog2").value=t2*1000;drawMech();anim2=requestAnimationFrame(loop(2))}}}
 $("#prog1").oninput=e=>{t1=e.target.value/1000;drawPose();drawHip()};

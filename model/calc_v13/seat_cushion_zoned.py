@@ -9,7 +9,10 @@ Per case: pelvis share = part of the seat force on the body outline with a <= 4 
 from the buttock-thigh junction, + towards the knee); centre of pressure a; where the peak pressure is; peak pressure; sink;
 'lost' = the seat reaches the end of travel before the cushion carries 0.5 BW; sitting squeeze (60 kg, 0.75 BW, level seat).
 Pass 2 (selected cushions): effort with the force split into its pelvis part (helps hip and knee) and thigh part (knee only),
-hand on the fixed pole (x 0.69, z 0.85 / 0.95 / 1.05, best).
+both hands on the fixed L-handrail bar (seat_1dof_handrail.py; one grip for the whole rise).
+v5.2 fixes (round-2 audit D): sitting squeeze solved to force balance with the bottoming stiffness; the force search starts at
+the bottom of the curve (a warm start is used only if it is still below the target); force direction from the shaped cushion
+top (with the front step); cases that run out of travel keep their end-of-travel metrics, so every statistic counts 324 cases.
 Output: seat_1dof/cushion_zoned.json
 """
 import json, os, sys, time
@@ -19,6 +22,7 @@ from multiprocessing import Pool
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..'))
 import seat_trajectory as ST
 import seat_cushion as SC
+import seat_1dof_handrail as HR
 from seat_trajectory import rot, effort
 from seat_1dof_design import USERS, ukey, path_of
 from model import G
@@ -44,7 +48,7 @@ def load(u, P, A, ds, c):
     front = x >= c["split"]; k = np.where(front, c["kf"], c["kr"]) * 1e5; t = np.where(front, c["tf"], c["tr"])
     bott = sq > 0.8 * t
     p = k * np.minimum(sq, 0.8 * t) + np.where(bott, 50 * k * (sq - 0.8 * t), 0)
-    m = sq > 0; xm = x[m]; d = (SEAT.top(xm + 1e-4) - SEAT.top(xm - 1e-4)) / 2e-4
+    m = sq > 0; xm = x[m]; d = (top_z(xm + 1e-4, c) - top_z(xm - 1e-4, c)) / 2e-4
     nl = np.stack([-d, np.ones_like(d)], 1) / np.hypot(d, 1)[:, None]; nrm = nl @ Rm.T
     f = (p[m] * ds[m] * W)[:, None] * nrm
     F = f.sum(0) if len(f) else np.zeros(2)
@@ -52,7 +56,9 @@ def load(u, P, A, ds, c):
 
 def solve(sub, pz, c, k0=0.0):
     P, A, ds = SC.dense_outline(pz); target = 0.5 * sub.M * G; n = len(CV[0]) - 1
-    u = max(k0, 0.0); prev = u; L = load(u, P, A, ds, c)
+    u = max(k0, 0.0); L = load(u, P, A, ds, c)
+    if u > 0 and L["Fm"] >= target: u = 0.0; L = load(u, P, A, ds, c)     # warm start already past the target: restart
+    prev = u
     while L["Fm"] < target:
         prev = u; u += 4.0
         if u >= n: return None, (P, A, ds)
@@ -84,19 +90,23 @@ def contact_parts(res, P, A, ds, BW=None):
     return dict(parts=parts, cap=0.5 if BW is None else min(0.5, Fm / BW))
 
 def pole_effort(sub, pz, contact):
-    best = None; cap = contact.get("cap", 0.5) if isinstance(contact, dict) else 0.5
-    for zb in (0.85, 0.95, 1.05):
-        r = effort(sub, pz, np.array([0.69, zb]), contact, cap=cap)
-        if r and (best is None or r[0] < best): best = r[0]
-    return best
+    """both hands on the fixed L-handrail bar (one grip point, trunk angles that clear the bar)."""
+    cap = contact.get("cap", 0.5) if isinstance(contact, dict) else 0.5
+    return HR.bar_effort(sub, pz, contact, cap=cap)
 
 def stage_pose(user, stage):
     sub, path = path_of(user); pz = min(path, key=lambda q: abs(q["f"] - stage)); return sub, pz
 
+def end_state(P, A, ds, c):
+    n = float(len(CV[0]) - 1); return (n, load(n, P, A, ds, c))
+
 def job_geom(args):
     user, stage, c = args; sub, pz = stage_pose(user, stage); res, (P, A, ds) = solve(sub, pz, c)
-    if res is None: return None
-    return metrics(res, P, A, ds, c)
+    if res is None:
+        e = end_state(P, A, ds, c)
+        if e[1]["Fm"] <= 1.0: return dict(lost=True, end_force_BW=0.0)
+        return dict(metrics(e, P, A, ds, c), lost=True, end_force_BW=round(e[1]["Fm"] / (sub.M * G), 3))
+    return dict(metrics(res, P, A, ds, c), lost=False)
 
 def job_effort(args):
     """effort with the cushion force split into pelvis / thigh parts. If the seat runs out of travel before reaching 0.5 BW
@@ -104,32 +114,71 @@ def job_effort(args):
     user, stage, c = args; sub, pz = stage_pose(user, stage); res, (P, A, ds) = solve(sub, pz, c)
     free = pole_effort(sub, pz, None)
     if res is None:
-        n = len(CV[0]) - 1; L = load(float(n), P, A, ds, c); frac = L["Fm"] / (sub.M * G)
-        e = pole_effort(sub, pz, contact_parts((float(n), L), P, A, ds, sub.M * G)) if L["Fm"] > 1.0 else free
-        global_cap = round(frac, 3)
-        return dict(lost=True, effort_all=e if e is not None else free, effort_free=free, end_force_BW=global_cap)
+        es = end_state(P, A, ds, c); L = es[1]
+        if L["Fm"] <= 1.0: return dict(lost=True, effort_all=free, effort_free=free, end_force_BW=0.0)
+        e = pole_effort(sub, pz, contact_parts(es, P, A, ds, sub.M * G))
+        return dict(metrics(es, P, A, ds, c), lost=True, effort_all=e if e is not None else free, effort_free=free, end_force_BW=round(L["Fm"] / (sub.M * G), 3))
     m = metrics(res, P, A, ds, c); m["effort"] = pole_effort(sub, pz, contact_parts(res, P, A, ds)); m["effort_free"] = free
     m["effort_all"] = m["effort"]; m["lost"] = False
     return m
 
-def sitdown(c):
-    sub, path = path_of((1.60, 0.09, 1.0, 0.29)); pz = path[0]; P, A, ds = SC.dense_outline(pz); target = 0.75 * 60 * G
-    for dz in np.arange(-0.03, 0.12, 0.0005):
+def sitdown(c, kg=60.0, H=1.60):
+    """kg user resting on the level seat at bed height (0.75 BW on the seat): push the seat up until the cushion force balances
+    the load, bottoming stiffness included (as in load())."""
+    sub, path = path_of((H, 0.09, 1.0, 0.29)); pz = path[0]; P, A, ds = SC.dense_outline(pz); target = 0.75 * kg * G
+    for dz in np.arange(-0.03, 0.15, 0.0002):
         Q = CV[1][15] + np.array([0, dz]); loc = P - Q; x, z = loc[:, 0], loc[:, 1]; inside = (x >= -SEAT.h) & (x <= SEAT.h)
         sq = np.clip(np.where(inside, top_z(x, c) - z, 0), 0, None); front = x >= c["split"]
-        k = np.where(front, c["kf"], c["kr"]) * 1e5; t = np.where(front, c["tf"], c["tr"])
-        F = float((k * np.minimum(sq, 0.8 * t) * ds * W).sum())
-        if F >= target or (sq > 0.8 * t).any():
-            p = k * np.minimum(sq, 0.8 * t)
-            return dict(sink_mm=round(1000 * float(sq.max()), 1), bottom=bool((sq > 0.8 * t).any()), p_peak_kPa=round(float(p.max()) / 1000, 1))
+        k = np.where(front, c["kf"], c["kr"]) * 1e5; t = np.where(front, c["tf"], c["tr"]); bott = sq > 0.8 * t
+        p = k * np.minimum(sq, 0.8 * t) + np.where(bott, 50 * k * (sq - 0.8 * t), 0)
+        if float((p * ds * W).sum()) >= target:
+            return dict(sink_mm=round(1000 * float(sq.max()), 1), bottom=bool(bott.any()), p_peak_kPa=round(float(p.max()) / 1000, 1))
     return None
+
+def cushion_track(args):
+    """v5.2 consistency check (round-2 audit A1): the seat follows the cushion force instead of the rigid first touch.
+    Every frame of the user's rise: slide the seat along its curve until this cushion carries 0.5 BW (warm start from the
+    previous frame). Same definitions as the rigid check (seat_relative_motion.track), applied to the centre of pressure:
+    slip = the body point under the centre of pressure carried to the next frame vs the seat; catch = loaded seat front
+    edge - (hip - 4 cm). The seat stops following ('release') when the centre of pressure passes 18 cm down the thigh
+    (the thigh-pad limit) or the travel runs out."""
+    from seat_relative_motion import carry, body_frame_point, solve_s, SIT_BEHIND
+    from seat_1dof_design import PAD_AMAX
+    u, c = args; sub, path = path_of(u); uprev = 0.0; prev = None; slip = 0.0; rows = []; why = "end of path"
+    for i, pz in enumerate(path):
+        res, (P, A, ds) = solve(sub, pz, c, uprev)
+        if res is None: why = "travel"; break
+        uu, L = res; idx = L["idx"]; w = L["p"][idx] * ds[idx]
+        a_cop = float((A[idx] * w).sum() / w.sum()); cop = (P[idx] * w[:, None]).sum(0) / w.sum()
+        if a_cop > PAD_AMAX: why = "thigh pad limit"; break
+        Q, phi = SC.pose_at(uu, CV); Rm = rot(phi); front = Q + Rm @ np.array([SEAT.h, 0.0])
+        x_cop = float(((cop - Q) @ Rm)[0])
+        if prev is not None:
+            pb = carry(pz, prev["bf"]); slip += float(((pb - Q) @ Rm)[0] - prev["x"])
+        bf = body_frame_point(pz, cop, a_cop)
+        rows.append(dict(i=i, u=uu, hz=float(pz["Hp"][1]), hip_x=float(pz["Hp"][0]), slip=slip, catch=float(front[0] - (pz["Hp"][0] - SIT_BEHIND)),
+                         phi=float(phi), a=a_cop, res=res, pz=pz, P=P, A=A, ds=ds))
+        prev = dict(bf=bf, x=x_cop); uprev = uu
+    if not rows: return ukey(u), None
+    sl = np.array([r["slip"] for r in rows]); last = rows[-1]
+    sh = solve_s(sub, u[3], last["hz"], last["hip_x"]) or 0.0; pzr = ST.pose(sub, u[3], last["hz"], sh)
+    E_rel = pole_effort(sub, pzr, None) if pzr is not None else None
+    E_sup = 0.0
+    for r in rows[::4]:
+        e = pole_effort(sub, r["pz"], contact_parts(r["res"], r["P"], r["A"], r["ds"]))
+        if e is not None: E_sup = max(E_sup, e)
+    return ukey(u), dict(release_hz=round(last["hz"], 3), why_end=why, phi_release=round(last["phi"], 1),
+                         fwd_slip_cm=round(100 * float(max(sl[j] - sl[:j + 1].min() for j in range(len(sl)))), 1),
+                         catch_min_cm=round(100 * min(r["catch"] for r in rows), 1), a_max_cm=round(100 * max(r["a"] for r in rows), 1),
+                         E_release=None if E_rel is None else round(E_rel, 3), E_supported_max=round(E_sup, 3))
 
 def summarize(rows):
     rs = [r for r in rows if r]; out = dict(n=len(rows), lost=len(rows) - len(rs))
     for k in ("effort_all", "effort_free"):            # over every case, the lost ones included
         xs = [r[k] for r in rows if r and r.get(k) is not None]
         if xs: out[k] = dict(med=round(float(np.median(xs)), 3), p10=round(float(np.percentile(xs, 10)), 3), p90=round(float(np.percentile(xs, 90)), 3), max=round(float(max(xs)), 3))
-    rs = [r for r in rs if not r.get("lost")]; out["lost"] = len(rows) - len(rs)
+    out["lost"] = sum(1 for r in rows if r is None or r.get("lost"))
+    rs = [r for r in rs if r.get("pel_share") is not None]          # end-of-travel state for the lost ones
     for k in ("pel_share", "cop_a_cm", "peak_a_cm", "p_peak_kPa", "sink_mm", "contact_cm", "effort"):
         xs = [r[k] for r in rs if r.get(k) is not None]
         if xs: out[k] = dict(med=round(float(np.median(xs)), 3), p10=round(float(np.percentile(xs, 10)), 3), p90=round(float(np.percentile(xs, 90)), 3), max=round(float(max(xs)), 3))
@@ -163,6 +212,18 @@ if __name__ == "__main__":
             print(f'{c["name"]:34s} lost {a["lost"]:3d} pel {a["pel_share"]["med"]:.2f} peak@pel {a["peak_on_pelvis_share"]:.2f} cop {a["cop_a_cm"]["med"]:5.1f} '
                   f'peak_a {a["peak_a_cm"]["med"]:5.1f} p {a["p_peak_kPa"]["med"]:5.1f}/{a["p_peak_kPa"]["max"]:5.1f} sink {a["sink_mm"]["med"]:5.1f} bott {a["bottom_share"]:.2f} sit {out["grid"][c["name"]]["sitdown"]}', flush=True)
         out["effort"] = prev.get("effort", {})
+    elif mode == "track":                  # consistency check on named cushions: python3 seat_cushion_zoned.py track "<name>" ...
+        out = prev
+        for nm in sys.argv[2:]:
+            c = out["grid"][nm]["c"]
+            with Pool() as pool: R = dict(pool.map(cushion_track, [(u, c) for u in USERS]))
+            v = [q for q in R.values() if q]; ok = lambda q: bool(q and q["fwd_slip_cm"] <= 2 and q["catch_min_cm"] >= 0)
+            E = [q["E_release"] for q in v if q["E_release"] is not None]
+            summ = dict(n_ok=sum(ok(q) for q in R.values()), fwd_max=max(q["fwd_slip_cm"] for q in v), catch_min=min(q["catch_min_cm"] for q in v),
+                        E_rel_med=round(float(np.median(E)), 3), E_rel_max=round(float(max(E)), 3), E_sup_max=max(q["E_supported_max"] for q in v),
+                        why_end={w: sum(q["why_end"] == w for q in v) for w in ("thigh pad limit", "travel", "end of path")},
+                        release_hz_med=round(float(np.median([q["release_hz"] for q in v])), 3), phi_release_max=max(q["phi_release"] for q in v))
+            out.setdefault("track", {})[nm] = dict(summary=summ, users=R); print(nm, "track", summ, flush=True)
     else:                                  # effort pass on named cushions: python3 seat_cushion_zoned.py effort "<name>" ...
         out = prev; names = sys.argv[2:]
         for nm in names:
