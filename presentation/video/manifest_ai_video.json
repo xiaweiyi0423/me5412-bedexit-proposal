@@ -1,0 +1,48 @@
+{
+ "style": "2D hand-drawn illustrated storybook animation (flat soft colours, paper/gouache texture, ink outlines; deep-blue night + amber lamp)",
+ "format": "1280x720, 24 fps, H.264 with an AAC audio track from the model (ambience; mute or duck it)",
+ "character_reference": "keyframes/character_2d.png (front/side/back turnaround); in-scene side view: keyframes/S2_start.png and keyframes/S2_last_frame_from_video.png",
+ "scenes": {
+  "S1": {
+   "file": "S1.mp4",
+   "duration_s": 5.03,
+   "keyframe": "keyframes/S1_start_b.png",
+   "tile": "S1_tile.png",
+   "on_screen": "Dark blue moonlit bedroom. The amber bedside clock reads 03:07 and the lamp is off. The camera pushes in slowly from a wide shot toward the bed. The grandmother wakes, looks up, turns and pushes herself up to sitting (around 3.5–5 s).",
+   "flaws": "The clock reads 03:07 in every frame, but the digits are slightly soft/stylised. The push-in is fairly fast in the first second. While she sits up (~3.5–4.5 s) her face looks a little older and more lined than on the character sheet. She sits up quite quickly. No other text.",
+   "alternate": "variants/S1_alt_t1.mp4 (closer framing with the clock in the foreground, no lamp on the nightstand, slower and calmer wake-up; she ends sitting at the bed edge. It is also clean.)"
+  },
+  "S2": {
+   "file": "S2.mp4",
+   "duration_s": 7.02,
+   "keyframe": "keyframes/S2_start.png",
+   "tile": "S2_tile.png",
+   "on_screen": "Static side view, plain low bed, no device, lamp on. She sits on the bed edge in profile, pushes on the mattress and rises to about halfway (~2–3 s). Her knees tremble, drawn as small motion lines (~3.5 s). She wobbles and drops back onto the bed edge (~4–4.5 s), then sits with her head bowed, tired (4.5–7 s).",
+   "flaws": "Over the last 2.5 s she sits in a near-side view: her body is turned about 20–30° toward the camera, so it is not a strict profile (keyframes/S2_start.png is the strict profile if the transition needs one). The drop back down is soft rather than heavy. Small facial redraw changes around 4–5 s."
+  },
+  "S10": {
+   "file": "S10.mp4",
+   "duration_s": 6.02,
+   "keyframe": "keyframes/S10_start_a.png",
+   "tile": "S10_tile.png",
+   "on_screen": "Static shot from behind of a dim blue hallway. She walks slowly away toward a small amber plug-in night light beside a half-open door.",
+   "flaws": "She moves forward very little: the steps are visible but she covers only a short distance in 6 s, so it reads almost as walking in place. The right two-thirds of the frame is an empty dark wall (the image model composed it that way); crop or reframe if needed. No device (as briefed)."
+  }
+ },
+ "not_done": "Only one take each for S2 and S10. The Gemini project hit its MONTHLY SPENDING CAP during this pass (HTTP 429 'exceeded its monthly spending cap'), and every further image and video call is refused.",
+ "pending_retakes": {
+  "status": "BLOCKED: the video model has a daily quota of 20 requests per day (Tier 1). It reported 'retry in ~15h50m' at about 15:10 UTC on 2026-10-27. All keyframes and prompts are ready. Each take is one curl call: tools/gen.py video OUT PROMPT start.jpg [end.jpg].",
+  "S10_new": {
+   "start": "keyframes/S10c_start.png",
+   "end": "keyframes/S10c_end.png",
+   "prompt": "work/v2_s10_2img.txt (two-image) / work/v2_s10_1img.txt (one-image)",
+   "notes": "Centred one-point-perspective hallway. She starts in the foreground (about half the frame height) and the end frame has her near the night light at the far end. With two-image conditioning she must cover real distance. S10.mp4 is unchanged until a retake exists."
+  },
+  "S2_profile": {
+   "start": "keyframes/S2_start.png",
+   "end": "keyframes/S2_profile_end.png (strict side profile, slumped, head bowed, hands on knees)",
+   "prompt": "work/v2_s2p.txt",
+   "notes": "Not generated yet. Stopgap for the edit: S2.mp4's last frame and S2_profile_end.png show the same room and almost the same pose, so a short dissolve or hold onto S2_profile_end.png gives a strict-profile end frame for the match cut."
+  }
+ }
+}
