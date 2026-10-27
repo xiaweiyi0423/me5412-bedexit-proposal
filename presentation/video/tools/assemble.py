@@ -86,8 +86,8 @@ def main(cfg_path, out):
         fc.append(f"{''.join(sfx)}amix=inputs={len(sfx)}:normalize=0,apad=whole_dur={total:.3f},atrim=0:{total:.3f}[sfxbus]")
     if C.get("music"):
         ain += ["-i", os.path.join(HERE, C["music"])]; mi = n_in; n_in += 1
-        fc.append(f"[{mi}:a]aformat=sample_rates=48000:channel_layouts=stereo,atrim=0:{total:.3f},apad=whole_dur={total:.3f},"
-                  f"afade=t=in:d=1.5,afade=t=out:st={total - 3:.3f}:d=3,volume={C.get('music_db', -14)}dB[mus]")
+        fc.append(f"[{mi}:a]aformat=sample_rates=48000:channel_layouts=stereo,adelay={int(C.get('music_at', 0) * 1000)}|{int(C.get('music_at', 0) * 1000)},atrim=0:{total:.3f},apad=whole_dur={total:.3f},"
+                  f"afade=t=in:st={C.get('music_at', 0):.3f}:d=1.5,afade=t=out:st={total - 2:.3f}:d=2,volume={C.get('music_db', -14)}dB[mus]")
         if C.get("duck", True):
             fc.append("[voice]asplit[vo1][vo2]")
             fc.append("[mus][vo2]sidechaincompress=threshold=0.03:ratio=6:attack=40:release=600[mduck]")

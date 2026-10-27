@@ -366,3 +366,66 @@ Edit image 1, a precise side-view drawing of the seat-lifting mechanism in its n
 ```
 
 C4: the old C4 with its paper border cropped off by script (no new generation).
+
+# Crane-companion story round
+Dropped and moved to candidates/ as *_dropped.png: Y3–Y6, Y9 (young-self shadow) and G2 (cliff). The previous D1 and E1 are kept as D1_old_youngphoto.png and E1_old_bird.png.
+
+## P_photo_16x9 (candidate Pph169_a)
+Input images: young_2d.png
+```
+A warm-coloured old photograph from the 1970s (soft faded colour with a warm sepia cast, gentle film grain — NOT black-and-white), painted in the same hand-drawn ink-and-watercolour style as image 1. A winter wetland: snow on the ground, pale dry reeds, a grey-white sky. The young woman from image 1 (about 25, long single braid over one shoulder, a warm padded winter jacket over her blouse, a knitted scarf) kneels in the snowy reeds, both hands gently steadying a red-crowned crane that has just stood up on its own long legs, its wings slightly open for balance, its head turned toward her. She smiles softly. Tender, quiet, intimate. 16:9, full bleed, no border. No text, no letters, no date stamp.
+```
+
+## P_photo_4x5 (candidate Pph45_b, aspect 4:5)
+Input images: P_photo_16x9.png
+```
+Recompose image 1 as a portrait 4:5 old printed photograph of the same moment: the same young woman with the braid kneeling in the snowy reeds, both hands gently steadying the red-crowned crane that has just stood up — keep both of them, framed closer. Warm faded colour with a soft sepia cast and fine film grain (not black-and-white), a thin cream photo-paper border with slightly worn corners. Same hand-drawn watercolour style. No text, no letters, no date stamp.
+```
+
+## D1 (candidate D1n_a)
+Input images: old D1.png, P_photo_16x9.png
+```
+Edit image 1. Keep everything exactly the same (night, moonlight, the clock reading 03:07, the folded glasses, the glass of water, the pill box, the nightstand, the frame, the style). Change only the picture inside the frame: it now shows image 2 — the young woman kneeling in the snow steadying a red-crowned crane — as a small warm-coloured old photo. No other text.
+```
+
+## E1 (candidate E1n_a)
+Input images: old E1.png, P_photo_16x9.png
+```
+Edit image 1. Keep the dawn light, the sleeping smiling grandmother, the bed, the device with its seat level with the mattress, the lamp, the window, the framing and the style. Change: remove the bird from the window sill entirely. The framed photo on the nightstand now shows image 2 (the young woman steadying a red-crowned crane in the snow, warm colours), and a warm ray of morning sunlight falls across it so it glows softly. No text, no letters.
+```
+
+## W3 (candidate W3_a)
+Input images: R3.png
+```
+Edit image 1. Keep EVERYTHING exactly as it is: the old grandmother, her pose, the device, the seat position, the bed, the lamp, the room, the framing and the style. Add only ONE soft-edged shadow on the blue back wall, cast by the warm lamp at the left: the silhouette of a red-crowned crane standing on its own two legs on the floor BESIDE her, slightly in front of her, on the grab-bar post side (to the right of her body) — never behind her and never under her hips. Its neck is still low and bent forward, head down, as if gathering itself to rise with her. The wall around it is washed in warm amber lamplight; soft, tender, a quiet companion, not spooky. No other shadow figures. No text, no letters.
+```
+
+## W4 (candidate W4_b)
+Input images: R4.png
+```
+Edit image 1. Keep EVERYTHING exactly as it is: the old grandmother, her pose, the device, the seat position, the bed, the lamp, the room, the framing and the style. Add only ONE soft-edged shadow on the blue back wall, cast by the warm lamp at the left: the silhouette of a red-crowned crane standing on its own two legs on the floor BESIDE her, slightly in front of her, on the grab-bar post side (to the right of her body) — never behind her and never under her hips. Its neck is lifting forward and up, rising in step with her. The wall around it is washed in warm amber lamplight; soft, tender, a quiet companion, not spooky. No other shadow figures. No text, no letters.
+```
+
+## W5 (candidate W5_a)
+Input images: R5.png
+```
+Edit image 1. Keep EVERYTHING exactly as it is: the old grandmother, her pose, the device, the seat position, the bed, the lamp, the room, the framing and the style. Add only ONE soft-edged shadow on the blue back wall, cast by the warm lamp at the left: the silhouette of a red-crowned crane standing on its own two legs on the floor BESIDE her, slightly in front of her, on the grab-bar post side (to the right of her body) — never behind her and never under her hips. Its neck is raised high, almost upright, rising with her. The wall around it is washed in warm amber lamplight; soft, tender, a quiet companion, not spooky. No other shadow figures. No text, no letters.
+```
+
+## W6 (candidate W6_a)
+Input images: R6.png
+```
+Edit image 1. Keep EVERYTHING exactly as it is: the old grandmother, her pose, the device, the seat position, the bed, the lamp, the room, the framing and the style. Add only ONE soft-edged shadow on the blue back wall, cast by the warm lamp at the left: the silhouette of a red-crowned crane standing on its own two legs on the floor BESIDE her, slightly in front of her, on the grab-bar post side (to the right of her body) — never behind her and never under her hips. It stands tall with its neck fully raised and head high, proud and calm beside her. The wall around it is washed in warm amber lamplight; soft, tender, a quiet companion, not spooky. No other shadow figures. No text, no letters.
+```
+
+## W9 (candidate W9_a)
+Input images: S9b.png
+```
+Edit image 1. Keep EVERYTHING exactly as it is: the old grandmother, her pose, the device, the seat position, the bed, the lamp, the room, the framing and the style. Add only ONE soft-edged shadow on the blue back wall, cast by the warm lamp at the left: the silhouette of a red-crowned crane standing on its own two legs on the floor BESIDE her, slightly in front of her, on the grab-bar post side (to the right of her body) — never behind her and never under her hips. It is half-crouched beside her with its wings slightly opened in a gentle, protective posture, watching over her. The wall around it is washed in warm amber lamplight; soft, tender, a quiet companion, not spooky. No other shadow figures. No text, no letters.
+```
+
+## S9a button-off attempt (S9aoff_a, REJECTED: whole frame re-rendered; S9a kept)
+Input images: S9a.png
+```
+Edit image 1. Keep everything exactly the same. Make one small change only: the small round button on top of the black grip is clearly dark and unlit (no amber glow anywhere on the grip), because her hand has loosened. No text.
+```
