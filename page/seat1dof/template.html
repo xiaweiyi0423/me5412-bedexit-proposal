@@ -231,7 +231,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
       <div class="tabs" id="cushTabs" role="group" aria-label="坐垫"><button type="button" data-c="u" aria-pressed="false">均匀 6 kPa/cm</button><button type="button" data-c="z1" aria-pressed="true">分区 后 10 / 前 3（推荐）</button><button type="button" data-c="z2" aria-pressed="false">分区 后 15 / 前 2 + 前区低 2 cm（不采用）</button></div>
       <svg id="svgCush" viewBox="0 0 560 220" role="img" aria-label="坐垫接触区放大与压强分布"></svg>
       <div class="readout" id="mechRead"></div>
-      <p class="cap">大腿和臀部下的彩色条：坐垫与身体的接触区，颜色越深压强越高（满色 = 20 kPa 及以上）。按上面选中的坐垫（默认第 7 步推荐的分区坐垫）、坐板推 0.5 倍体重算：坐板沿机构曲线多走一段把坐垫压下去，直到坐垫力达到 0.5 倍体重，座板也画在这个压下后的位置。模型是矢状面的，只算得出接触<b>长度</b>；面积 = 长度 × 假设的接触宽度 24 cm（两侧臀部、大腿），真实宽度要靠压力垫实测。人体软组织按刚体算，真实接触会更长、压强更低。没有坐垫数据的时刻（刚接触前、放手后）退回刚体接触点（绿点）。扶手是固定在底座上的竖直立杆（x = 0.69 m，可抓 0.75–1.10 m）；图中手的位置只是示意，费力按立杆上最省力的抓握点计算。</p>
+      <p class="cap">大腿和臀部下的彩色条：坐垫与身体的接触区，颜色越深压强越高（满色 = 20 kPa 及以上）。按上面选中的坐垫（默认第 7 步推荐的分区坐垫）、坐板推 0.5 倍体重算：坐板沿机构曲线多走一段把坐垫压下去，直到坐垫力达到 0.5 倍体重，座板也画在这个压下后的位置。模型是矢状面的，只算得出接触<b>长度</b>；面积 = 长度 × 假设的接触宽度 24 cm（两侧臀部、大腿），真实宽度要靠压力垫实测。人体软组织按刚体算，真实接触会更长、压强更低。没有坐垫数据的时刻（刚接触前、放手后）退回刚体接触点（绿点）。扶手是固定在底座上的 L 形扶手，图中的圆点是横杆的截面（横杆在人正前方，x = 0.70 m、高 0.95 m）；双手从坐到放手都握在这一点，费力按这个固定抓握点计算。</p>
     </div>
     <div class="fig">
       <div class="ttl">尺寸（交给 CAD）</div>
@@ -251,10 +251,10 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
     <div class="ttl">侧视图（矢状面）：全行程叠加，床、地面、扶手立杆和离支架最近的用户</div>
     <svg id="svgSag" viewBox="0 0 900 560" role="img" aria-label="矢状面干涉检查"></svg>
     <div class="legend" id="sagLegend"></div>
-    <p class="cap">全行程每隔一段画一次座板、支架和连杆，颜色由浅到深 = 从坐到升到顶。导轨、立柱、连杆都在床头一侧的平面里（|y| 0.26–0.31 m），只有座板和座板下的支架横跨全宽。离支架最近的用户的腿按实际粗细画了坐着和放手两个时刻，具体数值见下表。</p>
+    <p class="cap">全行程每隔一段画一次座板、支架和连杆，颜色由浅到深 = 从坐到升到顶。导轨、滑块、连杆、丝杠和电机都在床头一侧的封闭箱里（y 0.25–0.36 m；侧视图里和座板重叠，是投影，实际在座板旁边），只有座板和座板下的支架横跨全宽。离支架最近的用户的腿按实际粗细画了坐着和放手两个时刻，具体数值见下表。</p>
   </div>
   <div class="fig"><div class="ttl">最小间隙（全行程，81 人）</div><div class="tscroll"><table id="clrTable"></table></div>
-    <p class="cap">“同一平面”的零件才可能相撞：横跨全宽的座板和支架要避开床、地面和腿；床头一侧的导轨、立柱和连杆在腿外侧，只需避开床和地面，和腿的横向关系看下面的正视图。床按实心块处理，零件离床的目标是 ≥ 1.5 cm。</p></div>
+    <p class="cap">“同一平面”的零件才可能相撞：横跨全宽的座板和支架要避开床、地面和腿；床头一侧的机构箱在腿外侧，只需避开床和地面，和腿的横向关系看下面的正视图。床按实心块处理，零件离床的目标是 ≥ 1.5 cm。</p></div>
   <div class="band">
     <div class="fig"><div class="ttl">夹手点（闭合间隙 &lt; 25 mm 就可能夹到手指）</div><div class="tscroll"><table id="pinchTable"></table></div></div>
     <div class="fig"><div class="ttl">抗倾翻和与床固定</div><div class="tscroll"><table id="tipTable"></table></div><p class="cap" id="tipCap"></p></div>
@@ -778,11 +778,11 @@ function drawStatic(){
     .map(([v,k,c,cl])=>`<div class="kpi"><span class="v ${cl}">${v}</span><span class="k">${k}</span><span class="c">${c}</span></div>`).join("");
   $("#assistNote").innerHTML=D.assistNote;
   const m=D.mech, mm=v=>(v*1000).toFixed(0), pt=p=>`(${mm(p[0])}, ${mm(p[1])})`, L=D.layout;
-  const Fo=L.forces["载荷偏向敞开一侧 10 cm"], E=L.emergency, b=D.consts.handrail, T=L.tipping, Y=L.Y;
+  const Fo=L.forces["载荷偏向敞开一侧 10 cm"], EM=L.emergency, b=D.consts.handrail, T=L.tipping, Y=L.Y;
   const hx=L.housing.map(p=>p[0]), hz=L.housing.map(p=>p[1]);
   $("#cadList").innerHTML=[`机构箱（床头一侧）：y ${(Y.wall_in*100).toFixed(0)}–${(Y.wall_out*100).toFixed(0)} cm，x ${(Math.min(...hx)*100).toFixed(0)}–${(Math.max(...hx)*100).toFixed(0)} cm，高 ${Math.max(...hz).toFixed(2)} m；内壁开竖槽（毛刷）让座板支架穿过`,
     `双导轨（在导轨平面内相距 ${L.rail_gap*1000|0} mm）：导轨 1 下端 ${pt(m.rail_lo)}、上端 ${pt(m.rail_hi)} mm，与竖直 ${m.rail_angle_deg.toFixed(1)}°；每轨 2 个滑块相距 ${L.carriage_span*1000|0} mm，按每滑块侧向 ${(Fo.per_carriage_lateral_N/1000).toFixed(1)} kN 再乘安全系数选型`,
-    `滚珠丝杠（导程 ${E.lead_mm} mm）在两轨之间，行程 ${mm(m.stroke)} mm，静载推力 ≥ ${m.F_hold100_N} N；电机 + 失电制动器（≥ ${E.brake_torque_Nm} N·m）在上端，同步带；离心限速器约 ${(E.limiter_speed_mps*100).toFixed(0)} cm/s；拉索拨杆在握把旁；螺母和滑块板之间用浮动接头`,
+    `滚珠丝杠（导程 ${EM.lead_mm} mm）在两轨之间，行程 ${mm(m.stroke)} mm，静载推力 ≥ ${m.F_hold100_N} N；电机 + 失电制动器（≥ ${EM.brake_torque_Nm} N·m）在上端，同步带；离心限速器约 ${(EM.limiter_speed_mps*100).toFixed(0)} cm/s；拉索拨杆在握把旁；螺母和滑块板之间用浮动接头`,
     `座板支架铰点（座板坐标）：滑块 ${pt(m.c1)}、连杆 ${pt(m.c2)} mm，支架深 ${m.bracket_depth_mm} mm，横跨全宽，经竖槽接到滑块板`,
     `倾角连杆（箱内）：底座铰点 B ${pt(m.B)} mm，长 ${mm(m.link)} mm，轴力 ≈ ${m.forces_hold100_N.link} N`,
     `底座：x 3–78 cm、y ${(T.base.y[0]*100).toFixed(0)} … +${(T.base.y[1]*100).toFixed(0)} cm；<b>和床固定</b>，固定件拉力按 ${T["固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）"].anchor_N} N 设计`,
@@ -793,7 +793,7 @@ function drawStatic(){
   const Z1n=D.zoned.ids.z1, CT=(D.check.cushion||{})[Z1n];
   const fin=[["机构","单侧斜导轨 + 倾角连杆，一个电机",`座板中心前移 ${(m.travel.dx*100).toFixed(0)} cm、上升 ${(m.travel.dz*100).toFixed(0)} cm，到 ${m.top.toFixed(2)} m；前倾 ≤ ${m.phi_run_max.toFixed(1)}°，到顶 ${m.phi_end.toFixed(0)}°；轨迹误差 ${m.centre_err_mm.toFixed(0)} mm`],
     ["结构","床头一侧封闭机构箱；双导轨、每轨两滑块；床尾一侧敞开",`机构箱离床 ${L.bed_floor_cm["机构箱（导轨、滑块、电机、连杆）"]} cm；偏载悬臂力矩 ${Fo.moment_Nm} N·m，每滑块侧向约 ${(Fo.per_carriage_lateral_N/1000).toFixed(1)} kN`],
-    ["驱动与应急","滚珠丝杠 + 失电制动 + 离心限速；拉索拨杆拉住才降；电池慢降",`丝杠静载 ≤ ${(m.F_hold100_N/1000).toFixed(1)} kN；最轻用户下沉推力是阻力的 ${E.margin} 倍；全行程约 ${E.time_full_sink_s} s`],
+    ["驱动与应急","滚珠丝杠 + 失电制动 + 离心限速；拉索拨杆拉住才降；电池慢降",`丝杠静载 ≤ ${(m.F_hold100_N/1000).toFixed(1)} kN；最轻用户下沉推力是阻力的 ${EM.margin} 倍；全行程约 ${EM.time_full_sink_s} s`],
     ["扶手","L 形固定扶手，横杆在人正前方",`x ${(b.x*100).toFixed(0)} cm、高 ${b.z.toFixed(2)} m；81 人坐着都够得着；从坐到放手只握一个点`],
     ["坐垫","分区：后 10 / 前 3 kPa/cm，前区厚 8 cm",`费力中位 ${D.zoned.effort[D.zoned.ids.u].all.effort_all.med.toFixed(3)} → ${D.zoned.effort[Z1n].all.effort_all.med.toFixed(3)}；坐着峰值压强 ${D.zoned.grid[Z1n].sitdown.p_peak_kPa} kPa`],
     ["与床固定","必须固定",`人不在台上时扶一下横杆，${T["结论"].min_tip_force_N} N 就会拉翻台架`],
@@ -886,9 +886,9 @@ function drawLayout(){
   const HL={stroke:"var(--surface)","stroke-width":3,"paint-order":"stroke"};
   txt(gf,Xy(0),MF.Z(sz+0.08),"大腿 / 臀",{"text-anchor":"middle",fill:"var(--ink)","font-size":11});
   txt(gf,Xy(Y.wall_out),MF.Z(Hz1)-8,"机构箱（全封闭）",Object.assign({"text-anchor":"end",fill:"var(--steel)","font-size":11,"font-weight":600},HL));
-  txt(gf,Xy(0.09),MF.Z(b.z+0.05),"横杆 + 握把开关（在人前方）",Object.assign({"text-anchor":"middle",fill:"var(--steel)","font-size":10.5},HL));
-  txt(gf,Xy(-0.43),MF.Z(1.02),"床尾一侧：敞开",{fill:"var(--good)","font-size":11.5,"font-weight":600});
-  txt(gf,Xy(-0.43),MF.Z(1.02)+15,"（只有 4 cm 高的底座侧梁）",{fill:"var(--muted)","font-size":10.5});
+  txt(gf,Xy(0.09),MF.Z(b.z+0.08),"横杆 + 握把开关（在人前方）",Object.assign({"text-anchor":"middle",fill:"var(--steel)","font-size":10.5},HL));
+  txt(gf,Xy(-0.43),MF.Z(0.72),"床尾一侧：敞开",{fill:"var(--good)","font-size":11.5,"font-weight":600});
+  txt(gf,Xy(-0.43),MF.Z(0.72)+15,"（只有 4 cm 高的底座侧梁）",{fill:"var(--muted)","font-size":10.5});
   txt(gf,Xy(Y.wall_in)-4,MF.Z(0.33),"竖槽（毛刷）",Object.assign({"text-anchor":"end",fill:"var(--ink2)","font-size":10},HL));
   $("#frontCap").innerHTML=`选中用户：坐姿臀宽约 ${(B*100).toFixed(0)} cm（假设 ≈ 0.235 × 身高，偏胖 +4 cm、偏瘦 −4 cm），座面以下的腿按外缘比臀宽每侧窄 2 cm 画。床头一侧的腿外缘到机构箱内壁 ${(gap*100).toFixed(1)} cm；座板侧缘到箱壁 ${((Y.wall_in-Y.seat)*100).toFixed(0)} cm（座板平行滑过，这个间隙不变，大于 25 mm 的手指间隙）。横杆在人前方 x = ${cm(b.x)} cm、高 ${b.z.toFixed(2)} m，从床头一侧的立柱伸到人正前方，两只手对称地握着它（二维模型按双手算力，正是这个姿势）。`;
   // ---- top view (x horizontal, y vertical; + y = head side, up)

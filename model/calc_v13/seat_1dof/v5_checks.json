@@ -1,845 +1,772 @@
 {
- "note": "v5 checks for the one-side inclined rail + tilt link seat (seat_1dof/slider.json).\n\nLayout across the width (y, seat centre line y = 0; + = head-of-bed side):\n  head side  (+y) rail and its side column at y = +0.26..+0.30, tilt link at y = +0.31, link pivot B on the side base rail;\n             handrail pole at x 0.69 on this side\n  foot side  (-y) open: only the floor rail (4 cm high) - this is where the legs swing back onto the bed\n  full width seat plate + seat frame (bracket) under the seat, cantilevered from the carriage\nChecks\n  1 sagittal interference over the travel: rail (with carriage), column, link, seat plate, bracket vs bed and floor;\n    full-width parts (plate, bracket) vs every user's calves and feet at the matching moment\n  2 pinch gaps (closing gaps under 25 mm = finger risk): link vs seat/bracket, link vs rail column, seat underside vs base\n  3 forces: lead screw, link, carriage normal force and the out-of-plane moment from the cantilever (100 kg, 1.5 BW)\n  4 tipping with the mechanism mass on one side\n  5 emergency lowering after a quick release: does the seat sink under load everywhere, tilt on the way, damper size\n  6 leg swing to the open side\nOutput: seat_1dof/v5_checks.json\n",
+ "note": "v5.2 structure and safety checks for the one-side inclined rail + tilt link seat (seat_1dof/slider.json).\n\nChanges after the round-2 audit (page/seat1dof/audit/v5/):\n  - the whole head-side mechanism sits in a closed housing (inner wall y 0.25, outer wall y 0.36). The housing wall carries\n    TWIN RAILS 150 mm apart in the rail plane, each with two carriages 150 mm apart, so the cantilever moment becomes force\n    couples. The motor is folded beside the screw at the top (belt). The tilt link lives inside the housing. The seat bracket\n    reaches the carriages through a brush-sealed slot in the inner wall. The two separate posts of v5 are gone (they crossed\n    the bracket and the link).\n  - the seat body is stepped for the zoned cushion: rear zone 5 cm foam + 1.2 cm board, front zone (x >= -2 cm) 8 cm foam +\n    1.2 cm board, flush tops.\n  - every frame is checked (no sub-sampling).\n  - drive: ball screw (back-drivable) + power-off brake + centrifugal speed limiter. Emergency lowering = release the brake\n    with a cable lever at the handrail grip; the seat sinks under the user's weight at the limiter speed, stops when the lever\n    is let go; no re-engagement. A battery also lowers the seat.\nLayout across the width (y, + = head side): seat |y| <= 0.22; housing 0.25 .. 0.36; base beams at y -0.27 (foot side) and\n+0.38 (under the housing); L-handrail: post on the head side in front of the housing, bar across the user's front.\nChecks\n  1 sagittal clearances: housing (hull of rails, carriages, motor, link sweep, + 2 cm wall) vs bed; seat body and bracket vs\n    bed, floor and every user's calves and feet at the matching moment\n  2 pinch: seat edge to housing wall (constant gap), slot (brush seal), seat underside to base, seat vs bed edge\n  3 forces: screw, link, carriage normal; cantilever moment for the load on the seat centre line and 10 cm towards the open\n    side, split into the rail-pair couple and the carriage-pair couple\n  4 tipping: person on the device (as v5) and, new, person standing on the floor pulling or pushing the bar (device weight\n    only) -> anchoring to the bed and the anchor force\n  5 emergency lowering with the ball screw: does the lightest user's weight overcome screw and rail friction; brake torque\nOutput: seat_1dof/v5_checks.json\n",
  "mech": {
   "c1": [
-   0.0082,
-   -0.0889
+   0.0078,
+   -0.0697
   ],
   "c2": [
-   -0.0234,
-   -0.22
+   -0.0243,
+   -0.1822
   ],
   "rail": [
    [
-    0.0678,
-    0.328
+    0.0687,
+    0.3464
    ],
    [
-    0.2451,
-    0.5995
+    0.2544,
+    0.6206
    ]
   ],
-  "rail_angle_deg": 33.2,
-  "stroke": 0.324,
+  "rail_angle_deg": 34.1,
+  "stroke": 0.331,
   "B": [
-   0.3925,
-   0.1493
+   0.487,
+   0.1261
   ],
-  "link": 0.3607,
-  "centre_err_mm": 6.2,
-  "tilt_err_deg": 1.3,
-  "phi_run_max": 15.8,
-  "phi_end": -3.4,
-  "cost": 0.0086,
-  "rail_ext": 0.09,
-  "top": 0.688,
-  "screw_force_hold100_N": 1815,
+  "link": 0.4647,
+  "centre_err_mm": 7.8,
+  "tilt_err_deg": 0.8,
+  "phi_run_max": 15.7,
+  "phi_end": 0.0,
+  "cost": 0.0092,
+  "top": 0.69,
+  "screw_force_hold100_N": 1779,
   "forces_hold100_N": {
-   "screw": 1796,
-   "link": 1283,
-   "normal": 1986
+   "screw": 1771,
+   "link": 1306,
+   "normal": 2080
   },
   "torsion_hold100_Nm": 368,
   "frames": [
    {
     "Q": [
-     0.0605,
-     0.417
+     0.0618,
+     0.4162
     ],
-    "phi": 0.53,
+    "phi": 0.79,
     "P1": [
-     0.0678,
-     0.328
+     0.0687,
+     0.3464
     ],
     "P2": [
      0.035,
-     0.1973
+     0.2343
     ]
    },
    {
     "Q": [
-     0.0658,
-     0.4226
+     0.0677,
+     0.4227
     ],
-    "phi": 1.71,
+    "phi": 2.11,
     "P1": [
-     0.0714,
-     0.3335
+     0.073,
+     0.3528
     ],
     "P2": [
-     0.0359,
-     0.2034
+     0.0368,
+     0.2415
     ]
    },
    {
     "Q": [
-     0.0712,
-     0.4281
+     0.0736,
+     0.4292
     ],
-    "phi": 2.84,
+    "phi": 3.36,
     "P1": [
-     0.0749,
-     0.3389
+     0.0773,
+     0.3592
     ],
     "P2": [
-     0.0369,
-     0.2096
+     0.0387,
+     0.2487
     ]
    },
    {
     "Q": [
-     0.0764,
-     0.4336
+     0.0794,
+     0.4357
     ],
-    "phi": 3.93,
+    "phi": 4.56,
     "P1": [
-     0.0785,
-     0.3443
+     0.0817,
+     0.3656
     ],
     "P2": [
-     0.038,
-     0.2158
+     0.0407,
+     0.2559
     ]
    },
    {
     "Q": [
-     0.0816,
-     0.4391
+     0.0852,
+     0.4421
     ],
-    "phi": 4.97,
+    "phi": 5.69,
     "P1": [
-     0.082,
-     0.3498
+     0.086,
+     0.372
     ],
     "P2": [
-     0.0392,
-     0.2219
+     0.0429,
+     0.2632
     ]
    },
    {
     "Q": [
-     0.0867,
-     0.4445
+     0.0908,
+     0.4485
     ],
-    "phi": 5.97,
+    "phi": 6.77,
     "P1": [
-     0.0856,
-     0.3552
-    ],
-    "P2": [
-     0.0405,
-     0.2282
-    ]
-   },
-   {
-    "Q": [
-     0.0917,
-     0.4499
-    ],
-    "phi": 6.92,
-    "P1": [
-     0.0891,
-     0.3607
-    ],
-    "P2": [
-     0.042,
-     0.2344
-    ]
-   },
-   {
-    "Q": [
-     0.0967,
-     0.4553
-    ],
-    "phi": 7.82,
-    "P1": [
-     0.0927,
-     0.3661
-    ],
-    "P2": [
-     0.0435,
-     0.2405
-    ]
-   },
-   {
-    "Q": [
-     0.1016,
-     0.4607
-    ],
-    "phi": 8.68,
-    "P1": [
-     0.0962,
-     0.3715
+     0.0904,
+     0.3784
     ],
     "P2": [
      0.0452,
-     0.2467
+     0.2704
     ]
    },
    {
     "Q": [
-     0.1064,
-     0.466
+     0.0964,
+     0.4549
     ],
-    "phi": 9.49,
+    "phi": 7.79,
     "P1": [
-     0.0998,
-     0.377
+     0.0947,
+     0.3848
     ],
     "P2": [
-     0.047,
-     0.2529
+     0.0476,
+     0.2777
     ]
    },
    {
     "Q": [
-     0.1111,
-     0.4714
+     0.1019,
+     0.4613
     ],
-    "phi": 10.26,
+    "phi": 8.75,
     "P1": [
-     0.1033,
-     0.3824
+     0.099,
+     0.3912
     ],
     "P2": [
-     0.0489,
-     0.2591
+     0.0502,
+     0.2849
     ]
    },
    {
     "Q": [
-     0.1158,
-     0.4767
+     0.1074,
+     0.4677
     ],
-    "phi": 10.97,
+    "phi": 9.65,
     "P1": [
-     0.1069,
-     0.3878
+     0.1034,
+     0.3976
     ],
     "P2": [
-     0.0509,
-     0.2652
+     0.0529,
+     0.2921
     ]
    },
    {
     "Q": [
-     0.1204,
-     0.482
+     0.1127,
+     0.474
     ],
-    "phi": 11.64,
+    "phi": 10.49,
     "P1": [
-     0.1104,
-     0.3933
+     0.1077,
+     0.404
     ],
     "P2": [
-     0.053,
-     0.2713
+     0.0557,
+     0.2992
     ]
    },
    {
     "Q": [
-     0.1249,
-     0.4874
+     0.118,
+     0.4803
     ],
-    "phi": 12.25,
+    "phi": 11.26,
     "P1": [
-     0.114,
-     0.3987
+     0.1121,
+     0.4105
     ],
     "P2": [
-     0.0553,
-     0.2773
+     0.0586,
+     0.3063
     ]
    },
    {
     "Q": [
-     0.1293,
-     0.4927
+     0.1232,
+     0.4867
     ],
-    "phi": 12.82,
+    "phi": 11.97,
     "P1": [
-     0.1175,
-     0.4042
+     0.1164,
+     0.4169
     ],
     "P2": [
-     0.0576,
-     0.2834
+     0.0617,
+     0.3134
     ]
    },
    {
     "Q": [
-     0.1336,
-     0.498
+     0.1284,
+     0.493
     ],
-    "phi": 13.34,
+    "phi": 12.62,
     "P1": [
-     0.1211,
-     0.4096
+     0.1208,
+     0.4233
     ],
     "P2": [
-     0.0601,
-     0.2893
+     0.0648,
+     0.3205
     ]
    },
    {
     "Q": [
-     0.1379,
-     0.5033
+     0.1334,
+     0.4993
     ],
-    "phi": 13.81,
+    "phi": 13.21,
     "P1": [
-     0.1246,
-     0.415
-    ],
-    "P2": [
-     0.0627,
-     0.2953
-    ]
-   },
-   {
-    "Q": [
-     0.1421,
-     0.5087
-    ],
-    "phi": 14.23,
-    "P1": [
-     0.1282,
-     0.4205
-    ],
-    "P2": [
-     0.0653,
-     0.3012
-    ]
-   },
-   {
-    "Q": [
-     0.1462,
-     0.514
-    ],
-    "phi": 14.61,
-    "P1": [
-     0.1317,
-     0.4259
+     0.1251,
+     0.4297
     ],
     "P2": [
      0.0681,
-     0.307
+     0.3274
     ]
    },
    {
     "Q": [
-     0.1503,
-     0.5194
+     0.1384,
+     0.5057
     ],
-    "phi": 14.93,
+    "phi": 13.74,
     "P1": [
-     0.1353,
-     0.4313
+     0.1294,
+     0.4361
     ],
     "P2": [
-     0.071,
-     0.3128
+     0.0715,
+     0.3344
     ]
    },
    {
     "Q": [
-     0.1543,
-     0.5247
+     0.1433,
+     0.512
     ],
-    "phi": 15.2,
+    "phi": 14.2,
     "P1": [
-     0.1388,
-     0.4368
+     0.1338,
+     0.4425
     ],
     "P2": [
-     0.074,
-     0.3186
+     0.0751,
+     0.3413
     ]
    },
    {
     "Q": [
-     0.1582,
-     0.5301
-    ],
-    "phi": 15.43,
-    "P1": [
-     0.1424,
-     0.4422
-    ],
-    "P2": [
-     0.0771,
-     0.3243
-    ]
-   },
-   {
-    "Q": [
-     0.162,
-     0.5355
-    ],
-    "phi": 15.6,
-    "P1": [
-     0.1459,
-     0.4476
-    ],
-    "P2": [
-     0.0803,
-     0.3299
-    ]
-   },
-   {
-    "Q": [
-     0.1657,
-     0.5409
-    ],
-    "phi": 15.72,
-    "P1": [
-     0.1495,
-     0.4531
-    ],
-    "P2": [
-     0.0836,
-     0.3355
-    ]
-   },
-   {
-    "Q": [
-     0.1694,
-     0.5463
-    ],
-    "phi": 15.8,
-    "P1": [
-     0.153,
-     0.4585
-    ],
-    "P2": [
-     0.087,
-     0.341
-    ]
-   },
-   {
-    "Q": [
-     0.173,
-     0.5517
-    ],
-    "phi": 15.83,
-    "P1": [
-     0.1566,
-     0.464
-    ],
-    "P2": [
-     0.0905,
-     0.3465
-    ]
-   },
-   {
-    "Q": [
-     0.1765,
-     0.5572
-    ],
-    "phi": 15.8,
-    "P1": [
-     0.1601,
-     0.4694
-    ],
-    "P2": [
-     0.0941,
-     0.3519
-    ]
-   },
-   {
-    "Q": [
-     0.1799,
-     0.5626
-    ],
-    "phi": 15.73,
-    "P1": [
-     0.1637,
-     0.4748
-    ],
-    "P2": [
-     0.0978,
-     0.3572
-    ]
-   },
-   {
-    "Q": [
-     0.1833,
-     0.5681
-    ],
-    "phi": 15.6,
-    "P1": [
-     0.1672,
-     0.4803
-    ],
-    "P2": [
-     0.1016,
-     0.3625
-    ]
-   },
-   {
-    "Q": [
-     0.1866,
-     0.5736
-    ],
-    "phi": 15.43,
-    "P1": [
-     0.1708,
-     0.4857
-    ],
-    "P2": [
-     0.1055,
-     0.3678
-    ]
-   },
-   {
-    "Q": [
-     0.1898,
-     0.5791
-    ],
-    "phi": 15.2,
-    "P1": [
-     0.1744,
-     0.4911
-    ],
-    "P2": [
-     0.1095,
-     0.3729
-    ]
-   },
-   {
-    "Q": [
-     0.1929,
-     0.5846
-    ],
-    "phi": 14.93,
-    "P1": [
-     0.1779,
-     0.4966
-    ],
-    "P2": [
-     0.1136,
-     0.3781
-    ]
-   },
-   {
-    "Q": [
-     0.1959,
-     0.5901
-    ],
-    "phi": 14.59,
-    "P1": [
-     0.1815,
-     0.502
-    ],
-    "P2": [
-     0.1179,
-     0.3831
-    ]
-   },
-   {
-    "Q": [
-     0.1989,
-     0.5957
-    ],
-    "phi": 14.21,
-    "P1": [
-     0.185,
-     0.5074
-    ],
-    "P2": [
-     0.1222,
-     0.3881
-    ]
-   },
-   {
-    "Q": [
-     0.2018,
-     0.6012
-    ],
-    "phi": 13.77,
-    "P1": [
-     0.1886,
-     0.5129
-    ],
-    "P2": [
-     0.1267,
-     0.3931
-    ]
-   },
-   {
-    "Q": [
-     0.2046,
-     0.6068
-    ],
-    "phi": 13.28,
-    "P1": [
-     0.1921,
+     0.1481,
      0.5183
     ],
+    "phi": 14.6,
+    "P1": [
+     0.1381,
+     0.4489
+    ],
     "P2": [
-     0.1312,
-     0.398
+     0.0787,
+     0.3481
     ]
    },
    {
     "Q": [
-     0.2073,
-     0.6123
+     0.1529,
+     0.5247
     ],
-    "phi": 12.73,
+    "phi": 14.94,
     "P1": [
-     0.1957,
-     0.5238
+     0.1425,
+     0.4553
     ],
     "P2": [
-     0.136,
-     0.4029
+     0.0824,
+     0.3548
     ]
    },
    {
     "Q": [
-     0.2099,
-     0.6179
+     0.1576,
+     0.531
     ],
-    "phi": 12.12,
+    "phi": 15.21,
     "P1": [
-     0.1992,
-     0.5292
+     0.1468,
+     0.4617
     ],
     "P2": [
-     0.1408,
-     0.4077
+     0.0863,
+     0.3615
     ]
    },
    {
     "Q": [
-     0.2124,
-     0.6234
+     0.1622,
+     0.5374
     ],
-    "phi": 11.45,
+    "phi": 15.42,
     "P1": [
-     0.2028,
-     0.5346
+     0.1512,
+     0.4681
     ],
     "P2": [
-     0.1458,
-     0.4124
+     0.0903,
+     0.3682
     ]
    },
    {
     "Q": [
-     0.2148,
-     0.629
+     0.1667,
+     0.5438
     ],
-    "phi": 10.71,
+    "phi": 15.57,
     "P1": [
-     0.2063,
-     0.5401
+     0.1555,
+     0.4746
     ],
     "P2": [
-     0.1509,
-     0.4172
+     0.0944,
+     0.3747
     ]
    },
    {
     "Q": [
-     0.2171,
-     0.6345
+     0.1711,
+     0.5502
     ],
-    "phi": 9.91,
+    "phi": 15.66,
     "P1": [
-     0.2099,
-     0.5455
+     0.1598,
+     0.481
     ],
     "P2": [
-     0.1562,
-     0.4218
+     0.0986,
+     0.3812
     ]
    },
    {
     "Q": [
-     0.2193,
-     0.6401
+     0.1755,
+     0.5566
     ],
-    "phi": 9.03,
+    "phi": 15.68,
     "P1": [
-     0.2134,
-     0.5509
+     0.1642,
+     0.4874
     ],
     "P2": [
-     0.1616,
-     0.4265
+     0.1029,
+     0.3877
     ]
    },
    {
     "Q": [
-     0.2214,
-     0.6456
+     0.1798,
+     0.563
     ],
-    "phi": 8.08,
+    "phi": 15.64,
     "P1": [
-     0.217,
-     0.5564
+     0.1685,
+     0.4938
     ],
     "P2": [
-     0.1673,
-     0.431
+     0.1073,
+     0.394
     ]
    },
    {
     "Q": [
-     0.2233,
-     0.6511
+     0.184,
+     0.5694
     ],
-    "phi": 7.04,
+    "phi": 15.53,
     "P1": [
-     0.2205,
-     0.5618
+     0.1729,
+     0.5002
     ],
     "P2": [
-     0.1731,
-     0.4356
+     0.1118,
+     0.4003
     ]
    },
    {
     "Q": [
-     0.2251,
-     0.6565
+     0.1881,
+     0.5759
     ],
-    "phi": 5.92,
+    "phi": 15.36,
     "P1": [
-     0.2241,
-     0.5672
+     0.1772,
+     0.5066
     ],
     "P2": [
-     0.1791,
-     0.4401
+     0.1164,
+     0.4066
     ]
    },
    {
     "Q": [
-     0.2267,
-     0.662
+     0.1922,
+     0.5823
     ],
-    "phi": 4.69,
+    "phi": 15.13,
     "P1": [
-     0.2276,
-     0.5727
+     0.1815,
+     0.513
     ],
     "P2": [
-     0.1854,
-     0.4446
+     0.1212,
+     0.4127
+    ]
+   },
+   {
+    "Q": [
+     0.1962,
+     0.5888
+    ],
+    "phi": 14.83,
+    "P1": [
+     0.1859,
+     0.5194
+    ],
+    "P2": [
+     0.1261,
+     0.4188
+    ]
+   },
+   {
+    "Q": [
+     0.2001,
+     0.5953
+    ],
+    "phi": 14.47,
+    "P1": [
+     0.1902,
+     0.5258
+    ],
+    "P2": [
+     0.131,
+     0.4249
+    ]
+   },
+   {
+    "Q": [
+     0.2039,
+     0.6018
+    ],
+    "phi": 14.04,
+    "P1": [
+     0.1946,
+     0.5322
+    ],
+    "P2": [
+     0.1361,
+     0.4308
+    ]
+   },
+   {
+    "Q": [
+     0.2076,
+     0.6082
+    ],
+    "phi": 13.55,
+    "P1": [
+     0.1989,
+     0.5387
+    ],
+    "P2": [
+     0.1414,
+     0.4367
+    ]
+   },
+   {
+    "Q": [
+     0.2113,
+     0.6147
+    ],
+    "phi": 12.98,
+    "P1": [
+     0.2033,
+     0.5451
+    ],
+    "P2": [
+     0.1467,
+     0.4426
+    ]
+   },
+   {
+    "Q": [
+     0.2149,
+     0.6212
+    ],
+    "phi": 12.35,
+    "P1": [
+     0.2076,
+     0.5515
+    ],
+    "P2": [
+     0.1522,
+     0.4484
+    ]
+   },
+   {
+    "Q": [
+     0.2184,
+     0.6277
+    ],
+    "phi": 11.64,
+    "P1": [
+     0.2119,
+     0.5579
+    ],
+    "P2": [
+     0.1578,
+     0.4541
+    ]
+   },
+   {
+    "Q": [
+     0.2217,
+     0.6342
+    ],
+    "phi": 10.86,
+    "P1": [
+     0.2163,
+     0.5643
+    ],
+    "P2": [
+     0.1636,
+     0.4598
+    ]
+   },
+   {
+    "Q": [
+     0.225,
+     0.6407
+    ],
+    "phi": 10.0,
+    "P1": [
+     0.2206,
+     0.5707
+    ],
+    "P2": [
+     0.1695,
+     0.4654
     ]
    },
    {
     "Q": [
      0.2282,
-     0.6674
+     0.6472
     ],
-    "phi": 3.35,
+    "phi": 9.06,
     "P1": [
-     0.2312,
-     0.5781
+     0.225,
+     0.5771
     ],
     "P2": [
-     0.192,
-     0.4491
-    ]
-   },
-   {
-    "Q": [
-     0.2295,
-     0.6727
-    ],
-    "phi": 1.89,
-    "P1": [
-     0.2347,
-     0.5836
-    ],
-    "P2": [
-     0.1988,
-     0.4536
-    ]
-   },
-   {
-    "Q": [
-     0.2305,
-     0.678
-    ],
-    "phi": 0.28,
-    "P1": [
-     0.2383,
-     0.589
-    ],
-    "P2": [
-     0.206,
-     0.4581
+     0.1756,
+     0.471
     ]
    },
    {
     "Q": [
      0.2313,
-     0.6831
+     0.6536
     ],
-    "phi": -1.51,
+    "phi": 8.03,
     "P1": [
-     0.2418,
-     0.5944
+     0.2293,
+     0.5835
     ],
     "P2": [
-     0.2137,
-     0.4626
+     0.1818,
+     0.4766
+    ]
+   },
+   {
+    "Q": [
+     0.2343,
+     0.6601
+    ],
+    "phi": 6.92,
+    "P1": [
+     0.2337,
+     0.5899
+    ],
+    "P2": [
+     0.1882,
+     0.4821
+    ]
+   },
+   {
+    "Q": [
+     0.2371,
+     0.6665
+    ],
+    "phi": 5.7,
+    "P1": [
+     0.238,
+     0.5963
+    ],
+    "P2": [
+     0.1949,
+     0.4875
+    ]
+   },
+   {
+    "Q": [
+     0.2399,
+     0.6728
+    ],
+    "phi": 4.38,
+    "P1": [
+     0.2423,
+     0.6028
+    ],
+    "P2": [
+     0.2018,
+     0.493
+    ]
+   },
+   {
+    "Q": [
+     0.2424,
+     0.6792
+    ],
+    "phi": 2.93,
+    "P1": [
+     0.2467,
+     0.6092
+    ],
+    "P2": [
+     0.2089,
+     0.4984
+    ]
+   },
+   {
+    "Q": [
+     0.2449,
+     0.6854
+    ],
+    "phi": 1.36,
+    "P1": [
+     0.251,
+     0.6156
+    ],
+    "P2": [
+     0.2163,
+     0.5038
     ]
    }
   ]
  },
+ "Y": {
+  "seat": 0.22,
+  "wall_in": 0.25,
+  "link": 0.28,
+  "rail": 0.32,
+  "wall_out": 0.36,
+  "base_open": -0.27,
+  "base_head": 0.38
+ },
+ "rail_gap": 0.15,
+ "carriage_span": 0.15,
+ "seat_t": {
+  "rear": 0.062,
+  "front": 0.092,
+  "split": -0.02
+ },
  "bed_floor_cm": {
-  "导轨（含滑块余量）": 1.5,
-  "导轨立柱": 1.0,
-  "座板（刚性部分）": 2.0,
-  "座板支架": 2.0,
-  "倾角连杆": 1.5,
-  "全部零件—地面": 12.9
+  "机构箱（导轨、滑块、电机、连杆）": 2.1,
+  "座板（刚性部分）": 2.1,
+  "座板支架": 2.1,
+  "全部活动零件—地面": 23.4
  },
  "bracket_vs_legs_cm": {
-  "min": 15.6,
+  "min": 12.1,
   "worst_user": "H1.50 r0.07 p2.5 xa0.25"
  },
  "pinch_cm": {
-  "连杆—座板底面": 15.5,
-  "连杆—导轨立柱": -4.5,
-  "座板底面—底座": 33.1,
-  "支架—导轨立柱": -2.5
+  "座板侧缘—机构箱内壁（平行滑过，间隙不变）": 3.0,
+  "座板底面—底座（最低处）": 28.3,
+  "支架穿过内壁的竖槽": "毛刷密封，手指进不去",
+  "机构箱内部（滑块、连杆、丝杠、电机）": "全封闭"
+ },
+ "forces": {
+  "载荷在座板中线": {
+   "moment_Nm": 502,
+   "about_rail_axis_Nm": 282,
+   "about_normal_Nm": 416,
+   "rail_pair_N": 1878,
+   "carriage_pair_N": 2772,
+   "per_carriage_lateral_N": 2325
+  },
+  "载荷偏向敞开一侧 10 cm": {
+   "moment_Nm": 659,
+   "about_rail_axis_Nm": 370,
+   "about_normal_Nm": 546,
+   "rail_pair_N": 2465,
+   "carriage_pair_N": 3639,
+   "per_carriage_lateral_N": 3052
+  }
  },
  "tipping": {
   "100 kg 猛坐座板后缘（1.5 倍体重）": {
-   "cop_x": 0.061,
-   "cop_y": 0.017,
-   "margin_rear_cm": 3.1,
-   "margin_front_cm": 71.9,
-   "margin_side_cm": 28.7
+   "margin_rear_cm": 3.5,
+   "margin_front_cm": 71.5,
+   "margin_side_cm": 30.5
   },
-  "100 kg 整个挂在扶手立杆上": {
-   "cop_x": 0.564,
-   "cop_y": 0.201,
-   "margin_rear_cm": 53.4,
-   "margin_front_cm": 21.6,
-   "margin_side_cm": 12.9
+  "100 kg 整个挂在扶手横杆上（人在台上）": {
+   "margin_rear_cm": 53.0,
+   "margin_front_cm": 22.0,
+   "margin_side_cm": 26.4
   },
   "45 kg 猛坐后缘": {
-   "cop_x": 0.099,
-   "cop_y": 0.03,
-   "margin_rear_cm": 6.9,
-   "margin_front_cm": 68.1,
-   "margin_side_cm": 30.0
+   "margin_rear_cm": 7.6,
+   "margin_front_cm": 67.4,
+   "margin_side_cm": 32.0
   },
-  "侧推翻倒力（60 kg 在台上，扶手 1.06 m）": {
-   "to_open_side_N": 279,
-   "to_head_side_N": 276
+  "人站在地上推拉横杆（只有台架自重）": {
+   "pull_forward_N": 246,
+   "push_to_open_side_N": 195,
+   "push_to_head_side_N": 107
   },
-  "侧推翻倒力（100 kg 在台上，扶手 1.06 m）": {
-   "to_open_side_N": 379,
-   "to_head_side_N": 398
+  "固定件拉力（0.25 倍体重（100 kg），安全系数 1.5）": {
+   "anchor_N": 381
+  },
+  "固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）": {
+   "anchor_N": 2282
+  },
+  "结论": {
+   "min_tip_force_N": 107,
+   "note": "人不在台上时横推不到 107 N 就翻：台架必须和床固定"
   },
   "base": {
    "x": [
@@ -848,63 +775,111 @@
    ],
    "y": [
     -0.27,
-    0.33
+    0.38
    ],
-   "device_kg": 40.0,
+   "device_kg": 45.0,
    "device_com": [
     0.25,
-    0.08
+    0.15
    ]
   }
  },
  "emergency": {
   "seat_sinks_under_load": true,
   "rail_force_per_N_seat_load": [
-   0.43,
-   1.23
+   0.56,
+   1.14
   ],
-  "damper_Ns_per_m": 18146,
-  "slowest_sink_mps": 0.008,
-  "tilt_max_on_the_way": 15.8,
-  "stroke_m": 0.324,
-  "time_full_sink_s": [
-   3.2,
-   38.6
-  ]
- },
- "leg_swing": {
-  "open_side_obstacles_height_m": 0.04,
-  "note": "床尾一侧只有贴地纵轨（高 4 cm）和脚踏板边缘；导轨、立柱、连杆、扶手立杆都在床头一侧"
+  "tilt_max_on_the_way": 15.7,
+  "stroke_m": 0.331,
+  "light_user_drive_N": 267,
+  "resist_N": 73,
+  "margin": 3.7,
+  "limiter_speed_mps": 0.1,
+  "time_full_sink_s": 3.3,
+  "lead_mm": 10.0,
+  "brake_torque_Nm": 5.7,
+  "screw_rpm_at_limit": 600
  },
  "rail": {
   "lo": [
-   0.035,
-   0.2778
+   0.0406,
+   0.305
   ],
   "hi": [
-   0.2779,
-   0.6497
+   0.3666,
+   0.7862
   ],
-  "columns": [
+  "lo2": [
+   0.1648,
+   0.2208
+  ],
+  "hi2": [
+   0.4908,
+   0.7021
+  ],
+  "housing": [
    [
-    [
-     0.035,
-     0.04
-    ],
-    [
-     0.035,
-     0.278
-    ]
+    0.0266,
+    0.04
    ],
    [
-    [
-     0.328,
-     0.04
-    ],
-    [
-     0.278,
-     0.65
-    ]
+    0.5026,
+    0.04
+   ],
+   [
+    0.5049,
+    0.7163
+   ],
+   [
+    0.3744,
+    0.8046
+   ],
+   [
+    0.3538,
+    0.7749
+   ],
+   [
+    0.1982,
+    0.5605
+   ],
+   [
+    0.1638,
+    0.5179
+   ],
+   [
+    0.0702,
+    0.3697
+   ],
+   [
+    0.0496,
+    0.3351
+   ],
+   [
+    0.024,
+    0.2938
+   ],
+   [
+    0.0212,
+    0.2198
+   ]
+  ],
+  "motor": [
+   [
+    0.3339,
+    0.6755
+   ],
+   [
+    0.39,
+    0.7583
+   ],
+   [
+    0.4562,
+    0.7134
+   ],
+   [
+    0.4001,
+    0.6306
    ]
   ]
  }
