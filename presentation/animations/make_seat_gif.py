@@ -113,7 +113,7 @@ def frame_state(fr, released):
     if fr.get("seat") is None: return "已坐上"
     return "抬升"
 
-def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True):
+def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True, state=None):
     scene(ax); housing(ax); handrail(ax)
     released = fr.get("seat") is None and last_seat is not None
     cu = fr.get("cush", {}).get(cush) if fr.get("seat") else None
@@ -126,14 +126,15 @@ def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True)
     lines = [f"座面 {Q[1]:.2f} m · 前倾 {phi:.0f}°"]
     if cu and not cu.get("lost"): lines.append(f"坐垫接触 {cu['len_cm']:.0f} cm · 峰值 {cu['p_max']:.0f} kPa")
     elif released: lines.append("座板停在放手高度")
-    badge(ax, "站立保持" if released else ("抬升" if fr.get("seat") else "已坐上"), lines, step, cap)
+    badge(ax, state or ("站立保持" if released else ("抬升" if fr.get("seat") else "已坐上")), lines, step, cap)
     return dict(Q=Q, phi=phi)
 
 def render_gif(path, user=REF, fps=10):
     A = D["anim"][user]; fig = plt.figure(figsize=(8.0, 8.0), dpi=110); ax = fig.add_axes([0, 0, 1, 1]); imgs = []; last = None
     frames = [A["frames"][0]] * 8 + A["frames"] + [A["frames"][-1]] * 12
-    for fr in frames:
-        s = draw_frame(ax, A, fr, last)
+    states = ["已坐上"] * 8 + [None] * len(A["frames"]) + ["站立保持"] * 12
+    for fr, stt in zip(frames, states):
+        s = draw_frame(ax, A, fr, last, state=stt)
         if fr.get("seat"): last = fr["seat"]
         fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB"))
     q = [im.quantize(colors=96, method=Image.Quantize.MEDIANCUT) for im in imgs]
@@ -150,7 +151,7 @@ def render_steps(prefix, user=REF):
         fig = plt.figure(figsize=(6.0, 6.0), dpi=120); ax = fig.add_axes([0, 0, 1, 1])
         for f in fr[:k + 1]:
             if f.get("seat"): last = f["seat"]
-        draw_frame(ax, A, fr[k], last, hands=(n != 1))
+        draw_frame(ax, A, fr[k], last, hands=(n != 1), state=["已坐上", "已坐上", "抬升", "抬升", "站立保持"][n - 1])
         fig.savefig(f"{prefix}{n}.png", facecolor=BG); plt.close(fig)
 
 def render_mech(path):
@@ -200,9 +201,9 @@ def render_force(path):
         ax.plot(fc["z"], fc[k], color=col, lw=2.4, label=lab)
     ax.set_xlabel("座面高度 (m)", fontsize=13); ax.set_ylabel("丝杠推力 (N)", fontsize=13); ax.set_ylim(0, None); ax.grid(alpha=.3); ax.legend(fontsize=11, frameon=False)
     ax.tick_params(labelsize=12)
-    ax = axs[1]; ax.axhspan(0, 15, color="#E3F1EA"); ax.plot(tc["z"], tc["phi"], color=ACC, lw=2.6)
+    ax = axs[1]; ax.axhspan(0, 16, color="#E3F1EA"); ax.plot(tc["z"], tc["phi"], color=ACC, lw=2.6)
     ax.set_xlabel("座面高度 (m)", fontsize=13); ax.set_ylabel("座板前倾 (°)", fontsize=13); ax.set_ylim(-2, 20); ax.grid(alpha=.3); ax.tick_params(labelsize=12)
-    ax.text(tc["z"][0], 16.2, "绿带 = 不超过 15°", fontsize=11, color=GOOD)
+    ax.text(tc["z"][0], 17.0, "绿带 = 机构综合时的上限 16°", fontsize=11, color=GOOD)
     fig.tight_layout(); fig.savefig(path, facecolor="#FFFFFF"); plt.close(fig)
 
 def render_sensors(path, user=REF):

@@ -15,6 +15,17 @@ Erel = st.median([v["E0_release"] for v in F.values() if v.get("E0_release") is 
 anchor = T["固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）"]["anchor_N"]; tipmin = T["结论"]["min_tip_force_N"]
 fl = T["人站在地上推拉横杆（只有台架自重）"]
 cm = lambda v: f"{100 * v:.0f}"
+BB = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/bed_baseline.json"))); SLU = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/slider.json")))["users"]
+K72 = [k for k, v in BB["users"].items() if v["0.58"]["handle"] is not None and SLU[k].get("E_release")]
+med = lambda xs: st.median(xs)
+CMP = dict(low=med([BB["users"][k]["0.42"]["L_bar"] for k in K72]), high_L=med([BB["users"][k]["0.58"]["L_bar"] for k in K72]),
+           high_best=med([BB["users"][k]["0.58"]["handle"] for k in K72]), seat=med([SLU[k]["E_release"] for k in K72]))
+BS = BB["summary"]; N72 = len(K72); NOFF = 81 - N72
+_sv = lambda bed, k: med([1 - SLU[u]["E_release"] / BB["users"][u][bed][k] for u in K72])   # per-user saving, same 72 users
+SAVE_LOW = _sv("0.42", "L_bar"); SAVE_HL = _sv("0.58", "L_bar"); SAVE_HB = _sv("0.58", "handle"); NWORSE = BS["bed0.58_handle"]["n_worse"]
+PHIREL = st.median([v["phi_release"] for v in SLU.values()])
+pct = lambda v: f"{100 * v:.0f}%"
+pc = lambda v: f"{100 * v:.0f}"
 INK, BODY, ACC, LIGHT, PAPER, LINE = "#18202A", "#3F4A57", "#9A5408", "#F7F5F0", "#FCFBF8", "#E2DED5"
 SANS = "font-family:'Noto Sans SC', Arial, sans-serif"; SERIF = "font-family:'Noto Serif SC', Georgia, serif"
 
@@ -39,10 +50,10 @@ S = {}
 S["cover"] = (f'<section id="cover" data-transition="fade" style="background:#18202A;color:#F2EFE8;{SANS};padding:128px;display:grid;grid-template-columns:1fr 640px;gap:64px;align-items:center">\n'
   f'<div style="display:flex;flex-direction:column;gap:40px">\n<p style="font-size:28px;color:#E3A24A;letter-spacing:2px">ME5412 Robotics for Healthcare · Group 16</p>\n'
   f'<h1 style="{SERIF};font-size:120px;font-weight:700;line-height:1.1;color:#F2EFE8">床边起身台</h1>\n'
-  f'<p style="font-size:40px;line-height:1.45;color:#D6D2C8">帮老人夜里从床沿站起来：平时和床一样低；起身时座板跟着大腿前移、上升、前倾，把人托到床达不到的高度；速度跟着人，松手就停</p>\n'
+  f'<p style="font-size:40px;line-height:1.45;color:#D6D2C8">帮老人夜里从床沿站起来：平时和床一样低；起身时座板跟着大腿前移、上升、前倾，一路托着人；速度跟着人，松手就停</p>\n'
   f'<p style="font-size:28px;line-height:1.5;color:#AEB6C0">[组员姓名] · 汇报结构草稿 · 标“待补”的部分还在做</p>\n</div>\n'
   + img("seat_step3", "示意图：老人双手握住身前横杆，座板跟着大腿前移、上升、前倾", 640, 540, extra=";border:none") +
-  '\n<aside>大家好，我们是第 16 组。我们的题目是“床边起身台”：帮腿力下降的老人夜里从床沿站起来。一句话概括我们的思路：平时它和床一样低；起身时座板跟着人的大腿往前、往上走并稍微前倾，把人托到床达不到的高度；速度跟着人走，松手就停。</aside>\n</section>\n')
+  '\n<aside>大家好，我们是第 16 组。我们的题目是“床边起身台”：帮腿力下降的老人夜里从床沿站起来。一句话概括我们的思路：平时它和床一样低；起身时座板跟着人的大腿往前、往上走并稍微前倾，一路托着人；速度跟着人走，松手就停。</aside>\n</section>\n')
 
 S["users"] = None  # small text edit, done by replace below
 S["concept"] = sec("concept", LIGHT,
@@ -77,14 +88,14 @@ S["motion"] = (f'<section id="motion" data-transition="fade" style="background:{
 
 S["sizing"] = sec("sizing", LIGHT,
   head("3 · 驱动选型", "滚珠丝杠 + 失电制动；双导轨扛住单侧悬臂") +
-  f'\n<div style="display:grid;grid-template-columns:1080px 1fr;gap:48px;align-items:center">\n' + img("seat_force", "左：丝杠推力随座面高度；右：座板前倾随座面高度，不超过 15 度", 1080, 410, bg="#FFFFFF") +
+  f'\n<div style="display:grid;grid-template-columns:1080px 1fr;gap:48px;align-items:center">\n' + img("seat_force", "左：丝杠推力随座面高度；右：座板前倾随座面高度，不超过 16 度", 1080, 410, bg="#FFFFFF") +
   f'\n<div style="display:flex;flex-direction:column;gap:22px">\n'
   f'<p style="font-size:28px;line-height:1.5;color:{BODY}"><b>丝杠：</b>起身时 ≤ {M["F_lift100_N"]} N（100 kg），猛坐静载 ≤ {M["F_hold100_N"]} N；行程 {M["stroke"] * 1000:.0f} mm</p>\n'
   f'<p style="font-size:28px;line-height:1.5;color:{BODY}"><b>双导轨、每轨两个滑块：</b>偏载悬臂 {FO["moment_Nm"]} N·m，每个滑块约 {FO["per_carriage_lateral_N"] / 1000:.1f} kN</p>\n'
   f'<p style="font-size:28px;line-height:1.5;color:{BODY}"><b>应急下降：</b>拉握把旁的拨杆，制动松开，离心限速约 {E["limiter_speed_mps"] * 100:.0f} cm/s，松手即停</p>\n</div>\n</div>\n'
   + todo("按厂家样本选定滚珠丝杠、直线导轨和制动器型号；核对 3 cm/s 时的电机转速和扭矩") + "\n"
   + foot("载荷：起身按座板推 0.5 倍体重 + 座板 10 kg；静载按 100 kg × 1.5 倍体重，载荷可在座面任意位置（虚功法）"),
-  f"这是驱动的第一版选型。座板由一根滚珠丝杠推着滑块走。左图是丝杠推力：起身时最多约 {M['F_lift100_N']} 牛，100 公斤的人猛坐下来时约 {M['F_hold100_N']} 牛。右图是座板前倾，全程不超过 15 度。滚珠丝杠效率高，但不能自锁，所以加一个失电常闭制动器：平时和断电时都抱住。应急时拉握把旁边的拨杆，制动器松开，人的重量把座板慢慢压下去，离心限速器把速度限在每秒 10 厘米左右，一松手就停。机构在床头一侧，座板是悬臂，偏载时导轨要扛 {FO['moment_Nm']} 牛米的力矩，所以用两根导轨、每根两个滑块。",
+  f"这是驱动的第一版选型。座板由一根滚珠丝杠推着滑块走。左图是丝杠推力：起身时最多约 {M['F_lift100_N']} 牛，100 公斤的人猛坐下来时约 {M['F_hold100_N']} 牛。右图是座板前倾，全程不超过 16 度。滚珠丝杠效率高，但不能自锁，所以加一个失电常闭制动器：平时和断电时都抱住。应急时拉握把旁边的拨杆，制动器松开，人的重量把座板慢慢压下去，离心限速器把速度限在每秒 10 厘米左右，一松手就停。机构在床头一侧，座板是悬臂，偏载时导轨要扛 {FO['moment_Nm']} 牛米的力矩，所以用两根导轨、每根两个滑块。",
   pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:36px")
 
 tip_rows = [(k, v) for k, v in T.items() if isinstance(v, dict) and v.get("margin_rear_cm") is not None]
@@ -116,7 +127,7 @@ S["risk"] = sec("risk", PAPER,
 S["verify"] = sec("verify", LIGHT,
   head("5 · 验证", "设计要求 → 怎么验证 → 结果") +
   f'\n<table style="font-size:24px;color:{BODY}">\n<tr><th style="width:30%">设计要求</th><th style="width:24%">怎么验证</th><th style="width:32%">目前结果</th><th style="width:14%">状态</th></tr>\n'
-  f'<tr><td>1 只在起身时升高，比现有办法省力</td><td>2D 起身模型</td><td>升到 0.66 m 比抬高床省 13–20%</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>1 只在起身时升高，比现有办法省力</td><td>2D 起身模型，同一扶手、同一批用户</td><td>比低床省 {pct(SAVE_LOW)}；比抬高床 0.58 m 只省 {pc(SAVE_HB)}–{pct(SAVE_HL)}，{NWORSE}/{N72} 人略费力</td><td><b style="color:{ACC}">部分达成</b></td></tr>\n'
   f'<tr><td>1′ 座板跟着人走：不往前滑、坐回接得住</td><td>81 人 × 机构实际轨迹</td><td>{nok}/81 合格（竖直升降 {VS["n_ok"]}/81）；按坐垫压下后的位置 {CT.get("n_ok", "—")}/81</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
   f'<tr><td>2 推力不超过约半个体重</td><td>速度规则 + 场景仿真</td><td>8 个场景都没有超过上限</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
   f'<tr><td>3 手握 + 力分布确认后才抬；松手即停</td><td>状态机仿真</td><td>松手后立即停住</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
@@ -124,17 +135,41 @@ S["verify"] = sec("verify", LIGHT,
   f'<tr><td>5 人坐上、挪动、坐回时不翻</td><td>合重心和倾翻计算</td><td>人在台上余量足；人在地上要和床固定；[待补] 真实质量复核</td><td><b style="color:{ACC}">进行中</b></td></tr>\n'
   f'<tr><td>6 有人坐着才降；离座后停住接人</td><td>状态机仿真</td><td>坐回、断电场景都落到安全状态</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n</table>\n'
   + foot("本项目只做概念、设计和仿真，不做实物和人体实验；“初步完成”指已有第一版计算或仿真结果"),
-  f"这张表把设计要求和验证方法一一对上。新增的一行是座板要跟着人走：我们用机构实际走出的轨迹重跑了 81 位用户，{nok} 人都不往前滑、坐回接得住，竖直升降只有 {VS['n_ok']} 人；把坐垫压下去以后的座板位置也算了一遍，{CT.get('n_ok', '—')} 人合格。推力上限、松手即停和有人坐着才降，用状态机的场景仿真验证；机构的强度和台架稳定性的真实质量复核还在进行中。",
+  f"这张表把设计要求和验证方法一一对上。第一行要说清楚：按新的同一口径，起身台比低床省约 {pct(SAVE_LOW)}，但比抬高床只省 {pct(SAVE_HB)} 到 {pct(SAVE_HL)}，所以我们标成部分达成。新增的一行是座板要跟着人走：我们用机构实际走出的轨迹重跑了 81 位用户，{nok} 人都不往前滑、坐回接得住，竖直升降只有 {VS['n_ok']} 人；把坐垫压下去以后的座板位置也算了一遍，{CT.get('n_ok', '—')} 人合格。推力上限、松手即停和有人坐着才降，用状态机的场景仿真验证；机构的强度和台架稳定性的真实质量复核还在进行中。",
   pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:36px")
 
 S["conclusion"] = (f'<section id="conclusion" data-transition="fade" style="background:#18202A;color:#F2EFE8;{SANS};padding:128px;display:flex;flex-direction:column;gap:48px">\n'
   f'<div style="display:flex;flex-direction:column;gap:16px">\n<p style="font-size:26px;color:#E3A24A;letter-spacing:2px">5 · 结论</p>\n'
-  f'<h2 style="{SERIF};font-size:64px;font-weight:700;line-height:1.2;color:#F2EFE8">平时和床一样低，起身时跟着人升得比床高，随时可停</h2>\n</div>\n'
+  f'<h2 style="{SERIF};font-size:64px;font-weight:700;line-height:1.2;color:#F2EFE8">平时和床一样低，起身时跟着大腿托一程，随时可停</h2>\n</div>\n'
   f'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">\n'
-  f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">省力、不滑</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">升到床达不到的高度，比抬高床再省 13–20%；座板跟着大腿走，81 人都不往前滑、坐回接得住</p></div>\n'
+  f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">省力、不滑</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">比低床省约 {pct(SAVE_LOW)}；比抬高床只多省 {pc(SAVE_HB)}–{pct(SAVE_HL)}，但平时坐得低、脚踩得实；81 人都不往前滑、坐回接得住</p></div>\n'
   f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">做得出来</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">一个电机：斜导轨 + 倾角连杆；机构封闭在床头一侧，床尾敞开；台架和床固定</p></div>\n'
   f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">安全</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">松手即停、有人坐着才降、速度跟着人走；断电时制动抱住，拉拨杆可慢慢降</p></div>\n</div>\n'
-  f'<aside>总结一下。起身台平时和床一样低，起身时把座面升到床达不到的高度，比抬高床再省 13 到 20%；而且座板跟着大腿走，我们模拟的 81 位用户都不会往前滑，坐回去也接得住。机构上，一个电机带动斜导轨和倾角连杆，整套机构封闭在床头一侧，床尾一侧敞开，台架和床固定。控制上，松手即停、有人坐着才降、速度跟着人走；断电时制动器抱住，拉一下拨杆就能慢慢降下来。</aside>\n</section>\n')
+  f'<aside>总结一下。起身台平时和床一样低，起身时座板跟着大腿托一程。按同一个模型，它比从低床起身省约 {pct(SAVE_LOW)}；和把床垫高到 0.58 米相比只多省 {pct(SAVE_HB)} 到 {pct(SAVE_HL)}，好处主要是平时坐得低、脚踩得实，而且座板跟着大腿走，我们模拟的 81 位用户都不会往前滑，坐回去也接得住。机构上，一个电机带动斜导轨和倾角连杆，整套机构封闭在床头一侧，床尾一侧敞开，台架和床固定。控制上，松手即停、有人坐着才降、速度跟着人走；断电时制动器抱住，拉一下拨杆就能慢慢降下来。</aside>\n</section>\n')
+
+def _bar(label, v, col, bold=False, note=""):
+    w = round(600 * v / 0.45)
+    return (f'<p style="font-size:28px;color:{INK if bold else BODY}">{"<b>" + label + "</b>" if bold else label}</p>'
+            f'<div style="display:flex;align-items:center;gap:16px"><div style="height:40px;width:{w}px;background:{col};border-radius:0 6px 6px 0"></div>'
+            f'<p style="font-size:28px;font-weight:700">{v:.2f}</p><p style="font-size:22px;color:#66707C">{note}</p></div>')
+S["whynot"] = sec("whynot", PAPER,
+  head("2 · 方案比较", f"比低床省约 {pct(SAVE_LOW)}；比抬高床只多省 {pc(SAVE_HB)}–{pct(SAVE_HL)}，好处在别处", 56) +
+  f'\n<div style="display:grid;grid-template-columns:1060px 1fr;gap:56px;align-items:start">\n<div style="display:flex;flex-direction:column;gap:18px">\n'
+  f'<p style="font-size:26px;color:#66707C">起身最吃力那一刻的 effort，中位数（越低越轻松；同一模型、同一批 {N72} 位用户）</p>\n'
+  f'<div style="display:grid;grid-template-columns:360px 1fr;gap:18px 20px;align-items:center">\n'
+  + _bar("低床 0.42 m + L 扶手", CMP["low"], "#C3C9D1") + "\n"
+  + _bar("抬高床 0.58 m + L 扶手", CMP["high_L"], "#9AA3AD") + "\n"
+  + _bar("抬高床 0.58 m + 最佳扶手", CMP["high_best"], "#7D8792") + "\n"
+  + _bar("起身台：坐板放手那一刻", CMP["seat"], "#B4620A", bold=True) +
+  f'\n</div>\n<p style="font-size:24px;line-height:1.5;color:{BODY}">另有 {NOFF} 位用户（1.50 m、臀部厚）坐在 0.58 m 的床上脚踩不实，没法比；起身台平时 0.42 m，81 人都踩得实</p>\n</div>\n'
+  f'<div style="display:flex;flex-direction:column;gap:26px">\n'
+  f'<p style="font-size:30px;line-height:1.45"><b>比低床：</b>每个人都省，中位数省 {pct(SAVE_LOW)}</p>\n'
+  f'<p style="font-size:30px;line-height:1.45"><b>比抬高床：</b>只省 {pc(SAVE_HB)}–{pct(SAVE_HL)}；{N72} 人里 {NWORSE} 人反而略费力</p>\n'
+  f'<p style="font-size:28px;line-height:1.5;color:{BODY}"><b>原因：</b>多数人在座板前倾最大（约 {PHIREL:.0f}°）时就离开坐垫，那时髋只比坐在 0.58 m 床上高约 4 cm；导轨上段没用来托人</p>\n'
+  f'<p style="font-size:28px;line-height:1.5;color:{ACC}"><b>所以它的价值是：</b>平时坐得低、脚踩得实；起身全程有托、不往前滑、坐回接得住（第 8 页）</p>\n</div>\n</div>\n'
+  + foot("effort = 最吃力的关节用掉自身最大力量的比例（2D 准静态模型，手上最多出半个体重）。抬高床按最有利的坐姿（臀部离床沿 0–10 cm）和 35 个扶手位置里最好的算。旧版此页的 13–20% 来自竖直升到 0.66 m 的旧模型，已作废"),
+  f"接下来比较几种起身方式。我们用同一个二维、准静态的起身模型、同一副 L 形扶手和同一批用户，算最吃力那一刻最吃力的关节用掉了自身最大力量的几成，叫 effort，越低越轻松。从 0.42 米的低床起身，中位数是 {CMP['low']:.2f}；把床垫高到 0.58 米，降到 {CMP['high_L']:.2f}，扶手放到最有利的位置是 {CMP['high_best']:.2f}；起身台在座板放手那一刻是 {CMP['seat']:.2f}。所以和低床比，起身台每个人都省，中位数省 {pct(SAVE_LOW)}；但和抬高床比只多省 {pct(SAVE_HB)} 到 {pct(SAVE_HL)}，有 {NWORSE} 个人反而略费力。原因是多数人在座板前倾最大、大约 {PHIREL:.0f} 度时就离开了坐垫，那时髋部只比坐在 0.58 米的床上高约 4 厘米。我们之前的版本写比抬高床省 13 到 20%，那是竖直升降旧模型的数字，这次按同一口径重算后不成立，我们改掉了。起身台相对抬高床的好处主要在别处：平时和床一样低，脚踩得实，0.58 米的床有 {NOFF} 位个子矮的用户脚踩不实；起身全程有托，不往前滑，坐回去也接得住。",
+  pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:40px")
 
 S["sensing"] = sec("sensing", LIGHT,
   head("4 · 传感与交互", "手握发指令，力分布确认人准备好了") +
@@ -162,9 +197,10 @@ REPL = {   # small edits on slides kept as they are
                "<tr><td>现有技术和专利表</td><td>角色 1</td><td><b style=\"color:#2F7A55\">有材料</b></td></tr>\n<tr><td>单自由度坐板设计（81 人、机构、坐垫、干涉、两轮审计）</td><td>角色 2、3</td><td><b style=\"color:#2F7A55\">有材料</b></td></tr>")],
  "questions": [("机构做到“选型 + 尺寸估算 + CAD 运动动画”够不够？双升降柱为主、剪叉作对比可以吗？", "座板改成跟着大腿走的单自由度曲线（斜导轨 + 倾角连杆），竖直升降作对比，这个方向可以吗？做到选型 + 尺寸估算 + CAD 运动动画够不够？"),
                ("第二，机构做到选型、尺寸估算和 CAD 运动动画够不够；", "第二，座板改成跟着大腿走的曲线、竖直升降作对比，这个方向行不行，机构做到选型、尺寸估算和 CAD 运动动画够不够；")],
- "whynot": [('<p style="font-size:28px;line-height:1.5;color:#3F4A57">只升到 0.60 m 就和抬高床差不多：省力来自固定床达不到的那段高度</p>',
-             f'<p style="font-size:28px;line-height:1.5;color:#3F4A57">只升到 0.60 m 就和抬高床差不多。座板还要跟着大腿走，否则人会往前滑（第 8 页）</p>')],
 }
+
+REPL["statemachine"] += [("才带人慢慢降；座板上没人时不动</p>", "才带人慢慢降；空座板只在“空载复位”时自己降回齐平</p>"),
+                         ("第二，只有确认有人坐着才下降，座板上没人时不动；", "第二，带人下降必须确认有人坐着，并且按住“降”或坐着很久没有操作；空座板只在人走开以后自己降回齐平；")]
 
 if __name__ == "__main__":
     for sid, html in S.items():
@@ -172,6 +208,7 @@ if __name__ == "__main__":
     for sid, pairs in REPL.items():
         p = os.path.join(OUT, f"{sid}.html"); h = open(p).read()
         for a, b in pairs:
+            if h.count(a) == 0 and b in h: continue   # already applied (deck root is edited in place)
             assert h.count(a) == 1, (sid, a[:40]); h = h.replace(a, b)
         open(p, "w").write(h)
     print("written", [k for k, v in S.items() if v] + list(REPL))
