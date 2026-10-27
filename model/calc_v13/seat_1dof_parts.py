@@ -46,7 +46,7 @@ sim, e, nf, Bp = VC.sim, VC.e, VC.nf, VC.Bp
 if (VC.rails()[1][0] - VC.rails()[0][0]) @ nf < 0: nf = -nf
 
 # ---------------------------------------------------------------- layer stack across the width (y, m), seat side -> head side
-YS = dict(seat_edge=0.220, knuckle=(0.212, 0.226), brgB=(0.229, 0.246), wall_in=(0.250, 0.253), arm_c2=(0.258, 0.268), link=0.275,
+YS = dict(seat_edge=0.220, knuckle=(0.204, 0.216), flange=(0.216, 0.226), brgB=(0.229, 0.246), wall_in=(0.250, 0.253), arm_c2=(0.258, 0.268), link=0.275,
           plate=(0.288, 0.308), brgA=(0.290, 0.307), carriage=0.322, screw=0.322, back=(0.336, 0.351), wall_out=(0.356, 0.358))
 yB, yA = np.mean(YS["brgB"]), np.mean(YS["brgA"]); S_BRG = yA - yB; Y_C1 = 0.5 * (yA + yB)
 
