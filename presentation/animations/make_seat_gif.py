@@ -113,13 +113,25 @@ def frame_state(fr, released):
     if fr.get("seat") is None: return "已坐上"
     return "抬升"
 
+def sunk(A, fr, dz):
+    """v5.6b: the person sitting with the board flush: the foam carries the weight, so the hip is lower than the rigid-seat
+    path by the foam compression dz; ankle fixed, knee re-solved (forward branch)."""
+    if dz <= 0: return fr
+    Ls, Lt = A["L"][0], A["L"][1]; An = np.array(fr["A"]); Hp = np.array(fr["Hp"]) - np.array([0.0, dz]); d = Hp - An; Lr = np.hypot(*d)
+    if Lr >= Ls + Lt - 1e-4: return fr
+    a = math.atan2(d[1], d[0]); b = math.acos(max(-1, min(1, (Ls * Ls + Lr * Lr - Lt * Lt) / (2 * Ls * Lr))))
+    K = max((An + Ls * np.array([math.cos(a + sg * b), math.sin(a + sg * b)]) for sg in (-1, 1)), key=lambda k: k[0])
+    return dict(fr, Hp=Hp.tolist(), K=K.tolist())
+
 def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True, state=None, flush=False):
     scene(ax); housing(ax); handrail(ax)
     released = fr.get("seat") is None and last_seat is not None
     cu = fr.get("cush", {}).get(cush) if (fr.get("seat") and not flush) else None
-    if flush:                         # v5.6: sitting before the lift: the seat is still flush with the bed (not yet pushing)
-        Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]; mechanism(ax, Q, phi); person(ax, A, fr, bar=hands, rb=A.get("rb", 0.09))
-        badge(ax, state or "已坐上", [f"座面 {Q[1]:.2f} m（与床齐平）· 前倾 {phi:.0f}°"], step, cap); return dict(Q=Q, phi=phi)
+    if flush:                         # v5.6: sitting before the lift: board flush with the bed, the person sunk into the foam
+        Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]; mechanism(ax, Q, phi)
+        c0 = fr.get("cush", {}).get(cush) or {}; dz = (c0.get("sink_mm") or 0) / 1000 if isinstance(flush, bool) else flush
+        person(ax, A, sunk(A, fr, dz), bar=hands, rb=A.get("rb", 0.09))
+        badge(ax, state or "已坐上", [f"座板 {Q[1]:.2f} m（坐垫面与床面齐平）· 前倾 {phi:.0f}°", f"人坐进坐垫约 {100 * dz:.0f} cm"], step, cap); return dict(Q=Q, phi=phi)
     if cu and not cu.get("lost"): Q, phi = cu["Q"], cu["phi"]
     elif fr.get("seat"): Q, phi = fr["seat"]["Q"], fr["seat"]["phi"]
     elif last_seat: Q, phi = last_seat["Q"], last_seat["phi"]
@@ -134,9 +146,15 @@ def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True,
 
 def render_gif(path, user=REF, fps=10):
     A = D["anim"][user]; fig = plt.figure(figsize=(8.0, 8.0), dpi=110); ax = fig.add_axes([0, 0, 1, 1]); imgs = []; last = None
-    frames = [A["frames"][0]] * 8 + A["frames"] + [A["frames"][-1]] * 12
-    states = ["已坐上"] * 8 + [None] * len(A["frames"]) + ["站立保持"] * 12
+    frames = [A["frames"][0]] * 13 + A["frames"] + [A["frames"][-1]] * 12
+    states = ["已坐上"] * 8 + ["抬升"] * 5 + [None] * len(A["frames"]) + ["站立保持"] * 12
+    f0 = A["frames"][0]; c0 = f0["cush"]["z1"]; dz0 = c0["sink_mm"] / 1000; Qf, pf = np.array(M["frames"][0]["Q"]), M["frames"][0]["phi"]
     for n_, (fr, stt) in enumerate(zip(frames, states)):
+        if 8 <= n_ < 13:                  # v5.6b: start of the lift: board and person rise together until the foam carries 0.5 BW
+            w = (n_ - 7) / 6; Q = (1 - w) * Qf + w * np.array(c0["Q"]); ph = (1 - w) * pf + w * c0["phi"]
+            scene(ax); housing(ax); handrail(ax); mechanism(ax, Q, ph); person(ax, A, sunk(A, f0, (1 - w) * dz0), rb=A.get("rb", 0.09))
+            badge(ax, "抬升", [f"座板 {Q[1]:.2f} m · 前倾 {ph:.0f}°", "座板和人一起先升约 3 cm"])
+            fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB")); continue
         s = draw_frame(ax, A, fr, last, state=stt, flush=(n_ < 8))
         if fr.get("seat"): last = fr["seat"]
         fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB"))
