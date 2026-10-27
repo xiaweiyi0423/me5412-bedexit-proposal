@@ -211,13 +211,89 @@ def render_sensors(path, user=REF):
     fig = plt.figure(figsize=(6.4, 5.4), dpi=120); ax = fig.add_axes([0, 0, 1, 1]); scene(ax, -0.30, 1.0, 1.25); housing(ax); handrail(ax)
     mechanism(ax, M["frames"][0]["Q"], M["frames"][0]["phi"]); person(ax, A, fr)
     Q = M["frames"][0]["Q"]; pts = [(1, (Q[0], Q[1] - 0.09), "座板下测力（法向力）"), (2, (BAR["x"], BAR["z"] + 0.05), "横杆测力"), (3, (BAR["x"] - 0.06, BAR["z"] - 0.06), "握把开关"),
-                                    (4, (0.42, 0.06), "踏板测力"), (5, (0.06, 0.015), "底座四角测力（体重自检）")]
+                                    (4, (0.42, 0.06), "踏板测力")]
     for n, (x, z), lab in pts:
         ax.add_patch(Circle((x, z), 0.026, facecolor="#E3A92E", edgecolor=INK, lw=1.2, zorder=13)); ax.text(x, z, str(n), ha="center", va="center", fontsize=11, fontweight="bold", zorder=14)
     for i, (n, _, lab) in enumerate(pts): ax.text(-0.28, 1.20 - 0.075 * i, f"{n}  {lab}", fontsize=12.5, color=INK, va="top", zorder=14)
     fig.savefig(path, facecolor=BG); plt.close(fig)
 
+def _box(ax, xy, w, h, txt, fc, fs=17, ec=INK):
+    ax.add_patch(FancyBboxPatch((xy[0] - w / 2, xy[1] - h / 2), w, h, boxstyle="round,pad=0.02,rounding_size=0.12", facecolor=fc, edgecolor=ec, lw=1.6, zorder=3))
+    ax.text(xy[0], xy[1], txt, ha="center", va="center", fontsize=fs, fontweight="bold", color=INK, zorder=4)
+
+def _arrow(ax, a, b, lab="", rad=0.0, lxy=None, fs=12.5, col=STEEL, ls="-"):
+    from matplotlib.patches import FancyArrowPatch
+    ax.add_patch(FancyArrowPatch(a, b, connectionstyle=f"arc3,rad={rad}", arrowstyle="-|>", mutation_scale=18, lw=1.8, color=col, linestyle=ls, zorder=2, shrinkA=4, shrinkB=4))
+    if lab:
+        x, y = lxy if lxy else ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+        ax.text(x, y, lab, ha="center", va="center", fontsize=fs, color=INK, zorder=5, linespacing=1.25,
+                bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none", alpha=0.92))
+
+def render_statemachine(path):
+    """state machine of the seat (v5.3 rules), Chinese, large type for a slide."""
+    fig = plt.figure(figsize=(16.6, 5.2), dpi=120); ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(-0.6, 16.0); ax.set_ylim(-0.35, 4.6); ax.axis("off")
+    ax.add_patch(Rectangle((-0.6, -0.35), 16.6, 4.95, color="#FFFFFF", zorder=0))
+    W_, H_ = 1.9, 0.78
+    P = {"待机": (0.5, 3.4), "已坐上": (3.6, 3.4), "抬升": (7.4, 3.4), "站立保持": (11.2, 3.4), "空座板停住": (14.5, 3.4),
+         "下降": (3.6, 0.7), "停住": (7.4, 0.7), "锁定": (14.5, 0.7)}
+    FC = {"抬升": "#DFF3EA", "停住": "#FDF3E2", "锁定": "#F9E0DD", "站立保持": "#ECE6F8", "下降": "#FBF5D9"}
+    for k, xy in P.items(): _box(ax, xy, W_ if k != "空座板停住" else 2.3, H_, k, FC.get(k, "#F4F6F8"))
+    e = lambda k, dx=0, dy=0: (P[k][0] + dx, P[k][1] + dy)
+    _arrow(ax, e("待机", 0.95), e("已坐上", -0.95), "坐上座板", lxy=(2.05, 3.75))
+    _arrow(ax, e("已坐上", 0.95), e("抬升", -0.95), "握紧开关 + 手在杆上\n+ 脚踩实 + 坐正", lxy=(5.5, 3.95))
+    _arrow(ax, e("抬升", 0.95), e("站立保持", -0.95), "离座 0.3 s", lxy=(9.3, 3.75))
+    _arrow(ax, e("站立保持", 1.0), e("空座板停住", -1.15), "人走开", lxy=(12.85, 3.75))
+    _arrow(ax, e("抬升", -0.35, -0.39), e("停住", -0.35, 0.39), "松手 / 故障\n/ 断电", lxy=(6.4, 2.05))
+    _arrow(ax, e("停住", 0.35, 0.39), e("抬升", 0.35, -0.39), "再握紧", lxy=(8.2, 2.05))
+    _arrow(ax, e("停住", -0.95), e("下降", 0.95), "按住“降”", rad=0.0, lxy=(5.5, 0.98))
+    _arrow(ax, e("下降", 0.95, -0.2), e("停住", -0.95, -0.2), "松开“降”", lxy=(5.5, 0.22))
+    _arrow(ax, e("已坐上", -0.3, -0.39), e("下降", -0.3, 0.39), "按住“降”\n（座板高于齐平）", lxy=(2.5, 2.05))
+    _arrow(ax, e("下降", 0.3, 0.39), e("已坐上", 0.3, -0.39), "到齐平", lxy=(4.4, 2.05))
+    _arrow(ax, e("站立保持", -0.5, -0.39), e("停住", 0.95, 0.1), "坐回：座板不动，接住人", rad=-0.15, lxy=(10.6, 1.75))
+    ax.plot([14.5, 14.5, 0.5], [3.8, 4.38, 4.38], color=MUTED, lw=1.8, zorder=2)
+    _arrow(ax, (0.5, 4.38), e("待机", 0.0, 0.40), "", col=MUTED)
+    ax.text(7.5, 4.38, "回床：按住“降”把空座板降到齐平（只在按住时动）", ha="center", va="center", fontsize=12.5, color=INK, zorder=5,
+            bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none"))
+    ax.text(14.5, 2.15, "任意状态", ha="center", va="center", fontsize=13, color=MUTED)
+    _arrow(ax, (14.5, 1.95), e("锁定", 0, 0.42), "", col=RED, ls="--")
+    ax.text(14.25, 1.45, "自检不过（空载零点 / 抬升中\n力之和与体重差 >15%，0.5 s）\n→ 只能按住“降”慢降", ha="right", va="center", fontsize=12, color=INK, linespacing=1.3)
+    ax.text(7.4, -0.12, "停住时坐着很久不动：提醒并呼叫家属，座板不会自己动", ha="center", va="center", fontsize=13, color=ACC, fontweight="bold")
+    fig.savefig(path, facecolor="#FFFFFF"); plt.close(fig)
+
+def render_top(path):
+    """top view: bed, base, mechanism housing, seat (flush and at the top), L-handrail, how the user walks off and back."""
+    Y = L["Y"]; Hx = [p[0] for p in L["housing"]]
+    fig = plt.figure(figsize=(7.8, 5.6), dpi=140); ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(-1.15, 0.95); ax.set_ylim(1.02, -0.48); ax.set_aspect("equal"); ax.axis("off")
+    ax.add_patch(Rectangle((-1.15, -0.48), 2.1, 1.5, color=BG, zorder=0))
+    # plot axes: horizontal = along the bed (y, head side to the right), vertical = out from the bed edge (x, down)
+    R = lambda y0, y1, x0, x1, **k: ax.add_patch(Rectangle((y0, x0), y1 - y0, x1 - x0, **k))
+    R(-1.40, 0.80, -0.98, 0.0, facecolor=MAT, edgecolor=MUTED, lw=1.2, zorder=1); ax.text(-1.10, -0.40, "床（示意：只画了床长 2.0 m 中的一段）", fontsize=12, color="#6B7480")
+    R(0.52, 0.76, -0.80, -0.10, facecolor="#FFFFFF", edgecolor=MUTED, lw=1, zorder=2); ax.text(0.64, -0.25, "枕头", fontsize=12, color="#6B7480", ha="center", rotation=90)
+    ax.text(0.86, -0.25, "床头", fontsize=13, color=INK, ha="center", rotation=90); ax.text(-1.12, 0.12, "← 床尾", fontsize=13, color=INK, ha="left")
+    R(Y["base_open"], Y["base_head"], 0.03, 0.78, facecolor="none", edgecolor=STEEL, lw=1.4, ls="--", zorder=3)
+    ax.text(Y["base_open"] - 0.02, 0.12, "底座边缘\n做斜坡", fontsize=12, color=INK, ha="right", va="center")
+    R(Y["wall_in"], Y["wall_out"], min(Hx), max(Hx), facecolor=STEEL2, edgecolor=STEEL, lw=1.4, zorder=4)
+    ax.annotate("机构箱\n（顶高 0.80 m）", xy=(Y["wall_out"], 0.30), xytext=(0.48, 0.55), fontsize=12, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED))
+    sx = D["consts"]["seat_x"]; dx = M["travel"]["dx"]
+    R(-Y["seat"], Y["seat"], sx[0], sx[1], facecolor=FOAM_R, edgecolor=ACC, lw=1.4, zorder=5, alpha=0.9)
+    R(-Y["seat"], Y["seat"], sx[0] + dx, sx[1] + dx, facecolor="none", edgecolor=ACC, lw=1.4, ls=":", zorder=5)
+    ax.text(0.0, (sx[0] + sx[1]) / 2, "座板（与床齐平）", fontsize=12.5, color=INK, ha="center", va="center", zorder=6)
+    ax.text(-0.02, sx[1] + dx - 0.035, f"升到顶时前移 {100 * dx:.0f} cm", fontsize=11.5, color=ACC, ha="center", va="center", zorder=6)
+    ax.plot([0.30, -0.05], [BAR["x"], BAR["x"]], color=INK, lw=7, solid_capstyle="round", zorder=6); ax.add_patch(Circle((0.30, BAR["x"]), 0.035, color=INK, zorder=7))
+    ax.text(0.12, BAR["x"] - 0.05, "L 形扶手横杆（握把开关在这里）", fontsize=12, color=INK, ha="center", va="bottom", zorder=7)
+    ax.add_patch(Circle((0.0, 0.42), 0.05, facecolor=BODY, edgecolor=LIMB, zorder=6)); ax.text(0.07, 0.42, "人站起时的位置", fontsize=11.5, color=INK, va="center", zorder=6)
+    from matplotlib.patches import FancyArrowPatch
+    ax.add_patch(FancyArrowPatch((-0.06, 0.45), (-0.60, 0.62), connectionstyle="arc3,rad=-0.25", arrowstyle="-|>", mutation_scale=20, lw=2.4, color=GOOD, zorder=8))
+    R(-0.88, -0.62, 0.50, 0.86, facecolor="none", edgecolor=GOOD, lw=1.6, zorder=8); ax.text(-0.75, 0.68, "助行器", fontsize=12.5, color=GOOD, ha="center", va="center")
+    ax.text(-0.72, 0.36, "站稳后转向床尾一侧\n走下底座、扶助行器", fontsize=12, color=GOOD, ha="center", va="center", zorder=8)
+    ax.add_patch(FancyArrowPatch((-0.30, -0.06), (-0.62, -0.30), connectionstyle="arc3,rad=0.25", arrowstyle="-|>", mutation_scale=18, lw=2.0, color=ACC, ls="--", zorder=8))
+    ax.text(-0.72, -0.17, "回床：按住“降”让座板回到齐平 → 坐上 →\n往后挪回床面 → 腿向床尾一侧转上床", fontsize=11.5, color=ACC, ha="center", va="center", zorder=8)
+    ax.annotate("", xy=(Y["base_open"], 0.95), xytext=(Y["base_head"], 0.95), arrowprops=dict(arrowstyle="<->", color=INK, lw=1.2))
+    ax.text((Y["base_open"] + Y["base_head"]) / 2 - 0.05, 0.93, f"台架沿床长占 {100 * (Y['base_head'] - Y['base_open']):.0f} cm", fontsize=12, color=INK, ha="center", va="bottom")
+    fig.savefig(path, facecolor=BG); plt.close(fig)
+
 if __name__ == "__main__":
     render_force(os.path.join(HERE, "seat_force.png")); render_sensors(os.path.join(HERE, "seat_sensors.png"))
+    render_statemachine(os.path.join(HERE, "seat_statemachine.png")); render_top(os.path.join(HERE, "seat_top.png"))
     render_gif(os.path.join(HERE, "seat_rise.gif")); render_steps(os.path.join(HERE, "seat_step")); render_mech(os.path.join(HERE, "seat_mech.png")); render_vs(os.path.join(HERE, "seat_vs_vertical.png"))
     print("done")

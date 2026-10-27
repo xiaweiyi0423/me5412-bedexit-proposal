@@ -4,16 +4,16 @@
 <h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">手握发指令，力分布确认人准备好了</h2>
 </div>
 <div style="display:grid;grid-template-columns:640px 1fr;gap:56px;align-items:center">
-<img src="/_blob/96bc5dabe91a601fb3775de904ebec5f" alt="侧视示意：1 座板测力，2 横杆测力，3 握把开关，4 踏板测力，5 底座四角测力" style="width:640px;height:540px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
+<img src="/_blob/8f2bbcf0d2e5823e75ba7dfc50717dea" alt="侧视示意：1 座板测力，2 横杆测力，3 握把开关，4 踏板测力" style="width:640px;height:540px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
 <div style="display:flex;flex-direction:column;gap:20px">
-<p style="font-size:30px;line-height:1.5"><b>1 座板下测力：</b><span style="color:#3F4A57">坐上了没有、坐正了没有（压力中心）；推了多少力（速度规则）</span></p>
-<p style="font-size:30px;line-height:1.5"><b>2 横杆测力：</b><span style="color:#3F4A57">手在不在上面</span></p>
-<p style="font-size:30px;line-height:1.5"><b>3 握把式“起”开关：</b><span style="color:#3F4A57">握紧才升、松手就停；在人正前方的横杆上</span></p>
-<p style="font-size:30px;line-height:1.5"><b>4 踏板测力：</b><span style="color:#3F4A57">脚踩实了没有</span></p>
-<p style="font-size:30px;line-height:1.5"><b>5 底座四角测力：</b><span style="color:#3F4A57">总重减去台架自重应约等于体重，对不上就锁住</span></p>
+<p style="font-size:30px;line-height:1.5"><b>1 座板下测力：</b><span style="color:#3F4A57">坐上了没有、坐正了没有（压力中心）；推了多少力（速度规则，按座板倾角折算）</span></p>
+<p style="font-size:30px;line-height:1.5"><b>2 横杆测力：</b><span style="color:#3F4A57">手在不在上面；人是不是挂在横杆上</span></p>
+<p style="font-size:30px;line-height:1.5"><b>3 握把式“起”开关：</b><span style="color:#3F4A57">握紧才升、松手就停</span></p>
+<p style="font-size:30px;line-height:1.5"><b>4 踏板测力：</b><span style="color:#3F4A57">脚踩实了没有；体重是不是真的转到了脚上</span></p>
+<p style="font-size:30px;line-height:1.5"><b>自检：</b><span style="color:#3F4A57">空着时查零点；抬升中三处力之和 ≈ 体重</span></p>
 <p style="font-size:30px;line-height:1.5"><b>反馈：</b><span style="color:#3F4A57">握把上的状态灯和踏板夜灯</span></p>
 </div>
 </div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">先例：东京大学 Kogami 等的辅助椅用座下压力中心前移判断“想起身”</p>
-<aside>交互上，我们用手握来发指令：开关做在人正前方横杆的握把上，握紧才升、松手就停。座板下的测力单元测坐上了没有、坐正了没有，也测座板推了多少力，用来控制速度。踏板下的测力单元看脚踩实了没有。座板会前倾，座板下的单向测力单元测不准竖直方向的体重，所以体重自检放到底座四个角：对地的总力减去台架自重，应该约等于体重，对不上就锁住。反馈方面，握把上有状态灯，踏板有夜灯。</aside>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">不用底座称重：台架和床固定后，一部分力经固定件传给床，底座测不准。先例：东京大学 Kogami 等的辅助椅用座下压力中心判断“想起身”</p>
+<aside>交互上，我们用手握来发指令：开关做在人正前方横杆的握把上，握紧才升、松手就停。座板下的测力单元测坐上了没有、坐正了没有，也测座板推了多少力，用来控制速度；座板会前倾，测力单元测的是垂直于座面的力，控制器用丝杠编码器知道当时的倾角，把它折算成竖直方向。横杆测力看手在不在、人是不是整个挂在横杆上；踏板测力看脚踩实了没有，也用来确认体重真的转到了脚上。自检分两层：空着的时候查零点；抬升中，三处的力加起来应该约等于体重。我们不用底座称重，因为台架和床固定以后，有一部分力经固定件传到床上，底座测不准。</aside>
 </section>

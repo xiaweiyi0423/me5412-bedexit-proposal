@@ -380,6 +380,13 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <div class="note" id="r3MechNote"></div>
   <div class="fig"><div class="ttl">和床比：起身最吃力那一刻的 effort 中位数（同一模型、同一 L 形扶手、同一批用户）</div><div class="tscroll"><table id="r3Bed"></table></div></div>
   <div class="note" id="r3BedNote"></div>
+  <div class="note"><b>PPT 第二轮审计后改的控制和安全规则（与 slides 一致）。</b><ol style="margin:4px 0 0;padding-left:1.3em;display:grid;gap:4px">
+    <li><b>不用底座称重。</b>台架和床固定以后，一部分力经固定件传到床上，底座测不准；人刚坐上时腿还压着床垫，也对不上。自检改成：空载时查各测力单元零点；抬升中座板（按倾角折算）、踏板、横杆三处力之和约等于体重，差超过 15% 并持续 0.5 s 才锁定。</li>
+    <li><b>只有人按住才往下动。</b>取消“坐着一段时间不动就自动下降”和“人走开后自动降回齐平”：久坐不动只提醒、呼叫家属；回床时按住“降”把空座板降到齐平。</li>
+    <li><b>速度规则加互锁。</b>速度限在 0 到最快速度之间；座板力下降要伴随踏板力上升才提速，人挂在横杆上时限速。</li>
+    <li><b>应急下降</b>改为先电池、后带护盖的拨杆（先断电机），限速 10 → 3 cm/s；阻力里补上电机被反拖的阻力，余量 3.7 → 2.6 倍（全程约 11 s）。</li>
+    <li><b>固定件</b>只锁在床架或床腿上；床垫下的压板拉不住约 2.3 kN，不用。</li>
+    <li>控制仿真（8 个场景）还是竖直升降版本，要按坐板轨迹和这些规则重跑。</li></ol></div>
 </section>
 
 <footer>
@@ -667,7 +674,7 @@ function drawMechStatic(){
    ${["v5-mid","v5-sides","v5-slider"].filter(k=>P[k]).map(k=>{const p=P[k],cur=k===m.name;return `<tr${cur?' style="background:var(--amber-bg)"':''}><td>${NAME[k]}${cur?' <span class="chip good">采用</span>':''}</td><td class="n" style="color:${p.n_ok<81?'var(--bad)':'inherit'}">${p.n_ok}/81</td><td class=n>${sg(p.fwd_max)} cm</td><td class="n" style="color:${p.catch_min<0?'var(--bad)':'inherit'}">${sg(p.catch_min)} cm</td><td class=n>${p.centre_err_mm.toFixed(0)} mm</td><td class=n>${p.phi_max.toFixed(1)}°</td><td class=n>${p.bracket_mm.toFixed(0)} mm</td><td class=n>${p.force_kN==null?"—":p.force_kN.toFixed(1)+" kN"}</td><td>${LEG[k]}</td></tr>`}).join("")}
    </tbody></table></div>
    <p>中间平面的四连杆在“不进床体”的约束下找不到好解（轨迹误差 6 cm，只有 ${P["v5-mid"]?P["v5-mid"].n_ok:"—"}/81 合格）。两侧四连杆可行，但两边都被连杆挡住，推杆要 ${P["v5-sides"]?P["v5-sides"].force_kN.toFixed(1):"—"} kN。斜导轨方案轨迹误差最小、驱动力约减半，而且全部零件都能放在床头一侧，床尾一侧留给回床转腿。代价是座板悬臂挂在一侧：载荷偏向敞开一侧 10 cm 时悬臂力矩约 ${D.layout.forces["载荷偏向敞开一侧 10 cm"].moment_Nm} N·m，要用双导轨、每轨两个滑块承担（第 6 步）。</p>
-   <p><b>驱动和应急。</b>滚珠丝杠在两根导轨中间，丝杠位置同时给出座板高度和前倾角。滚珠丝杠不自锁，平时由失电常闭制动器抱住，断电也抱住。应急时拉握把旁的拉索拨杆，制动器松开，人的重量反推丝杠，离心限速器把下沉速度限在约 10 cm/s，松手即停，不用复位（第 6 步核对过：任何位置、任何坐法都只会往下沉）。另有电池可以慢慢降。<b>扶手是固定在底座上的 L 形扶手</b>，横杆在人正前方。</p>`;
+   <p><b>驱动和应急。</b>滚珠丝杠在两根导轨中间，丝杠位置同时给出座板高度和前倾角。滚珠丝杠不自锁，平时由失电常闭制动器抱住，断电也抱住。断电时先用电池按住“降”慢慢降；控制器也坏了，拉立柱侧带护盖的拉索拨杆：第一段行程断开电机电源，再松开制动器，人的重量反推丝杠，下沉速度限在约 3 cm/s，松手即停，不用复位（第 6 步核对过：任何位置、任何坐法都只会往下沉）。<b>扶手是固定在底座上的 L 形扶手</b>，横杆在人正前方。</p>`;
   const W=(c,f)=>{const v=rotv(f.phi,c[0],c[1]);return [f.Q[0]+v[0],f.Q[1]+v[1]]};
   const mm=v=>(v*1000).toFixed(0), pt=p=>`(${mm(p[0])}, ${mm(p[1])})`;
   const r=[["导轨（含滑块余量）下端 → 上端（x, z）",`${pt(m.rail_lo)} → ${pt(m.rail_hi)} mm`],["导轨倾角",`与竖直方向 ${m.rail_angle_deg.toFixed(1)}°`],["丝杠行程",`${mm(m.stroke)} mm`],
@@ -801,7 +808,7 @@ function drawStatic(){
     `底座：x 3–78 cm、y ${(T.base.y[0]*100).toFixed(0)} … +${(T.base.y[1]*100).toFixed(0)} cm；<b>和床固定</b>，固定件拉力按 ${T["固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）"].anchor_N} N 设计`,
     `L 形扶手：立柱在床头一侧 x ${mm(b.x)} mm，横杆高 ${mm(b.z)} mm、从 y +300 伸到 −50 mm，握把式开关在横杆中间`,
     `坐垫（分区）：后区约 10 kPa/cm、厚 5 cm，前区约 3 kPa/cm、厚 8 cm，分界在座板中心后 2 cm；座板骨架在前区下沉 3 cm 使两区顶面齐平（台阶做斜坡过渡）；表层高摩擦纹理面料 μ ≥ 0.5`,
-    `传感：座板下测力单元只测法向力（用于速度规则）；体重自检用底座四角的测力单元`,`运动动画：用“机构”图的 ${m.frames.length} 帧座板姿态`].map(x=>`<li>${x}</li>`).join("");
+    `传感：座板下测力单元测法向力，按丝杠编码器给出的倾角折算（速度规则）；自检＝空载查零点 + 抬升中座板、踏板、横杆三处力之和约等于体重；不用底座称重（和床固定后底座测不准）`,`运动动画：用“机构”图的 ${m.frames.length} 帧座板姿态`].map(x=>`<li>${x}</li>`).join("");
   const Fd=D.check.design, ks2=Object.keys(Fd), nok2=ks2.filter(k=>okRow(Fd[k])).length, Vs=D.check.vertical_summary;
   const Z1n=D.zoned.ids.z1, CT=(D.check.cushion||{})[Z1n];
   const fin=[["机构","单侧斜导轨 + 倾角连杆，一个电机",`座板中心前移 ${(m.travel.dx*100).toFixed(1)} cm、上升 ${(m.travel.dz*100).toFixed(1)} cm，到 ${m.top.toFixed(2)} m；前倾 ≤ ${m.phi_run_max.toFixed(1)}°，到顶 ${m.phi_end.toFixed(0)}°；轨迹误差 ${m.centre_err_mm.toFixed(0)} mm`],
@@ -875,8 +882,8 @@ function drawLayout(){
   $("#tipTable").innerHTML=t+"</tbody>";
   $("#tipCap").innerHTML=`余量 = 合力作用点到底座边缘的距离（底座 x 3–78 cm、y ${cm(By[0])} … +${cm(By[1])} cm；台架按 ${T.base.device_kg} kg、质心偏床头一侧 ${cm(T.base.device_com[1])} cm 估）。人在台上时，人拉横杆是人和台架之间的内力，翻不了；后向余量看着小，但床就在后面。<b>真正的危险是人不在台上</b>：夜里走回床边时扶一下横杆，台架只有自重压着，最小 ${T["结论"].min_tip_force_N} N（约 ${Math.round(T["结论"].min_tip_force_N/9.81)} kg 力）就会被拉翻。所以<b>台架必须和床固定</b>（与项目 README 的决定一致），固定件按表中的拉力设计。`;
   // ---- emergency (ball screw)
-  $("#emergNote").innerHTML=`<div><b>应急下降：滚珠丝杠 + 失电制动 + 离心限速，拉住才降、松手即停。</b>丝杠用可反向驱动的滚珠丝杠（导程 ${E.lead_mm} mm），平时由失电常闭制动器抱住；断电时也抱住。应急时拉握把旁的拉索拨杆，制动器松开，人的重量通过座板反推丝杠，离心限速器把下沉速度限在约 ${(E.limiter_speed_mps*100).toFixed(0)} cm/s（丝杠约 ${E.screw_rpm_at_limit} rpm）；松开拨杆立刻停住。不用脱开螺母，也不用复位。另有电池，断电时可以按“降”慢慢降。</div>
-    <div><b>核算。</b>座板上每 1 N 的压力，沿导轨向下的推力是 ${E.rail_force_per_N_seat_load[0]}–${E.rail_force_per_N_seat_load[1]} N，全行程、座板上任意受力位置都朝下，所以${E.seat_sinks_under_load?"座板只会往下沉":"<b>有位置不会下沉</b>"}；途中前倾不超过 ${E.tilt_max_on_the_way}°。最轻的用户（45 kg，0.75 倍体重压在座板上）加上座板自重，沿导轨的下沉推力约 ${E.light_user_drive_N} N；滚珠丝杠反向驱动的损失、导轨摩擦（μ ≈ 0.005，按滑块侧向力估）和毛刷阻力合计约 ${E.resist_N} N，推力是阻力的 ${E.margin} 倍，降得下来。全行程约 ${E.time_full_sink_s} s。制动器保持力矩按最大静载丝杠力的 2 倍取，约 ${E.brake_torque_Nm} N·m。</div>
+  $("#emergNote").innerHTML=`<div><b>应急下降：先用电池，再用带护盖的拨杆；拉住才降、松手即停。</b>丝杠用可反向驱动的滚珠丝杠（导程 ${E.lead_mm} mm），平时由失电常闭制动器抱住；断电时也抱住。断电时先用电池按住“降”慢慢降。控制器也坏了，拉立柱侧带护盖的拉索拨杆（不在握把旁，免得抓横杆时误拉）：第一段行程断开电机电源，再松开制动器，人的重量通过座板反推丝杠，下沉速度限在约 ${(E.limiter_speed_mps*100).toFixed(0)} cm/s（丝杠约 ${E.screw_rpm_at_limit} rpm；限速可用离心限速器加皮带增速，或电机绕组短接制动，待选型）；松开拨杆立刻停住。上一版限速 10 cm/s，是正常速度的 3–6 倍，太快。</div>
+    <div><b>核算。</b>座板上每 1 N 的压力，沿导轨向下的推力是 ${E.rail_force_per_N_seat_load[0]}–${E.rail_force_per_N_seat_load[1]} N，全行程、座板上任意受力位置都朝下，所以${E.seat_sinks_under_load?"座板只会往下沉":"<b>有位置不会下沉</b>"}；途中前倾不超过 ${E.tilt_max_on_the_way}°。最轻的用户（45 kg，0.75 倍体重压在座板上）加上座板自重，沿导轨的下沉推力约 ${E.light_user_drive_N} N；滚珠丝杠反向驱动的损失、导轨摩擦（μ ≈ 0.005，按滑块侧向力估）、毛刷阻力和电机被反拖的阻力（约 ${E.motor_drag_N} N，按电机 0.05 N·m、皮带 1:1、不加减速器估，要按电机样本核对）合计约 ${E.resist_N} N，推力是阻力的 ${E.margin} 倍，降得下来。全行程约 ${E.time_full_sink_s} s。制动器保持力矩按最大静载丝杠力的 2 倍取，约 ${E.brake_torque_Nm} N·m。</div>
     <div>不做“跌坐自动触发”：在第四版机构上算过，正常坐下时的载荷力矩（79–94 N·m）比坐回时（11–44 N·m）还大，靠过载自动松开会误触发。</div>`;
   // ---- front view (y horizontal, + = head side on the right; z up), seated
   const sf=$("#svgFront");sf.innerHTML="";const MF=frameMap(sf,-0.44,0.48,-0.03,1.16,14);const gf=el("g",{},sf);const Xy=y=>MF.X(y);
@@ -1017,7 +1024,7 @@ function drawR3(){
   $("#r3Bed").innerHTML="<thead><tr><th>起身方式</th><th>effort 中位数</th></tr></thead><tbody>"+
     [["低床 0.42 m + L 形扶手",B.low],["抬高床 0.58 m + L 形扶手",B.high_L],["抬高床 0.58 m + 最佳扶手（35 个位置里最好的）",B.high_best],["起身台：坐板放手那一刻",B.seat]].map(r=>`<tr><td>${r[0]}</td><td class="mono">${r[1].toFixed(3)}</td></tr>`).join("")+"</tbody>";
   $("#r3BedNote").innerHTML=`<b>比低床省 ${pc(B.save_low)}（每个人都省）；比抬高床只省 ${pc(B.save_hb)}–${pc(B.save_hl)}，${B.n} 人里 ${B.worse} 人反而略费力。</b>另有 ${B.noff} 位用户（1.50 m、臀部厚）坐在 0.58 m 的床上脚踩不实，没法比。<br>
-    原因：多数人在座板前倾最大（中位 ${B.phi_rel.toFixed(0)}°）时就离开坐垫，那时髋部只比坐在 0.58 m 床上高约 4 cm，导轨上段基本没用来托人。早先“比抬高床省 13–20%”来自竖直升到 0.66 m 的旧模型（手上最多出 25% 体重、扶手随座板升），这次同口径重算后不成立。<br>
+    原因：人离开座板时，座板高度中位 ${V.release.med.toFixed(2)} m（90% 的人在 ${V.release.p90.toFixed(2)} m 以下，最高 ${V.release.max.toFixed(2)} m），和 0.58 m 的床差不多高；放手时前倾中位 ${B.phi_rel.toFixed(0)}°。导轨上段只有个子高的人用到，没人用到 0.69 m，顶上约 3 cm 是余量。早先“比抬高床省 13–20%”来自竖直升到 0.66 m 的旧模型（手上最多出 25% 体重、扶手随座板升），这次同口径重算后不成立。<br>
     所以起身台相对抬高床的价值主要在别处：平时 0.42 m，人人脚踩得实；起身全程有托、不往前滑、坐回接得住。要再省力，得让座板在上段继续托住大腿，这和 15° 防滑上限冲突，是下一步要权衡的。`;
 }
 function renderAll(){drawPose();drawHip();drawAssist();drawEnv();drawMech();drawLayout();drawCheck();}

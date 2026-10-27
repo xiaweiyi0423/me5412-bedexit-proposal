@@ -170,10 +170,12 @@ def tipping(dev_kg=45.0, dev_com=(0.25, 0.15)):
     out["base"] = dict(x=[X0, X1], y=[-Yo, Yh], device_kg=dev_kg, device_com=list(dev_com))
     return out
 
-def emergency(lead=0.010, eta_back=0.85, mu_rail=0.005, seal_N=20.0, brake_sf=2.0):
+def emergency(lead=0.010, eta_back=0.85, mu_rail=0.005, seal_N=20.0, brake_sf=2.0, v_lim=0.03, motor_drag_Nm=0.05, belt=1.0):
     """ball screw + power-off brake + centrifugal limiter. Generalized force along the rail per N of seat load (virtual work,
     load anywhere on the seat): it must point down everywhere, and for the lightest user (45 kg, 0.75 BW on the seat) it must
-    beat the back-driving loss of the screw, the rail friction and the seal drag. Brake: holds the largest static screw force."""
+    beat the back-driving loss of the screw, the rail friction, the seal drag and the motor's own drag (cogging + bearing, assumed
+    0.05 N m at the motor, belt 1:1, no gearbox - to be checked on the motor datasheet). Brake: holds the largest static screw force.
+    Speed limit 3 cm/s (v5.3; was 10 cm/s, 3-6 x the normal 1.5-3 cm/s - too fast for a frightened user, audit v2 B3/F6)."""
     gen = []
     for i in range(1, len(sim) - 1, 3):
         n_ = rot(sim[i][1]) @ np.array([0, 1.0])
@@ -184,12 +186,13 @@ def emergency(lead=0.010, eta_back=0.85, mu_rail=0.005, seal_N=20.0, brake_sf=2.
     seat_w = 10 * G * abs(e[1])                                             # seat + bracket weight along the rail, helps sinking
     drive = kmin * 0.75 * 45 * G + seat_w
     Fr = forces()["载荷在座板中线"]; normal = 2 * (Fr["rail_pair_N"] + Fr["carriage_pair_N"]) * (45 * 0.75 + 10) / (150 + 10)   # scaled to the light user
-    resist = (1 - eta_back) * drive + mu_rail * normal + seal_N
+    motor_N = 2 * np.pi * motor_drag_Nm * belt / lead
+    resist = (1 - eta_back) * drive + mu_rail * normal + seal_N + motor_N
     F_hold = M.get("screw_force_hold100_N", 0); T_brake = brake_sf * F_hold * lead / (2 * np.pi)
     return dict(seat_sinks_under_load=bool(sinks), rail_force_per_N_seat_load=[round(kmin, 2), round(kmax, 2)], tilt_max_on_the_way=round(float(max(p[1] for p in sim)), 1),
                 stroke_m=round(float(abs(sim[-1][4] - sim[0][4])), 3), light_user_drive_N=round(drive), resist_N=round(resist), margin=round(drive / resist, 1),
-                limiter_speed_mps=0.10, time_full_sink_s=round(abs(sim[-1][4] - sim[0][4]) / 0.10, 1), lead_mm=1000 * lead,
-                brake_torque_Nm=round(T_brake, 1), screw_rpm_at_limit=round(0.10 / lead * 60))
+                limiter_speed_mps=v_lim, time_full_sink_s=round(abs(sim[-1][4] - sim[0][4]) / v_lim, 1), lead_mm=1000 * lead,
+                brake_torque_Nm=round(T_brake, 1), screw_rpm_at_limit=round(v_lim / lead * 60), motor_drag_N=round(motor_N))
 
 if __name__ == "__main__":
     out = dict(note=__doc__, mech=M, Y=Y, rail_gap=RAIL_GAP, carriage_span=CARR_SPAN, seat_t=SEAT_T)

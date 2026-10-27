@@ -8,5 +8,7 @@
  "seat_vs_vertical": "/_blob/176839c177e0bd23cd7de899d7dd01e6",
  "seat_rise": "/_blob/4e3530ed05842cc37e0e6ea1d8c301f6",
  "seat_force": "/_blob/82ba7f1d5f0a1856e5f34169e4961b8d",
- "seat_sensors": "/_blob/96bc5dabe91a601fb3775de904ebec5f"
+ "seat_sensors": "/_blob/8f2bbcf0d2e5823e75ba7dfc50717dea",
+ "seat_statemachine": "/_blob/4cb5dcac7f043eef91945b4b97d9274d",
+ "seat_top": "/_blob/590c4d0b9e9735ee360400fca1c02c29"
 }

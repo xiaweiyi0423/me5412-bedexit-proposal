@@ -35,7 +35,9 @@ D["v53"] = dict(fb=dict(mech=FBO["mech"], act={k: FBO["act"][k] for k in ("strok
                 bed=dict(n=len(K72), noff=81 - len(K72), low=md([BB["users"][k]["0.42"]["L_bar"] for k in K72]), high_L=md([BB["users"][k]["0.58"]["L_bar"] for k in K72]),
                          high_best=md([BB["users"][k]["0.58"]["handle"] for k in K72]), seat=md([SLU[k]["E_release"] for k in K72]),
                          save_low=sv("0.42", "L_bar"), save_hl=sv("0.58", "L_bar"), save_hb=sv("0.58", "handle"), worse=BB["summary"]["bed0.58_handle"]["n_worse"],
-                         phi_rel=md([v["phi_release"] for v in SLU.values()])))
+                         phi_rel=md([v["phi_release"] for v in SLU.values()])),
+                release=(lambda z: dict(med=round(float(np.median(z)), 3), p90=round(float(np.percentile(z, 90)), 3), max=round(float(max(z)), 3)))(
+                    [v["seat_z"] for v in json.load(open(os.path.join(C, "release_z.json"))).values()]))
 
 tpl = open(os.path.join(HERE, "template.html")).read()
 out = tpl.replace("/*__DATA__*/{}", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
