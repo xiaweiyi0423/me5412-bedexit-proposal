@@ -436,9 +436,6 @@ _rep("statemachine", [("差超过 15% 并持续半秒才锁定，", "差 15% 到
 _rep("mechanism", [("<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；第二根导轨和 4 个滑块只扛单侧偏载</li>",
                     "<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；单侧偏载经铰点 1 的轴承传进滑块板，由第二根导轨和 4 个滑块扛住</li>")])
 
-# the motion slide was re-laid-out by hand in the deck editor (10/27): keep the deck's version, do not regenerate it
-S.pop("motion", None)
-
 if __name__ == "__main__":
     for sid, html in S.items():
         if html: open(os.path.join(OUT, f"{sid}.html"), "w").write(html)
