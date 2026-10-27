@@ -20,17 +20,27 @@ EXB = EX["results"]["base"]; EXW = EX["results"]["worst"]
 r2 = lambda x: f"{round(x + 1e-9, 2):.2f}"
 
 GROUPS = [("开场", ["cover", "agenda"]), ("1 问题与用户", ["problem", "users"]), ("2 方案", ["prior", "concept", "whynot"]),
-          ("3 机构与结构", ["mechanism", "cantilever", "motion", "sizing", "stability"]),
+          ("3 机构与结构", ["mech_path", "mech_select", "mechanism", "cantilever", "motion", "stability"]),
           ("4 控制与安全", ["sensing", "statemachine", "speed", "risk", "fall_side", "fall_exit"]),
           ("5 验证与总结", ["verify", "limits", "nextsteps", "conclusion", "team"]),
-          ("附录 · 本次沟通", ["appendix", "parts", "drawings", "questions"])]
+          ("附录 · 本次沟通", ["appendix", "parts", "drawings", "sizing", "questions"])]
 SEC = {sid: g for g, ids in GROUPS for sid in ids}
-APPX = {"appendix", "parts", "drawings"}
+APPX = {"appendix", "parts", "drawings", "sizing"}
 
 FEA_TODO = ("FEA：四个部位的应力和变形（滑块板 + 轴承座焊接件、横梁焊缝、机构箱开槽侧板、扶手立柱；载荷、边界条件、判据在机构网页）", "角色 4", "11/3 必须")
 
 # ------------------------------------------------------------------ new slides: title, minutes, status, key point, Q&A, to-dos
 NEW = {
+ "mech_path": dict(t="机构设计①：座板该怎么走", m=1.1, st="ok",
+   key="先定路径再选机构：81 个人各自理想的座板路径都是先往前、再往上，竖直升降跟不上（11/81）；一个电机只能走一条路，选跟得上走得最靠前的人的那条，80/81 合格。",
+   ask=[("为什么选“最靠前”的那条，不选平均的？", "座板走得比某人的理想位置靠前，只是托在他大腿更靠前处，人不会滑；走得靠后，臀部就从座板前缘滑出去。所以要跟得上走得最靠前的人。81 人逐个检查，80 人合格，差的那位前滑超了 4 mm。"),
+        ("前倾为什么限 15°？", "人往回坐时，座板前倾越大越容易顺坡滑：不滑要求摩擦系数大于 tan 前倾，15° 时约 0.27。我们按高摩擦面料 μ ≥ 0.5 选，留了余量。"),
+        ("81 个人是真实数据吗？", "不是。是 3 种身高 × 3 种臀厚 × 3 种起身习惯 × 3 种脚位组合出的模拟用户，起身动作由二维模型算出，要用真实起身动作数据核对。")], todo=[]),
+ "mech_select": dict(t="机构设计②：比了五种机构", m=1.1, st="ok",
+   key="同一组约束、同样 81 人比了五种机构：竖直跟不上；四连杆放中间碰腿、放两侧挡回床、只放一侧扛不住偏载；斜导轨 + 倾角连杆轨迹最准、驱动力最小，代价是箱子高。",
+   ask=[("单侧四连杆箱子小一半，为什么不用？", "座板挂在一侧，偏载要靠座板上两个相距 8 cm 的铰点形成力偶，再靠连杆面外弯曲传到地面，地面铰点轴承要承受约 25 kN，是导轨方案每个滑块的约 8 倍；站直时连杆还会碰小腿，70/81 合格。如果以后箱顶高度成了硬约束，它是备选。"),
+        ("带 * 的两种为什么没重算？", "它们在“起身路径只算到三分之二”的问题修正之前，就因为碰腿、挡回床被淘汰了；修正只会让合格人数变少，不会改变结论。"),
+        ("箱顶 0.89 m 会不会挡住人？", "机构箱在床头一侧，人坐在座板上时它在身体侧面，不在面前；扶手横杆在人正前方。主要影响是占地和外观。")], todo=[]),
  "cantilever": dict(t="单侧悬臂怎么扛住", m=0.9, st="ok",
    key=f"座板只挂在一侧：偏载力矩 {st_['c1_moment_Nm']['value']} N·m 由铰点 1 的一对圆锥滚子轴承（相距 45 mm）接住，安全系数 {c1['sf']:.1f}；再经滑块板交给 4 个滑块（安全系数 {car['sf']:.1f}）。",
    ask=[("为什么不用交叉滚子轴承？", f"能扛住这个力矩的型号（RU85）外径 120 mm，装上后离床垫只剩 {c1['why_not_crossed_roller']['RU85']['bed_gap_cm']} cm；小一号的 RU66 当量静载 {c1['why_not_crossed_roller']['RU66']['P0_kN']} kN，已经接近额定 {c1['why_not_crossed_roller']['RU66']['C0_kN']} kN。一对 32006 X（外径 55）背对背、相距 45 mm，装在 Ø75 的轴承座里，当量静载 {c1['P0_kN']} kN，额定 {c1['C0_kN']:.0f} kN。"),
@@ -66,12 +76,13 @@ NEW = {
 _CANT_NEW = ("单侧机构，座板是悬臂，扛得住吗？", f"见下一页：偏载在铰点 1 处约 {st_['c1_moment_Nm']['value']} N·m，由一对相距 45 mm 的圆锥滚子轴承接住（安全系数 {c1['sf']:.1f}），再经滑块板交给 4 个滑块（最重的 {car['P0_kN']} kN，安全系数 {car['sf']:.1f}）。")
 CHG = {
  "cover": dict(),
- "mechanism": dict(st="ok", key=None, ask_replace={"单侧机构，座板是悬臂，扛得住吗？": _CANT_NEW},
+ "mechanism": dict(st="ok", key="机构设计第三步：在座板上找两个点，一个轨迹接近直线（装滑块走导轨），一个接近圆弧（用连杆拉到 B）；只搜 4 个数，导轨与竖直 34°、连杆 465 mm，最多差 8 mm。",
+   h3="机构设计③：斜导轨 + 倾角连杆", ask_replace={"单侧机构，座板是悬臂，扛得住吗？": _CANT_NEW},
    ask_add=[("左边的三维图是 CAD 吗？", "是。用 CadQuery 按手算选定的尺寸建了 40 个零件，干涉检查只剩两处接触；STEP 文件、工程图都在机构网页上。")],
    todo_set=[]),
  "motion": dict(st="part", ask_replace={"动画是按真实尺寸做的吗？": ("动画是按真实尺寸做的吗？", "由二维模型直接画出：人体按 1.60 m 的比例，机构按计算出的铰点和导轨。右下角的三个位置是 CAD 模型截图，和动画用的是同一套尺寸。")},
    todo_set=[("CAD 运动动画（老师邮件里明确要求）：CAD 模型已有，按行程表的位置导出帧，或导入 SolidWorks 做运动算例", "角色 3", "11/3 必须")]),
- "sizing": dict(st="part", key=f"滚珠丝杠起身推力 ≤ 664 N，猛坐静载约 2.0 kN；失电制动抱住、离心限速应急下降；偏载 {st_['c1_moment_Nm']['value']} N·m 经铰点 1 轴承对到双导轨；型号已初选，待样本核对。",
+ "sizing": dict(st="part", h3="附录：驱动选型", key=f"滚珠丝杠起身推力 ≤ 664 N，猛坐静载约 2.0 kN；失电制动抱住、离心限速应急下降；偏载 {st_['c1_moment_Nm']['value']} N·m 经铰点 1 轴承对到双导轨；型号已初选，待样本核对。",
    todo_set=[("用厂家样本核对已初选的型号：丝杠 R16-10、导轨 HGR15 + 滑块 HGH15CA、轴承 32006 X、8 N·m 制动器、电机约 26 W", "角色 4", "11/3")]),
  "stability": dict(key=f"人在台上不会翻；人不在台上时往床头方向推 {tip['结论']['min_tip_force_N']} N 就翻（台架按零件估约 85 kg），所以和床固定，固定件按 {tip['固定件拉力（ADA 609 扶手设计载荷 1112 N，安全系数 1.5）']['anchor_N']} N 设计。",
    text_replace=[("107 N", f"{tip['结论']['min_tip_force_N']} N"), ("107 牛", f"{tip['结论']['min_tip_force_N']} 牛")]),
@@ -79,6 +90,7 @@ CHG = {
    ask_add=[("老人会不会从座板侧面摔下去？有跌倒检测吗？", "后两页专门讲：侧向摔倒做了一个比较模型；离开踏板时的摔倒，用现有的踏板和横杆测力检测，原理上可行但还要实测。")]),
  "limits": dict(),
  "appendix": dict(),
+ "questions": dict(key="只问方向和程度，不问细节：差在哪、各块做多深、仿真验证够不够、汇报重点和时长。记下回答，当天发到群里。本次沟通用，正式汇报删去。", h3="想请老师给个方向"),
 }
 
 PILL = dict(ok=("p-ok", "内容齐"), part=("p-part", "部分待补"), gap=("p-gap", "待补"))
@@ -141,6 +153,8 @@ if __name__ == "__main__":
         a = re.sub(r'(<p class="say">).*?(</p>)', lambda m: m.group(1) + aside(root, sid) + m.group(2), a, flags=re.S)
         if u.get("key"):
             a = re.sub(r'(<p class="keyl"><b>这一页要让听众记住：</b>).*?(</p>)', lambda m: m.group(1) + esc(u["key"]) + m.group(2), a, flags=re.S)
+        if u.get("h3"):
+            a = re.sub(r"<h3>[^<]*</h3>", f"<h3>{u['h3']}</h3>", a, count=1); a = re.sub(r'alt="第 (\d+) 页：[^"]*"', lambda m: f'alt="第 {m.group(1)} 页：{u["h3"]}"', a, count=1)
         if u.get("st"):
             cls, lab = PILL[u["st"]]; a = re.sub(r'<span class="pill p-[a-z]+">[^<]*</span>', f'<span class="pill {cls}">{lab}</span>', a, count=1)
         ask, todo = get_ask(a), get_todo(a)
@@ -155,22 +169,28 @@ if __name__ == "__main__":
         prev = order[order.index(sid) - 1]; _, j = art(prev)
         h = h[:j] + new_article(sid, NEW[sid], aside(root, sid), thumb(os.path.join(tdir, sid + ".png"))) + h[j:]
     # sizing's title follows the slide
-    h = re.sub(r'(<article class="srow" id="s-sizing".*?<h3>)推杆选型(</h3>)', r"\1驱动选型\2", h, count=1, flags=re.S)
+    # 2b) put the articles in deck order
+    arts = {sid: h[slice(*art(sid))] for sid in order}
+    first = min(art(sid)[0] for sid in order)
+    for sid in order:
+        i, j = art(sid); h = h[:i] + h[j:].lstrip("\n")
+    h = h[:first] + "".join(arts[sid] for sid in order) + h[first:]
     # 3) renumber every article from the deck order
     for n, sid in enumerate(order, 1):
         i, j = art(sid); a = h[i:j]
         a = re.sub(r'<span class="no">第 \d+ 页</span>', f'<span class="no">第 {n} 页</span>', a, count=1)
         a = re.sub(r'alt="第 \d+ 页：', f'alt="第 {n} 页：', a, count=1)
+        a = re.sub(r'<span class="sec">[^<]*</span>', f'<span class="sec">{SEC[sid]}</span>', a, count=1)
         h = h[:i] + a + h[j:]
     # 4) JSON blob
     i = h.index("const D="); j = h.index(";\n", i); D = json.loads(h[i + len("const D="):j])
     old = {s["id"]: s for s in D["slides"]}; slides = []; todo_ids = set()
     for n, sid in enumerate(order, 1):
         a = h[slice(*art(sid))]; t = re.search(r"<h3>([^<]*)</h3>", a).group(1)
-        m = old[sid]["m"] if sid in old else NEW[sid]["m"]; td = bool(get_todo(a)); todo_ids |= {sid} if td else set()
+        m = 0 if sid in APPX else old[sid]["m"] if sid in old else NEW[sid]["m"]; td = bool(get_todo(a)); todo_ids |= {sid} if td else set()
         slides.append(dict(id=sid, n=n, t=html.unescape(t), m=m, todo=td))
     D["slides"] = slides
-    D["formal"] = [s for s in order if s not in ("questions", "parts", "drawings")]
+    D["formal"] = [s for s in order if s not in ("questions", "parts", "drawings", "sizing")]
     D["short"] = ["cover", "problem", "concept", "whynot", "mechanism", "stability", "speed", "risk", "fall_side", "verify", "conclusion"]
     h = h[:i] + "const D=" + json.dumps(D, ensure_ascii=False) + h[j:]
     # 5) builder check-boxes (regenerated from the groups)
@@ -183,8 +203,8 @@ if __name__ == "__main__":
     i = h.index("<h3>页面</h3>") + len("<h3>页面</h3>"); j = h.index('\n  <h3 style="margin-top:14px">合并讲</h3>', i)
     h = h[:i] + blk + h[j:]
     # 6) script: appendix pages untimed; reset stored selections so the new pages show
-    h = h.replace('if(id!=="appendix"&&id!=="questions") pages++;', 'if(!["appendix","parts","drawings","questions"].includes(id)) pages++;')
-    h = h.replace('id==="appendix"?"不计时长"', '["appendix","parts","drawings"].includes(id)?"不计时长"')
+    h = h.replace('if(id!=="appendix"&&id!=="questions") pages++;', 'if(!["appendix","parts","drawings","sizing","questions"].includes(id)) pages++;')
+    h = h.replace('id==="appendix"?"不计时长"', '["appendix","parts","drawings","sizing"].includes(id)?"不计时长"')
     h = h.replace('const KEY="riser-talk-guide-v2";', 'const KEY="riser-talk-guide-v3";')
     # 7) to-do table, counts, header text
     rows, n_must = [], 0
@@ -201,7 +221,7 @@ if __name__ == "__main__":
     h = re.sub(r'<p class="lab">正式汇报完整讲一遍</p><p class="big">约 \d+ 分钟</p><p class="d">.*?</p>',
                f'<p class="lab">正式汇报完整讲一遍</p><p class="big">约 {round(tot)} 分钟</p><p class="d">{len(main)} 页主 slides 合计约 {tot:.1f} 分钟（含指图讲解）；附录不计时长。超时就用下面的“时间紧”。</p>', h, flags=re.S)
     h = re.sub(r'<p class="lead"><b>10/27 更新：</b>.*?</p>',
-               f'<p class="lead"><b>10/27 晚更新（v5.7）：</b>机构页换成 CAD 模型截图；新增“单侧悬臂怎么扛住”、两页防跌倒（侧向摔倒、离开踏板时摔倒）、“下一步：建模和有限元”，附录加零件编号和工程图；稳定性按约 85 kg 的台架重算。<br>配合 {len(order)} 页 slides 使用：{len(main)} 页主 slides、3 页附录，加 1 页只在沟通时用的问题页。讲稿按课堂汇报的口吻写，和 slides 备注一致；还没做完的部分在页面上标了“待补”。</p>', h, count=1, flags=re.S)
+               f'<p class="lead"><b>10/27 晚更新（v5.7）：</b>机构部分改成三页“机构设计”（座板该怎么走 → 比了五种机构 → 斜导轨 + 倾角连杆怎么定尺寸），驱动选型挪到附录；新增“单侧悬臂怎么扛住”、两页防跌倒（侧向摔倒、离开踏板时摔倒）、“下一步：建模和有限元”，附录加零件编号、工程图和驱动选型；稳定性按约 85 kg 的台架重算。<br>配合 {len(order)} 页 slides 使用：{len(main)} 页主 slides、4 页附录，加 1 页只在沟通时用的问题页。讲稿按课堂汇报的口吻写，和 slides 备注一致；还没做完的部分在页面上标了“待补”。</p>', h, count=1, flags=re.S)
     h = h.replace('<button type="button" data-preset="consult">明天沟通：全部 21 页</button>', f'<button type="button" data-preset="consult">沟通：全部 {len(order)} 页</button>')
     h = h.replace("缩略图按 10/27 的 slides 渲染；动画由二维模型画出，是示意，不是 CAD。", "缩略图按 10/27 晚的 slides 渲染；动画由二维模型画出，三维图和工程图来自 CAD 模型（cad/model）。")
     open(gout, "w").write(h); print("written", gout, len(h), "bytes;", len(rows), "to-dos;", f"main {len(main)} pages {tot:.1f} min")

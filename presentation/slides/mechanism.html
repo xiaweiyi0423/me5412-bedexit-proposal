@@ -1,20 +1,20 @@
-<section id="mechanism" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:30px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:26px;color:#9A5408;letter-spacing:2px">3 · 机构</p>
-<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:54px;font-weight:700;line-height:1.2">座板沿一条曲线前移、上升、前倾：斜导轨 + 倾角连杆，一个电机</h2>
+<section id="mechanism" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<p style="font-size:26px;color:#9A5408;letter-spacing:2px">3 · 机构设计 ③ 斜导轨 + 倾角连杆</p>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">座板上找两个点：一个走直线、一个走圆弧</h2>
 </div>
-<div style="display:grid;grid-template-columns:960px 1fr;gap:44px;align-items:start">
-<img src="/_blob/cce29011ddde24c7ec79959b8e6e2495" alt="CAD 模型（座板在行程中间，机构箱半透明）：床头一侧半透明的机构箱里有两根导轨、滑块板和 4 个滑块、滚珠丝杠、上端的电机和制动器、倾角连杆；座板由悬臂托架伸出；L 形扶手；床尾一侧敞开" style="width:960px;height:635px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
-<div style="display:flex;flex-direction:column;gap:20px">
-<img src="/_blob/f176a63673bf5f54c0cc6e12c5333356" alt="同一位髋早前移的用户：竖直升降时往前滑、坐回落空；曲线座板跟着大腿走" style="width:660px;height:260px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
-<ul style="font-size:24px;line-height:1.45;color:#3F4A57">
-<li><b>运动：</b>3 个转动副 + 1 个移动副。铰点 1 在滑块上沿导轨走直线，连杆拉住铰点 2，两点定下位置和前倾</li>
-<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；单侧偏载经铰点 1 的轴承传进滑块板，由第二根导轨和 4 个滑块扛住</li>
-<li><b>为什么不竖直升：</b>竖直 11/81 不前滑、接得住，曲线 80/81</li>
-<li>前移 18.5 cm、上升 27.4 cm，前倾 ≤ 16°</li>
+<div style="display:grid;grid-template-columns:720px 1fr;gap:48px;align-items:start">
+<img src="/_blob/e59fbf3e2ff1bdb7e7f40169a8c941cb" alt="侧视图：座板在起点、中间、最高三个位置；铰点 1 的轨迹是一条直线，沿斜导轨；铰点 2 的轨迹是绕底座 B 的圆弧，由连杆约束；座板中心贴住设计曲线" style="width:720px;height:625px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:flex;flex-direction:column;gap:22px">
+<ul style="font-size:24px;line-height:1.5;color:#3F4A57;display:flex;flex-direction:column;gap:12px">
+<li><b>思路：</b>让座板沿设计曲线走，看座板上每个点走出的轨迹。轨迹接近直线的点装在滑块上走导轨，接近圆弧的点用连杆拉到圆心 B</li>
+<li><b>尺寸怎么定：</b>只搜座板上两个铰点的位置（4 个数），导轨和 B 由拟合得出；约束：前倾 ≤ 16°、到顶 0.69 m 时前倾 0–8°、两铰点相距 ≥ 80 mm、离床 ≥ 1.5 cm</li>
+<li><b>结果：</b>导轨与竖直 34°、丝杠行程 331 mm、连杆 465 mm；座板中心最多差 8 mm、0.8°；前移 18.5 cm、上升 27.4 cm</li>
+<li><b>一个自由度：</b>3 个转动副 + 1 个移动副；电机 → 皮带 → 滚珠丝杠 → 滑块</li>
 </ul>
+<img src="/_blob/cce29011ddde24c7ec79959b8e6e2495" alt="CAD 模型：床头一侧半透明的机构箱，内有双导轨、丝杠和连杆，座板在行程中间" style="width:520px;height:325px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
 </div>
 </div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">左图是 CAD 模型截图（40 个零件，座板在行程中间）；零件尺寸按手算选定，编号和工程图见附录</p>
-<aside>接下来讲机构。左边是我们的 CAD 模型，座板在行程中间，机构箱画成半透明。所有机构都装在床头一侧这个箱子里，床尾一侧是空的。运动上，它是一个三个转动副加一个移动副的四杆机构：座板下面有两个铰点，铰点 1 装在滑块板上，沿斜导轨走直线；铰点 2 用一根倾角连杆拉到底座上。这两个铰点一定，座板的位置和前倾角就都定了。驱动只有一个电机，经过皮带带动滚珠丝杠，推着滑块板走。这里有两根导轨、四个滑块，第一根导轨就是那个移动副；第二根导轨不增加约束，只是用来扛座板挂在一侧带来的扭矩。为什么不竖直升？右上角是同一个人：竖直升的座板跟不上大腿，人会往前滑，81 人里只有 11 人合格；曲线座板 80 人都合格。座板前移约 18.5 厘米、上升约 27.4 厘米，前倾最多 16 度。</aside>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">右下是 CAD 模型（40 个零件，座板在行程中间）；搜索用差分进化，代价 = 座板中心和前倾偏离设计曲线的最大值</p>
+<aside>第三步，定尺寸。思路很简单：让座板沿着设计曲线走一遍，看座板上每一个点会走出什么轨迹。有的点走出来接近一条直线，就把它装在滑块上，让它沿直导轨走，这就是铰点 1，蓝色这条；有的点走出来接近一段圆弧，就用一根连杆把它拉到圆心，这就是铰点 2，绿色这条，圆心就是底座上的 B 点。所以我们只需要搜索座板上两个铰点的位置，一共 4 个数；导轨的位置和角度、B 点和连杆长度都由拟合直接得出。约束是：前倾全程不超过 16 度，到顶 0.69 米时前倾在 0 到 8 度之间，两个铰点相距至少 8 厘米，所有刚性零件离床至少 1.5 厘米。结果是导轨和竖直方向成 34 度，丝杠行程 331 毫米，连杆 465 毫米，座板中心和设计曲线最多差 8 毫米。整个机构是三个转动副加一个移动副，一个自由度，一个电机经皮带带动滚珠丝杠推滑块。右下角是按这些尺寸建的 CAD 模型。</aside>
 </section>
