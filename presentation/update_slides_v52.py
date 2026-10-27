@@ -309,6 +309,22 @@ S["speed"] = (f'<section id="speed" data-transition="fade" style="background:{LI
   + img("ctrl_seat_main", "坐板控制仿真三个场景：典型用户、抬升中晕倒松手（停住接人、17 秒后提醒呼叫、不自己降）、抬升中断电（按住“降”用电池慢降）", 740, 810, bg="#FFFFFF") + "\n"
   f"<aside>抬升速度怎么定？我们用一条规则：速度等于 k 乘以“推力上限减去座板测到的力”，并且限在零到最快速度之间。人自己卸掉的体重越多，座板升得越快；人往回坐，速度变成零，不会倒退。座板会前倾，控制器按丝杠编码器知道的倾角，把座板的力折算成竖直方向；如果人把体重挂在横杆上，就限速。右边是按坐板实际轨迹重跑的仿真，一共 {len(CS['scenarios'])} 个场景，这里放三个：典型用户大约 {CSS['typical']['seat_off_time_s']:.0f} 秒在 {CSS['typical']['seat_off_height']:.2f} 米离座，座板停在那里；抬升中晕倒松手，座板停住接人，17 秒后提醒并呼叫家属，不会自己往下降；断电时制动抱住，按住“降”用电池慢慢降。其余场景放在附录。</aside>\n</section>\n")
 
+# ---------------------------------------------------------------- v5.5: mechanism slide with the 3-D view (make_mech_views.py)
+S["mechanism"] = sec("mechanism", PAPER,
+  head("3 · 机构", "座板沿一条曲线前移、上升、前倾：斜导轨 + 倾角连杆，一个电机", 54) +
+  f'\n<div style="display:grid;grid-template-columns:960px 1fr;gap:44px;align-items:start">\n'
+  + img("mech_3d_slide", "三维示意（座板与床齐平）：床头一侧半透明的机构箱里有两根导轨、滑块板和 4 个滑块、滚珠丝杠、上端的电机和制动器、倾角连杆；座板由悬臂托架伸出；L 形扶手；床尾一侧敞开", 960, 635, bg="#FFFFFF") +
+  f'\n<div style="display:flex;flex-direction:column;gap:20px">\n'
+  + img("seat_vs_vertical", "同一位髋早前移的用户：竖直升降时往前滑、坐回落空；曲线座板跟着大腿走", 660, 260) +
+  f'\n<ul style="font-size:24px;line-height:1.45;color:{BODY}">\n'
+  f'<li><b>运动：</b>3 个转动副 + 1 个移动副。铰点 1 在滑块上沿导轨走直线，连杆拉住铰点 2，两点定下位置和前倾</li>\n'
+  f'<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；第二根导轨和 4 个滑块只扛单侧偏载</li>\n'
+  f'<li><b>为什么不竖直升：</b>竖直 {VS["n_ok"]}/81 不前滑、接得住，曲线 {nok}/81</li>\n'
+  f'<li>前移 {100 * M["travel"]["dx"]:.1f} cm、上升 {100 * M["travel"]["dz"]:.1f} cm，前倾 ≤ {M["phi_run_max"]:.0f}°</li>\n</ul>\n</div>\n</div>\n'
+  + foot("三维图由二维模型的坐标画出（座板与床齐平），截面尺寸为估计值，不是 CAD"),
+  f"接下来讲机构。左边是去掉人以后的三维示意，座板现在和床齐平。所有机构都装在床头一侧这个箱子里，床尾一侧是空的。运动上，它是一个三个转动副加一个移动副的四杆机构：座板下面有两个铰点，铰点 1 装在滑块板上，沿斜导轨走直线；铰点 2 用一根倾角连杆拉到底座上。这两个铰点一定，座板的位置和前倾角就都定了。驱动只有一个电机，经过皮带带动滚珠丝杠，推着滑块板走。这里有两根导轨、四个滑块，第一根导轨就是那个移动副；第二根导轨不增加约束，只是用来扛座板挂在一侧带来的扭矩。为什么不竖直升？右上角是同一个人：竖直升的座板跟不上大腿，人会往前滑，81 人里只有 {VS['n_ok']} 人合格；曲线座板 {nok} 人都合格。座板前移约 {100 * M['travel']['dx']:.0f} 厘米、上升约 {100 * M['travel']['dz']:.0f} 厘米，前倾最多 {M['phi_run_max']:.0f} 度。",
+  pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:30px")
+
 REPL.pop("statemachine", None)   # v5.3 rewrites the whole slide
 REPL["limits"].append(("<li>评估占地和夜里走动时的绊倒风险；控制仿真按坐板重跑</li>", "<li>评估占地和夜里走动时的绊倒风险；摔倒方式（腿软、往后倒）要用实测动作核对</li>"))
 

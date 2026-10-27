@@ -186,6 +186,27 @@ def render_3d(path):
              ha="center", fontsize=11.5, color=INK, wrap=True)
     fig.subplots_adjust(left=0, right=1, top=1, bottom=0.07, wspace=0); fig.savefig(path, facecolor=BG); plt.close(fig)
 
+def render_3d_slide(path):
+    """one labelled 3-D view at the flush position, for the mechanism slide."""
+    fig = plt.figure(figsize=(11.2, 7.4), dpi=130); ax = fig.add_axes([-0.04, -0.04, 1.08, 1.08], projection="3d", computed_zorder=False)
+    scene3d(ax, F0, ""); ax.set_box_aspect((1.14, 1.14, 1.0), zoom=1.12)
+    rear, front, br, P1, P2 = seat_parts(F0); Q = F0["Q"]
+    mid = lambda a, b, t=0.5: a + t * (b - a)
+    lab = [((*mid(R1[0], R1[1], 0.85)[:1], Y["rail"], mid(R1[0], R1[1], 0.85)[1]), "两根导轨（同一侧板）", (-0.10, 0.45, 0.98)),
+           ((*plate(P1).mean(0)[:1], Y["rail"] - 0.03, plate(P1).mean(0)[1]), "滑块板 + 4 个滑块", (0.55, 0.62, 0.42)),
+           ((*mid(*SCREW, 0.55)[:1], Y["rail"] - 0.03, mid(*SCREW, 0.55)[1]), "滚珠丝杠", (0.82, 0.62, 0.66)),
+           ((*np.array(L["motor"]).mean(0)[:1], Y["rail"], np.array(L["motor"]).mean(0)[1]), "电机 + 制动器（皮带）", (0.62, 0.62, 0.80)),
+           ((*mid(B, P2)[:1], Y["link"], mid(B, P2)[1]), "倾角连杆", (0.80, 0.50, 0.22)),
+           ((Q[0], 0.15, Q[1] - 0.08), "悬臂托架（从竖槽伸出）", (0.20, -0.10, 0.18)),
+           ((Q[0] - 0.03, -0.10, Q[1] + 0.01), "分区坐垫", (-0.20, -0.40, 0.62)),
+           ((BAR["x"], 0.08, BAR["z"]), "L 形扶手横杆（握把开关）", (0.60, 0.10, 1.14)),
+           ((0.40, -0.10, 0.05), "踏板", (0.62, -0.45, 0.12)),
+           ((0.10, -0.27, 0.03), "床尾一侧敞开", (0.05, -0.60, 0.02))]
+    for (x, y, z), t, (tx, ty, tz) in lab:
+        ax.plot([x, tx], [y, ty], [z, tz], color="#8C96A1", lw=0.9, zorder=30)
+        ax.text(tx, ty, tz, t, fontsize=13, color=INK, zorder=31, bbox=dict(boxstyle="round,pad=0.2", facecolor="#FFFFFF", edgecolor="none", alpha=0.85))
+    fig.savefig(path, facecolor="#FFFFFF"); plt.close(fig)
+
 def render_gif(path, fps=12):
     fig = plt.figure(figsize=(7.2, 6.4), dpi=100); ax = fig.add_axes([0, 0, 1, 1]); imgs = []
     seq = list(range(len(FR))) + [len(FR) - 1] * 8 + list(range(len(FR) - 1, -1, -1)) + [0] * 8
@@ -198,4 +219,4 @@ def render_gif(path, fps=12):
 
 if __name__ == "__main__":
     render_side(os.path.join(HERE, "mech_side.png")); render_views(os.path.join(HERE, "mech_views.png"))
-    render_3d(os.path.join(HERE, "mech_3d.png")); render_gif(os.path.join(HERE, "mech_motion.gif")); print("done")
+    render_3d(os.path.join(HERE, "mech_3d.png")); render_3d_slide(os.path.join(HERE, "mech_3d_slide.png")); render_gif(os.path.join(HERE, "mech_motion.gif")); print("done")

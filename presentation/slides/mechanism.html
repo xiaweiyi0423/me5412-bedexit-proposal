@@ -1,19 +1,20 @@
-<section id="mechanism" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<section id="mechanism" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:30px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:26px;color:#9A5408;letter-spacing:2px">3 · 机构</p>
-<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2">座板沿一条曲线前移、上升、前倾：单侧斜导轨 + 倾角连杆</h2>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:54px;font-weight:700;line-height:1.2">座板沿一条曲线前移、上升、前倾：斜导轨 + 倾角连杆，一个电机</h2>
 </div>
-<div style="display:grid;grid-template-columns:600px 1fr;gap:48px">
-<img src="/_blob/b1d8acba42723ea84330dde09f093044" alt="侧视示意：座板在三个高度，双导轨、滑块、倾角连杆、分区坐垫、L 形扶手" style="width:600px;height:620px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
-<div style="display:flex;flex-direction:column;gap:24px">
-<img src="/_blob/176839c177e0bd23cd7de899d7dd01e6" alt="同一位髋早前移的用户：竖直升降时往前滑、坐回落空；曲线座板跟着大腿走" style="width:1016px;height:400px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
-<ul style="font-size:28px;line-height:1.5;color:#3F4A57">
-<li><b>为什么不竖直升：</b>髋早前移的人会往前滑出座面、坐回落空。81 人里，竖直升降 19 人合格，曲线座板 81 人</li>
-<li><b>一个电机：</b>滑块沿斜导轨走，连杆管前倾；座板前移 18.5 cm、上升 27.4 cm，前倾 ≤ 16°，轨迹误差 8 mm</li>
-<li>机构全装在床头一侧的封闭箱里，床尾一侧敞开</li>
-<li><b>为什么不用四连杆：</b>只放床头一侧的四连杆箱子小一半，但偏载靠两个相距 8 cm 的铰点扛，铰点受力约为滑块的 8 倍（附录）</li>
+<div style="display:grid;grid-template-columns:960px 1fr;gap:44px;align-items:start">
+<img src="/_blob/a4c9cf2cc77de9682974c6410322acc9" alt="三维示意（座板与床齐平）：床头一侧半透明的机构箱里有两根导轨、滑块板和 4 个滑块、滚珠丝杠、上端的电机和制动器、倾角连杆；座板由悬臂托架伸出；L 形扶手；床尾一侧敞开" style="width:960px;height:635px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:flex;flex-direction:column;gap:20px">
+<img src="/_blob/176839c177e0bd23cd7de899d7dd01e6" alt="同一位髋早前移的用户：竖直升降时往前滑、坐回落空；曲线座板跟着大腿走" style="width:660px;height:260px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
+<ul style="font-size:24px;line-height:1.45;color:#3F4A57">
+<li><b>运动：</b>3 个转动副 + 1 个移动副。铰点 1 在滑块上沿导轨走直线，连杆拉住铰点 2，两点定下位置和前倾</li>
+<li><b>传动：</b>电机 → 皮带 → 滚珠丝杠 → 滑块板；第二根导轨和 4 个滑块只扛单侧偏载</li>
+<li><b>为什么不竖直升：</b>竖直 19/81 不前滑、接得住，曲线 81/81</li>
+<li>前移 18.5 cm、上升 27.4 cm，前倾 ≤ 16°</li>
 </ul>
 </div>
 </div>
-<aside>接下来讲机构。我们最初的方案是座板竖直升起，但我们用二维模型模拟了 81 位不同身高、胖瘦、起身习惯和脚位的用户，发现一个问题：起身时髋会往前走，竖直升的座板跟不上，髋往前走得早的人会从座面往前滑，万一坐回去还会坐空，81 人里只有 19 人两项都合格。所以座板要跟着大腿走：往前约 18 厘米、往上约 27 厘米，最多前倾 16 度。实现它只用一个电机：座板下一个铰点装在滑块上，沿一根斜导轨走；另一个铰点用连杆拉到底座上，管前倾角。这样走出的轨迹和我们要的曲线最多差 8 毫米，81 人全部合格。整套机构装在床头一侧的封闭箱里，床尾一侧留给回床时转腿。为什么不用四连杆？我们也试了只放床头一侧的四连杆，箱子能小一半，但座板挂在一侧的偏载只能靠两个相距 8 厘米的铰点扛，铰点受力大约是导轨滑块的 8 倍，推杆力也大一倍多，所以还是用导轨。</aside>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">三维图由二维模型的坐标画出（座板与床齐平），截面尺寸为估计值，不是 CAD</p>
+<aside>接下来讲机构。左边是去掉人以后的三维示意，座板现在和床齐平。所有机构都装在床头一侧这个箱子里，床尾一侧是空的。运动上，它是一个三个转动副加一个移动副的四杆机构：座板下面有两个铰点，铰点 1 装在滑块板上，沿斜导轨走直线；铰点 2 用一根倾角连杆拉到底座上。这两个铰点一定，座板的位置和前倾角就都定了。驱动只有一个电机，经过皮带带动滚珠丝杠，推着滑块板走。这里有两根导轨、四个滑块，第一根导轨就是那个移动副；第二根导轨不增加约束，只是用来扛座板挂在一侧带来的扭矩。为什么不竖直升？右上角是同一个人：竖直升的座板跟不上大腿，人会往前滑，81 人里只有 19 人合格；曲线座板 81 人都合格。座板前移约 18 厘米、上升约 27 厘米，前倾最多 16 度。</aside>
 </section>
