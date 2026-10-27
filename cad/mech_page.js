@@ -245,13 +245,14 @@ document.querySelectorAll(".show3d").forEach(b => b.onclick = () => { const code
   log.addEventListener("click", e => { const b = e.target.closest(".pc"); if (!b) return; const c = b.dataset.code; markBom([c]); showTip(c, e.clientX, e.clientY); if (window.select3D) window.select3D([c], false); });
   const COPY = { not_granted: "你没有允许这个页面使用 Claude，问答在这次打开里不可用。", sampling_disabled: "这个账号或组织没有开通 Claude，问答不可用。", rate_limited: "问得太快或额度用完了，过一会儿再问。",
     session_expired: "登录过期了，重新登录 claude.ai 后再问。", refused: "Claude 没有回答这个问题，换个问法试试。", empty_completion: "没有得到回答，把问题说得更具体一点再问。", prompt_too_large: "对话太长了，刷新页面重新开始。" };
-  function bubble(role, text) { const d = document.createElement("div"); d.className = "msg " + role; if (role === "you") d.textContent = text; else d.innerHTML = text; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
+  const body = log.parentElement;
+  function bubble(role, text) { const d = document.createElement("div"); d.className = "msg " + role; if (role === "you") d.textContent = text; else d.innerHTML = text; log.appendChild(d); body.scrollTop = body.scrollHeight; return d; }
   async function send(q) {
-    q = q.trim(); if (!q || busy || !sample) return; box.value = ""; bubble("you", q);
+    q = q.trim(); if (!q || busy || !sample) return; box.value = ""; suggRow.hidden = true; bubble("you", q);
     const out = bubble("ai", '<p class="cap">思考中…（第一次会先问你是否允许这个页面使用 Claude）</p>'); turns.push({ role: "user", content: q });
     const msgs = [{ role: "user", content: RULES }, ...turns.slice(-8)]; ctl = new AbortController(); setBusy(true);
     try {
-      const { text, truncated } = await sample(msgs, { cache: false, signal: ctl.signal, onText: ({ text }) => { out.innerHTML = fmt(text); log.scrollTop = log.scrollHeight; } });
+      const { text, truncated } = await sample(msgs, { cache: false, signal: ctl.signal, onText: ({ text }) => { out.innerHTML = fmt(text); body.scrollTop = body.scrollHeight; } });
       out.innerHTML = fmt(text) + (truncated ? '<p class="cap">（回答太长被截断了，可以接着问“继续”。）</p>' : ""); turns.push({ role: "assistant", content: text });
     } catch (e) {
       out.innerHTML = e.text ? fmt(e.text) : ""; turns.pop();
@@ -263,6 +264,10 @@ document.querySelectorAll(".show3d").forEach(b => b.onclick = () => { const code
   ask.onclick = () => send(box.value); stopB.onclick = () => ctl && ctl.abort();
   box.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send(box.value); } });
   sugg.forEach(b => b.onclick = () => send(b.textContent));
+  const fab = document.getElementById("qa-fab"), win = document.getElementById("qa-win"), suggRow = document.getElementById("qa-sugg");
+  const openWin = open => { win.hidden = !open; fab.hidden = open; fab.setAttribute("aria-expanded", open); if (open) box.focus(); else fab.focus(); };
+  fab.onclick = () => openWin(true); document.getElementById("qa-min").onclick = () => openWin(false);
+  win.addEventListener("keydown", e => { if (e.key === "Escape") openWin(false); });
   setBusy(false); note.textContent = "正在连接 Claude…";
   if (!window.claude || !window.claude.use) { note.textContent = "问答要在 claude.ai 里打开这个页面（登录 Claude 账号）才能用。"; return; }
   window.claude.use("sample").then(s => { sample = s; setBusy(false);

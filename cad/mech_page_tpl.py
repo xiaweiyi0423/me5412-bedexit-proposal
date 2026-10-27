@@ -258,16 +258,28 @@ table.num td {{ font-family:var(--mono); font-size:13px; font-variant-numeric:ta
 .ok {{ color:var(--green); font-weight:500 }} .bad {{ color:var(--red); font-weight:500 }}
 .tip {{ position:fixed; z-index:20; max-width:300px; background:var(--sheet); border:1.5px solid var(--ink); padding:8px 10px; font-size:13px; box-shadow:0 4px 14px rgba(0,0,0,.18) }}
 .tip .code {{ font-family:var(--mono); color:var(--blue) }} .tip .m {{ color:var(--ink2) }}
+.qa-fab {{ position:fixed; z-index:30; right:calc(16px + env(safe-area-inset-right, 0px)); bottom:calc(16px + env(safe-area-inset-bottom, 0px)); font:inherit; font-size:14px; font-weight:500;
+  display:flex; align-items:center; gap:8px; padding:10px 16px; background:var(--ink); color:var(--sheet); border:0; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.22) }}
+.qa-fab .dot {{ width:8px; height:8px; border-radius:50%; background:var(--hl) }}
+.qa-win {{ position:fixed; z-index:31; right:calc(16px + env(safe-area-inset-right, 0px)); bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  width:min(400px, calc(100vw - 32px)); height:min(560px, calc(100vh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  display:flex; flex-direction:column; background:var(--sheet); border:1.5px solid var(--ink); box-shadow:0 10px 30px rgba(0,0,0,.25) }}
+.qa-win[hidden] {{ display:none !important }}
+.qa-win header {{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; padding:10px 12px; border-bottom:1px solid var(--rule) }}
+.qa-win header b {{ font-family:var(--display); font-size:16px }}
+.qa-x {{ font:inherit; font-size:16px; width:32px; height:32px; border:1px solid var(--rule); background:transparent; color:var(--ink); cursor:pointer; flex:none }}
+.qa-body {{ flex:1; min-height:0; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:10px }}
 .qs-row {{ display:flex; flex-wrap:wrap; gap:6px }}
-.qs {{ font:inherit; font-size:13px; padding:4px 12px; border:1px solid var(--blue); background:transparent; color:var(--blue); cursor:pointer }} .qs:disabled, .btn:disabled {{ opacity:.45; cursor:default }}
-.qa-log {{ display:flex; flex-direction:column; gap:10px; max-height:560px; overflow-y:auto }} .qa-log:empty {{ display:none }}
-.msg {{ max-width:min(780px, 100%); padding:10px 14px; font-size:14.5px; line-height:1.65 }} .msg p {{ margin:0 0 6px }} .msg ul {{ margin:0 0 6px }}
-.msg.you {{ align-self:flex-end; background:color-mix(in srgb, var(--blue) 12%, var(--sheet)); border:1px solid var(--blue2) }}
-.msg.ai {{ align-self:flex-start; border:1px solid var(--rule); border-left:3px solid var(--ink) }}
-.msg code {{ font-family:var(--mono); font-size:13px }}
-.pc {{ font:600 12.5px var(--mono); color:var(--blue); background:transparent; border:1px solid var(--blue2); padding:0 4px; cursor:pointer }}
-.qa-in {{ display:flex; flex-direction:column; gap:6px }}
-textarea {{ font:inherit; font-size:14.5px; width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid var(--rule); background:var(--paper); color:var(--ink); resize:vertical }}
+.qs {{ font:inherit; font-size:12.5px; text-align:left; padding:4px 10px; border:1px solid var(--blue); background:transparent; color:var(--blue); cursor:pointer }} .qs:disabled, .btn:disabled {{ opacity:.45; cursor:default }}
+.qa-log {{ display:flex; flex-direction:column; gap:8px }} .qa-log:empty {{ display:none }}
+.msg {{ max-width:100%; padding:8px 11px; font-size:14px; line-height:1.6 }} .msg p {{ margin:0 0 6px }} .msg ul {{ margin:0 0 6px }}
+.msg.you {{ align-self:flex-end; max-width:88%; background:color-mix(in srgb, var(--blue) 12%, var(--sheet)); border:1px solid var(--blue2) }}
+.msg.ai {{ align-self:stretch; border:1px solid var(--rule); border-left:3px solid var(--ink) }}
+.msg code {{ font-family:var(--mono); font-size:12.5px }}
+.pc {{ font:600 12px var(--mono); color:var(--blue); background:transparent; border:1px solid var(--blue2); padding:0 4px; cursor:pointer }}
+.qa-in {{ display:flex; flex-direction:column; gap:6px; padding:10px 12px; border-top:1px solid var(--rule) }}
+.sr {{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0) }}
+textarea {{ font:inherit; font-size:14px; width:100%; box-sizing:border-box; padding:7px 9px; border:1px solid var(--rule); background:var(--paper); color:var(--ink); resize:none }}
 textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
 .two {{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:18px }} .two > div {{ min-width:0; display:flex; flex-direction:column; gap:8px }}
 </style>
@@ -277,7 +289,7 @@ textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
   <div class="name"><h1>起身台机构与选型</h1>
   <p>人坐在床边，座板从和床垫齐平的位置沿一条斜线升起、先前倾再回平，把人托到接近站立。整套机构都放在床头一侧的一个箱子里，座板像一块从箱子伸出来的悬臂，床尾一侧完全敞开，让腿能放下来。</p>
   <p>这一页写给建模（角色 3）和有限元（角色 4）的同学：先用 3D 和三视图看懂零件，再看每个零件为什么这样选，最后是要重点分析的 4 个地方。</p>
-  <nav class="toc" aria-label="目录"><a href="#s1">1 看懂结构</a><a href="#s2">2 怎么动</a><a href="#s3">3 三视图和编号</a><a href="#s4">4 偏载怎么传</a><a href="#s5">5 建模指南</a><a href="#s6">6 有限元重点</a><a href="#s7">7 选型</a><a href="#s8">8 零件和材料</a><a href="#s9">9 校核</a><a href="#s10">10 问 Claude</a></nav></div>
+  <nav class="toc" aria-label="目录"><a href="#s1">1 看懂结构</a><a href="#s2">2 怎么动</a><a href="#s3">3 三视图和编号</a><a href="#s4">4 偏载怎么传</a><a href="#s5">5 建模指南</a><a href="#s6">6 有限元重点</a><a href="#s7">7 选型</a><a href="#s8">8 零件和材料</a><a href="#s9">9 校核</a></nav></div>
   <div class="meta"><div>版本</div><div>v5.7</div><div>行程</div><div>{mm(D["screw"]["stroke"])} mm</div><div>设计载荷</div><div>100 kg × 1.5</div><div>单位</div><div>mm、N、°</div><div>配套</div><div>CAD 尺寸表</div></div>
 </header>
 
@@ -374,14 +386,16 @@ textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
   {table(["型号", "用到的值", "来源", "要核的地方"], BS.cat)}
 </section>
 </div>
-<section id="s10">
-  <h2><span class="no">10</span>问 Claude（这个方案的问答助手）</h2>
-  <p>看不懂的地方直接问。它读的是这一页的全部资料（零件、尺寸、受力、选型、有限元重点），会说明哪些是算出来的、哪些是假设、哪些要查样本。回答里的零件编号可以点，会在 3D 和零件表里标出来。</p>
-  <div class="qs-row">{"".join(f'<button type="button" class="qs">{html.escape(q)}</button>' for q in QS)}</div>
-  <div id="qa-log" class="qa-log" aria-live="polite"></div>
-  <div class="qa-in"><label for="qa-in" class="cap">你的问题</label><textarea id="qa-in" rows="3" placeholder="例如：滑块板为什么要 20 mm？"></textarea>
+<button type="button" id="qa-fab" class="qa-fab" aria-expanded="false" aria-controls="qa-win"><span class="dot"></span>问 Claude</button>
+<aside id="qa-win" class="qa-win" hidden aria-label="问 Claude">
+  <header><div><b>问 Claude</b><br><span class="cap">读的是这一页的全部资料；回答里的零件编号可以点</span></div><button type="button" id="qa-min" class="qa-x" aria-label="收起问答窗">—</button></header>
+  <div class="qa-body">
+    <div class="qs-row" id="qa-sugg">{"".join(f'<button type="button" class="qs">{html.escape(q)}</button>' for q in QS)}</div>
+    <div id="qa-log" class="qa-log" aria-live="polite"></div>
+  </div>
+  <div class="qa-in"><label for="qa-in" class="sr">你的问题</label><textarea id="qa-in" rows="2" placeholder="例如：滑块板为什么要 20 mm？"></textarea>
     <div class="ctl"><button type="button" class="btn" id="qa-ask">提问</button><button type="button" class="btn ghost" id="qa-stop" hidden>停止</button><span class="cap" id="qa-note"></span></div></div>
-</section>
+</aside>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
