@@ -50,8 +50,8 @@ BASE = dict(x=(30.0, 780.0), y=(-270.0, 380.0), top=35.0); FOOT = dict(x=(200.0,
 BED_TOP = 420.0
 # layer stack across y (mm) - v5.7, knuckle moved inboard so the J1 flange fits outboard of it
 Y = dict(seat_edge=220.0, beam=(-205.0, 204.0), knuckle=(204.0, 216.0), flange=(216.0, 226.0), brgB=(229.0, 246.0), wall_in=(250.0, 252.0),
-         arm_c2=(258.0, 270.0), hub=(258.0, 282.0), window=(256.0, 284.0), rod_c2=(270.0, 282.0), link=276.0, plate=(288.0, 308.0), brgA=(290.0, 307.0),
-         locknut=(308.0, 315.0), shaft_end=318.0, carriage=(308.0, 331.7), rail=(321.0, 336.0), screw=322.0, back=(336.0, 351.0), wall_out=(356.0, 358.0))
+         arm_c2=(258.0, 270.0), hub=(249.0, 271.0), window=(247.0, 273.0), rod_c2=(270.0, 282.0), link=276.0, plate=(288.0, 308.0), brgA=(274.0, 291.0),
+         locknut=(292.0, 299.0), shaft_end=302.0, carriage=(308.0, 331.7), rail=(321.0, 336.0), screw=322.0, back=(336.0, 351.0), wall_out=(356.0, 358.0))
 # seat-frame z levels (mm): cushion top 0, board -80..-92, cells -92..-100, beam -100..-130, arms -100..-110
 SZ = dict(foam_rear=-50.0, foam_front=-80.0, board=(-92.0, -80.0), cells=(-100.0, -92.0), beam=(-130.0, -100.0), arms=(-110.0, -100.0), split=-20.0)
 
@@ -141,10 +141,13 @@ def check(parts):
 # screw-local frame: origin SCREW_LO, X along E, Y = world y, Z = -NF (same rotation as the rails); screw axis at Y = Y["screw"].
 # Nut travel along X: 95 +- 22.5 at the flush pose ... 426 +- 22.5 at the top.
 # Stack beyond the nut (X, mm): BK12 fixed support 452-477, pulley 45T 480-500, brake (envelope dia 90) 505-545, limiter (dia 60) 548-578.
-# BF12 floating support 5-25 at the low end. The stack's radius (46 incl. clearance) is larger than the 14 mm from the screw axis
+# (superseded by the v5.7b values below) The stack's radius (46 incl. clearance) is larger than the 14 mm from the screw axis
 # to the back plate face (y 336): the back plate H1 has a window there and a drive cover H5 bulges out to y 372.
-DRIVE = dict(bf=(5.0, 25.0), bk=(452.0, 477.0), pulley=(480.0, 500.0), brake=(505.0, 545.0), limiter=(548.0, 578.0), r_env=46.0,
-             window_x=(445.0, 585.0), cover_y=(351.0, 372.0))
+DRIVE = dict(bf=None, bk=(546.0, 571.0), pulley=(574.0, 594.0), brake=(599.0, 639.0), limiter=(642.0, 672.0), r_env=46.0,
+             window_x=(539.0, 679.0), cover_y=(351.0, 372.0), screw_x0=25.0)
+# v5.7b integration: the stack moved +94 mm up the screw - at the top pose the carriage plate reaches screw-local X 541, so nothing
+# wider than the screw may sit below X ~545. The low-end floating support (BF12) is dropped: the screw hangs from BK12 and is in
+# tension whenever a person loads the seat (fixed-free critical speed > 1000 r/min vs 180 r/min used).
 def screw_to_world(x, z_local=0.0):
     """screw-local (X, Z) -> world (x, z); Z = -NF."""
     return (SCREW_LO[0] + x * E[0] - z_local * NF[0], SCREW_LO[1] + x * E[1] - z_local * NF[1])

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 297" width="420mm" height="297mm" font-family='"Noto Sans SC","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif'><title>S2 前区泡棉</title><rect width="420" height="297" fill="#fff"/>
+<rect x="5.00" y="5.00" width="410.00" height="287.00" fill="none" stroke="#000" stroke-width="0.7"/>
+<path d="M26.00,36.40 L26.00,26.00 M26.00,58.00 L26.00,36.40 M26.00,26.00 L68.00,26.00 M54.80,58.00 L68.00,58.00 M68.00,58.00 L68.00,26.00 M26.00,36.40 L54.80,36.40 M54.80,36.40 L54.80,58.00 M26.00,36.40 L54.80,36.40 M54.80,58.00 L54.80,36.40 M54.80,58.00 L26.00,58.00" fill="none" stroke="#777" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6,0.9"/>
+<path d="M26.00,58.00 L26.00,26.00 M26.00,26.00 L68.00,26.00 M26.00,58.00 L68.00,58.00 M68.00,58.00 L68.00,26.00" fill="none" stroke="#000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="26.00" y="63.50" font-size="2.8" text-anchor="start" fill="#555">主视图</text>
+<path d="M26.00,75.00 L26.00,83.00 M26.00,251.00 L26.00,83.00 M54.80,75.00 L68.00,75.00 M26.00,75.00 L54.80,75.00 M54.80,83.00 L54.80,75.00 M26.00,83.00 L54.80,83.00 M54.80,83.00 L26.00,83.00 M54.80,83.00 L54.80,75.00 M68.00,251.00 L68.00,75.00 M26.00,251.00 L68.00,251.00" fill="none" stroke="#777" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6,0.9"/>
+<path d="M26.00,251.00 L26.00,75.00 M26.00,75.00 L68.00,75.00 M68.00,251.00 L68.00,75.00 M26.00,251.00 L68.00,251.00" fill="none" stroke="#000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="26.00" y="256.50" font-size="2.8" text-anchor="start" fill="#555">俯视图</text>
+<path d="M261.00,26.00 L85.00,26.00 M85.00,58.00 L85.00,26.00 M93.00,36.40 L85.00,36.40 M93.00,58.00 L93.00,36.40 M261.00,58.00 L85.00,58.00 M261.00,58.00 L261.00,26.00" fill="none" stroke="#777" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6,0.9"/>
+<path d="M261.00,26.00 L85.00,26.00 M85.00,36.40 L85.00,26.00 M85.00,36.40 L93.00,36.40 M93.00,58.00 L93.00,36.40 M261.00,58.00 L93.00,58.00 M261.00,58.00 L261.00,26.00 M85.00,36.40 L85.00,58.00 M93.00,58.00 L85.00,58.00" fill="none" stroke="#000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="85.00" y="63.50" font-size="2.8" text-anchor="start" fill="#555">左视图</text>
+<line x1="26.00" y1="25.00" x2="26.00" y2="16.50" stroke="#000" stroke-width="0.18"/>
+<line x1="68.00" y1="25.00" x2="68.00" y2="16.50" stroke="#000" stroke-width="0.18"/>
+<line x1="26.00" y1="18.00" x2="68.00" y2="18.00" stroke="#000" stroke-width="0.18"/>
+<path d="M26.00,18.00 L28.60,17.10 L28.60,18.90 Z" fill="#000"/>
+<path d="M68.00,18.00 L65.40,18.90 L65.40,17.10 Z" fill="#000"/>
+<text x="47.00" y="17.00" font-size="3.2" text-anchor="middle" fill="#000">105</text>
+<line x1="25.00" y1="26.00" x2="16.50" y2="26.00" stroke="#000" stroke-width="0.18"/>
+<line x1="25.00" y1="58.00" x2="16.50" y2="58.00" stroke="#000" stroke-width="0.18"/>
+<line x1="18.00" y1="26.00" x2="18.00" y2="58.00" stroke="#000" stroke-width="0.18"/>
+<path d="M18.00,26.00 L18.90,28.60 L17.10,28.60 Z" fill="#000"/>
+<path d="M18.00,58.00 L17.10,55.40 L18.90,55.40 Z" fill="#000"/>
+<text x="17.00" y="42.00" font-size="3.2" text-anchor="middle" fill="#000" transform="rotate(-90 17.00 42.00)">80</text>
+<line x1="25.00" y1="75.00" x2="16.50" y2="75.00" stroke="#000" stroke-width="0.18"/>
+<line x1="25.00" y1="251.00" x2="16.50" y2="251.00" stroke="#000" stroke-width="0.18"/>
+<line x1="18.00" y1="75.00" x2="18.00" y2="251.00" stroke="#000" stroke-width="0.18"/>
+<path d="M18.00,75.00 L18.90,77.60 L17.10,77.60 Z" fill="#000"/>
+<path d="M18.00,251.00 L17.10,248.40 L18.90,248.40 Z" fill="#000"/>
+<text x="17.00" y="163.00" font-size="3.2" text-anchor="middle" fill="#000" transform="rotate(-90 17.00 163.00)">440</text>
+<path d="M104.43,192.29 L228.88,120.44 M104.43,218.42 L104.43,192.29 M228.88,120.44 L258.57,137.58 M134.12,209.44 L258.57,137.58 M104.43,192.29 L134.12,209.44 M258.57,163.71 L258.57,137.58 M134.12,235.56 L258.57,163.71 M104.43,218.42 L134.12,235.56 M134.12,235.56 L134.12,209.44" fill="none" stroke="#000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="88.00" y="283.50" font-size="2.6" text-anchor="start" fill="#555">轴测图（比例同主视图）</text>
+<rect x="284.00" y="238.20" width="131.00" height="53.80" fill="none" stroke="#000" stroke-width="0.5"/>
+<line x1="284.00" y1="244.20" x2="415.00" y2="244.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="238.20" x2="304.00" y2="244.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="242.30" font-size="3.0" text-anchor="start" fill="#333">零件名称</text>
+<text x="306.00" y="242.60" font-size="3.0" text-anchor="start" fill="#000" font-weight="bold">前区泡棉</text>
+<line x1="284.00" y1="250.20" x2="415.00" y2="250.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="244.20" x2="304.00" y2="250.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="248.30" font-size="3.0" text-anchor="start" fill="#333">编号</text>
+<text x="306.00" y="248.60" font-size="3.0" text-anchor="start" fill="#000" font-weight="bold">S2</text>
+<line x1="284.00" y1="256.20" x2="415.00" y2="256.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="250.20" x2="304.00" y2="256.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="254.30" font-size="3.0" text-anchor="start" fill="#333">材料</text>
+<text x="306.00" y="254.60" font-size="3.0" text-anchor="start" fill="#000">高回弹（HR）海绵 45–55 kg/m³，高硬度级</text>
+<line x1="284.00" y1="262.20" x2="415.00" y2="262.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="256.20" x2="304.00" y2="262.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="260.30" font-size="3.0" text-anchor="start" fill="#333">数量</text>
+<text x="306.00" y="260.60" font-size="3.0" text-anchor="start" fill="#000">1</text>
+<line x1="284.00" y1="268.20" x2="415.00" y2="268.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="262.20" x2="304.00" y2="268.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="266.30" font-size="3.0" text-anchor="start" fill="#333">比例</text>
+<text x="306.00" y="266.60" font-size="3.0" text-anchor="start" fill="#000">1:2.5</text>
+<line x1="284.00" y1="274.20" x2="415.00" y2="274.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="268.20" x2="304.00" y2="274.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="272.30" font-size="3.0" text-anchor="start" fill="#333">单位</text>
+<text x="306.00" y="272.60" font-size="3.0" text-anchor="start" fill="#000">mm</text>
+<line x1="284.00" y1="280.20" x2="415.00" y2="280.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="274.20" x2="304.00" y2="280.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="278.30" font-size="3.0" text-anchor="start" fill="#333">投影</text>
+<path d="M307.00,275.80 L314.00,274.20 L314.00,280.20 L307.00,278.60 Z" fill="none" stroke="#000" stroke-width="0.25"/>
+<line x1="306.00" y1="277.20" x2="315.00" y2="277.20" stroke="#000" stroke-width="0.13" stroke-dasharray="2,0.6,0.4,0.6"/>
+<circle cx="319.50" cy="277.20" r="3" fill="none" stroke="#000" stroke-width="0.25"/><circle cx="319.50" cy="277.20" r="1.4" fill="none" stroke="#000" stroke-width="0.25"/>
+<line x1="315.50" y1="277.20" x2="323.50" y2="277.20" stroke="#000" stroke-width="0.13" stroke-dasharray="2,0.6,0.4,0.6"/>
+<line x1="319.50" y1="273.20" x2="319.50" y2="281.20" stroke="#000" stroke-width="0.13" stroke-dasharray="2,0.6,0.4,0.6"/>
+<text x="326.00" y="278.30" font-size="3.0" text-anchor="start" fill="#000">第一角投影</text>
+<line x1="284.00" y1="286.20" x2="415.00" y2="286.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="280.20" x2="304.00" y2="286.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="284.30" font-size="3.0" text-anchor="start" fill="#333">项目</text>
+<text x="306.00" y="284.60" font-size="3.0" text-anchor="start" fill="#000">ME5412 床边起身台 v5.7</text>
+<text x="286.00" y="289.60" font-size="2.4" text-anchor="start" fill="#333">参考图：尺寸来自计算模型；公差、焊缝、表面处理由角色 3 定</text>
+<text x="284.00" y="15.50" font-size="3.4" text-anchor="start" fill="#000" font-weight="bold">关键尺寸</text>
+<line x1="284.00" y1="17.50" x2="415.00" y2="17.50" stroke="#000" stroke-width="0.35"/>
+<text x="285.50" y="21.10" font-size="2.7" text-anchor="start" fill="#444">尺寸</text>
+<text x="351.00" y="21.10" font-size="2.7" text-anchor="start" fill="#444">数值</text>
+<line x1="284.00" y1="22.70" x2="415.00" y2="22.70" stroke="#000" stroke-width="0.25"/>
+<text x="285.50" y="26.40" font-size="2.7" text-anchor="start" fill="#000">外形（x × y × z）</text>
+<text x="351.00" y="26.40" font-size="2.7" text-anchor="start" fill="#000">105 × 440 × 80</text>
+<line x1="284.00" y1="28.00" x2="415.00" y2="28.00" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="31.70" font-size="2.7" text-anchor="start" fill="#000">长（x_s）</text>
+<text x="351.00" y="31.70" font-size="2.7" text-anchor="start" fill="#000">105 mm（−20 … 85）</text>
+<line x1="284.00" y1="33.30" x2="415.00" y2="33.30" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="37.00" font-size="2.7" text-anchor="start" fill="#000">宽（y）</text>
+<text x="351.00" y="37.00" font-size="2.7" text-anchor="start" fill="#000">440 mm</text>
+<line x1="284.00" y1="38.60" x2="415.00" y2="38.60" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="42.30" font-size="2.7" text-anchor="start" fill="#000">厚</text>
+<text x="351.00" y="42.30" font-size="2.7" text-anchor="start" fill="#000">80 mm</text>
+<line x1="284.00" y1="43.90" x2="415.00" y2="43.90" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="47.60" font-size="2.7" text-anchor="start" fill="#000">目标硬度</text>
+<text x="351.00" y="47.60" font-size="2.7" text-anchor="start" fill="#000">压 40% 时约 10 kPa</text>
+<line x1="284.00" y1="49.20" x2="415.00" y2="49.20" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="52.90" font-size="2.7" text-anchor="start" fill="#000">头侧缺口</text>
+<text x="351.00" y="52.90" font-size="2.7" text-anchor="start" fill="#000">x_s −36 … 52，y 200 … 221，z_s −80 … −26</text>
+<line x1="284.00" y1="54.50" x2="415.00" y2="54.50" stroke="#000" stroke-width="0.13"/>
+<text x="285.00" y="60.50" font-size="2.6" text-anchor="start" fill="#333">前区软：少压大腿；顶面和后区齐平</text>
+</svg>

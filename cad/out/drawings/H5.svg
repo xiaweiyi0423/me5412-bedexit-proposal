@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 297" width="420mm" height="297mm" font-family='"Noto Sans SC","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif'><title>H5 驱动罩</title><rect width="420" height="297" fill="#fff"/>
+<rect x="5.00" y="5.00" width="410.00" height="287.00" fill="none" stroke="#000" stroke-width="0.7"/>
+<path d="M118.72,221.27 L208.45,88.81 M26.00,158.46 L118.72,221.27 M208.45,88.81 L115.73,26.00 M115.73,26.00 L26.00,158.46 M118.32,219.19 L206.37,89.21 M206.37,89.21 L116.13,28.08 M116.13,28.08 L28.08,158.06 M28.08,158.06 L118.32,219.19" fill="none" stroke="#777" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6,0.9"/>
+<path d="M118.72,221.27 L208.45,88.81 M26.00,158.46 L118.72,221.27 M208.45,88.81 L115.73,26.00 M115.73,26.00 L26.00,158.46 M118.32,219.19 L206.37,89.21 M206.37,89.21 L116.13,28.08 M116.13,28.08 L28.08,158.06 M28.08,158.06 L118.32,219.19" fill="none" stroke="#000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="26.00" y="226.77" font-size="2.8" text-anchor="start" fill="#555">主视图</text>
+<path d="M118.72,259.27 L118.72,238.27 M118.72,259.27 L208.45,259.27 M118.72,238.27 L208.45,238.27 M26.00,259.27 L118.72,259.27 M26.00,238.27 L118.72,238.27 M118.32,259.27 L206.37,259.27 M206.37,259.27 L116.13,259.27 M116.13,259.27 L28.08,259.27 M28.08,259.27 L118.32,259.27 M206.37,259.27 L206.37,239.77 M118.32,239.77 L206.37,239.77 M118.32,259.27 L118.32,239.77 M116.13,259.27 L116.13,239.77 M206.37,239.77 L116.13,239.77 M28.08,259.27 L28.08,239.77 M116.13,239.77 L28.08,239.77 M28.08,239.77 L118.32,239.77" fill="none" stroke="#777" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6,0.9"/>
+<path d="M208.45,259.27 L208.45,238.27 M26.00,259.27 L26.00,238.27 M115.73,259.27 L115.73,238.27 M208.45,259.27 L115.73,259.27 M208.45,238.27 L115.73,238.27 M115.73,259.27 L26.00,259.27 M115.73,238.27 L26.00,238.27" fill="none" stroke="#000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="26.00" y="264.77" font-size="2.8" text-anchor="start" fill="#555">俯视图</text>
+<path d="M246.45,88.81 L225.45,88.81 M246.45,221.27 L246.45,88.81 M225.45,221.27 L225.45,88.81 M246.45,88.81 L246.45,26.00 M225.45,88.81 L225.45,26.00 M246.45,219.19 L246.45,89.21 M246.45,89.21 L246.45,28.08 M246.45,28.08 L246.45,158.06 M246.45,158.06 L246.45,219.19 M246.45,89.21 L226.95,89.21 M226.95,219.19 L226.95,89.21 M246.45,219.19 L226.95,219.19 M246.45,28.08 L226.95,28.08 M226.95,89.21 L226.95,28.08 M246.45,158.06 L226.95,158.06 M226.95,28.08 L226.95,158.06 M226.95,158.06 L226.95,219.19" fill="none" stroke="#777" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6,0.9"/>
+<path d="M246.45,221.27 L225.45,221.27 M246.45,158.46 L225.45,158.46 M246.45,158.46 L246.45,221.27 M225.45,158.46 L225.45,221.27 M246.45,26.00 L225.45,26.00 M246.45,26.00 L246.45,158.46 M225.45,26.00 L225.45,158.46" fill="none" stroke="#000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="225.45" y="226.77" font-size="2.8" text-anchor="start" fill="#555">左视图</text>
+<line x1="26.00" y1="25.00" x2="26.00" y2="16.50" stroke="#000" stroke-width="0.18"/>
+<line x1="208.45" y1="25.00" x2="208.45" y2="16.50" stroke="#000" stroke-width="0.18"/>
+<line x1="26.00" y1="18.00" x2="208.45" y2="18.00" stroke="#000" stroke-width="0.18"/>
+<path d="M26.00,18.00 L28.60,17.10 L28.60,18.90 Z" fill="#000"/>
+<path d="M208.45,18.00 L205.85,18.90 L205.85,17.10 Z" fill="#000"/>
+<text x="117.23" y="17.00" font-size="3.2" text-anchor="middle" fill="#000">182</text>
+<line x1="25.00" y1="26.00" x2="16.50" y2="26.00" stroke="#000" stroke-width="0.18"/>
+<line x1="25.00" y1="221.27" x2="16.50" y2="221.27" stroke="#000" stroke-width="0.18"/>
+<line x1="18.00" y1="26.00" x2="18.00" y2="221.27" stroke="#000" stroke-width="0.18"/>
+<path d="M18.00,26.00 L18.90,28.60 L17.10,28.60 Z" fill="#000"/>
+<path d="M18.00,221.27 L17.10,218.67 L18.90,218.67 Z" fill="#000"/>
+<text x="17.00" y="123.64" font-size="3.2" text-anchor="middle" fill="#000" transform="rotate(-90 17.00 123.64)">195</text>
+<line x1="25.00" y1="238.27" x2="16.50" y2="238.27" stroke="#000" stroke-width="0.18"/>
+<line x1="25.00" y1="259.27" x2="16.50" y2="259.27" stroke="#000" stroke-width="0.18"/>
+<line x1="18.00" y1="238.27" x2="18.00" y2="259.27" stroke="#000" stroke-width="0.18"/>
+<path d="M18.00,238.27 L18.90,240.87 L17.10,240.87 Z" fill="#000"/>
+<path d="M18.00,259.27 L17.10,256.67 L18.90,256.67 Z" fill="#000"/>
+<text x="17.00" y="248.77" font-size="3.2" text-anchor="middle" fill="#000" transform="rotate(-90 17.00 248.77)">21</text>
+<path d="M250.35,278.00 L253.57,276.14 M264.11,262.48 L267.34,260.62 M250.35,278.00 L264.11,262.48 M253.57,276.14 L267.34,260.62 M236.12,258.66 L250.35,278.00 M249.89,243.13 L253.11,241.27 M264.11,262.48 L249.89,243.13 M267.34,260.62 L253.11,241.27 M249.89,243.13 L236.12,258.66 M250.28,277.60 L263.79,262.36 M263.79,262.36 L249.95,243.54 M249.95,243.54 L236.44,258.77 M236.44,258.77 L250.28,277.60 M236.44,258.77 L239.43,257.04 M250.61,244.44 L239.43,257.04 M239.43,257.04 L252.61,274.97" fill="none" stroke="#000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="228.45" y="283.50" font-size="2.6" text-anchor="start" fill="#555">轴测图（不按比例）</text>
+<rect x="284.00" y="238.20" width="131.00" height="53.80" fill="none" stroke="#000" stroke-width="0.5"/>
+<line x1="284.00" y1="244.20" x2="415.00" y2="244.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="238.20" x2="304.00" y2="244.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="242.30" font-size="3.0" text-anchor="start" fill="#333">零件名称</text>
+<text x="306.00" y="242.60" font-size="3.0" text-anchor="start" fill="#000" font-weight="bold">驱动罩</text>
+<line x1="284.00" y1="250.20" x2="415.00" y2="250.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="244.20" x2="304.00" y2="250.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="248.30" font-size="3.0" text-anchor="start" fill="#333">编号</text>
+<text x="306.00" y="248.60" font-size="3.0" text-anchor="start" fill="#000" font-weight="bold">H5</text>
+<line x1="284.00" y1="256.20" x2="415.00" y2="256.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="250.20" x2="304.00" y2="256.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="254.30" font-size="3.0" text-anchor="start" fill="#333">材料</text>
+<text x="306.00" y="254.60" font-size="3.0" text-anchor="start" fill="#000">钢板 1.5 mm</text>
+<line x1="284.00" y1="262.20" x2="415.00" y2="262.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="256.20" x2="304.00" y2="262.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="260.30" font-size="3.0" text-anchor="start" fill="#333">数量</text>
+<text x="306.00" y="260.60" font-size="3.0" text-anchor="start" fill="#000">1</text>
+<line x1="284.00" y1="268.20" x2="415.00" y2="268.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="262.20" x2="304.00" y2="268.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="266.30" font-size="3.0" text-anchor="start" fill="#333">比例</text>
+<text x="306.00" y="266.60" font-size="3.0" text-anchor="start" fill="#000">1:1</text>
+<line x1="284.00" y1="274.20" x2="415.00" y2="274.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="268.20" x2="304.00" y2="274.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="272.30" font-size="3.0" text-anchor="start" fill="#333">单位</text>
+<text x="306.00" y="272.60" font-size="3.0" text-anchor="start" fill="#000">mm</text>
+<line x1="284.00" y1="280.20" x2="415.00" y2="280.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="274.20" x2="304.00" y2="280.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="278.30" font-size="3.0" text-anchor="start" fill="#333">投影</text>
+<path d="M307.00,275.80 L314.00,274.20 L314.00,280.20 L307.00,278.60 Z" fill="none" stroke="#000" stroke-width="0.25"/>
+<line x1="306.00" y1="277.20" x2="315.00" y2="277.20" stroke="#000" stroke-width="0.13" stroke-dasharray="2,0.6,0.4,0.6"/>
+<circle cx="319.50" cy="277.20" r="3" fill="none" stroke="#000" stroke-width="0.25"/><circle cx="319.50" cy="277.20" r="1.4" fill="none" stroke="#000" stroke-width="0.25"/>
+<line x1="315.50" y1="277.20" x2="323.50" y2="277.20" stroke="#000" stroke-width="0.13" stroke-dasharray="2,0.6,0.4,0.6"/>
+<line x1="319.50" y1="273.20" x2="319.50" y2="281.20" stroke="#000" stroke-width="0.13" stroke-dasharray="2,0.6,0.4,0.6"/>
+<text x="326.00" y="278.30" font-size="3.0" text-anchor="start" fill="#000">第一角投影</text>
+<line x1="284.00" y1="286.20" x2="415.00" y2="286.20" stroke="#000" stroke-width="0.18"/>
+<line x1="304.00" y1="280.20" x2="304.00" y2="286.20" stroke="#000" stroke-width="0.18"/>
+<text x="286.00" y="284.30" font-size="3.0" text-anchor="start" fill="#333">项目</text>
+<text x="306.00" y="284.60" font-size="3.0" text-anchor="start" fill="#000">ME5412 床边起身台 v5.7</text>
+<text x="286.00" y="289.60" font-size="2.4" text-anchor="start" fill="#333">参考图：尺寸来自计算模型；公差、焊缝、表面处理由角色 3 定</text>
+<text x="284.00" y="15.50" font-size="3.4" text-anchor="start" fill="#000" font-weight="bold">关键尺寸</text>
+<line x1="284.00" y1="17.50" x2="415.00" y2="17.50" stroke="#000" stroke-width="0.35"/>
+<text x="285.50" y="21.10" font-size="2.7" text-anchor="start" fill="#444">尺寸</text>
+<text x="351.00" y="21.10" font-size="2.7" text-anchor="start" fill="#444">数值</text>
+<line x1="284.00" y1="22.70" x2="415.00" y2="22.70" stroke="#000" stroke-width="0.25"/>
+<text x="285.50" y="26.40" font-size="2.7" text-anchor="start" fill="#000">外形（x × y × z）</text>
+<text x="351.00" y="26.40" font-size="2.7" text-anchor="start" fill="#000">182 × 21 × 195</text>
+<line x1="284.00" y1="28.00" x2="415.00" y2="28.00" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="31.70" font-size="2.7" text-anchor="start" fill="#000">板厚</text>
+<text x="351.00" y="31.70" font-size="2.7" text-anchor="start" fill="#000">1.5 mm</text>
+<line x1="284.00" y1="33.30" x2="415.00" y2="33.30" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="37.00" font-size="2.7" text-anchor="start" fill="#000">y</text>
+<text x="351.00" y="37.00" font-size="2.7" text-anchor="start" fill="#000">351 … 372</text>
+<line x1="284.00" y1="38.60" x2="415.00" y2="38.60" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="42.30" font-size="2.7" text-anchor="start" fill="#000">外形</text>
+<text x="351.00" y="42.30" font-size="2.7" text-anchor="start" fill="#000">驱动窗口每边 + 10</text>
+<line x1="284.00" y1="43.90" x2="415.00" y2="43.90" stroke="#000" stroke-width="0.13"/>
+<text x="285.50" y="47.60" font-size="2.7" text-anchor="start" fill="#000">开口</text>
+<text x="351.00" y="47.60" font-size="2.7" text-anchor="start" fill="#000">朝 −y，罩在 H1 窗口外</text>
+<line x1="284.00" y1="49.20" x2="415.00" y2="49.20" stroke="#000" stroke-width="0.13"/>
+<text x="285.00" y="55.20" font-size="2.6" text-anchor="start" fill="#333">制动器和限速器外径大于丝杠到侧板的距离，这里机构箱局部加厚到 y 372</text>
+</svg>

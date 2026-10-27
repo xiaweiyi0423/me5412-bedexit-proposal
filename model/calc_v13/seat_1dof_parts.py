@@ -46,8 +46,10 @@ sim, e, nf, Bp = VC.sim, VC.e, VC.nf, VC.Bp
 if (VC.rails()[1][0] - VC.rails()[0][0]) @ nf < 0: nf = -nf
 
 # ---------------------------------------------------------------- layer stack across the width (y, m), seat side -> head side
-YS = dict(seat_edge=0.220, knuckle=(0.204, 0.216), flange=(0.216, 0.226), brgB=(0.229, 0.246), wall_in=(0.250, 0.253), arm_c2=(0.258, 0.268), link=0.275,
-          plate=(0.288, 0.308), brgA=(0.290, 0.307), carriage=0.322, screw=0.322, back=(0.336, 0.351), wall_out=(0.356, 0.358))
+YS = dict(seat_edge=0.220, knuckle=(0.204, 0.216), flange=(0.216, 0.226), brgB=(0.229, 0.246), wall_in=(0.250, 0.252), hub=(0.249, 0.271), arm_c2=(0.258, 0.270),
+          link=0.276, brgA=(0.274, 0.291), locknut=(0.292, 0.299), plate=(0.288, 0.308), carriage=0.322, screw=0.322, back=(0.336, 0.351), wall_out=(0.356, 0.358))
+# v5.7b (CAD integration): both c1 bearings sit inside the cartridge so the shaft end and lock nut stay inside the carriage plate
+# (the carriage block behind pin 1 leaves no room past y 0.308); spacing 61 -> 45 mm.
 yB, yA = np.mean(YS["brgB"]), np.mean(YS["brgA"]); S_BRG = yA - yB; Y_C1 = 0.5 * (yA + yB)
 
 # ---------------------------------------------------------------- sections
@@ -58,8 +60,8 @@ def chs(D, t):
     d = D - 2 * t; I = np.pi * (D ** 4 - d ** 4) / 64; return dict(A=np.pi * (D ** 2 - d ** 2) / 4, I=I, Z=I / (D / 2), J=2 * I, Zp=2 * I / (D / 2))
 BEAM = dict(b=0.050, h=0.030, t=0.004, xs=(-0.025, 0.025), zs=(-0.130, -0.100), y=(-0.205, YS["knuckle"][0]))   # seat cross-beam (seat frame)
 BEAM_SEC_V = rect_tube(BEAM["b"], BEAM["h"], BEAM["t"]); BEAM_SEC_L = rect_tube(BEAM["h"], BEAM["b"], BEAM["t"])
-ARMS = dict(xs=(-0.040, 0.075), zs=(-0.110, -0.100), y=(-0.19, 0.19), sec="扁钢 40 × 10")                           # load-cell arms
-CELLS_XS, CELLS_Y = (-0.030, 0.060), 0.19
+ARMS = dict(xs=(-0.040, 0.075), zs=(-0.110, -0.100), y=(-0.18, 0.18), sec="扁钢 40 × 10")                           # load-cell arms
+CELLS_XS, CELLS_Y = (-0.030, 0.060), 0.18
 SHAFT_D = 0.030
 CART = dict(D=0.075, d=0.055)                     # c1 cartridge tube outside / bore diameters
 PLATE = dict(e=(-0.040, 0.190), nf=(-0.025, 0.175), t=0.020, mat="S355", r_c1=0.042)     # carriage plate, relative to pin 1, (e, nf)
@@ -208,10 +210,13 @@ def housing_parts(gap=0.005, wall=0.003, raw=False):
         pts += disc(P1, CART["D"] / 2); pts += disc(P2, R_C2, 12)
         d = (P2 - Bp) / np.linalg.norm(P2 - Bp); nn = np.array([-d[1], d[0]]); pts += [P2 + 0.012 * nn, P2 - 0.012 * nn]
     pts += disc(Bp, 0.025, 12)
-    top = b1 + 0.5 * VC.RAIL_GAP * nf - 0.06 * e                                                  # screw top end (as v5.6)
-    for de, dn in ((0.0, -0.055), (0.0, 0.055), (0.07, -0.055), (0.07, 0.055)): pts.append(top + de * e + dn * nf)   # brake 8 N m (~108 dia) + limiter
-    mot = top - 0.03 * e + 0.075 * nf                                                              # motor beside the screw toward rail 2, belt 1:3
-    for de, dn in ((-0.10, -0.03), (0.02, -0.03), (-0.10, 0.03), (0.02, 0.03)): pts.append(mot + de * e + dn * nf)
+    slo = a1 + 0.5 * VC.RAIL_GAP * nf + 0.03 * e                                                   # screw axis, low end (screw-local X = 0)
+    sp = lambda X, Z: slo + X * e - Z * nf                                                          # screw-local (X along e, Z = -nf), m
+    for X in (0.546, 0.672):                                                                        # BK12, pulley, brake (dia 90), limiter
+        for Z in (-0.046, 0.046): pts.append(sp(X, Z))
+    for X in (0.474, 0.594):                                                                        # motor 57 x 57 x 100 at Z +150 (rail-1 side), belt 1:3
+        for Z in (0.1215, 0.1785): pts.append(sp(X, Z))
+    for dx, dz in ((-0.035, -0.086), (0.035, -0.086), (-0.035, 0.022), (0.035, 0.022)): pts.append(Bp + np.array([dx, dz]))   # B bracket
     pts = np.array(pts)
     if raw: return pts
     pts = np.vstack([pts, [[p[0], 0.04] for p in pts]])

@@ -1,0 +1,1211 @@
+{
+ "version": "v5.7",
+ "parts": [
+  {
+   "code": "S1",
+   "name": "后区泡棉",
+   "material": "高硬度再生（重组）海绵 100–150 kg/m³，或闭孔 EVA 叠层",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#E3B26A",
+   "note": "后区硬：把起身时的推力放到骨盆；外包 S3 面料",
+   "params": [
+    [
+     "长（沿座面 x_s）",
+     "65 mm（−85 … −20）"
+    ],
+    [
+     "宽（y）",
+     "440 mm"
+    ],
+    [
+     "厚",
+     "50 mm"
+    ],
+    [
+     "含软唇边",
+     "x_s −85 … −40 下面无底板"
+    ],
+    [
+     "目标硬度",
+     "压 40% 时约 20 kPa"
+    ],
+    [
+     "头侧缺口",
+     "x_s −36 … 52，y 200 … 221"
+    ]
+   ],
+   "step": "step/S1.step",
+   "drawing": "drawings/S1.svg"
+  },
+  {
+   "code": "S2",
+   "name": "前区泡棉",
+   "material": "高回弹（HR）海绵 45–55 kg/m³，高硬度级",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#F1D5A6",
+   "note": "前区软：少压大腿；顶面和后区齐平",
+   "params": [
+    [
+     "长（x_s）",
+     "105 mm（−20 … 85）"
+    ],
+    [
+     "宽（y）",
+     "440 mm"
+    ],
+    [
+     "厚",
+     "80 mm"
+    ],
+    [
+     "目标硬度",
+     "压 40% 时约 10 kPa"
+    ],
+    [
+     "头侧缺口",
+     "x_s −36 … 52，y 200 … 221，z_s −80 … −26"
+    ]
+   ],
+   "step": "step/S2.step",
+   "drawing": "drawings/S2.svg"
+  },
+  {
+   "code": "S4",
+   "name": "底板",
+   "material": "12 mm 桦木多层板",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#C9A36B",
+   "note": "一整块；面料钉在底面；压在 4 个称重单元上",
+   "params": [
+    [
+     "长（x_s）",
+     "125 mm（−40 … 85）"
+    ],
+    [
+     "宽（y）",
+     "440 mm"
+    ],
+    [
+     "厚",
+     "12 mm"
+    ],
+    [
+     "z_s",
+     "−92 … −80"
+    ],
+    [
+     "称重单元位置",
+     "(−30, ±180)、(60, ±180)"
+    ],
+    [
+     "头侧缺口",
+     "x_s −36 … 52，y 200 … 220"
+    ]
+   ],
+   "step": "step/S4.step",
+   "drawing": "drawings/S4.svg"
+  },
+  {
+   "code": "S4b",
+   "name": "后区垫条",
+   "material": "桦木多层板（垫条）",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#C9A36B",
+   "note": "把 50 mm 厚的后区泡棉托到和前区齐平；粘在 S4 上",
+   "params": [
+    [
+     "长（x_s）",
+     "20 mm（−40 … −20）"
+    ],
+    [
+     "宽（y）",
+     "440 mm"
+    ],
+    [
+     "高",
+     "30 mm（z_s −80 … −50）"
+    ]
+   ],
+   "step": "step/S4b.step",
+   "drawing": "drawings/S4b.svg"
+  },
+  {
+   "code": "S5",
+   "name": "称重单元",
+   "material": "薄型，抗拔（螺栓固定的平行梁式，或加防掀限位）",
+   "group": "seat",
+   "qty": 4,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "外购件：外形按估计，选型后替换",
+   "params": [
+    [
+     "外形（估）",
+     "30 × 30 × 8 mm"
+    ],
+    [
+     "量程",
+     "≥ 110 kg/只"
+    ],
+    [
+     "受力范围",
+     "−856 … +1592 N"
+    ],
+    [
+     "位置",
+     "(−30, ±180)、(60, ±180)"
+    ]
+   ],
+   "step": "step/S5.step",
+   "drawing": null
+  },
+  {
+   "code": "S6",
+   "name": "称重支臂",
+   "material": "S355 扁钢 40 × 10",
+   "group": "seat",
+   "qty": 2,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "托称重单元；横梁处断开，两段角焊",
+   "params": [
+    [
+     "截面",
+     "40（y）× 10（z）"
+    ],
+    [
+     "长（x_s）",
+     "115 mm（−40 … 75），中间让开横梁"
+    ],
+    [
+     "位置",
+     "y = ±180（离 S8 留 4 mm 焊缝空间）"
+    ],
+    [
+     "z_s",
+     "−110 … −100（顶面和横梁齐平）"
+    ],
+    [
+     "连接",
+     "两段焊在横梁前后侧面"
+    ]
+   ],
+   "step": "step/S6.step",
+   "drawing": "drawings/S6.svg"
+  },
+  {
+   "code": "S7",
+   "name": "横梁",
+   "material": "S355 矩形管 50 × 30 × 4",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "座板的单侧悬臂主梁；高 30 被小腿间隙卡住",
+   "params": [
+    [
+     "截面",
+     "50（x_s）× 30（z_s）× 4"
+    ],
+    [
+     "长（y）",
+     "409 mm（−205 … 204）"
+    ],
+    [
+     "x_s",
+     "−25 … 25"
+    ],
+    [
+     "z_s",
+     "−130 … −100"
+    ],
+    [
+     "端头",
+     "y = 204 处和 S8 节点板角焊（四周）"
+    ],
+    [
+     "自由端",
+     "y = −205 焊端板封口（可选）"
+    ]
+   ],
+   "step": "step/S7.step",
+   "drawing": "drawings/S7.svg"
+  },
+  {
+   "code": "S8",
+   "name": "节点板",
+   "material": "S355 12 mm",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#4A5663",
+   "note": "BOM 原写 14 mm；为给 J1 法兰让位改为 12 mm（y 204 … 216），横梁焊在 y = 204 面上",
+   "params": [
+    [
+     "厚",
+     "12 mm（y 204 … 216）"
+    ],
+    [
+     "外形",
+     "横梁端 60 × 40 + 铰点 1 处 R40 的包络"
+    ],
+    [
+     "中心孔",
+     "Ø31（铰点 1 轴线）"
+    ],
+    [
+     "螺纹孔",
+     "6 × M10（底孔 Ø8.5），PCD 55"
+    ],
+    [
+     "铰点 1 中心（座板坐标）",
+     "(7.8, -69.7)"
+    ]
+   ],
+   "step": "step/S8.step",
+   "drawing": "drawings/S8.svg"
+  },
+  {
+   "code": "J1",
+   "name": "铰点 1 轴",
+   "material": "42CrMo4 调质",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#4A5663",
+   "note": "座板绕它转（转动副 R1）；法兰用 6 颗 M10-10.9 接 S8",
+   "params": [
+    [
+     "法兰",
+     "Ø75 × 10（y 216 … 226），6 × Ø11 PCD 55"
+    ],
+    [
+     "轴径",
+     "Ø30 k5（轴承位）"
+    ],
+    [
+     "轴长",
+     "76 mm（y 226 … 302）"
+    ],
+    [
+     "螺纹",
+     "M30 × 1.5（y 290 … 302），装 KM6"
+    ],
+    [
+     "轴承位",
+     "y 229 … 246、274 … 291（间距 45）"
+    ],
+    [
+     "摆臂位",
+     "y 249 … 271，Ø30 胀紧套"
+    ]
+   ],
+   "step": "step/J1.step",
+   "drawing": "drawings/J1.svg"
+  },
+  {
+   "code": "J5",
+   "name": "锁紧螺母 KM6",
+   "material": "KM6（M30 × 1.5）+ MB6 止动垫圈",
+   "group": "seat",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "外购件：给两个圆锥滚子轴承加预紧",
+   "params": [
+    [
+     "规格",
+     "KM6，M30 × 1.5"
+    ],
+    [
+     "外形",
+     "Ø45 × 7"
+    ],
+    [
+     "位置",
+     "y 308 … 315"
+    ]
+   ],
+   "step": "step/J5.step",
+   "drawing": null
+  },
+  {
+   "code": "J4",
+   "name": "铰点 2 摆臂",
+   "material": "S355 12 mm",
+   "group": "seat",
+   "qty": 1,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "从轴承座筒的窗口伸出；用 Ø30 胀紧套接 J1（传约 180 N·m），不用单键",
+   "params": [
+    [
+     "臂厚",
+     "12 mm（y 258 … 270）"
+    ],
+    [
+     "臂宽",
+     "30 mm，端部 R15"
+    ],
+    [
+     "孔距",
+     "117.0 mm（铰点 1 → 铰点 2）"
+    ],
+    [
+     "毂",
+     "Ø50 × 24（y 258 … 282），孔 Ø30"
+    ],
+    [
+     "铰点 2 孔",
+     "Ø10.2（M10 杆端销）"
+    ],
+    [
+     "铰点 2（座板坐标）",
+     "(-24.3, -182.2)"
+    ]
+   ],
+   "step": "step/J4.step",
+   "drawing": "drawings/J4.svg"
+  },
+  {
+   "code": "C1",
+   "name": "滑块板",
+   "material": "S355 钢板 20 mm",
+   "group": "carriage",
+   "qty": 1,
+   "buy": false,
+   "color": "#A9C1E4",
+   "note": "和 J3 焊成一个焊件，两个轴承孔焊后一起精加工；背面在螺母法兰处开 11 深让位槽。",
+   "params": [
+    [
+     "厚",
+     "20 mm（y 288 … 308）"
+    ],
+    [
+     "外形",
+     "沿导轨 −40 … 190，垂直导轨 −25 … 175（以铰点 1 为原点）"
+    ],
+    [
+     "铰点 1 角",
+     "R42（绕铰点 1）"
+    ],
+    [
+     "轴承 A 孔",
+     "Ø55 H7（和 J3 焊后同镗）"
+    ],
+    [
+     "滑块安装孔",
+     "4 × 4 × Ø4.5，26 × 26，块心 (0,0) (150,0) (0,150) (150,150)"
+    ],
+    [
+     "螺母座孔",
+     "4 × Ø6.6，40 × 40，心 (75, 75)"
+    ],
+    [
+     "螺母法兰让位槽",
+     "背面 11 深"
+    ]
+   ],
+   "step": "step/C1.step",
+   "drawing": "drawings/C1.svg"
+  },
+  {
+   "code": "J3",
+   "name": "轴承座筒",
+   "material": "S355 无缝钢管 Ø75 / 内孔 Ø55",
+   "group": "carriage",
+   "qty": 1,
+   "buy": false,
+   "color": "#B3261E",
+   "note": "穿过内壁竖槽；窗口让铰点 2 摆臂 J4 穿出。",
+   "params": [
+    [
+     "外径 / 内孔",
+     "Ø75 / Ø55 H7"
+    ],
+    [
+     "长",
+     "y 229 … 288（再插进 C1 的孔到 308）"
+    ],
+    [
+     "窗口",
+     "80°，y 247 … 273，中心在 -169.7°（滑块座坐标，从 +X 转向 +Z）"
+    ],
+    [
+     "摆臂转角范围",
+     "-177.5° … -161.9°"
+    ],
+    [
+     "焊缝",
+     "和 C1 外圈角焊，焊后同镗两孔"
+    ]
+   ],
+   "step": "step/J3.step",
+   "drawing": "drawings/J3.svg"
+  },
+  {
+   "code": "J2",
+   "name": "圆锥滚子轴承",
+   "material": "SKF 32006 X/Q 或同级（30 × 55 × 17）",
+   "group": "carriage",
+   "qty": 2,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [
+    [
+     "内径 / 外径 / 宽",
+     "30 / 55 / 17"
+    ],
+    [
+     "位置",
+     "y 229 … 246（B）、274 … 291（A），背对背，间距 45"
+    ]
+   ],
+   "step": "step/J2.step",
+   "drawing": null
+  },
+  {
+   "code": "C2",
+   "name": "滑块",
+   "material": "HIWIN HGH15CA（Z0 轻预压）或同级",
+   "group": "carriage",
+   "qty": 4,
+   "buy": true,
+   "color": "#3D6FB6",
+   "note": "",
+   "params": [
+    [
+     "外形",
+     "61.4 × 34，高 23.7（不含导轨）"
+    ],
+    [
+     "安装孔",
+     "4 × M4，26 × 26"
+    ]
+   ],
+   "step": "step/C2.step",
+   "drawing": null
+  },
+  {
+   "code": "C3",
+   "name": "螺母座",
+   "material": "S355",
+   "group": "carriage",
+   "qty": 1,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "端板伸到 y 346，侧板 H1 在螺母行程上要开让位槽（宽约 60、深 12）。",
+   "params": [
+    [
+     "顶板",
+     "60 × 56 × 10，中间开 26 宽槽让丝杠通过，用 4 × M6 接 C1"
+    ],
+    [
+     "端板",
+     "10 厚，螺母法兰贴在它上面"
+    ],
+    [
+     "螺母孔",
+     "Ø30"
+    ]
+   ],
+   "step": "step/C3.step",
+   "drawing": "drawings/C3.svg"
+  },
+  {
+   "code": "D2n",
+   "name": "丝杠螺母",
+   "material": "HIWIN R16-10K3-FSCDIN 或同级",
+   "group": "carriage",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [
+    [
+     "本体",
+     "Ø28 × 45"
+    ],
+    [
+     "法兰",
+     "Ø48 × 10"
+    ]
+   ],
+   "step": "step/D2n.step",
+   "drawing": null
+  },
+  {
+   "code": "L1",
+   "name": "连杆管",
+   "material": "S355 钢管 Ø20 × 2",
+   "group": "link",
+   "qty": 1,
+   "buy": false,
+   "color": "#4A5663",
+   "note": "",
+   "params": [
+    [
+     "管",
+     "Ø20 × 2"
+    ],
+    [
+     "管长",
+     "378.7"
+    ],
+    [
+     "铰点中心距",
+     "464.7（装配时用杆端螺纹调）"
+    ],
+    [
+     "两端",
+     "焊 M10 螺纹接头，一端左旋"
+    ]
+   ],
+   "step": "step/L1.step",
+   "drawing": "drawings/L1.svg"
+  },
+  {
+   "code": "L2",
+   "name": "杆端关节轴承",
+   "material": "SKF SIKAC 10 M 或同级",
+   "group": "link",
+   "qty": 2,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [
+    [
+     "孔",
+     "Ø10"
+    ],
+    [
+     "头部",
+     "外径 29，厚 12"
+    ],
+    [
+     "螺纹",
+     "M10 内螺纹"
+    ]
+   ],
+   "step": "step/L2.step",
+   "drawing": null
+  },
+  {
+   "code": "L3",
+   "name": "B 支座",
+   "material": "S355 8 mm 双耳座 + Ø10 销",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "",
+   "params": [
+    [
+     "耳板",
+     "2 × 6 厚，宽 40，R20 顶"
+    ],
+    [
+     "耳板间距",
+     "14（杆端头厚 12）"
+    ],
+    [
+     "销孔",
+     "Ø10.2，中心 (487, 276, 126)"
+    ],
+    [
+     "底板",
+     "90 × 60 × 8，z 40 … 48"
+    ]
+   ],
+   "step": "step/L3.step",
+   "drawing": "drawings/L3.svg"
+  },
+  {
+   "code": "D1",
+   "name": "导轨",
+   "material": "HIWIN HGR15 或同级",
+   "group": "fixed",
+   "qty": 2,
+   "buy": true,
+   "color": "#2A3440",
+   "note": "",
+   "params": [
+    [
+     "截面",
+     "15 × 15"
+    ],
+    [
+     "长",
+     "581"
+    ],
+    [
+     "孔距",
+     "60，首孔 20"
+    ]
+   ],
+   "step": "step/D1.step",
+   "drawing": null
+  },
+  {
+   "code": "D2",
+   "name": "滚珠丝杠",
+   "material": "Ø16 导程 10（HIWIN R16-10 或同级）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#B3261E",
+   "note": "",
+   "params": [
+    [
+     "螺纹段",
+     "Ø16，X 25 … 546（下端自由，不装浮动支撑）"
+    ],
+    [
+     "轴端",
+     "Ø12"
+    ],
+    [
+     "总长",
+     "647"
+    ]
+   ],
+   "step": "step/D2.step",
+   "drawing": null
+  },
+  {
+   "code": "D2a",
+   "name": "丝杠固定支撑",
+   "material": "BK12 或同级",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [],
+   "step": "step/D2a.step",
+   "drawing": null
+  },
+  {
+   "code": "D3",
+   "name": "同步带轮",
+   "material": "HTD-5M 宽 15，45T / 15T",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [
+    [
+     "大轮",
+     "Ø72 × 20（丝杠）"
+    ],
+    [
+     "小轮",
+     "Ø24 × 20（电机）"
+    ],
+    [
+     "中心距",
+     "152"
+    ]
+   ],
+   "step": "step/D3.step",
+   "drawing": null
+  },
+  {
+   "code": "D4",
+   "name": "电机",
+   "material": "24 V 无刷直流，57 机座（外形按 57 × 57 × 100 估）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [],
+   "step": "step/D4.step",
+   "drawing": null
+  },
+  {
+   "code": "D5",
+   "name": "失电制动器",
+   "material": "8 N·m 级（外形按 Ø90 估，以样本为准）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [],
+   "step": "step/D5.step",
+   "drawing": null
+  },
+  {
+   "code": "D6",
+   "name": "离心限速器",
+   "material": "180 r/min（外形按 Ø60 估）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [],
+   "step": "step/D6.step",
+   "drawing": null
+  },
+  {
+   "code": "H1",
+   "name": "侧板（导轨安装板）",
+   "material": "6061-T6 铝板 15 mm",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#B9C3CD",
+   "note": "两根导轨装在这块板的内表面；驱动端的制动器比板面还宽，所以开窗口，外面加 H5 罩",
+   "params": [
+    [
+     "板厚",
+     "15 mm"
+    ],
+    [
+     "y",
+     "336 … 351"
+    ],
+    [
+     "外形",
+     "机构箱侧视外廓（见总装图）"
+    ],
+    [
+     "驱动窗口",
+     "沿丝杠 445 … 585 × 宽 92"
+    ],
+    [
+     "螺母让位槽",
+     "沿丝杠 60 … 470 × 宽 52 × 深 8"
+    ],
+    [
+     "导轨安装面",
+     "y 336 面精铣；导轨孔按 HGR15 孔距 60 配钻"
+    ]
+   ],
+   "step": "step/H1.step",
+   "drawing": "drawings/H1.svg"
+  },
+  {
+   "code": "H2",
+   "name": "内壁",
+   "material": "钢板 2 mm",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#9DB2CC",
+   "note": "竖槽沿铰点 1 的轨迹；毛刷让手指进不去",
+   "params": [
+    [
+     "板厚",
+     "2 mm"
+    ],
+    [
+     "y",
+     "250 … 252"
+    ],
+    [
+     "竖槽宽",
+     "87（= 轴承座筒 Ø75 + 2 × 6）"
+    ],
+    [
+     "竖槽中心线",
+     "(69, 346) → (254, 620)"
+    ],
+    [
+     "竖槽两侧",
+     "装毛刷条"
+    ]
+   ],
+   "step": "step/H2.step",
+   "drawing": "drawings/H2.svg"
+  },
+  {
+   "code": "H3",
+   "name": "周边围板",
+   "material": "钢板 2 mm 折弯，焊或铆",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#8EA3BD",
+   "note": "盒子要扛横滚力矩约 888 N·m",
+   "params": [
+    [
+     "板厚",
+     "2 mm"
+    ],
+    [
+     "y",
+     "252 … 336（深 84）"
+    ],
+    [
+     "走向",
+     "沿机构箱侧视外廓一圈"
+    ],
+    [
+     "作用",
+     "把 H1、H2 连成闭口盒子"
+    ]
+   ],
+   "step": "step/H3.step",
+   "drawing": "drawings/H3.svg"
+  },
+  {
+   "code": "H4",
+   "name": "外罩",
+   "material": "1.5 mm 铝板或 ABS（不受力）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#C9D3DD",
+   "note": "",
+   "params": [
+    [
+     "板厚",
+     "1.5 mm"
+    ],
+    [
+     "y",
+     "356 … 357.5"
+    ],
+    [
+     "窗口",
+     "让出 H5 驱动罩"
+    ]
+   ],
+   "step": "step/H4.step",
+   "drawing": "drawings/H4.svg"
+  },
+  {
+   "code": "H5",
+   "name": "驱动罩",
+   "material": "钢板 1.5 mm",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#7E93AD",
+   "note": "制动器和限速器外径大于丝杠到侧板的距离，这里机构箱局部加厚到 y 372",
+   "params": [
+    [
+     "板厚",
+     "1.5 mm"
+    ],
+    [
+     "y",
+     "351 … 372"
+    ],
+    [
+     "外形",
+     "驱动窗口每边 + 10"
+    ],
+    [
+     "开口",
+     "朝 −y，罩在 H1 窗口外"
+    ]
+   ],
+   "step": "step/H5.step",
+   "drawing": "drawings/H5.svg"
+  },
+  {
+   "code": "B1",
+   "name": "底座框",
+   "material": "S355 矩形管 60 × 30 × 3（平放，高 30）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "机构箱底（z 40）和底座顶（z 35）之间留 5 mm，用垫块或支脚连接",
+   "params": [
+    [
+     "管材",
+     "60 × 30 × 3，平放"
+    ],
+    [
+     "外框",
+     "x 30 … 780，y −270 … 380"
+    ],
+    [
+     "顶面",
+     "z 35（下垫 5 mm 调平脚）"
+    ],
+    [
+     "立柱下纵梁",
+     "x 670 … 730"
+    ],
+    [
+     "机构箱下横梁",
+     "y 250 … 310"
+    ],
+    [
+     "踏板下纵梁",
+     "x 190 … 250、570 … 630"
+    ]
+   ],
+   "step": "step/B1.step",
+   "drawing": "drawings/B1.svg"
+  },
+  {
+   "code": "B1a",
+   "name": "调平脚",
+   "material": "Ø40 × 5 橡胶调平脚",
+   "group": "fixed",
+   "qty": 6,
+   "buy": true,
+   "color": "#2B2B2B",
+   "note": "",
+   "params": [
+    [
+     "尺寸",
+     "Ø40 × 5"
+    ],
+    [
+     "数量",
+     "6"
+    ]
+   ],
+   "step": "step/B1a.step",
+   "drawing": null
+  },
+  {
+   "code": "B2",
+   "name": "踏板",
+   "material": "6061-T6 铝板 10 mm",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#B9C3CD",
+   "note": "",
+   "params": [
+    [
+     "尺寸",
+     "420 × 440 × 10"
+    ],
+    [
+     "位置",
+     "x 200 … 620，y ±220，z 35 … 45"
+    ],
+    [
+     "支撑",
+     "四角 4 只称重单元，装在底座框内侧托板上"
+    ]
+   ],
+   "step": "step/B2.step",
+   "drawing": "drawings/B2.svg"
+  },
+  {
+   "code": "B2b",
+   "name": "防滑胶垫",
+   "material": "2 mm 防滑橡胶",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#2B2B2B",
+   "note": "",
+   "params": [
+    [
+     "尺寸",
+     "400 × 420 × 2"
+    ]
+   ],
+   "step": "step/B2b.step",
+   "drawing": null
+  },
+  {
+   "code": "B4",
+   "name": "扶手立柱",
+   "material": "S355 方管 60 × 60 × 4，喷塑",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#6B7A8A",
+   "note": "和底座框焊成一体；底板在 x 方向比底座外缘多出 20 mm，CAD 可缩到 160",
+   "params": [
+    [
+     "方管",
+     "60 × 60 × 4"
+    ],
+    [
+     "位置",
+     "x 700，y 300"
+    ],
+    [
+     "高度",
+     "z 45 … 931"
+    ],
+    [
+     "底板",
+     "200 × 150 × 10"
+    ],
+    [
+     "筋板",
+     "4 块，厚 10，高 80；x 向长 60、y 向长 45"
+    ],
+    [
+     "根部弯矩",
+     "1.53 kN·m（ADA 1112 N × 1.5）"
+    ]
+   ],
+   "step": "step/B4.step",
+   "drawing": "drawings/B4.svg"
+  },
+  {
+   "code": "B5",
+   "name": "横杆",
+   "material": "S355 圆管 Ø38 × 4，喷塑",
+   "group": "fixed",
+   "qty": 1,
+   "buy": false,
+   "color": "#2A3440",
+   "note": "",
+   "params": [
+    [
+     "圆管",
+     "Ø38 × 4"
+    ],
+    [
+     "位置",
+     "x 700，z 950"
+    ],
+    [
+     "长度",
+     "y -50 … 330（380）"
+    ],
+    [
+     "末端",
+     "圆头，软包、夜光"
+    ],
+    [
+     "握把",
+     "装握紧开关和测力"
+    ]
+   ],
+   "step": "step/B5.step",
+   "drawing": "drawings/B5.svg"
+  },
+  {
+   "code": "B7",
+   "name": "控制器 + 电池",
+   "material": "24 V 锂电池 + 控制器（外形估计）",
+   "group": "fixed",
+   "qty": 1,
+   "buy": true,
+   "color": "#3B4652",
+   "note": "",
+   "params": [
+    [
+     "外形",
+     "150 × 68 × 75"
+    ]
+   ],
+   "step": "step/B7.step",
+   "drawing": null
+  },
+  {
+   "code": "BED",
+   "name": "床（参考）",
+   "material": "床垫面 420",
+   "group": "ref",
+   "qty": 1,
+   "buy": true,
+   "color": "#D5DAE0",
+   "note": "",
+   "params": [
+    [
+     "床垫面",
+     "z 420"
+    ],
+    [
+     "床沿",
+     "x = 0"
+    ]
+   ],
+   "step": "step/BED.step",
+   "drawing": null
+  }
+ ],
+ "assembly": {
+  "step": {
+   "flush": "step/assembly_flush.step",
+   "top": "step/assembly_top.step"
+  },
+  "drawing": {
+   "flush": "drawings/assembly_flush.svg"
+  }
+ },
+ "poses": {
+  "flush": {
+   "stroke": 0.0,
+   "Q": [
+    61.8,
+    416.2
+   ],
+   "phi": 0.79,
+   "P1": [
+    68.7,
+    346.4
+   ],
+   "P2": [
+    35.0,
+    234.3
+   ]
+  },
+  "mid": {
+   "stroke": 165.55,
+   "Q": [
+    172.78861386138615,
+    552.6430693069307
+   ],
+   "phi": 15.657970297029703,
+   "P1": [
+    161.48861386138614,
+    483.44306930693074
+   ],
+   "P2": [
+    100.23267326732673,
+    383.6990099009901
+   ]
+  },
+  "top": {
+   "stroke": 331.1,
+   "Q": [
+    246.6,
+    690.2
+   ],
+   "phi": 0.06,
+   "P1": [
+    254.3,
+    620.4
+   ],
+   "P2": [
+    222.1,
+    507.9
+   ]
+  }
+ },
+ "frames": {
+  "rail_rot_deg": -55.887210347817074,
+  "B": [
+   487.0,
+   126.1
+  ],
+  "E": [
+   0.5608,
+   0.8279
+  ],
+  "NF": [
+   0.8279,
+   -0.5608
+  ]
+ }
+}

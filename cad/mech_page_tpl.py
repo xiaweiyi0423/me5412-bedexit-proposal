@@ -23,7 +23,7 @@ cB = CS["beam_vm_MPa"]
 FEA = [
  dict(n=1, t="铰点 1 组件 + 滑块座焊件", codes="J1 J2 J3 C1", fig=MF.fea_c1(), lvl="最先做",
       why=[f'整个座板只在床头一侧有支撑，人坐偏时的力矩（约 {ST["c1_moment_Nm"]["value"]:.0f} N·m）和力（约 {kN("c1_force_N")} kN）全部经过这里，是整台机器最集中的传力点。',
-           "轴承座筒穿过内壁竖槽，中段开了 60° 窗口给摆臂穿出，又和滑块板焊在一起：窗口角和焊缝根部有应力集中，手算算不出来。",
+           "轴承座筒穿过内壁竖槽，两个轴承之间开了 80° 窗口给摆臂穿出，又和滑块板焊在一起：窗口角和焊缝根部有应力集中，手算算不出来。",
            f'手算只把滑块板当窄条悬臂：应力 {PT["plate"]["S355 钢板 20"]["stress_MPa"]} MPa（允许 237），座板外缘下沉 {PT["plate"]["S355 钢板 20"]["corner_mm"]} mm，是变形预算里第二大的一项，误差可能不小。',
            "两个轴承孔焊后要同轴；受力后两孔相对转得太多，圆锥滚子轴承会偏载。"],
       model="滑块板 + 轴承座筒做成一个实体（焊缝用 3–4 mm 圆角近似）；两个轴承不建滚子，用“轴承接头”或在两个孔面上加分布径向力；J1 轴可以不进 FEA（梁公式已够）。网格：窗口角、焊缝根部加密到 1–2 mm，二阶四面体。",
@@ -278,6 +278,31 @@ table.num td {{ font-family:var(--mono); font-size:13px; font-variant-numeric:ta
 .msg code {{ font-family:var(--mono); font-size:12.5px }}
 .pc {{ font:600 12px var(--mono); color:var(--blue); background:transparent; border:1px solid var(--blue2); padding:0 4px; cursor:pointer }}
 .qa-in {{ display:flex; flex-direction:column; gap:6px; padding:10px 12px; border-top:1px solid var(--rule) }}
+.qa-route {{ display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; padding:6px 12px; font-size:12.5px; color:var(--ink2); background:color-mix(in srgb, var(--hl) 12%, var(--sheet)); border-bottom:1px solid var(--rule) }}
+.linkbtn {{ font:inherit; font-size:12.5px; color:var(--blue); background:none; border:0; padding:0; text-decoration:underline; cursor:pointer }}
+.gal {{ display:grid; grid-template-columns:240px minmax(0, 1fr); gap:16px; align-items:start }}
+@media (max-width:760px) {{ .gal {{ grid-template-columns:1fr }} .glist {{ max-height:260px }} }}
+.glist {{ display:flex; flex-direction:column; gap:2px; max-height:720px; overflow-y:auto; border:1px solid var(--rule); padding:6px }}
+.glist:empty, .gpane:empty {{ display:none }}
+.gg {{ font-size:12px; color:var(--muted); letter-spacing:.06em; margin:8px 4px 2px }}
+.gitem {{ font:inherit; font-size:13.5px; text-align:left; display:flex; gap:8px; align-items:center; padding:5px 8px; border:1px solid transparent; background:transparent; color:var(--ink); cursor:pointer }}
+.gitem:hover {{ border-color:var(--rule) }} .gitem[aria-pressed="true"] {{ border-color:var(--ink); background:color-mix(in srgb, var(--hl) 16%, var(--sheet)) }}
+.gc {{ font-family:var(--mono); font-size:12.5px; color:var(--blue); min-width:34px }}
+.pill.buy {{ background:var(--steel); margin-left:auto; font-size:11px; color:var(--sheet); padding:0 6px }}
+.gpane {{ display:flex; flex-direction:column; gap:10px; min-width:0 }}
+.ghead {{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap }} .ghead h3 {{ font-size:18px }} .gcode {{ font-family:var(--mono); color:var(--blue); font-size:15px }}
+.gmeta {{ display:flex; flex-wrap:wrap; gap:4px 16px; font-size:14px; color:var(--ink2) }}
+.gimgbtn {{ display:block; padding:0; border:1px solid var(--rule); background:#fff; cursor:zoom-in; max-width:100% }}
+.gimgbtn img {{ display:block; width:100%; height:auto }}
+.gnodraw {{ border:1px dashed var(--rule); padding:12px; font-size:14px; color:var(--ink2) }}
+.gparams {{ max-width:520px }}
+.gbtns .btn[hidden] {{ display:none }}
+.lb {{ position:fixed; inset:0; z-index:40; background:color-mix(in srgb, var(--ink) 70%, transparent); display:flex; flex-direction:column;
+  padding:calc(12px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)) }}
+.lb[hidden] {{ display:none !important }}
+.lb-bar {{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; background:var(--sheet); padding:8px 12px; border:1.5px solid var(--ink) }}
+.lb-stage {{ flex:1; min-height:0; overflow:hidden; background:#fff; border:1.5px solid var(--ink); border-top:0; display:grid; place-items:center; cursor:grab; touch-action:none }}
+.lb-stage img {{ width:100%; height:100%; object-fit:contain; transform-origin:center center; user-select:none; pointer-events:none }}
 .sr {{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0) }}
 textarea {{ font:inherit; font-size:14px; width:100%; box-sizing:border-box; padding:7px 9px; border:1px solid var(--rule); background:var(--paper); color:var(--ink); resize:none }}
 textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
@@ -289,7 +314,7 @@ textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
   <div class="name"><h1>起身台机构与选型</h1>
   <p>人坐在床边，座板从和床垫齐平的位置沿一条斜线升起、先前倾再回平，把人托到接近站立。整套机构都放在床头一侧的一个箱子里，座板像一块从箱子伸出来的悬臂，床尾一侧完全敞开，让腿能放下来。</p>
   <p>这一页写给建模（角色 3）和有限元（角色 4）的同学：先用 3D 和三视图看懂零件，再看每个零件为什么这样选，最后是要重点分析的 4 个地方。</p>
-  <nav class="toc" aria-label="目录"><a href="#s1">1 看懂结构</a><a href="#s2">2 怎么动</a><a href="#s3">3 三视图和编号</a><a href="#s4">4 偏载怎么传</a><a href="#s5">5 建模指南</a><a href="#s6">6 有限元重点</a><a href="#s7">7 选型</a><a href="#s8">8 零件和材料</a><a href="#s9">9 校核</a></nav></div>
+  <nav class="toc" aria-label="目录"><a href="#s1">1 看懂结构</a><a href="#s2">2 怎么动</a><a href="#s3">3 三视图和编号</a><a href="#s4">4 偏载怎么传</a><a href="#s5">5 建模指南</a><a href="#s6">6 有限元重点</a><a href="#s7">7 选型</a><a href="#s8">8 零件和材料</a><a href="#s8b">8b 图纸和 3D 文件</a><a href="#s9">9 校核</a></nav></div>
   <div class="meta"><div>版本</div><div>v5.7</div><div>行程</div><div>{mm(D["screw"]["stroke"])} mm</div><div>设计载荷</div><div>100 kg × 1.5</div><div>单位</div><div>mm、N、°</div><div>配套</div><div>CAD 尺寸表</div></div>
 </header>
 
@@ -307,7 +332,7 @@ textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
   <div class="key"><ol>
     <li><b>四个运动件：</b>滑块座（C1 板 + J3 轴承座筒 + 4 个 C2 滑块）沿两根 D1 导轨斜着走；座板（坐垫 + 横梁 S7 + 节点板 S8 + 轴 J1）通过铰点 1 挂在滑块座上，可以绕 y 轴转；连杆 L1 一头连座板上的摆臂 J4，另一头连机构箱底部的 B 点，管座板的倾角。</li>
     <li><b>驱动：</b>一根丝杠 D2 推滑块座；电机 D4 经同步带 1:3 驱动丝杠；失电制动器 D5 和离心限速器 D6 都装在丝杠上端。</li>
-    <li><b>单侧悬臂：</b>座板 440 宽，只在 y = +212 这一端被托住。人坐偏时的力矩全部经过铰点 1，所以铰点 1 用两个相距 61 mm 的圆锥滚子轴承（第 4、6 节）。</li></ol></div>
+    <li><b>单侧悬臂：</b>座板 440 宽，只在 y = +212 这一端被托住。人坐偏时的力矩全部经过铰点 1，所以铰点 1 用两个相距 45 mm 的圆锥滚子轴承（第 4、6 节）。</li></ol></div>
 </section>
 
 <section id="s2">
@@ -374,6 +399,13 @@ textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
   <div class="tw"><table id="bom"><thead><tr><th>部件</th><th>编号</th><th>零件</th><th>材料 / 型号</th><th>尺寸和位置（mm）</th><th>数量</th><th>依据</th></tr></thead><tbody>{"".join(bom_rows)}</tbody></table></div>
 </section>
 
+<section id="s8b">
+  <h2><span class="no">8b</span>零件图纸和 3D 文件</h2>
+  <p>每个自制零件一张图纸（主视、俯视、左视按第一角投影排，加一个轴测图，带外形尺寸和关键尺寸表），外购件给按样本做的外形。STEP 可以直接导入 SolidWorks，坐标和第 1、3 节一致（mm）。图纸是建模参考，不是正式工程图：公差、焊缝、表面处理由角色 3 定。</p>
+  <p class="cap" id="gnote">正在读取零件清单（parts/manifest.json）…</p>
+  <div class="gal"><nav class="glist" id="glist" aria-label="零件清单"></nav><div class="gpane" id="gpane"></div></div>
+</section>
+
 <section id="s9">
   <h2><span class="no">9</span>手算校核</h2>
   <p class="cap">设计载荷：100 kg × 1.5，可偏 10 cm，含沿座面和侧向 ± 0.3 倍的力，全行程最不利位置。规则：应力 ≤ 屈服 / 1.5；轴承、滑块静安全系数 ≥ 2。</p>
@@ -386,9 +418,14 @@ textarea:focus-visible {{ outline:2px solid var(--blue); outline-offset:1px }}
   {table(["型号", "用到的值", "来源", "要核的地方"], BS.cat)}
 </section>
 </div>
+<div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-labelledby="lb-title">
+  <div class="lb-bar"><b id="lb-title"></b><span class="ctl"><button type="button" class="btn ghost" id="lb-out" aria-label="缩小">−</button><button type="button" class="btn ghost" id="lb-in" aria-label="放大">＋</button><button type="button" class="btn ghost" id="lb-fit">适合</button><button type="button" class="btn" id="lb-close">关闭</button></span></div>
+  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt="图纸放大" draggable="false"></div>
+</div>
 <button type="button" id="qa-fab" class="qa-fab" aria-expanded="false" aria-controls="qa-win"><span class="dot"></span>问 Claude</button>
 <aside id="qa-win" class="qa-win" hidden aria-label="问 Claude">
   <header><div><b>问 Claude</b><br><span class="cap">读的是这一页的全部资料；回答里的零件编号可以点</span></div><button type="button" id="qa-min" class="qa-x" aria-label="收起问答窗">—</button></header>
+  <div class="qa-route"><span id="qa-route-t"></span><button type="button" id="qa-switch" class="linkbtn" hidden></button></div>
   <div class="qa-body">
     <div class="qs-row" id="qa-sugg">{"".join(f'<button type="button" class="qs">{html.escape(q)}</button>' for q in QS)}</div>
     <div id="qa-log" class="qa-log" aria-live="polite"></div>

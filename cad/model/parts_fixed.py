@@ -22,10 +22,10 @@ def _stadium(a, b, r, y0, y1):
 def build():
     parts = []
     yb0, yb1 = L.Y["back"]
-    # H1 back plate: outline, drive window through, nut-flange relief 8 deep from the inner face
+    # H1 back plate: outline, drive window through, nut-flange relief 12 deep from the inner face
     h1 = _outline(yb0, yb1).cut(prism_xz(_window(), yb0 - 5, yb1 + 5))
-    relief = [L.screw_to_world(x, z) for x, z in ((60, -26), (470, -26), (470, 26), (60, 26))]
-    h1 = h1.cut(prism_xz(relief, yb0 - 1, yb0 + 8))
+    relief = [L.screw_to_world(x, z) for x, z in ((40, -32), (480, -32), (480, 32), (40, 32))]      # nut flange + C3 end wall path
+    h1 = h1.cut(prism_xz(relief, yb0 - 1, yb0 + 12))
     parts.append(Part("H1", "侧板（导轨安装板）", "6061-T6 铝板 15 mm", "fixed", h1, color=COLORS["alu"],
                       params=[("板厚", "15 mm"), ("y", f"{yb0:.0f} … {yb1:.0f}"), ("外形", "机构箱侧视外廓（见总装图）"), ("驱动窗口", "沿丝杠 445 … 585 × 宽 92"),
                               ("螺母让位槽", "沿丝杠 60 … 470 × 宽 52 × 深 8"), ("导轨安装面", "y 336 面精铣；导轨孔按 HGR15 孔距 60 配钻")],
