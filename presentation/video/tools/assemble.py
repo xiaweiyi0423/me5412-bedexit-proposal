@@ -62,25 +62,36 @@ def main(cfg_path, out):
                 f"Style: Sub,{FONT},50,&H00FFFFFF,&H00FFFFFF,&H64000000,&H78000000,0,0,0,0,100,100,1,0,1,2.2,1.2,2,120,120,64,1\n\n"
                 "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
         for s, t0 in zip(C["scenes"], starts):
-            if not s.get("sub"): continue
-            a = t0 + s.get("narr_at", 0.4); nd = dur_of(os.path.join(HERE, s["narr"])) if s.get("narr") else 2.5
-            f.write(f"Dialogue: 0,{ts(a)},{ts(a + nd + 0.35)},Sub,,0,0,0,,{{\\fad(150,200)}}{s['sub']}\n")
+            for k in ("", "2"):
+                if not s.get("sub" + k): continue
+                a = t0 + s.get(f"narr{k}_at", 0.4); nd = dur_of(os.path.join(HERE, s["narr" + k])) if s.get("narr" + k) else 2.5
+                f.write(f"Dialogue: 0,{ts(a)},{ts(a + nd + 0.35)},Sub,,0,0,0,,{{\\fad(150,200)}}{s['sub' + k]}\n")
     fc.append(f"{last}ass={ass}[vout]")
     # audio: narration lines + ducked music
     ain = []; amix = []; n_in = len(seg)
     for s, t0 in zip(C["scenes"], starts):
-        if s.get("narr"):
-            ain += ["-i", os.path.join(HERE, s["narr"])]; ms = int((t0 + s.get("narr_at", 0.4)) * 1000)
-            fc.append(f"[{n_in}:a]aformat=sample_rates=48000:channel_layouts=stereo,adelay={ms}|{ms}[n{n_in}]"); amix.append(f"[n{n_in}]"); n_in += 1
+        for k in ("", "2"):
+            if s.get("narr" + k):
+                ain += ["-i", os.path.join(HERE, s["narr" + k])]; ms = int((t0 + s.get(f"narr{k}_at", 0.4)) * 1000)
+                fc.append(f"[{n_in}:a]aformat=sample_rates=48000:channel_layouts=stereo,adelay={ms}|{ms}[n{n_in}]"); amix.append(f"[n{n_in}]"); n_in += 1
     fc.append(f"{''.join(amix)}amix=inputs={len(amix)}:normalize=0,apad=whole_dur={total:.3f},atrim=0:{total:.3f}[voice]")
+    # sound effects (scene-relative times), mixed under the voice but not ducked
+    sfx = []
+    for s, t0 in zip(C["scenes"], starts):
+        for e in s.get("sfx", []):
+            ain += ["-i", os.path.join(HERE, e["file"])]; ms = int((t0 + e["at"]) * 1000); d_ = e.get("dur")
+            tr = f"atrim=0:{d_},afade=t=out:st={max(0, d_ - 0.4)}:d=0.4," if d_ else ""
+            fc.append(f"[{n_in}:a]aformat=sample_rates=48000:channel_layouts=stereo,{tr}volume={e.get('db', -12)}dB,adelay={ms}|{ms}[x{n_in}]"); sfx.append(f"[x{n_in}]"); n_in += 1
+    if sfx:
+        fc.append(f"{''.join(sfx)}amix=inputs={len(sfx)}:normalize=0,apad=whole_dur={total:.3f},atrim=0:{total:.3f}[sfxbus]")
     if C.get("music"):
-        ain += ["-i", os.path.join(HERE, C["music"])]; mi = n_in
+        ain += ["-i", os.path.join(HERE, C["music"])]; mi = n_in; n_in += 1
         fc.append(f"[{mi}:a]aformat=sample_rates=48000:channel_layouts=stereo,atrim=0:{total:.3f},apad=whole_dur={total:.3f},"
                   f"afade=t=in:d=1.5,afade=t=out:st={total - 3:.3f}:d=3,volume={C.get('music_db', -14)}dB[mus]")
         if C.get("duck", True):
             fc.append("[voice]asplit[vo1][vo2]")
             fc.append("[mus][vo2]sidechaincompress=threshold=0.03:ratio=6:attack=40:release=600[mduck]")
-            fc.append("[vo1][mduck]amix=inputs=2:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[aout]")
+            fc.append(f"[vo1][mduck]{'[sfxbus]' if sfx else ''}amix=inputs={3 if sfx else 2}:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[aout]")
         else:
             fc.append("[voice][mus]amix=inputs=2:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[aout]")
     else:
