@@ -136,6 +136,7 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
   <a href="#v5">11 第五版修订</a><span class="sep">›</span>
   <a href="#r2">12 第二轮审计</a>
   <a href="#r3">13 机构空间与对比</a>
+  <a href="#r4">14 防跌与控制仿真</a>
   <div class="picker" aria-label="选择用户">
     <label for="selH">身高<select id="selH"></select></label>
     <label for="selR">臀部厚度<select id="selR"></select></label>
@@ -386,7 +387,18 @@ footer{padding-block:40px 0;font-size:13px;color:var(--muted);display:grid;gap:6
     <li><b>速度规则加互锁。</b>速度限在 0 到最快速度之间；座板力下降要伴随踏板力上升才提速，人挂在横杆上时限速。</li>
     <li><b>应急下降</b>改为先电池、后带护盖的拨杆（先断电机），限速 10 → 3 cm/s；阻力里补上电机被反拖的阻力，余量 3.7 → 2.6 倍（全程约 11 s）。</li>
     <li><b>固定件</b>只锁在床架或床腿上；床垫下的压板拉不住约 2.3 kN，不用。</li>
-    <li>控制仿真（8 个场景）还是竖直升降版本，要按坐板轨迹和这些规则重跑。</li></ol></div>
+    <li>控制仿真已按坐板轨迹和这些规则重跑，见第 14 节。</li></ol></div>
+</section>
+
+<section id="r4">
+  <div class="step">步骤 14 · 防跌：腿一软时接得住；坐板控制仿真（5.4，2026-10-27）</div>
+  <h2>省力和抬高床相当；真正的差别是腿一软往回坐时，有没有东西接住</h2>
+  <div class="prose"><p>同一个定义比较几种做法：起身过程中任一时刻，假设腿一软、髋部直着往下落，臀部落点（髋关节后 4 cm）还在座面前缘以内就算接住。坐板在人离开以后停在原处。床按人坐在床沿、髋部在床沿正上方算（另算了往里坐 5 cm 的情况）。扶手不算：它能抓住、稳住方向，但撑不住整个人（模型里两手合计最多出 1/4 体重）。</p></div>
+  <div class="fig"><div class="ttl">腿一软往回坐：起身各阶段里臀部还落在座面上的比例（81 人）</div><div class="tscroll"><table id="r4Catch"></table></div></div>
+  <div class="note" id="r4CatchNote"></div>
+  <div class="fig"><div class="ttl">坐板控制仿真：1.60 m 参考用户，沿坐板实际轨迹和倾角，规则同第 13 节</div><div class="tscroll"><table id="r4Ctrl"></table></div>
+    <img id="r4Img" alt="坐板控制仿真全部场景：座板高度、座板受力、控制状态" style="width:100%;height:auto;margin-top:12px;border-radius:8px"></div>
+  <div class="note" id="r4CtrlNote"></div>
 </section>
 
 <footer>
@@ -1027,6 +1039,19 @@ function drawR3(){
     原因：人离开座板时，座板高度中位 ${V.release.med.toFixed(2)} m（90% 的人在 ${V.release.p90.toFixed(2)} m 以下，最高 ${V.release.max.toFixed(2)} m），和 0.58 m 的床差不多高；放手时前倾中位 ${B.phi_rel.toFixed(0)}°。导轨上段只有个子高的人用到，没人用到 0.69 m，顶上约 3 cm 是余量。早先“比抬高床省 13–20%”来自竖直升到 0.66 m 的旧模型（手上最多出 25% 体重、扶手随座板升），这次同口径重算后不成立。<br>
     所以起身台相对抬高床的价值主要在别处：平时 0.42 m，人人脚踩得实；起身全程有托、不往前滑、坐回接得住。要再省力，得让座板在上段继续托住大腿，这和 15° 防滑上限冲突，是下一步要权衡的。`;
 }
+function drawR4(){
+  const V=D.v54, F=V.fc, p=v=>(100*v).toFixed(0)+"%";
+  const rows=[["低床 0.42 m（坐在床沿）",F.bed042],["低床 0.42 m（往里坐 5 cm）",F.bed042_in],["抬高床 0.58 m（坐在床沿）",F.bed058],["抬高床 0.58 m（往里坐 5 cm）",F.bed058_in],["竖直升降座板",F.vertical],["曲线坐板（采用）",F.seat]];
+  $("#r4Catch").innerHTML="<thead><tr><th>做法</th><th>接得住的起身阶段（中位 / 最少）</th><th>全程接得住的人</th><th>站直时臀部落点到座面前缘</th></tr></thead><tbody>"+
+    rows.map(r=>`<tr><td>${r[0]}</td><td class="mono">${p(r[1].caught_share_med)} / ${p(r[1].caught_share_min)}</td><td class="mono">${r[1].n_always_caught}/${r[1].n}</td><td class="mono">${sg(r[1].catch_at_standing_cm_med)} cm</td></tr>`).join("")+"</tbody>";
+  $("#r4CatchNote").innerHTML=`<b>腿一软时，坐板全程接得住（81/81）；床只在刚起身的前 ${p(F.bed058.caught_share_med)} 左右接得住。</b>原因很直接：人一站起来，臀部就到了床沿外约 ${(-F.bed058.catch_at_standing_cm_med).toFixed(0)} cm；坐板一直跟着大腿走，离座后停在身后，臀部落点还在前缘以内 ${F.seat.catch_at_standing_cm_med.toFixed(1)} cm。离座以后人继续站直，最多往下落 ${F.seat.drop_when_caught_cm_max.toFixed(0)} cm 落到座板上。<br>
+    <b>另一种摔法要说清楚：</b>如果人是直挺挺往后倒（绕脚踝转，髋部一边往下一边往后），床都接得住（${F.bed058.backward_n_always}/81 全程，人倒回床上）；坐板中位 ${p(F.seat.backward_on_seat_med)} 的时刻落在座板上，其余越过座板后缘落到床上，没有落地（${p(F.seat.backward_floor_max)}），但会碰到座板后缘——所以后缘要软包。哪种摔法更常见，我们没有数据：头晕、腿软更像第一种，往后失去平衡更像第二种（推断）。<br>
+    所以，起身台相对抬高床的主要优势是腿一软时接得住，省力只是相当。`;
+  $("#r4Ctrl").innerHTML="<thead><tr><th>场景</th><th>最后状态</th><th>离座高度 / 时间</th><th>最高</th><th>提醒</th></tr></thead><tbody>"+
+    V.ctrl.map(r=>`<tr><td>${r.name}</td><td>${({IDLE:"待机",SEATED:"已坐上",STOPPED:"停住",STANDING_HOLD:"站立保持",EMPTY_HOLD:"空座板停住",LOCKED:"锁定"})[r.final_state]||r.final_state}</td><td class="mono">${r.seat_off_height?r.seat_off_height.toFixed(2)+" m / "+r.seat_off_time_s.toFixed(1)+" s":"—"}</td><td class="mono">${r.max_height.toFixed(2)} m</td><td class="mono">${r.alert_from_s?r.alert_from_s+" s":"—"}</td></tr>`).join("")+"</tbody>";
+  $("#r4Img").src=V.ctrl_img;
+  $("#r4CtrlNote").innerHTML=`<b>${V.ctrl.length} 个场景都落到安全状态。</b>用户模型（<span class="mono">seat_support_slider.py</span>）：沿坐板实际轨迹和倾角、固定 L 形扶手，算出参考用户在每个座板位置、最大发力为 c 时最多能把座板力压到多低；在放手处（座高 ${D.v54.ctrl.find(r=>r.key==="weakest").seat_off_height.toFixed(2)} m 左右）不靠座板起身要 0.265。仿真里发现一处要改的参数：坐板上的人起身中途可以把座板力降到 0.15 倍体重，原来“还坐着”的门槛 0.15 会让他坐偏后不能继续升，改为 0.10（离座门槛仍是 0.05）。`;
+}
 function renderAll(){drawPose();drawHip();drawAssist();drawEnv();drawMech();drawLayout();drawCheck();}
 function loop(which){return ts=>{if(which===1){t1+=0.006;if(t1>1)t1=0;$("#prog1").value=t1*1000;drawPose();drawHip();anim1=requestAnimationFrame(loop(1))}else{t2+=0.006;if(t2>1)t2=0;$("#prog2").value=t2*1000;drawMech();anim2=requestAnimationFrame(loop(2))}}}
 $("#prog1").oninput=e=>{t1=e.target.value/1000;drawPose();drawHip()};
@@ -1034,5 +1059,5 @@ $("#prog2").oninput=e=>{t2=e.target.value/1000;drawMech()};
 $("#play1").onclick=()=>{if(anim1){cancelAnimationFrame(anim1);anim1=null;$("#play1").textContent="播放"}else{$("#play1").textContent="暂停";anim1=requestAnimationFrame(loop(1))}};
 $("#play2").onclick=()=>{if(anim2){cancelAnimationFrame(anim2);anim2=null;$("#play2").textContent="播放"}else{$("#play2").textContent="暂停";anim2=requestAnimationFrame(loop(2))}};
 document.querySelectorAll("#cushTabs button").forEach(b=>b.onclick=()=>{cushSel=b.dataset.c;document.querySelectorAll("#cushTabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));drawMech()});
-drawStatic();drawMechStatic();drawR3();renderAll();
+drawStatic();drawMechStatic();drawR3();drawR4();renderAll();
 </script>

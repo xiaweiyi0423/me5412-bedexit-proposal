@@ -25,6 +25,7 @@ _sv = lambda bed, k: med([1 - SLU[u]["E_release"] / BB["users"][u][bed][k] for u
 SAVE_LOW = _sv("0.42", "L_bar"); SAVE_HL = _sv("0.58", "L_bar"); SAVE_HB = _sv("0.58", "handle"); NWORSE = BS["bed0.58_handle"]["n_worse"]
 PHIREL = st.median([v["phi_release"] for v in SLU.values()])
 pct = lambda v: f"{100 * v:.0f}%"
+N_SCEN = len(json.load(open(os.path.join(ROOT, "model/calc_v13/controller_seat.json")))["scenarios"])
 pc = lambda v: f"{100 * v:.0f}"
 INK, BODY, ACC, LIGHT, PAPER, LINE = "#18202A", "#3F4A57", "#9A5408", "#F7F5F0", "#FCFBF8", "#E2DED5"
 SANS = "font-family:'Noto Sans SC', Arial, sans-serif"; SERIF = "font-family:'Noto Serif SC', Georgia, serif"
@@ -129,8 +130,8 @@ S["verify"] = sec("verify", LIGHT,
   head("5 · 验证", "设计要求 → 怎么验证 → 结果") +
   f'\n<table style="font-size:24px;color:{BODY}">\n<tr><th style="width:30%">设计要求</th><th style="width:24%">怎么验证</th><th style="width:32%">目前结果</th><th style="width:14%">状态</th></tr>\n'
   f'<tr><td>1a 床不用垫高，起身省力达到抬高床的水平</td><td>2D 起身模型，同一扶手、同一批用户</td><td>比低床省 {pct(SAVE_LOW)}；和抬高床相当（中位 {CMP["seat"]:.2f} vs {CMP["high_best"]:.2f}）</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
-  f'<tr><td>1b 座板跟着人走：不往前滑、坐回接得住</td><td>81 人 × 机构实际轨迹</td><td>{nok}/81 合格（竖直升降 {VS["n_ok"]}/81）；按坐垫压下后的位置 {CT.get("n_ok", "—")}/81</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
-  f'<tr><td>2 推力不超过约半个体重</td><td>速度规则 + 场景仿真</td><td>8 个场景都没有超过上限</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>1b 座板跟着人走：不往前滑、坐回接得住</td><td>81 人 × 机构实际轨迹</td><td>{nok}/81 合格（竖直升降 {VS["n_ok"]}/81）；按坐垫压下后的位置 {CT.get("n_ok", "—")}/81；腿一软全程接得住 81/81</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>2 推力不超过约半个体重</td><td>速度规则 + 场景仿真</td><td>坐板版 {N_SCEN} 个场景都没有超过上限</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
   f'<tr><td>3 手握 + 力分布确认后才抬；松手即停</td><td>状态机仿真</td><td>松手后立即停住</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
   f'<tr><td>4 机构放得下、推得动、撑得住</td><td>尺寸、干涉、选型、FEA</td><td>机构箱离床 {L["bed_floor_cm"]["机构箱（导轨、滑块、电机、连杆）"]} cm；[待补] FEA</td><td><b style="color:{ACC}">进行中</b></td></tr>\n'
   f'<tr><td>5 人坐上、挪动、坐回时不翻</td><td>合重心和倾翻计算</td><td>人在台上余量足；人在地上要和床固定；[待补] 真实质量复核</td><td><b style="color:{ACC}">进行中</b></td></tr>\n'
@@ -143,7 +144,7 @@ S["conclusion"] = (f'<section id="conclusion" data-transition="fade" style="back
   f'<div style="display:flex;flex-direction:column;gap:16px">\n<p style="font-size:26px;color:#E3A24A;letter-spacing:2px">5 · 结论</p>\n'
   f'<h2 style="{SERIF};font-size:64px;font-weight:700;line-height:1.2;color:#F2EFE8">平时和床一样低，起身时跟着大腿托一程，随时可停</h2>\n</div>\n'
   f'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">\n'
-  f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">省力、不滑</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">比低床省约 {pct(SAVE_LOW)}；比抬高床只多省 {pc(SAVE_HB)}–{pct(SAVE_HL)}，但平时坐得低、脚踩得实；81 人都不往前滑、坐回接得住</p></div>\n'
+  f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">省力、接得住</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">床不用垫高，省力达到抬高床；起身全程腿一软都接得住（81/81，床只在刚起身时接得住）</p></div>\n'
   f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">做得出来</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">一个电机：斜导轨 + 倾角连杆；机构封闭在床头一侧，床尾敞开；台架和床固定</p></div>\n'
   f'<div style="background:#232E3B;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:34px;font-weight:700;color:#E3A24A">安全</h3><p style="font-size:30px;line-height:1.5;color:#E4E0D6">松手即停、有人坐着才降、速度跟着人走；断电时制动抱住，拉拨杆可慢慢降</p></div>\n</div>\n'
   f'<aside>总结一下。起身台平时和床一样低，起身时座板跟着大腿托一程。按同一个模型，它比从低床起身省约 {pct(SAVE_LOW)}；和把床垫高到 0.58 米相比只多省 {pct(SAVE_HB)} 到 {pct(SAVE_HL)}，好处主要是平时坐得低、脚踩得实，而且座板跟着大腿走，我们模拟的 81 位用户都不会往前滑，坐回去也接得住。机构上，一个电机带动斜导轨和倾角连杆，整套机构封闭在床头一侧，床尾一侧敞开，台架和床固定。控制上，松手即停、有人坐着才降、速度跟着人走；断电时制动器抱住，拉一下拨杆就能慢慢降下来。</aside>\n</section>\n')
@@ -266,7 +267,50 @@ S["speed"] = (f'<section id="speed" data-transition="fade" style="background:{LI
   f'<img src="/_blob/ad1f8a915d4e93b6cc6e40353ef198a9" alt="竖直升降版本的 8 个场景仿真：座板高度、座板受力和控制状态" style="width:760px;height:760px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid {LINE}">\n'
   "<aside>抬升速度怎么定？我们用一条规则：速度等于 k 乘以“推力上限减去座板测到的力”，并且限在零到最快速度之间。人自己卸掉的体重越多，座板上的力越小，座板就升得越快；如果人往回坐，力超过上限，速度变成零，不会倒退。为了防止误判，座板力下降时还要看到踏板力相应上升才提速，说明体重真的转到了脚上；如果人把体重挂在横杆上，就限速。个人设置包括推力上限和最快速度。右边的仿真还是竖直升降版本的，我们会按坐板的轨迹和新的下降规则重跑。</aside>\n</section>\n")
 
+# ---------------------------------------------------------------- v5.4: fall catch (seat_1dof_fall_catch.py) and the seat controller (controller_seat.py)
+FC = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/fall_catch.json")))["summary"]
+CS = json.load(open(os.path.join(ROOT, "model/calc_v13/controller_seat.json"))); CSS = {x["key"]: x for x in CS["scenarios"]}
+def _bar2(label, v, col, note, bold=False):
+    w = round(500 * v)
+    return (f'<p style="font-size:26px;color:{INK if bold else BODY}">{"<b>" + label + "</b>" if bold else label}</p>'
+            f'<div style="display:flex;align-items:center;gap:14px"><div style="height:34px;width:{max(w, 4)}px;background:{col};border-radius:0 6px 6px 0"></div>'
+            f'<p style="font-size:26px;font-weight:700">{100 * v:.0f}%</p><p style="font-size:21px;color:#66707C">{note}</p></div>')
+S["whynot"] = sec("whynot", PAPER,
+  head("2 · 方案比较", "床不用垫高，省力达到抬高床；腿一软时，全程都接得住", 56) +
+  f'\n<div style="display:grid;grid-template-columns:1040px 1fr;gap:48px;align-items:start">\n<div style="display:flex;flex-direction:column;gap:14px">\n'
+  f'<p style="font-size:24px;color:#66707C">① 起身最吃力那一刻的 effort，中位数（越低越轻松；同一批 {N72} 人）</p>\n'
+  f'<div style="display:grid;grid-template-columns:340px 1fr;gap:10px 20px;align-items:center">\n'
+  + _bar("低床 0.42 m + L 扶手", CMP["low"], "#C3C9D1") + "\n" + _bar("抬高床 0.58 m + 最佳扶手", CMP["high_best"], "#7D8792") + "\n"
+  + _bar("起身台：坐板放手那一刻", CMP["seat"], "#B4620A", bold=True) +
+  f'\n</div>\n<p style="font-size:24px;color:#66707C;margin-top:14px">② 腿一软往回坐时，臀部还落在座面上的起身阶段，中位数（81 人）</p>\n'
+  f'<div style="display:grid;grid-template-columns:340px 1fr;gap:10px 20px;align-items:center">\n'
+  + _bar2("低床 0.42 m", FC["bed042"]["caught_share_med"], "#C3C9D1", f'全程接得住 {FC["bed042"]["n_always_caught"]}/81') + "\n"
+  + _bar2("抬高床 0.58 m", FC["bed058"]["caught_share_med"], "#7D8792", f'{FC["bed058"]["n_always_caught"]}/81') + "\n"
+  + _bar2("竖直升降座板", FC["vertical"]["caught_share_med"], "#9AA3AD", f'{FC["vertical"]["n_always_caught"]}/81') + "\n"
+  + _bar2("起身台：曲线坐板", FC["seat"]["caught_share_med"], "#B4620A", f'{FC["seat"]["n_always_caught"]}/81', bold=True) +
+  f'\n</div>\n</div>\n<div style="display:flex;flex-direction:column;gap:22px">\n'
+  f'<p style="font-size:28px;line-height:1.45"><b>省力：</b>比低床省 {pct(SAVE_LOW)}；和抬高床相当（再省 {pc(SAVE_HB)}–{pct(SAVE_HL)}）</p>\n'
+  f'<p style="font-size:28px;line-height:1.45"><b>接得住：</b>站起来后臀部在床沿外约 25 cm，床接不住；坐板停在身后，臀部落点还在座面前缘以内 {FC["seat"]["catch_at_standing_cm_med"]:.1f} cm</p>\n'
+  f'<p style="font-size:26px;line-height:1.5;color:{BODY}">扶手抓得住，但撑不住整个人（模型里两手合计最多 1/4 体重）</p>\n'
+  f'<p style="font-size:26px;line-height:1.5;color:{ACC}">往后直挺挺倒时床也接得住；坐板 {100 * FC["seat"]["backward_on_seat_med"]:.0f}% 落在座板上、其余越过座板后缘落到床上，都不落地 → 后缘软包</p>\n</div>\n</div>\n'
+  + foot("effort：2D 准静态模型，两手合计最多出 1/4 体重。②：起身中任一时刻髋部直着往下落，臀部落点（髋后 4 cm）在座面前缘以内算接住；床按坐在床沿（髋在床沿上方）算"),
+  f"接下来比较几种起身方式，看两件事。第一是省力：同一个模型、同一副扶手，起身台比从低床起身省 {pct(SAVE_LOW)}，和把床垫高到 0.58 米相当。第二是更重要的：起身中间腿一软往回坐，会不会坐空。我们按同一个定义算：任一时刻髋部直着往下落，臀部落点还在座面上就算接住。床只在刚起身的前 15% 左右接得住，因为人一站起来，臀部就到了床沿外大约 25 厘米；竖直升降的座板跟不上大腿，中位数只有 62%；曲线坐板一直跟着人，人离开以后就停在身后，81 个人在整个起身过程中都接得住。扶手能抓，但两只手撑不住整个人。也要说清楚：如果人是直挺挺往后倒，床也接得住；这时坐板有一部分情况会越过座板后缘落到床上，不会落地，但会碰到后缘，所以座板后缘要做软包。",
+  pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:32px")
+
+S["speed"] = (f'<section id="speed" data-transition="fade" style="background:{LIGHT};color:{INK};{SANS};padding:128px;display:grid;grid-template-columns:1fr 760px;gap:56px;align-items:center">\n'
+  f'<div style="display:flex;flex-direction:column;gap:24px">\n<p style="font-size:26px;color:{ACC};letter-spacing:2px">4 · 速度随人自适应</p>\n'
+  f'<h2 style="{SERIF};font-size:54px;font-weight:700;line-height:1.25">人卸掉多少体重，座板就升多快</h2>\n'
+  f'<p style="font-size:30px;line-height:1.4;background:{PAPER};border:1px solid {LINE};border-radius:16px;padding:22px">v = k ×（推力上限 − 座板的力），限在 0 到最快速度之间</p>\n'
+  f'<ul style="font-size:26px;line-height:1.5;color:{BODY}">\n'
+  f'<li>人往回坐，座板力超过上限，速度变成 0，不会倒退</li>\n'
+  f'<li>座板力按倾角折算成竖直方向；人挂在横杆上就限速</li>\n'
+  f'<li>个人设置：推力上限 0.5–0.6 × 体重，最快 1.5–3 cm/s</li>\n'
+  f'<li>按坐板轨迹仿真 {len(CS["scenarios"])} 个场景，都落到安全状态（全部见附录）；典型用户 {CSS["typical"]["seat_off_time_s"]:.0f} s 内在 {CSS["typical"]["seat_off_height"]:.2f} m 离座</li>\n</ul>\n</div>\n'
+  + img("ctrl_seat_main", "坐板控制仿真三个场景：典型用户、抬升中晕倒松手（停住接人、17 秒后提醒呼叫、不自己降）、抬升中断电（按住“降”用电池慢降）", 740, 810, bg="#FFFFFF") + "\n"
+  f"<aside>抬升速度怎么定？我们用一条规则：速度等于 k 乘以“推力上限减去座板测到的力”，并且限在零到最快速度之间。人自己卸掉的体重越多，座板升得越快；人往回坐，速度变成零，不会倒退。座板会前倾，控制器按丝杠编码器知道的倾角，把座板的力折算成竖直方向；如果人把体重挂在横杆上，就限速。右边是按坐板实际轨迹重跑的仿真，一共 {len(CS['scenarios'])} 个场景，这里放三个：典型用户大约 {CSS['typical']['seat_off_time_s']:.0f} 秒在 {CSS['typical']['seat_off_height']:.2f} 米离座，座板停在那里；抬升中晕倒松手，座板停住接人，17 秒后提醒并呼叫家属，不会自己往下降；断电时制动抱住，按住“降”用电池慢慢降。其余场景放在附录。</aside>\n</section>\n")
+
 REPL.pop("statemachine", None)   # v5.3 rewrites the whole slide
+REPL["limits"].append(("<li>评估占地和夜里走动时的绊倒风险；控制仿真按坐板重跑</li>", "<li>评估占地和夜里走动时的绊倒风险；摔倒方式（腿软、往后倒）要用实测动作核对</li>"))
 
 if __name__ == "__main__":
     for sid, html in S.items():
@@ -275,6 +319,7 @@ if __name__ == "__main__":
         p = os.path.join(OUT, f"{sid}.html"); h = open(p).read()
         for a, b in pairs:
             if b in h: continue                         # already applied (deck root is edited in place)
+            if a not in h: print("  skip (superseded):", sid, a[:30]); continue
             assert h.count(a) == 1, (sid, a[:40]); h = h.replace(a, b)
         if sid == "appendix":                      # an earlier non-idempotent run repeated a row: drop repeated lines
             seen = set(); h = "\n".join(l for l in h.split("\n") if not (l.startswith("<tr><td>") and (l in seen or seen.add(l))))

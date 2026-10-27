@@ -39,6 +39,13 @@ D["v53"] = dict(fb=dict(mech=FBO["mech"], act={k: FBO["act"][k] for k in ("strok
                 release=(lambda z: dict(med=round(float(np.median(z)), 3), p90=round(float(np.percentile(z, 90)), 3), max=round(float(max(z)), 3)))(
                     [v["seat_z"] for v in json.load(open(os.path.join(C, "release_z.json"))).values()]))
 
+# 5.4: fall catch (seat_1dof_fall_catch.py) and the seat controller simulation (controller_seat.py)
+import base64
+CSJ = json.load(open(os.path.join(ROOT, "model/calc_v13/controller_seat.json")))
+D["v54"] = dict(fc=json.load(open(os.path.join(C, "fall_catch.json")))["summary"],
+                ctrl=[{k: x[k] for k in ("key", "name", "c", "final_state", "final_height", "max_height", "seat_off_height", "seat_off_time_s", "alert_from_s", "speed_limited")} for x in CSJ["scenarios"]],
+                ctrl_img="data:image/png;base64," + base64.b64encode(open(os.path.join(ROOT, "model/calc_v13/controller_seat_all.png"), "rb").read()).decode())
+
 tpl = open(os.path.join(HERE, "template.html")).read()
 out = tpl.replace("/*__DATA__*/{}", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
 open(os.path.join(ROOT, "page/seat_1dof.html"), "w").write(out)

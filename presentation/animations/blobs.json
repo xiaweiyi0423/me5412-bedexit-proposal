@@ -10,5 +10,6 @@
  "seat_force": "/_blob/82ba7f1d5f0a1856e5f34169e4961b8d",
  "seat_sensors": "/_blob/8f2bbcf0d2e5823e75ba7dfc50717dea",
  "seat_statemachine": "/_blob/4cb5dcac7f043eef91945b4b97d9274d",
- "seat_top": "/_blob/590c4d0b9e9735ee360400fca1c02c29"
+ "seat_top": "/_blob/590c4d0b9e9735ee360400fca1c02c29",
+ "ctrl_seat_main": "/_blob/bceb7034716f8e5a81583ea3da9be392"
 }
