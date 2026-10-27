@@ -3,7 +3,7 @@ model/calc_v13/seat_1dof/page.json; uploaded image URLs from presentation/animat
 Usage: python3 update_slides_v52.py <deck_root>   (deck_root holds project/slides/*.html as read from the Slides artifact)
 Only the slides listed in SLIDES are (re)written; slide ids and the deck order stay the same.
 """
-import json, os, sys, statistics as st
+import json, os, re, sys, statistics as st
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, ".."))
 P = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/page.json")))
 BL = json.load(open(os.path.join(HERE, "animations/blobs.json")))
@@ -328,6 +328,86 @@ S["mechanism"] = sec("mechanism", PAPER,
 REPL.pop("statemachine", None)   # v5.3 rewrites the whole slide
 REPL["limits"].append(("<li>人体按二维刚体轮廓、坐垫按独立弹簧床算；分区坐垫和面料摩擦要样件实测</li>", "<li>人体按二维刚体轮廓、坐垫按独立弹簧床算；分区坐垫和面料摩擦要样件实测</li>\n<li>横杆固定：回来要从床尾一侧侧身走进约 0.46 m 深的空间，助行器进不去。备选：可掀起的翻转横杆（要加锁扣和“已锁住”检测，可能忘了放下）</li>"))
 REPL["limits"].append(("<li>评估占地和夜里走动时的绊倒风险；控制仿真按坐板重跑</li>", "<li>评估占地和夜里走动时的绊倒风险；摔倒方式（腿软、往后倒）要用实测动作核对</li>"))
+
+# ---------------------------------------------------------------- v5.6: rise paths now reach standing (solve_s fix) + deck audit round 3
+FC = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/fall_catch.json")))["summary"]
+BT = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/bed_thigh.json")))["thigh_slope_deg"]
+FS, F58, F42, FV = FC["seat"], FC["bed058"], FC["bed042"], FC["vertical"]
+NW_ALL = BS["bed0.58_handle"]["n_worse"]; HB, SE = CMP["high_best"], CMP["seat"]
+_th = lambda r, c: f'<td style="padding:8px 12px;border-bottom:1px solid {LINE}{";font-weight:700;color:" + INK if c else ""}">{r}</td>'
+def _tr(cells, bold_last=True):
+    return "<tr>" + "".join(_th(c, bold_last and i == len(cells) - 1) for i, c in enumerate(cells)) + "</tr>"
+MODES = ('<table style="font-size:21px;color:#3F4A57;border-collapse:collapse;width:100%">'
+  + '<tr>' + "".join(f'<th style="text-align:left;padding:8px 12px;border-bottom:2px solid {LINE};font-size:20px;color:#66707C">{h}</th>' for h in ("腿一软时", "低床 0.42 m", "抬高床 0.58 m", "竖直升降", "曲线坐板")) + '</tr>'
+  + _tr(["① 髋直着往下落", pct(F42["caught_share_med"]), pct(F58["caught_share_med"]), pct(FV["caught_share_med"]), f'{pct(FS["caught_share_med"])}（每人 ≥ {pct(FS["caught_share_min"])}）'])
+  + _tr(["② 膝软、髋往后下落", pct(F42["knee_on_med"]), pct(F58["knee_on_med"]), "—", f'{pct(FS["knee_on_med"])}，其余落到后缘'])
+  + _tr(["③ 直挺挺往后倒", "接得住", "接得住", "—", f'{pct(FS["backward_on_seat_med"])}，其余越过后缘'])
+  + '</table>')
+S["whynot"] = sec("whynot", PAPER,
+  head("2 · 方案比较", "床不用垫高，省力达到抬高床；腿一软时，起身大半程臀部都落在座板上", 52) +
+  f'\n<div style="display:grid;grid-template-columns:1080px 1fr;gap:48px;align-items:start">\n<div style="display:flex;flex-direction:column;gap:14px">\n'
+  f'<p style="font-size:24px;color:#66707C">① 起身最吃力那一刻的 effort，中位数（越低越轻松；81 人）</p>\n'
+  f'<div style="display:grid;grid-template-columns:400px 1fr;gap:10px 20px;align-items:center">\n'
+  + _bar("低床 0.42 m + L 扶手", CMP["low"], "#C3C9D1") + "\n" + _bar("抬高床 0.58 m + 扶手放最优处", HB, "#7D8792") + "\n"
+  + _bar("起身台：坐板放手那一刻", SE, "#B4620A", bold=True) +
+  f'\n</div>\n<p style="font-size:24px;color:#66707C;margin-top:12px">② 臀部还落在支撑面上的起身阶段，中位数（81 人，三种摔法）</p>\n' + MODES +
+  f'\n</div>\n<div style="display:flex;flex-direction:column;gap:20px">\n'
+  f'<p style="font-size:27px;line-height:1.45"><b>省力：</b>比低床省 {pct(SAVE_LOW)}；比抬高床再省约 {pc(SAVE_HB)}%，{NW_ALL}/81 人略费力</p>\n'
+  f'<p style="font-size:27px;line-height:1.45"><b>床：</b>人一站起来，臀部在床沿外约 25 cm，① ② 大半程接不住</p>\n'
+  f'<p style="font-size:27px;line-height:1.45"><b>坐板：</b>只在快站直时，{81 - FS["n_always_caught"]}/81 人直着落会落在前缘外 {-FS["miss_worst_cm_med"]:.0f}–{-FS["miss_worst_cm_min"]:.0f} cm</p>\n'
+  f'<p style="font-size:25px;line-height:1.5;color:{ACC}">往后摔会碰座板后缘 → 后缘软包</p>\n'
+  f'<p style="font-size:25px;line-height:1.5;color:{BODY}">扶手抓得住，撑不住整个人（两手最多 1/4 体重）</p>\n</div>\n</div>\n'
+  + foot("effort：2D 准静态，81 人。②：起身中任一时刻腿一软，臀部落点（髋后 4 cm）还在座面上算接住；床按坐在床沿算。三种摔法是边界情况，真实摔倒在它们之间"),
+  f"接下来比较几种起身方式，看两件事。第一是省力：同一个模型、同样 81 位用户，起身台比从低床起身省约 {pct(SAVE_LOW)}；和把床垫高到 0.58 米、扶手放在对它最有利的位置相比，再省约 {pc(SAVE_HB)}%，但有 {NW_ALL} 个人略费力，所以只能说相当或略好。第二件事更重要：起身中间腿一软，会不会坐空。我们算了三种摔法。髋直着往下落时，床只在刚起身的前 {pct(F58['caught_share_med'])} 左右接得住，因为人一站起来，臀部就到了床沿外大约 25 厘米；坐板一直跟着人，离开后停在身后，起身的绝大部分都接得住，只在快站直时，约三分之一的人会落在座板前缘外几厘米。膝盖软、髋往后下落时，坐板从不让人落到前面，床要到快站直时才接得住。直挺挺往后倒时，床都接得住，坐板这时会被碰到后缘，所以后缘要软包。三种摔法是边界情况，真实的摔倒在它们之间。",
+  pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:28px")
+
+S["verify"] = sec("verify", LIGHT,
+  head("5 · 验证", "设计要求 → 怎么验证 → 结果") +
+  f'\n<table style="font-size:22px;color:#3F4A57">\n<tr><th style="width:29%">设计要求</th><th style="width:22%">怎么验证</th><th style="width:36%">目前结果</th><th style="width:13%">状态</th></tr>\n'
+  f'<tr><td>1a 床不用垫高，起身省力达到抬高床的水平</td><td>2D 起身模型，同一批 81 人</td><td>比低床省 {pct(SAVE_LOW)}；比抬高床再省约 {pc(SAVE_HB)}%（中位 {SE:.2f} vs {HB:.2f}），{NW_ALL}/81 人略费力</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>1b 座板跟着人走：不往前滑、坐回接得住</td><td>81 人 × 机构实际轨迹</td><td>{nok}/81 合格（竖直升降 {VS["n_ok"]}/81）；按坐垫压下后 {CT.get("n_ok", "—")}/81；腿一软直着落，起身中位 {pct(FS["caught_share_med"])} 接得住（床 {pct(F58["caught_share_med"])}）</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>2 推力不超过约半个体重</td><td>速度规则 + 场景仿真</td><td>坐板版 {N_SCEN} 个场景都没有超过上限</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>3 手握 + 力分布确认后才抬；松手即停</td><td>状态机仿真</td><td>松手后立即停住</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>4 抬升速度跟着人走，并能按人设定</td><td>坐板控制仿真</td><td>速度随座板力变；推力上限、最快速度按人设；典型用户 {CSS["typical"]["seat_off_time_s"]:.0f} s 离座</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>5 人坐上、挪动、坐回时不翻</td><td>合重心和倾翻计算</td><td>人在台上余量足；人在地上要和床固定；[待补] 真实质量复核</td><td><b style="color:#9A5408">进行中</b></td></tr>\n'
+  f'<tr><td>6 只有按住“降”才往下动；离座后停住接人</td><td>状态机仿真</td><td>坐回、晕倒、断电、回床场景都落到安全状态</td><td><b style="color:#2F7A55">初步完成</b></td></tr>\n'
+  f'<tr><td>＋ 机构放得下、推得动、撑得住</td><td>尺寸、干涉、选型、FEA</td><td>机构箱离床 2.1 cm；[待补] FEA（应力和悬臂变形）</td><td><b style="color:#9A5408">进行中</b></td></tr>\n</table>\n'
+  + foot("本项目只做概念、设计和仿真，不做实物和人体实验；“初步完成”指已有第一版计算或仿真结果"),
+  f"这张表把第 4 页的六条设计要求和验证方法一一对上。第一条我们写成两项：一是床不用垫高，起身省力达到抬高床的水平，结果是比低床省约 {pct(SAVE_LOW)}，比抬高床再省一点；二是座板跟着人走：用机构实际轨迹重跑 81 位用户，{nok} 人不往前滑、坐回接得住，竖直升降只有 {VS['n_ok']} 人；腿一软时，起身的绝大部分都有座板接住。推力上限、松手即停、速度跟着人走、只有按住才往下降，用状态机的场景仿真验证。最后一行不是用户要求，是机构本身要做到的：放得下、推得动、撑得住，强度和悬臂变形的 FEA 还在做。",
+  pad="128px 128px 160px", layout="display:flex;flex-direction:column;gap:32px")
+
+S["conclusion"] = S["conclusion"].replace(
+  "床不用垫高，省力达到抬高床；起身全程腿一软都接得住（81/81，床只在刚起身时接得住）",
+  f"床不用垫高，省力达到抬高床；腿一软时，起身大半程都有座板接住（床只在刚起身时接得住）").replace(
+  "松手即停、有人坐着才降、速度跟着人走；断电时制动抱住，拉拨杆可慢慢降", "松手即停、只有按住“降”才往下动、速度跟着人走；断电时制动抱住，电池或拨杆慢慢降")
+_ca = re.search(r"<aside>.*?</aside>", S["conclusion"], re.S).group(0)
+S["conclusion"] = S["conclusion"].replace(_ca, f"<aside>总结一下。起身台平时和床一样低，起身时座板跟着大腿托一程。按同一个模型，它比从低床起身省约 {pct(SAVE_LOW)}，和把床垫高到 0.58 米相当或略好；更重要的是，起身中间腿一软，起身的绝大部分都有座板在臀部下面接住，而床只在刚起身时接得住。机构上，一个电机带动斜导轨和倾角连杆，整套机构封闭在床头一侧，床尾一侧敞开，台架和床固定。控制上，松手即停，只有按住“降”才往下动，速度跟着人走；断电时制动器抱住，用电池或拨杆慢慢降下来。</aside>")
+
+S["concept"] = S["concept"].replace("<b>1</b> 坐在床沿，挪上和床齐平的座板", "<b>1</b> 坐到床沿：往前倾就够得着横杆").replace(
+  "<b>2</b> 双手握住身前横杆，想坐多久都行", "<b>2</b> 握住横杆，挪上和床齐平的座板；想坐多久都行").replace(
+  "用的时候一共五步：坐在床沿，往前挪一点，坐上一块和床齐平的座板；双手握住身前横杆上的握把，想坐多久都可以；",
+  "用的时候一共五步：先坐到床沿，往前倾一点就能握住身前的横杆；拉着横杆往前挪，坐上一块和床齐平的座板，想坐多久都可以；")
+assert "往前倾就够得着横杆" in S["concept"] and "拉着横杆往前挪" in S["concept"]
+
+_mo = f"座板前移约 {100 * M['travel']['dx']:.0f} 厘米、上升约 {100 * M['travel']['dz']:.0f} 厘米"
+assert _mo in S["mechanism"]; S["mechanism"] = S["mechanism"].replace(_mo, f"座板前移约 {100 * M['travel']['dx']:.1f} 厘米、上升约 {100 * M['travel']['dz']:.1f} 厘米")
+
+for a, b in (("先断电机电源再松制动，限速约 3 cm/s，松手即停", "先断电机电源再松制动，丝杠轴上的离心限速器把速度限在约 3 cm/s，松手即停"),
+             ("人的重量把座板慢慢压下去，速度限在每秒 3 厘米左右", "人的重量把座板慢慢压下去，丝杠轴上的离心限速器把速度限在每秒 3 厘米左右")):
+    assert a in S["sizing"], a; S["sizing"] = S["sizing"].replace(a, b)
+for a, b in (("下降遇阻（电机电流升高）即停", "下降遇阻（电机电流或座板测力突变）即停"), ("（先断电机），限速 3 cm/s", "（先断电机），离心限速 3 cm/s")):
+    assert a in S["risk"], a; S["risk"] = S["risk"].replace(a, b)
+_sf = f"底座 x 3–78 cm、y {cm(T['base']['y'][0])} … +{cm(T['base']['y'][1])} cm"
+assert _sf in S["stability"]; S["stability"] = S["stability"].replace(_sf, f"底座 x 3–78 cm（离床方向）、y {cm(T['base']['y'][0])} … +{cm(T['base']['y'][1])} cm（沿床长 65 cm）")
+for a, b in (("空着时查零点；抬升中三处力之和 ≈ 体重</span>", "空着时查零点；抬升中三处力之和 ≈ 体重（体重在个人设置里输入）</span>"),
+             ("握把上的状态灯和踏板夜灯</span>", "握把上的状态灯、踏板夜灯；握了不动时，用语音说明原因（如“请往前坐一点”）</span>")):
+    assert a in S["sensing"], a; S["sensing"] = S["sensing"].replace(a, b)
+_sm = "座板停在放手处接人；回床时按住“降”，空座板停在 0.50 m，坐上后再降到床面"
+assert _sm in S["statemachine"]; S["statemachine"] = S["statemachine"].replace(_sm, "座板停在放手处接人；回床时按住“降”，空座板停在 0.50 m，坐上后再降到床面；推不动或到顶也停住")
+
+REPL.setdefault("users", []).append(("<li>只有确认有人坐着才下降；离座后座板停住接人</li>", "<li>只有人按住“降”才往下动，不自动下降；离座后座板停住接人</li>"))
+REPL.setdefault("limits", []).append(("往前挪二三十厘米对老人是否可行，也还没有验证。", "挪上座板约十到二十厘米、回床时往后挪，对老人是否可行，也还没有验证；座板后缘在往后摔时会被碰到，软包要做好。"))
+REPL.setdefault("appendix", []).append(("<tr><td>8 个仿真场景的逐个说明</td>", f"<tr><td>{N_SCEN} 个控制仿真场景的逐个说明</td>"))
 
 if __name__ == "__main__":
     for sid, html in S.items():

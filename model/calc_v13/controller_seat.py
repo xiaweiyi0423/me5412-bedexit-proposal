@@ -116,7 +116,10 @@ class Controller:
             if self.t_empty > P.empty_t: self.go("EMPTY_HOLD", "人已离开：座板停在原处")
         elif s == "EMPTY_HOLD":
             if occupied: self.go("SEATED", "有人坐上座板")
-            elif (z.get("up") or down_edge) and z["F_seat"] < P.seatoff_thr: self.paused = False; self.go("EMPTY_MOVE")
+            elif (z.get("up") or down_edge) and z["F_seat"] < P.seatoff_thr:
+                # v5.6: a new hold of DOWN while parked at the return height carries the empty seat on down to the bed surface
+                if not (down_edge and self.paused and abs(self.h - P.ret_h) < 2e-3): self.paused = False
+                self.go("EMPTY_MOVE")
         elif s == "EMPTY_MOVE":
             if z["F_seat"] > P.seatoff_thr: self.go("EMPTY_HOLD", "空座板移动时受力：停住")
             elif z.get("up"): v_cmd = P.v_empty if self.h < H1 - 1e-3 else 0.0

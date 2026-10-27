@@ -43,7 +43,12 @@ def design_curve(cap=PHI_CAP):
     tt = np.linspace(0, 1, 300); Q = np.c_[np.polyval(fx, tt), np.polyval(fz, tt)]; phi = np.clip(np.polyval(fp, tt), 0, cap)
     return F1.with_prefix(Q, phi)
 
-CVD = design_curve(); QT, PT = resample_curve(CVD, 40)
+def _frozen_curve():
+    """v5.6: the design curve as synthesised (before the solve_s fix lengthened every rise); the mechanisms were fitted to it."""
+    f = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seat_1dof", "design_curve_v5.json")
+    if not os.path.exists(f): return design_curve()
+    d = json.load(open(f)); return np.array(d["q"]), np.array(d["Q"]), np.array(d["phi"])
+CVD = _frozen_curve(); QT, PT = resample_curve(CVD, 40)
 FB2.QT, FB2.PT = QT, PT          # the four-bar runner and its base cost now target the v5 curve
 LY.LIP = LIP
 

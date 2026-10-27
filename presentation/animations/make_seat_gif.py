@@ -113,10 +113,13 @@ def frame_state(fr, released):
     if fr.get("seat") is None: return "已坐上"
     return "抬升"
 
-def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True, state=None):
+def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True, state=None, flush=False):
     scene(ax); housing(ax); handrail(ax)
     released = fr.get("seat") is None and last_seat is not None
-    cu = fr.get("cush", {}).get(cush) if fr.get("seat") else None
+    cu = fr.get("cush", {}).get(cush) if (fr.get("seat") and not flush) else None
+    if flush:                         # v5.6: sitting before the lift: the seat is still flush with the bed (not yet pushing)
+        Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]; mechanism(ax, Q, phi); person(ax, A, fr, bar=hands, rb=A.get("rb", 0.09))
+        badge(ax, state or "已坐上", [f"座面 {Q[1]:.2f} m（与床齐平）· 前倾 {phi:.0f}°"], step, cap); return dict(Q=Q, phi=phi)
     if cu and not cu.get("lost"): Q, phi = cu["Q"], cu["phi"]
     elif fr.get("seat"): Q, phi = fr["seat"]["Q"], fr["seat"]["phi"]
     elif last_seat: Q, phi = last_seat["Q"], last_seat["phi"]
@@ -133,8 +136,8 @@ def render_gif(path, user=REF, fps=10):
     A = D["anim"][user]; fig = plt.figure(figsize=(8.0, 8.0), dpi=110); ax = fig.add_axes([0, 0, 1, 1]); imgs = []; last = None
     frames = [A["frames"][0]] * 8 + A["frames"] + [A["frames"][-1]] * 12
     states = ["已坐上"] * 8 + [None] * len(A["frames"]) + ["站立保持"] * 12
-    for fr, stt in zip(frames, states):
-        s = draw_frame(ax, A, fr, last, state=stt)
+    for n_, (fr, stt) in enumerate(zip(frames, states)):
+        s = draw_frame(ax, A, fr, last, state=stt, flush=(n_ < 8))
         if fr.get("seat"): last = fr["seat"]
         fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB"))
     q = [im.quantize(colors=96, method=Image.Quantize.MEDIANCUT) for im in imgs]
@@ -151,7 +154,7 @@ def render_steps(prefix, user=REF):
         fig = plt.figure(figsize=(6.0, 6.0), dpi=120); ax = fig.add_axes([0, 0, 1, 1])
         for f in fr[:k + 1]:
             if f.get("seat"): last = f["seat"]
-        draw_frame(ax, A, fr[k], last, hands=(n != 1), state=["已坐上", "已坐上", "抬升", "抬升", "站立保持"][n - 1])
+        draw_frame(ax, A, fr[k], last, hands=(n != 1), state=["已坐上", "已坐上", "抬升", "抬升", "站立保持"][n - 1], flush=(n <= 2))
         fig.savefig(f"{prefix}{n}.png", facecolor=BG); plt.close(fig)
 
 def render_mech(path):
@@ -174,7 +177,8 @@ def render_vs(path):
     V = D["check"]["vertical"]; Fd = D["check"]["design"]; UU = {u["key"]: u for u in D["users"]}
     early = [k for k in Fd if " p0.6 " in k]; k = max(early, key=lambda kk: (V[kk].get("fwd_slip_max_cm") or 0))
     A = D["anim"][k]; rb = UU[k]["r_b"]; fr = A["frames"]; idx = [i for i, f in enumerate(fr) if f.get("seat")]; i = idx[len(idx) // 2] if idx else 0
-    fig, axs = plt.subplots(1, 2, figsize=(14, 7.2), dpi=110); fig.patch.set_facecolor(BG)
+    fig, axs = plt.subplots(1, 2, figsize=(13, 5.1), dpi=110); fig.patch.set_facecolor(BG)    # v5.6: slide box is 660 x 260
+    fig.subplots_adjust(left=0.0, right=1.0, top=1.0, bottom=0.0, wspace=0.02)
     for ax, kind in zip(axs, ("vertical", "curve")):
         scene(ax, -0.35, 0.95, 1.45); f = fr[i]
         if kind == "vertical":
@@ -182,15 +186,15 @@ def render_vs(path):
             zz = min(float(under[:, 1].min()) if len(under) else 0.66, 0.66)
             ax.add_patch(Polygon([(x0, zz), (x1, zz), (x1, zz - 0.05), (x0, zz - 0.05)], closed=True, color=SEAT, zorder=5))
             ax.plot([0.06, 0.06], [0.04, zz - 0.05], color=STEEL2, lw=14, zorder=3)
-            ttl = f"竖直升降：前滑 {V[k]['fwd_slip_max_cm']:+.1f} cm，坐回余量 {V[k]['min_catch_cm']:+.1f} cm"; col = RED
+            ttl = f"竖直升降：往前滑 {V[k]['fwd_slip_max_cm']:.0f} cm"; col = RED
             note = "座板只能竖直上来，髋已经走到座板前面：\n只托住臀部后缘，人往前滑，坐回时会坐空"
         else:
             Q, phi = f["seat"]["Q"], f["seat"]["phi"]; mechanism(ax, Q, phi, show_inside=False)
-            ttl = f"曲线坐板：前滑 {Fd[k]['fwd_slip_max_cm']:+.1f} cm，坐回余量 {Fd[k]['min_catch_cm']:+.1f} cm"; col = GOOD
+            ttl = f"曲线坐板：往前滑 {Fd[k]['fwd_slip_max_cm']:.0f} cm"; col = GOOD
             note = "座板跟着大腿往前、往上、前倾：\n一直托在臀部和大腿根部下面"
         person(ax, A, f, bar=False, rb=rb)
-        ax.text(-0.33, 1.38, ttl, fontsize=15, color=col, fontweight="bold", va="top"); ax.text(-0.33, 0.80, note, fontsize=12.5, color=INK, va="top", linespacing=1.5, zorder=12)
-    fig.text(0.5, 0.03, f"同一位髋早前移的用户（1.75 m、偏胖、脚 33 cm），起身同一时刻；数字是整个起身过程的最大前滑和最小坐回余量", ha="center", fontsize=12, color="#6B7480")
+        ax.set_ylim(0.15, 1.45); ax.text(-0.33, 1.40, ttl, fontsize=24, color=col, fontweight="bold", va="top")
+        ax.text(-0.33, 1.25, "跟不上大腿，只托住臀部后缘" if kind == "vertical" else "一直托在臀部和大腿根部下面", fontsize=17, color=INK, va="top", zorder=12)
     fig.savefig(path, facecolor=BG); plt.close(fig)
 
 def render_force(path):
@@ -243,7 +247,7 @@ def render_statemachine(path):
     _arrow(ax, e("已坐上", 0.95), e("抬升", -0.95), "握紧开关 + 手在杆上\n+ 脚踩实 + 坐正", lxy=(5.5, 3.95))
     _arrow(ax, e("抬升", 0.95), e("站立保持", -0.95), "离座 0.3 s", lxy=(9.3, 3.75))
     _arrow(ax, e("站立保持", 1.0), e("空座板停住", -1.15), "人走开", lxy=(12.85, 3.75))
-    _arrow(ax, e("抬升", -0.35, -0.39), e("停住", -0.35, 0.39), "松手 / 故障\n/ 断电", lxy=(6.4, 2.05))
+    _arrow(ax, e("抬升", -0.35, -0.39), e("停住", -0.35, 0.39), "松手 / 故障 / 断电\n/ 推不动或到顶", lxy=(6.2, 2.05))
     _arrow(ax, e("停住", 0.35, 0.39), e("抬升", 0.35, -0.39), "再握紧", lxy=(8.2, 2.05))
     _arrow(ax, e("停住", -0.95), e("下降", 0.95), "按住“降”", rad=0.0, lxy=(5.5, 0.98))
     _arrow(ax, e("下降", 0.95, -0.2), e("停住", -0.95, -0.2), "松开“降”", lxy=(5.5, 0.22))
@@ -252,7 +256,7 @@ def render_statemachine(path):
     _arrow(ax, e("站立保持", -0.5, -0.39), e("停住", 0.95, 0.1), "坐回：座板不动，接住人", rad=-0.15, lxy=(10.6, 1.75))
     ax.plot([14.5, 14.5, 3.6], [3.8, 4.38, 4.38], color=MUTED, lw=1.8, zorder=2)
     _arrow(ax, (3.6, 4.38), e("已坐上", 0.0, 0.40), "", col=MUTED)
-    ax.text(9.0, 4.38, "回床：按住“降”，空座板降到回床高度（默认 0.50 m）停住，坐上去；再按住“降”降到床面", ha="center", va="center", fontsize=12.5, color=INK, zorder=5,
+    ax.text(9.0, 4.38, "回床：按住“降”，空座板停在回床高度（默认 0.50 m），坐上去；再按住“降”降到床面（空着时松开再按住，也降到床面）", ha="center", va="center", fontsize=12.5, color=INK, zorder=5,
             bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none"))
     ax.text(14.5, 2.15, "任意状态", ha="center", va="center", fontsize=13, color=MUTED)
     _arrow(ax, (14.5, 1.95), e("锁定", 0, 0.42), "", col=RED, ls="--")

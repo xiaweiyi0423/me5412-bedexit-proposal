@@ -46,7 +46,13 @@ def solve_s(sub, x_a, hz, hip_x):
     lo, hi = -15.0, 45.0
     def hx(s):
         p = pose(sub, x_a, hz, s); return None if p is None else p["Hp"][0]
-    if hx(lo) is None or hx(hi) is None: return None
+    # v5.6 fix: near standing the knee must stay high enough for the thigh to reach the hip, so large shank tilts have
+    # no pose. The old code gave up whenever s = 45 deg had no pose, which cut every rise at hip height
+    # ankle + 0.71 shank + thigh (about two thirds of the rise). Now the upper end is the largest feasible tilt.
+    c = (hz - sub.L_thigh - sub.ankle_h) / sub.L_shank
+    if c >= 1.0: return None
+    if c > -1.0: hi = min(hi, float(np.degrees(np.arccos(c))) - 1e-3)
+    if hi <= lo or hx(lo) is None or hx(hi) is None: return None
     if not (hx(lo) <= hip_x <= hx(hi)): return None
     for _ in range(40):
         m = (lo + hi) / 2

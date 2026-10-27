@@ -46,6 +46,15 @@ D["v54"] = dict(fc=json.load(open(os.path.join(C, "fall_catch.json")))["summary"
                 ctrl=[{k: x[k] for k in ("key", "name", "c", "final_state", "final_height", "max_height", "seat_off_height", "seat_off_time_s", "alert_from_s", "speed_limited")} for x in CSJ["scenarios"]],
                 ctrl_img="data:image/png;base64," + base64.b64encode(open(os.path.join(ROOT, "model/calc_v13/controller_seat_all.png"), "rb").read()).decode())
 
+# 5.6: rise paths now reach standing (seat_relative_motion.solve_s fix); deck audit round 3
+FCS = D["v54"]["fc"]["seat"]; BT = json.load(open(os.path.join(C, "bed_thigh.json")))
+Z1 = D["zoned"]["ids"]["z1"]
+D["v56"] = dict(n_cut_on_seat=42,          # users still on the seat where the old (cut-short) path ended: counted before the fix
+                cush_ok=D["check"]["cushion"][Z1]["summary"]["n_ok"], erel_med=json.load(open(os.path.join(C, "slider.json")))["summary"]["E_rel_med"],
+                miss_f_min=FCS["first_miss_f_min"], miss_cm_med=-FCS["miss_worst_cm_med"], miss_cm_max=-FCS["miss_worst_cm_min"],
+                ss_efree=json.load(open(os.path.join(C, "seat_support_slider.json")))["release"]["E_free"],
+                thigh={k.replace("1.50", "1.50").replace("1.60", "1.60"): v for k, v in BT["thigh_slope_deg"].items()}, reach_in10=BT["reach_from_bed"]["-0.10"])
+
 tpl = open(os.path.join(HERE, "template.html")).read()
 out = tpl.replace("/*__DATA__*/{}", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
 open(os.path.join(ROOT, "page/seat_1dof.html"), "w").write(out)

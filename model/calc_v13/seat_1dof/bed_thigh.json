@@ -1,0 +1,44 @@
+{
+ "note": "v5.6: how a user sits on the bed edge with the feet on the floor: thigh slope (down toward the knee) on a 0.42 m and a\n0.58 m bed, hip right over the edge, from the same rise geometry as the fall-catch bed paths. Also: can the user reach the\nL bar while still sitting on the bed (hip over the edge, or 5 / 10 cm further in; trunk lean <= 30 deg, seat_1dof_handrail.reach_seated)? Replaces the v5.3 statement\n\"9 short users cannot sit on a 0.58 m bed\", which came from the rise paths being cut short (solve_s bug). Output: seat_1dof/bed_thigh.json",
+ "thigh_slope_deg": {
+  "1.50_0.42": {
+   "med": 14.0,
+   "min": 10.0,
+   "max": 18.4
+  },
+  "1.50_0.58": {
+   "med": 41.5,
+   "min": 37.3,
+   "max": 47.7
+  },
+  "1.60_0.42": {
+   "med": 9.7,
+   "min": 5.6,
+   "max": 14.2
+  },
+  "1.60_0.58": {
+   "med": 33.4,
+   "min": 29.7,
+   "max": 37.5
+  },
+  "1.75_0.42": {
+   "med": 4.5,
+   "min": 0.4,
+   "max": 9.1
+  },
+  "1.75_0.58": {
+   "med": 25.2,
+   "min": 21.5,
+   "max": 29.3
+  }
+ },
+ "reach_from_bed": {
+  "0.00": 81,
+  "-0.05": 81,
+  "-0.10": 54
+ },
+ "bar": {
+  "x": 0.7,
+  "z": 0.95
+ }
+}

@@ -10,8 +10,11 @@ Options, all 81 users, the whole rise from sitting to standing (hip-height fract
   vertical  vertical lift with the same rule (follows straight up, then stays)
   bed058    raised bed 0.58 m, user sitting with the hip right over the mattress edge (hip x = 0) or 5 cm further in
   bed042    low bed 0.42 m, same
-Second fall mode (backward_*): the user tips backward stiffly about the ankle (hip moves back as it drops); a sit-back
-with the knees giving way is closer to the first mode. Real falls are in between.
+Second fall mode (backward_*): the user tips backward stiffly about the ankle (hip moves back as it drops).
+Third fall mode (knee_*, v5.6, deck audit round 3): the knees give way with the shins held where they are, so the hip swings
+back and down about the knee. Straight down needs the shins to tip forward as the knees bend; real falls are between the three.
+v5.6: the rise paths now reach standing (seat_relative_motion.solve_s fix); before, every path stopped at about two thirds of
+the rise, so the seat was only checked up to there.
 Output: seat_1dof/fall_catch.json
 """
 import json, os
@@ -81,6 +84,31 @@ def backward(u, kind):
                                                                                 on_bed_behind=float(np.mean([o == 0.5 for o in out])),
                                                                                 floor=float(np.mean([o == 0.0 for o in out])))
 
+def knee(u, kind):
+    """third mode: the hip swings back and down about the knee (shin fixed) until it reaches the support height.
+    seat: 1 = buttock on the seat, 0.5 = behind its rear edge (on the padded edge or the bed: the 3-7 cm gap between seat and
+    bed is narrower than the buttock), 0 = in front of the seat's front edge (a miss). bed: 1 = on the bed, 0 = in front of its edge."""
+    H, rb, p, xa = u
+    if kind == "seat":
+        ST.A_MAX = PAD_AMAX; sub, path = path_of(u); rows = track(sub, path, Seat(r_e=0.03), CV); good = [r for r in rows if r.get("contact") and r.get("ok")]
+    else:
+        from model import Subject
+        sub = Subject(H=H); bed = 0.58 if kind == "bed058" else 0.42; path = bed_path(H, xa, p, 0.0, bed + rb)
+        if len(path) < 5 or abs(path[0]["Hp"][0]) > 0.01: return None
+    Lt = sub.L_thigh; out = []
+    for i, pz in enumerate(path):
+        K = pz["K"]; Hp = pz["Hp"]
+        if kind == "seat":
+            r = good[i] if i < len(good) else good[-1]; zt = r["seat_top"] + rb; front = r["front_x"]; rear = front - 0.17
+        else: zt = bed + rb
+        if Hp[1] <= zt + 1e-6: out.append(1.0); continue
+        dz = zt - K[1]; xb = K[0] - np.sqrt(max(Lt * Lt - dz * dz, 0.0)) - BEHIND
+        if kind != "seat": out.append(1.0 if xb <= 0.0 else 0.0); continue
+        out.append(1.0 if rear <= xb <= front else (0.0 if xb > front else 0.5))
+    o = np.array(out)
+    return dict(on=float(np.mean(o == 1.0)), behind=float(np.mean(o == 0.5)), miss=float(np.mean(o == 0.0)), all_on=bool(np.all(o == 1.0)),
+                no_miss=bool(np.all(o > 0.0)), end=float(o[-1]))
+
 def job(u):
     return ukey(u), dict(seat=seat_like(u, CV), vertical=seat_like(u, CVV), bed058=bed_like(u, 0.58, 0.0), bed058_in=bed_like(u, 0.58, -0.05),
                          bed042=bed_like(u, 0.42, 0.0), bed042_in=bed_like(u, 0.42, -0.05))
@@ -94,17 +122,26 @@ def summ(series):
     return dict(n=len(S), caught_share_med=round(float(np.median(caught)), 2), caught_share_min=round(float(min(caught)), 2),
                 n_always_caught=sum(1 for x in first_miss if x is None), first_miss_f_med=round(float(np.median(fm)), 2) if fm else None,
                 catch_worst_cm_med=round(100 * float(np.median(worst)), 1), catch_at_standing_cm_med=round(100 * float(np.median(end)), 1),
-                drop_when_caught_cm_max=round(100 * float(max(drop_caught)), 1))
+                drop_when_caught_cm_max=round(100 * float(max(drop_caught)), 1),
+                first_miss_f_min=round(float(min(fm)), 2) if fm else None,
+                miss_worst_cm_med=round(100 * float(np.median([w for w, x in zip(worst, first_miss) if x is not None])), 1) if fm else None,
+                miss_worst_cm_min=round(100 * float(min(w for w, x in zip(worst, first_miss) if x is not None)), 1) if fm else None)
 
 def bjob(u): return ukey(u), {k: backward(u, k) for k in ("seat", "bed058", "bed042")}
+def kjob(u): return ukey(u), {k: knee(u, k) for k in ("seat", "bed058", "bed042")}
 
 if __name__ == "__main__":
-    with Pool() as p: R = dict(p.map(job, USERS)); RB = dict(p.map(bjob, USERS))
+    with Pool() as p: R = dict(p.map(job, USERS)); RB = dict(p.map(bjob, USERS)); RK = dict(p.map(kjob, USERS))
     S = {k: summ([R[u][k] for u in R]) for k in ("seat", "vertical", "bed058", "bed058_in", "bed042", "bed042_in")}
     for k in ("bed058", "bed042"):
         v = [RB[u][k] for u in RB if RB[u][k] is not None]; S[k]["backward_caught_share_med"] = round(float(np.median(v)), 2); S[k]["backward_n_always"] = sum(1 for x in v if x >= 0.999)
     for q in ("on_seat", "on_bed_behind", "floor"):
         v = [RB[u]["seat"][q] for u in RB]; S["seat"][f"backward_{q}_med"] = round(float(np.median(v)), 2); S["seat"][f"backward_{q}_max"] = round(float(max(v)), 2)
+    for k in ("seat", "bed058", "bed042"):
+        v = [RK[u][k] for u in RK if RK[u][k] is not None]
+        S[k].update(knee_on_med=round(float(np.median([x["on"] for x in v])), 2), knee_n_all_on=sum(x["all_on"] for x in v),
+                    knee_n_no_miss=sum(x["no_miss"] for x in v), knee_miss_med=round(float(np.median([x["miss"] for x in v])), 2),
+                    knee_end_on=sum(x["end"] == 1.0 for x in v), knee_end_behind=sum(x["end"] == 0.5 for x in v), knee_end_miss=sum(x["end"] == 0.0 for x in v))
     for k, v in S.items(): print(k, v)
     json.dump(dict(note=__doc__, summary=S, users={u: {k: (None if s is None else [[round(a, 3) for a in x] for x in s[::3]]) for k, s in d.items()} for u, d in R.items()}),
               open(OUT, "w"), ensure_ascii=False, separators=(",", ":"))
