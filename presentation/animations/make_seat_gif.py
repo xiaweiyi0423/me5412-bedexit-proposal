@@ -17,9 +17,13 @@ from PIL import Image
 
 for f in font_manager.findSystemFonts():
     if "NotoSansCJK" in f and "Regular" in f: font_manager.fontManager.addfont(f)
-plt.rcParams["font.family"] = ["Noto Sans CJK SC", "DejaVu Sans"]
+font_manager.fontManager.addfont("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc") if os.path.exists("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc") else None
+plt.rcParams["font.family"] = ["Noto Sans CJK SC", "WenQuanYi Zen Hei", "DejaVu Sans"]
+plt.rcParams["axes.unicode_minus"] = False
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 D = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/page.json")))
+for _u in D["users"]:
+    if _u["key"] in D["anim"]: D["anim"][_u["key"]]["rb"] = _u["r_b"]
 INK = "#18202A"; MUTED = "#8C96A1"; BED = "#D7DBE1"; MAT = "#E9ECF0"; DEV = "#C3C9D1"; STEEL = "#5B6B7C"; STEEL2 = "#AEB6C0"
 SEAT = "#E09A3A"; FOAM_R = "#E7B66F"; FOAM_F = "#F3D7A8"; BODY = "#D9C8B4"; LIMB = "#B79C80"; BG = "#FBFAF6"; ACC = "#B4620A"; RED = "#C2412D"; GOOD = "#2F7A55"
 M = D["mech"]; L = D["layout"]; BAR = D["consts"]["handrail"]; HALF = (D["consts"]["seat_x"][1] - D["consts"]["seat_x"][0]) / 2
@@ -69,11 +73,19 @@ def mechanism(ax, Q, phi, show_inside=True):
     ax.add_patch(Polygon(rear, closed=True, color=FOAM_R, zorder=5)); ax.add_patch(Polygon(front, closed=True, color=FOAM_F, zorder=5))
     return P1, P2
 
-def person(ax, A, fr, bar=True, alpha=1.0):
+def outline(fr, rb):
+    Hp, K = np.array(fr["Hp"]), np.array(fr["K"]); th = math.atan2(-(K[1] - Hp[1]), K[0] - Hp[0]); uu = np.array([math.cos(th), -math.sin(th)])
+    pts = [Hp + rb * np.array([math.sin(math.radians(g)), -math.cos(math.radians(g))]) for g in np.arange(-95, -math.degrees(th) + 1e-9, 5)]
+    T0 = Hp + rb * np.array([-math.sin(th), -math.cos(th)]); Lk = np.hypot(*(K - T0)); pts.append(T0 + uu * Lk * 0.92)
+    nf = np.array([math.sin(th), math.cos(th)]); return np.array(pts), nf
+
+def person(ax, A, fr, bar=True, alpha=1.0, rb=0.09):
     Ls, Lt, Ltr, Lua, Lfa = A["L"]; Hp, K, An = np.array(fr["Hp"]), np.array(fr["K"]), np.array(fr["A"])
     tr = math.radians(fr["tr"]); ut = np.array([math.sin(tr), math.cos(tr)]); S = Hp + Ltr * ut; foot = A["foot"]
     ax.add_patch(Polygon([[An[0] - 0.25 * foot, 0.042], [An[0] + 0.75 * foot, 0.042], [An[0] + 0.03, An[1] + 0.02], [An[0] - 0.03, An[1] + 0.025]], color=LIMB, alpha=alpha, zorder=8))
-    ax.plot([Hp[0], K[0]], [Hp[1], K[1]], color=BODY, lw=22, solid_capstyle="round", alpha=alpha, zorder=8)
+    pts, nf = outline(fr, rb)
+    body = np.vstack([pts, [K + nf * 0.05, Hp + nf * 0.07 + ut * 0.05]])
+    ax.add_patch(Polygon(body, closed=True, color=BODY, alpha=alpha, zorder=8)); ax.plot(pts[:, 0], pts[:, 1], color="#A88F75", lw=1.2, alpha=alpha, zorder=8)
     ax.plot([K[0], An[0]], [K[1], An[1]], color=LIMB, lw=11, solid_capstyle="round", alpha=alpha, zorder=8)
     ax.plot([Hp[0], S[0]], [Hp[1], S[1]], color=BODY, lw=26, solid_capstyle="round", alpha=alpha, zorder=8)
     ax.add_patch(Circle(S + 0.13 * ut, 0.085, color=BODY, alpha=alpha, zorder=8))
@@ -89,10 +101,10 @@ def strip(ax, cu):
         ax.plot(s[i:i + 2, 0], s[i:i + 2, 1], color=col, lw=6, solid_capstyle="round", zorder=10)
 
 def badge(ax, state, lines, step=None, cap=None):
-    ax.add_patch(FancyBboxPatch((0.56, 1.36), 0.47, 0.12, boxstyle="round,pad=0.01,rounding_size=0.03", color="#FFFFFF", ec="#D9DDE2", zorder=11))
-    ax.text(0.58, 1.42, "状态", color="#6B7480", fontsize=12, va="center", zorder=12)
-    ax.text(0.68, 1.42, state, color=ACC, fontsize=15, fontweight="bold", va="center", zorder=12)
-    for i, t in enumerate(lines): ax.text(0.58, 1.30 - 0.065 * i, t, color=INK, fontsize=12.5, zorder=12)
+    ax.add_patch(FancyBboxPatch((0.30, 1.36), 0.36, 0.12, boxstyle="round,pad=0.01,rounding_size=0.03", color="#FFFFFF", ec="#D9DDE2", zorder=11))
+    ax.text(0.32, 1.42, "状态", color="#6B7480", fontsize=12, va="center", zorder=12)
+    ax.text(0.42, 1.42, state, color=ACC, fontsize=15, fontweight="bold", va="center", zorder=12)
+    for i, t in enumerate(lines): ax.text(0.30, 1.30 - 0.065 * i, t, color=INK, fontsize=12, zorder=12)
     if step: ax.text(-0.43, 1.50, step, color=ACC, fontsize=16, fontweight="bold", va="top", zorder=12)
     if cap: ax.text(-0.43, 1.41, cap, color=INK, fontsize=14, va="top", zorder=12, linespacing=1.5)
 
@@ -101,7 +113,7 @@ def frame_state(fr, released):
     if fr.get("seat") is None: return "已坐上"
     return "抬升"
 
-def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None):
+def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True):
     scene(ax); housing(ax); handrail(ax)
     released = fr.get("seat") is None and last_seat is not None
     cu = fr.get("cush", {}).get(cush) if fr.get("seat") else None
@@ -109,7 +121,7 @@ def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None):
     elif fr.get("seat"): Q, phi = fr["seat"]["Q"], fr["seat"]["phi"]
     elif last_seat: Q, phi = last_seat["Q"], last_seat["phi"]
     else: Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]
-    mechanism(ax, Q, phi); person(ax, A, fr)
+    mechanism(ax, Q, phi); person(ax, A, fr, bar=hands, rb=A.get("rb", 0.09))
     if cu and not cu.get("lost"): strip(ax, cu)
     lines = [f"座面 {Q[1]:.2f} m · 前倾 {phi:.0f}°"]
     if cu and not cu.get("lost"): lines.append(f"坐垫接触 {cu['len_cm']:.0f} cm · 峰值 {cu['p_max']:.0f} kPa")
@@ -138,7 +150,7 @@ def render_steps(prefix, user=REF):
         fig = plt.figure(figsize=(6.0, 6.0), dpi=120); ax = fig.add_axes([0, 0, 1, 1])
         for f in fr[:k + 1]:
             if f.get("seat"): last = f["seat"]
-        draw_frame(ax, A, fr[k], last)
+        draw_frame(ax, A, fr[k], last, hands=(n != 1))
         fig.savefig(f"{prefix}{n}.png", facecolor=BG); plt.close(fig)
 
 def render_mech(path):
@@ -153,28 +165,31 @@ def render_mech(path):
     ax.annotate("倾角连杆", xy=((B[0] + P2[0]) / 2, (B[1] + P2[1]) / 2), xytext=(0.55, 0.20), fontsize=13, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED), zorder=12)
     ax.annotate("分区坐垫：后硬前软", xy=tuple(W(fs[-1]["Q"], fs[-1]["phi"], (0.0, 0.0))), xytext=(-0.22, 0.88), fontsize=13, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED), zorder=12)
     ax.annotate("L 形扶手横杆", xy=(BAR["x"], BAR["z"]), xytext=(0.62, 0.62), fontsize=13, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED), zorder=12)
-    ax.text(-0.22, 1.0, f"座板中心前移 {100 * M['travel']['dx']:.0f} cm、上升 {100 * M['travel']['dz']:.0f} cm，前倾 ≤ {M['phi_run_max']:.0f}°", fontsize=13.5, color=ACC, fontweight="bold")
+    ax.text(-0.22, 1.0, f"座板中心前移 {100 * M['travel']['dx']:.1f} cm、上升 {100 * M['travel']['dz']:.1f} cm，前倾 ≤ {M['phi_run_max']:.1f}°", fontsize=13.5, color=ACC, fontweight="bold")
     fig.savefig(path, facecolor=BG); plt.close(fig)
 
 def render_vs(path):
-    """early-hip user at the same moment: vertical lift vs the curved seat (from the relative-motion study data on the page)."""
-    V = D["check"]["vertical"]; Fd = D["check"]["design"]
+    """early-hip user at the same moment: vertical lift (seat rises until it touches the body, max 0.66 m) vs the curved seat."""
+    V = D["check"]["vertical"]; Fd = D["check"]["design"]; UU = {u["key"]: u for u in D["users"]}
     early = [k for k in Fd if " p0.6 " in k]; k = max(early, key=lambda kk: (V[kk].get("fwd_slip_max_cm") or 0))
-    A = D["anim"][k]; fr = A["frames"]; idx = [i for i, f in enumerate(fr) if f.get("seat")]; i = idx[len(idx) * 2 // 3] if idx else 0
+    A = D["anim"][k]; rb = UU[k]["r_b"]; fr = A["frames"]; idx = [i for i, f in enumerate(fr) if f.get("seat")]; i = idx[len(idx) // 2] if idx else 0
     fig, axs = plt.subplots(1, 2, figsize=(14, 7.2), dpi=110); fig.patch.set_facecolor(BG)
     for ax, kind in zip(axs, ("vertical", "curve")):
-        scene(ax, -0.35, 0.95, 1.45); f = fr[i]; rb = D["users"][[u["key"] for u in D["users"]].index(k)]["r_b"]
+        scene(ax, -0.35, 0.95, 1.45); f = fr[i]
         if kind == "vertical":
-            zz = min(max(f["Hp"][1] - rb, 0.42), 0.66); Q, phi = [0.0605, zz], 0.0       # level seat right under the buttock
-            ax.add_patch(Polygon([W(Q, 0, p) for p in ((-HALF, 0), (HALF, 0), (HALF, -0.05), (-HALF, -0.05))], closed=True, color=SEAT, zorder=5))
+            pts, _ = outline(f, rb); x0, x1 = 0.0605 - HALF, 0.0605 + HALF; under = pts[(pts[:, 0] >= x0) & (pts[:, 0] <= x1)]
+            zz = min(float(under[:, 1].min()) if len(under) else 0.66, 0.66)
+            ax.add_patch(Polygon([(x0, zz), (x1, zz), (x1, zz - 0.05), (x0, zz - 0.05)], closed=True, color=SEAT, zorder=5))
             ax.plot([0.06, 0.06], [0.04, zz - 0.05], color=STEEL2, lw=14, zorder=3)
             ttl = f"竖直升降：前滑 {V[k]['fwd_slip_max_cm']:+.1f} cm，坐回余量 {V[k]['min_catch_cm']:+.1f} cm"; col = RED
+            note = "座板只能竖直上来，髋已经走到座板前面：\n只托住臀部后缘，人往前滑，坐回时会坐空"
         else:
             Q, phi = f["seat"]["Q"], f["seat"]["phi"]; mechanism(ax, Q, phi, show_inside=False)
             ttl = f"曲线坐板：前滑 {Fd[k]['fwd_slip_max_cm']:+.1f} cm，坐回余量 {Fd[k]['min_catch_cm']:+.1f} cm"; col = GOOD
-        person(ax, A, f, bar=False)
-        ax.text(-0.33, 1.38, ttl, fontsize=14, color=col, fontweight="bold", va="top")
-    fig.text(0.5, 0.03, f"同一位髋早前移的用户（{k}），起身同一时刻", ha="center", fontsize=12, color="#6B7480")
+            note = "座板跟着大腿往前、往上、前倾：\n一直托在臀部和大腿根部下面"
+        person(ax, A, f, bar=False, rb=rb)
+        ax.text(-0.33, 1.38, ttl, fontsize=15, color=col, fontweight="bold", va="top"); ax.text(-0.33, 0.80, note, fontsize=12.5, color=INK, va="top", linespacing=1.5, zorder=12)
+    fig.text(0.5, 0.03, f"同一位髋早前移的用户（1.75 m、偏胖、脚 33 cm），起身同一时刻；数字是整个起身过程的最大前滑和最小坐回余量", ha="center", fontsize=12, color="#6B7480")
     fig.savefig(path, facecolor=BG); plt.close(fig)
 
 def render_force(path):

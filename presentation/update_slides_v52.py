@@ -62,9 +62,9 @@ S["mechanism"] = sec("mechanism", PAPER,
   f'\n<div style="display:flex;flex-direction:column;gap:24px">\n' + img("seat_vs_vertical", "同一位髋早前移的用户：竖直升降时往前滑、坐回落空；曲线座板跟着大腿走", 1016, 400) +
   f'\n<ul style="font-size:28px;line-height:1.5;color:{BODY}">\n'
   f'<li><b>为什么不竖直升：</b>髋早前移的人会往前滑出座面、坐回落空。81 人里，竖直升降 {VS["n_ok"]} 人合格，曲线座板 {nok} 人</li>\n'
-  f'<li><b>一个电机：</b>滑块沿斜导轨走，连杆管前倾；座板前移 {cm(M["travel"]["dx"])} cm、上升 {cm(M["travel"]["dz"])} cm，前倾 ≤ {M["phi_run_max"]:.0f}°，轨迹误差 {M["centre_err_mm"]:.0f} mm</li>\n'
+  f'<li><b>一个电机：</b>滑块沿斜导轨走，连杆管前倾；座板前移 {100 * M["travel"]["dx"]:.1f} cm、上升 {100 * M["travel"]["dz"]:.1f} cm，前倾 ≤ {M["phi_run_max"]:.0f}°，轨迹误差 {M["centre_err_mm"]:.0f} mm</li>\n'
   f'<li>机构全装在床头一侧的封闭箱里，床尾一侧敞开</li>\n</ul>\n</div>\n</div>',
-  f"接下来讲机构。我们最初的方案是座板竖直升起，但我们用二维模型模拟了 81 位不同身高、胖瘦、起身习惯和脚位的用户，发现一个问题：起身时髋会往前走，竖直升的座板跟不上，髋往前走得早的人会从座面往前滑，万一坐回去还会坐空，81 人里只有 {VS['n_ok']} 人两项都合格。所以座板要跟着大腿走：往前 {cm(M['travel']['dx'])} 厘米、往上 {cm(M['travel']['dz'])} 厘米，最多前倾 {M['phi_run_max']:.0f} 度。实现它只用一个电机：座板下一个铰点装在滑块上，沿一根斜导轨走；另一个铰点用连杆拉到底座上，管前倾角。这样走出的轨迹和我们要的曲线最多差 {M['centre_err_mm']:.0f} 毫米，81 人全部合格。整套机构装在床头一侧的封闭箱里，床尾一侧留给回床时转腿。",
+  f"接下来讲机构。我们最初的方案是座板竖直升起，但我们用二维模型模拟了 81 位不同身高、胖瘦、起身习惯和脚位的用户，发现一个问题：起身时髋会往前走，竖直升的座板跟不上，髋往前走得早的人会从座面往前滑，万一坐回去还会坐空，81 人里只有 {VS['n_ok']} 人两项都合格。所以座板要跟着大腿走：往前约 {100 * M['travel']['dx']:.0f} 厘米、往上约 {100 * M['travel']['dz']:.0f} 厘米，最多前倾 {M['phi_run_max']:.0f} 度。实现它只用一个电机：座板下一个铰点装在滑块上，沿一根斜导轨走；另一个铰点用连杆拉到底座上，管前倾角。这样走出的轨迹和我们要的曲线最多差 {M['centre_err_mm']:.0f} 毫米，81 人全部合格。整套机构装在床头一侧的封闭箱里，床尾一侧留给回床时转腿。",
   layout="display:flex;flex-direction:column;gap:36px")
 
 S["motion"] = (f'<section id="motion" data-transition="fade" style="background:{LIGHT};color:{INK};{SANS};padding:128px;display:grid;grid-template-columns:1120px 1fr;gap:56px;align-items:center">\n'

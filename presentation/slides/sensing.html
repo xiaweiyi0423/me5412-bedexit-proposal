@@ -4,16 +4,16 @@
 <h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">手握发指令，力分布确认人准备好了</h2>
 </div>
 <div style="display:grid;grid-template-columns:640px 1fr;gap:56px;align-items:center">
-<img src="/_blob/9296947201f2df99ffed008a39642323" alt="侧视示意：传感器位置，1 座板测力，2 横杆测力，3 握把开关，4 踏板测力" style="width:640px;height:540px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
+<img src="/_blob/96bc5dabe91a601fb3775de904ebec5f" alt="侧视示意：1 座板测力，2 横杆测力，3 握把开关，4 踏板测力，5 底座四角测力" style="width:640px;height:540px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
 <div style="display:flex;flex-direction:column;gap:20px">
-<p style="font-size:30px;line-height:1.5"><b>1 座板下 4 个测力单元：</b><span style="color:#3F4A57">坐上了没有、坐正了没有（压力中心）</span></p>
+<p style="font-size:30px;line-height:1.5"><b>1 座板下测力：</b><span style="color:#3F4A57">坐上了没有、坐正了没有（压力中心）；推了多少力（速度规则）</span></p>
 <p style="font-size:30px;line-height:1.5"><b>2 横杆测力：</b><span style="color:#3F4A57">手在不在上面</span></p>
-<p style="font-size:30px;line-height:1.5"><b>3 握把式“起”开关：</b><span style="color:#3F4A57">握紧才升、松手就停；一只手就能用</span></p>
-<p style="font-size:30px;line-height:1.5"><b>4 踏板下 4 个测力单元：</b><span style="color:#3F4A57">脚踩实了没有</span></p>
-<p style="font-size:30px;line-height:1.5"><b>自检：</b><span style="color:#3F4A57">各处竖直力之和应约等于体重，对不上就锁住</span></p>
-<p style="font-size:30px;line-height:1.5"><b>反馈：</b><span style="color:#3F4A57">握把上的状态灯（可以起 / 正在升 / 已停住）和踏板夜灯</span></p>
+<p style="font-size:30px;line-height:1.5"><b>3 握把式“起”开关：</b><span style="color:#3F4A57">握紧才升、松手就停；在人正前方的横杆上</span></p>
+<p style="font-size:30px;line-height:1.5"><b>4 踏板测力：</b><span style="color:#3F4A57">脚踩实了没有</span></p>
+<p style="font-size:30px;line-height:1.5"><b>5 底座四角测力：</b><span style="color:#3F4A57">总重减去台架自重应约等于体重，对不上就锁住</span></p>
+<p style="font-size:30px;line-height:1.5"><b>反馈：</b><span style="color:#3F4A57">握把上的状态灯和踏板夜灯</span></p>
 </div>
 </div>
 <p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">先例：东京大学 Kogami 等的辅助椅用座下压力中心前移判断“想起身”</p>
-<aside>交互上，我们用手握来发指令：开关做在握把上，握紧才升、松手就停，一只手就能用。座板和踏板下各有 4 个测力单元，能算出重量偏前偏后、偏左偏右，也就是压力中心，用来判断人有没有坐正、脚有没有踩实，偏得太多就不让抬。还有一条自检：各处的竖直力加起来应该约等于体重，对不上就锁住不动。反馈方面，握把上有状态灯，踏板有夜灯。</aside>
+<aside>交互上，我们用手握来发指令：开关做在人正前方横杆的握把上，握紧才升、松手就停。座板下的测力单元测坐上了没有、坐正了没有，也测座板推了多少力，用来控制速度。踏板下的测力单元看脚踩实了没有。座板会前倾，座板下的单向测力单元测不准竖直方向的体重，所以体重自检放到底座四个角：对地的总力减去台架自重，应该约等于体重，对不上就锁住。反馈方面，握把上有状态灯，踏板有夜灯。</aside>
 </section>
