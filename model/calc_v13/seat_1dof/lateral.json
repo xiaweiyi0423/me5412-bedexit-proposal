@@ -1,0 +1,6899 @@
+{
+ "note": "Fall prevention step 1: sideways (frontal-plane) falls during the rise on the seat. A kill test, not a full analysis.\n\nQuestion: during the rise, how much sideways disturbance does it take to fall toward the OPEN side (-y, nothing there) and\ntoward the HEAD side (+y, housing wall 3 cm from the seat edge, handrail post)? Which phase is weakest? Do two cheap fixes help?\n  M1  extend the bar from y -0.05 to -0.25, so both hands can grip symmetrically about the body's midline;\n  M2  a flip-down side guard on the seat's open side (y -0.24, 0.20 above the cushion, over the seat's rear 2/3).\nCompared with sitting on a bed (0.42 / 0.58 m) for the seated phase. Also: how far the hip drops in a fall to the open side.\n\nMethod (quasi-static, frontal plane; a simplification - no stepping, no muscle response, no arm pull):\n  * 81 users, slider curve, track rows as seat_1dof_handrail.user_eval. A frame is \"seated\" while i < len(good).\n    Every 2nd frame: trunk angle and seat share from seat_trajectory.effort with the bar trunk filter (as bar_effort).\n  * Sagittal COM (x, z) from the effort model's segments: head-trunk at Hp + r_headtrunk*uT; both arms at\n    S + 0.45 (bar - S) (hands on the bar); thighs at Hp + 0.433 (K - Hp); shank+foot at the shank middle. y_COM = 0.\n  * Base of support (BoS) in the floor plane = convex hull of: both feet, the buttock contact (while seated and the seat\n    carries > 5 % BW) and, in the variants with hands, both hand points on the bar.\n  * Lateral margin d = distance from the COM's ground projection to the hull edge along y at x = x_COM (open side: -y).\n    Pendulum height l = z_COM - support height (seat contact height while seated, footplate top 0.047 after);\n    v_crit = d * sqrt(g / l): the sideways COM speed that carries the extrapolated COM (Hof's XcoM) past the BoS edge.\n    Larger v_crit = harder to push over. For a feel: a light nudge or a small stumble gives roughly 0.1-0.3 m/s.\nOutput: seat_1dof/lateral.json, seat_1dof/lateral.png\n",
+ "assumptions": "ASSUMPTIONS: feet centred at y = +-0.06 H, foot width 0.055 H, x from A - 0.25 L_foot to A + 0.75 L_foot; buttock contact x Hp +- 0.08, y +-(0.5 * 0.191 H - 0.02) while seated and the seat carries > 5 % BW; hands at x = bar x (0.70): current bar (y -0.05..0.30) -> hands at y -0.04 / +0.16 (20 cm apart, as far toward the open side as the bar allows), M1 (bar to -0.25) -> -0.10 / +0.10; arms' COM at 45 % of the shoulder-to-bar line; y_COM = 0 (symmetric posture). Margin and v_crit are quasi-static (extrapolated-COM criterion); hand points in the BoS assume the hands can take load (upper bound), 'none' is the lower bound. Hands as forces (variants *_force): a sideways grip force 0.10 BW at bar height and a pull 0.20 BW applied at the hands' mean y let the COM go past the feet edge by e = (0.10 (z_bar - z_support) + 0.20 * lever) BW / BW; the lever is from the tipping edge (outer edge of the foot on the falling side) to the hands' mean y. These hand forces are guesses (elderly grip about 150-200 N per hand; reaction time not modelled).",
+ "bar": {
+  "x": 0.7,
+  "z": 0.95
+ },
+ "hands": {
+  "none": null,
+  "current": [
+   -0.04,
+   0.16
+  ],
+  "M1": [
+   -0.1,
+   0.1
+  ]
+ },
+ "guard": {
+  "y": -0.24,
+  "h": 0.2
+ },
+ "summary": {
+  "n_users": 81,
+  "none_open_seated": {
+   "v_crit_min_med": 0.802,
+   "v_crit_min_p10": 0.753,
+   "v_crit_min_min": 0.734,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "none_open_after_release": {
+   "v_crit_min_med": 0.467,
+   "v_crit_min_p10": 0.453,
+   "v_crit_min_min": 0.453,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "none_head_seated": {
+   "v_crit_min_med": 0.802,
+   "v_crit_min_p10": 0.753,
+   "v_crit_min_min": 0.734,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "none_head_after_release": {
+   "v_crit_min_med": 0.467,
+   "v_crit_min_p10": 0.453,
+   "v_crit_min_min": 0.453,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "current_open_seated": {
+   "v_crit_min_med": 0.802,
+   "v_crit_min_p10": 0.753,
+   "v_crit_min_min": 0.734,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "current_open_after_release": {
+   "v_crit_min_med": 0.467,
+   "v_crit_min_p10": 0.453,
+   "v_crit_min_min": 0.453,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "current_head_seated": {
+   "v_crit_min_med": 0.827,
+   "v_crit_min_p10": 0.782,
+   "v_crit_min_min": 0.751,
+   "f_at_min_med": 0.664,
+   "hip_z_at_min_med": 0.722,
+   "n": 81
+  },
+  "current_head_after_release": {
+   "v_crit_min_med": 0.48,
+   "v_crit_min_p10": 0.47,
+   "v_crit_min_min": 0.466,
+   "f_at_min_med": 0.982,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "M1_open_seated": {
+   "v_crit_min_med": 0.802,
+   "v_crit_min_p10": 0.753,
+   "v_crit_min_min": 0.734,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "M1_open_after_release": {
+   "v_crit_min_med": 0.467,
+   "v_crit_min_p10": 0.453,
+   "v_crit_min_min": 0.453,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "M1_head_seated": {
+   "v_crit_min_med": 0.802,
+   "v_crit_min_p10": 0.753,
+   "v_crit_min_min": 0.734,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "M1_head_after_release": {
+   "v_crit_min_med": 0.467,
+   "v_crit_min_p10": 0.453,
+   "v_crit_min_min": 0.453,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "current_force_open_seated": {
+   "v_crit_min_med": 1.265,
+   "v_crit_min_p10": 1.216,
+   "v_crit_min_min": 1.2,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "current_force_open_after_release": {
+   "v_crit_min_med": 0.902,
+   "v_crit_min_p10": 0.895,
+   "v_crit_min_min": 0.895,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "current_force_head_seated": {
+   "v_crit_min_med": 1.128,
+   "v_crit_min_p10": 1.077,
+   "v_crit_min_min": 1.062,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "current_force_head_after_release": {
+   "v_crit_min_med": 0.822,
+   "v_crit_min_p10": 0.812,
+   "v_crit_min_min": 0.812,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "M1_force_open_seated": {
+   "v_crit_min_med": 1.196,
+   "v_crit_min_p10": 1.147,
+   "v_crit_min_min": 1.131,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "M1_force_open_after_release": {
+   "v_crit_min_med": 0.862,
+   "v_crit_min_p10": 0.854,
+   "v_crit_min_min": 0.854,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "M1_force_head_seated": {
+   "v_crit_min_med": 1.196,
+   "v_crit_min_p10": 1.147,
+   "v_crit_min_min": 1.131,
+   "f_at_min_med": 0.671,
+   "hip_z_at_min_med": 0.73,
+   "n": 81
+  },
+  "M1_force_head_after_release": {
+   "v_crit_min_med": 0.862,
+   "v_crit_min_p10": 0.854,
+   "v_crit_min_min": 0.854,
+   "f_at_min_med": 0.983,
+   "hip_z_at_min_med": 0.834,
+   "n": 79
+  },
+  "start_seated_vs_bed": {
+   "seat_flush_no_hands_v_med": 0.852,
+   "bed042_v_med": 0.91,
+   "bed058_v_med": 0.978,
+   "n_bed058": 81,
+   "standing_feet_only_v_med": 0.471,
+   "standing_feet_only_v_p10": 0.458
+  },
+  "M2_guard_seated": {
+   "frames_cannot_topple_share": 0.035,
+   "v_crit_min_med_where_topple_possible": 2.401,
+   "n_users_with_topple_possible": 81
+  },
+  "hip_drop_open_side": {
+   "seated_max_med": 0.63,
+   "seated_max_max": 0.75,
+   "at_weakest_current_med": 0.734,
+   "bed042_med": 0.41,
+   "bed058_med": 0.57,
+   "impact_speed_mps": {
+    "seated_max_med": 3.52,
+    "bed042": 2.84,
+    "bed058": 3.34
+   }
+  },
+  "head_side_housing": {
+   "frames": 3420,
+   "shoulder_below_housing_top_share": 0.0,
+   "hip_x_within_housing_share": 1.0,
+   "wall_gap_m": 0.03
+  }
+ },
+ "bar_extension_check": {
+  "load_N": 1668,
+  "cantilever_m": 0.55,
+  "sections": {
+   "Ø38×4": {
+    "stress_MPa": 278,
+    "allow_MPa": 237,
+    "ok": false,
+    "bar_tip_mm": 7.0
+   },
+   "Ø42.4×3.2": {
+    "stress_MPa": 255,
+    "allow_MPa": 237,
+    "ok": false,
+    "bar_tip_mm": 5.8
+   },
+   "Ø42.4×4": {
+    "stress_MPa": 216,
+    "allow_MPa": 237,
+    "ok": true,
+    "bar_tip_mm": 4.9
+   },
+   "Ø48.3×3.2": {
+    "stress_MPa": 191,
+    "allow_MPa": 237,
+    "ok": true,
+    "bar_tip_mm": 3.8
+   },
+   "post_60x60x4": {
+    "vm_MPa": 116,
+    "tau_MPa": 36.6
+   }
+  }
+ },
+ "users": {
+  "H1.50 r0.07 p0.6 xa0.25": {
+   "n_seated": 58,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.917,
+     "v_head": 0.917,
+     "l": 0.194,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.999,
+     "v_head": 0.999,
+     "l": 0.163,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.281,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.248,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.804,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p0.6 xa0.29": {
+   "n_seated": 66,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.909,
+     "v_head": 0.909,
+     "l": 0.196,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.993,
+     "v_head": 0.993,
+     "l": 0.164,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.288,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.453,
+     "v_head": 0.472,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.861,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p0.6 xa0.33": {
+   "n_seated": 73,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.903,
+     "v_head": 0.903,
+     "l": 0.197,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.99,
+     "v_head": 0.99,
+     "l": 0.163,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": true,
+    "th": 0,
+    "f_seat": 0.369,
+    "com": [
+     0.356,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.328,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.788,
+     "v_head": 0.788,
+     "l": 0.272
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.788,
+     "v_head": 0.822,
+     "l": 0.272
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.788,
+     "v_head": 0.788,
+     "l": 0.272
+    },
+    "current_force": {
+     "v_open": 1.229,
+     "v_head": 1.084,
+     "e_open": 0.074,
+     "e_head": 0.05
+    },
+    "M1_force": {
+     "v_open": 1.156,
+     "v_head": 1.156,
+     "e_open": 0.062,
+     "e_head": 0.062
+    },
+    "M2_v_open": 2.804,
+    "M2_cant_topple": false,
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p1.0 xa0.25": {
+   "n_seated": 56,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.917,
+     "v_head": 0.917,
+     "l": 0.194,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.999,
+     "v_head": 0.999,
+     "l": 0.163,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.247,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.803,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p1.0 xa0.29": {
+   "n_seated": 65,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.909,
+     "v_head": 0.909,
+     "l": 0.196,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.993,
+     "v_head": 0.993,
+     "l": 0.164,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.317,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.287,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.859,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p1.0 xa0.33": {
+   "n_seated": 73,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.903,
+     "v_head": 0.903,
+     "l": 0.197,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.99,
+     "v_head": 0.99,
+     "l": 0.163,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": true,
+    "th": 0,
+    "f_seat": 0.375,
+    "com": [
+     0.355,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.326,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.781,
+     "v_head": 0.781,
+     "l": 0.277
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.781,
+     "v_head": 0.814,
+     "l": 0.277
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.781,
+     "v_head": 0.781,
+     "l": 0.277
+    },
+    "current_force": {
+     "v_open": 1.22,
+     "v_head": 1.077,
+     "e_open": 0.074,
+     "e_head": 0.05
+    },
+    "M1_force": {
+     "v_open": 1.149,
+     "v_head": 1.149,
+     "e_open": 0.062,
+     "e_head": 0.062
+    },
+    "M2_v_open": 2.712,
+    "M2_cant_topple": false,
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p2.5 xa0.25": {
+   "n_seated": 45,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.917,
+     "v_head": 0.917,
+     "l": 0.194,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.999,
+     "v_head": 0.999,
+     "l": 0.163,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.277,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.244,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.797,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p2.5 xa0.29": {
+   "n_seated": 54,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.909,
+     "v_head": 0.909,
+     "l": 0.196,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.993,
+     "v_head": 0.993,
+     "l": 0.164,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.313,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.282,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.853,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.07 p2.5 xa0.33": {
+   "n_seated": 72,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.903,
+     "v_head": 0.903,
+     "l": 0.197,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.99,
+     "v_head": 0.99,
+     "l": 0.163,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 72,
+    "f": 0.983,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.35,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.32,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.887,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p0.6 xa0.25": {
+   "n_seated": 51,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.881,
+     "v_head": 0.881,
+     "l": 0.211,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.952,
+     "v_head": 0.952,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.25,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.806,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p0.6 xa0.29": {
+   "n_seated": 58,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.874,
+     "v_head": 0.874,
+     "l": 0.212,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.947,
+     "v_head": 0.947,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.29,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.864,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p0.6 xa0.33": {
+   "n_seated": 66,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.869,
+     "v_head": 0.869,
+     "l": 0.213,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.945,
+     "v_head": 0.945,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.329,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.453,
+     "v_head": 0.472,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p1.0 xa0.25": {
+   "n_seated": 48,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.881,
+     "v_head": 0.881,
+     "l": 0.211,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.952,
+     "v_head": 0.952,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.249,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.806,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p1.0 xa0.29": {
+   "n_seated": 57,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.874,
+     "v_head": 0.874,
+     "l": 0.212,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.947,
+     "v_head": 0.947,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.289,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.863,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p1.0 xa0.33": {
+   "n_seated": 65,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.869,
+     "v_head": 0.869,
+     "l": 0.213,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.945,
+     "v_head": 0.945,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.329,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.453,
+     "v_head": 0.472,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p2.5 xa0.25": {
+   "n_seated": 38,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.881,
+     "v_head": 0.881,
+     "l": 0.211,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.952,
+     "v_head": 0.952,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.279,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.249,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.469,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.804,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p2.5 xa0.29": {
+   "n_seated": 43,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.874,
+     "v_head": 0.874,
+     "l": 0.212,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.947,
+     "v_head": 0.947,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.317,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.288,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.862,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.09 p2.5 xa0.33": {
+   "n_seated": 56,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.869,
+     "v_head": 0.869,
+     "l": 0.213,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.945,
+     "v_head": 0.945,
+     "l": 0.179,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 68,
+    "f": 0.996,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.355,
+     0.872
+    ],
+    "hip_z": 0.782,
+    "shoulder": [
+     0.328,
+     1.214
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.453,
+     "v_head": 0.472,
+     "l": 0.825
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.825
+    },
+    "current_force": {
+     "v_open": 0.895,
+     "v_head": 0.812,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.854,
+     "v_head": 0.854,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p0.6 xa0.25": {
+   "n_seated": 43,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.849,
+     "v_head": 0.849,
+     "l": 0.227,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.912,
+     "v_head": 0.912,
+     "l": 0.195,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.248,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.804,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p0.6 xa0.29": {
+   "n_seated": 51,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.842,
+     "v_head": 0.842,
+     "l": 0.228,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.908,
+     "v_head": 0.908,
+     "l": 0.195,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.288,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.472,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.861,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p0.6 xa0.33": {
+   "n_seated": 58,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.838,
+     "v_head": 0.838,
+     "l": 0.228,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.907,
+     "v_head": 0.907,
+     "l": 0.194,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.327,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.453,
+     "v_head": 0.473,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p1.0 xa0.25": {
+   "n_seated": 40,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.849,
+     "v_head": 0.849,
+     "l": 0.227,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.912,
+     "v_head": 0.912,
+     "l": 0.195,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.279,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.247,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.802,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p1.0 xa0.29": {
+   "n_seated": 48,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.842,
+     "v_head": 0.842,
+     "l": 0.228,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.908,
+     "v_head": 0.908,
+     "l": 0.195,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.317,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.286,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.859,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p1.0 xa0.33": {
+   "n_seated": 57,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.838,
+     "v_head": 0.838,
+     "l": 0.228,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.907,
+     "v_head": 0.907,
+     "l": 0.194,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.355,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.325,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.137,
+     "v_open": 0.453,
+     "v_head": 0.472,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p2.5 xa0.25": {
+   "n_seated": 31,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.849,
+     "v_head": 0.849,
+     "l": 0.227,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.129,
+     "d_head": 0.129,
+     "v_open": 0.912,
+     "v_head": 0.912,
+     "l": 0.195,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.276,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.243,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.796,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p2.5 xa0.29": {
+   "n_seated": 35,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.842,
+     "v_head": 0.842,
+     "l": 0.228,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.908,
+     "v_head": 0.908,
+     "l": 0.195,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.312,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.281,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.47,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.851,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.50 r0.11 p2.5 xa0.33": {
+   "n_seated": 42,
+   "stand_feet_only": {
+    "d_open": 0.131,
+    "d_head": 0.131,
+    "v_open": 0.458,
+    "v_head": 0.458,
+    "l": 0.807
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.838,
+     "v_head": 0.838,
+     "l": 0.228,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.128,
+     "d_head": 0.128,
+     "v_open": 0.907,
+     "v_head": 0.907,
+     "l": 0.194,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 62,
+    "f": 0.98,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.349,
+     0.869
+    ],
+    "hip_z": 0.778,
+    "shoulder": [
+     0.319,
+     1.21
+    ],
+    "none": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current": {
+     "d_open": 0.131,
+     "d_head": 0.136,
+     "v_open": 0.453,
+     "v_head": 0.471,
+     "l": 0.822
+    },
+    "M1": {
+     "d_open": 0.131,
+     "d_head": 0.131,
+     "v_open": 0.453,
+     "v_head": 0.453,
+     "l": 0.822
+    },
+    "current_force": {
+     "v_open": 0.897,
+     "v_head": 0.814,
+     "e_open": 0.129,
+     "e_head": 0.105
+    },
+    "M1_force": {
+     "v_open": 0.855,
+     "v_head": 0.855,
+     "e_open": 0.117,
+     "e_head": 0.117
+    },
+    "head_wall": {
+     "housing_top": 0.887,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p0.6 xa0.25": {
+   "n_seated": 63,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.944,
+     "v_head": 0.944,
+     "l": 0.211,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 1.021,
+     "v_head": 1.021,
+     "l": 0.179,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.281,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.249,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.479,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.806,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p0.6 xa0.29": {
+   "n_seated": 72,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.936,
+     "v_head": 0.936,
+     "l": 0.212,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 1.014,
+     "v_head": 1.014,
+     "l": 0.18,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.319,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.289,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.48,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.863,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p0.6 xa0.33": {
+   "n_seated": 81,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.93,
+     "v_head": 0.93,
+     "l": 0.214,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 1.009,
+     "v_head": 1.009,
+     "l": 0.181,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.357,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.329,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.481,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p1.0 xa0.25": {
+   "n_seated": 59,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.944,
+     "v_head": 0.944,
+     "l": 0.211,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 1.021,
+     "v_head": 1.021,
+     "l": 0.179,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.249,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.479,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.805,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p1.0 xa0.29": {
+   "n_seated": 69,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.936,
+     "v_head": 0.936,
+     "l": 0.212,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 1.014,
+     "v_head": 1.014,
+     "l": 0.18,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.289,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.48,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.863,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p1.0 xa0.33": {
+   "n_seated": 80,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.93,
+     "v_head": 0.93,
+     "l": 0.214,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 1.009,
+     "v_head": 1.009,
+     "l": 0.181,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.329,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.481,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p2.5 xa0.25": {
+   "n_seated": 46,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.944,
+     "v_head": 0.944,
+     "l": 0.211,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 1.021,
+     "v_head": 1.021,
+     "l": 0.179,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.279,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.248,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.479,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.803,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p2.5 xa0.29": {
+   "n_seated": 52,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.936,
+     "v_head": 0.936,
+     "l": 0.212,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 1.014,
+     "v_head": 1.014,
+     "l": 0.18,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.317,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.287,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.48,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.86,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.07 p2.5 xa0.33": {
+   "n_seated": 63,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.93,
+     "v_head": 0.93,
+     "l": 0.214,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 1.009,
+     "v_head": 1.009,
+     "l": 0.181,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 86,
+    "f": 0.994,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.355,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.327,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.481,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p0.6 xa0.25": {
+   "n_seated": 55,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.91,
+     "v_head": 0.91,
+     "l": 0.227,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.978,
+     "v_head": 0.978,
+     "l": 0.196,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.281,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.248,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.48,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.804,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p0.6 xa0.29": {
+   "n_seated": 64,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.903,
+     "v_head": 0.903,
+     "l": 0.228,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.972,
+     "v_head": 0.972,
+     "l": 0.196,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.319,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.288,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.481,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.861,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p0.6 xa0.33": {
+   "n_seated": 73,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.897,
+     "v_head": 0.897,
+     "l": 0.229,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.968,
+     "v_head": 0.968,
+     "l": 0.197,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.357,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.327,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.482,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p1.0 xa0.25": {
+   "n_seated": 51,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.91,
+     "v_head": 0.91,
+     "l": 0.227,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.978,
+     "v_head": 0.978,
+     "l": 0.196,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.247,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.48,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.802,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p1.0 xa0.29": {
+   "n_seated": 60,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.903,
+     "v_head": 0.903,
+     "l": 0.228,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.972,
+     "v_head": 0.972,
+     "l": 0.196,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.287,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.481,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.859,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p1.0 xa0.33": {
+   "n_seated": 71,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.897,
+     "v_head": 0.897,
+     "l": 0.229,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.968,
+     "v_head": 0.968,
+     "l": 0.197,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.326,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.482,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p2.5 xa0.25": {
+   "n_seated": 40,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.91,
+     "v_head": 0.91,
+     "l": 0.227,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.978,
+     "v_head": 0.978,
+     "l": 0.196,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.277,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.243,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.143,
+     "v_open": 0.468,
+     "v_head": 0.48,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.797,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p2.5 xa0.29": {
+   "n_seated": 44,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.903,
+     "v_head": 0.903,
+     "l": 0.228,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.972,
+     "v_head": 0.972,
+     "l": 0.196,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.314,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.281,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.48,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.852,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.09 p2.5 xa0.33": {
+   "n_seated": 51,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.897,
+     "v_head": 0.897,
+     "l": 0.229,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.968,
+     "v_head": 0.968,
+     "l": 0.197,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 80,
+    "f": 0.982,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.35,
+     0.924
+    ],
+    "hip_z": 0.83,
+    "shoulder": [
+     0.32,
+     1.291
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.468,
+     "v_head": 0.481,
+     "l": 0.877
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.468,
+     "v_head": 0.468,
+     "l": 0.877
+    },
+    "current_force": {
+     "v_open": 0.904,
+     "v_head": 0.824,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.864,
+     "v_head": 0.864,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.887,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p0.6 xa0.25": {
+   "n_seated": 47,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.88,
+     "v_head": 0.88,
+     "l": 0.243,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.94,
+     "v_head": 0.94,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.281,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.249,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.479,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.805,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p0.6 xa0.29": {
+   "n_seated": 56,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.872,
+     "v_head": 0.872,
+     "l": 0.244,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.934,
+     "v_head": 0.934,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.319,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.289,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.48,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.863,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p0.6 xa0.33": {
+   "n_seated": 64,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.867,
+     "v_head": 0.867,
+     "l": 0.245,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.931,
+     "v_head": 0.931,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.357,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.329,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.481,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p1.0 xa0.25": {
+   "n_seated": 44,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.88,
+     "v_head": 0.88,
+     "l": 0.243,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.94,
+     "v_head": 0.94,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.28,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.249,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.479,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.805,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p1.0 xa0.29": {
+   "n_seated": 52,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.872,
+     "v_head": 0.872,
+     "l": 0.244,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.934,
+     "v_head": 0.934,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.318,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.289,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.48,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.862,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p1.0 xa0.33": {
+   "n_seated": 62,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.867,
+     "v_head": 0.867,
+     "l": 0.245,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.931,
+     "v_head": 0.931,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.328,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.481,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p2.5 xa0.25": {
+   "n_seated": 34,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.88,
+     "v_head": 0.88,
+     "l": 0.243,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.94,
+     "v_head": 0.94,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.279,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.248,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.479,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.803,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p2.5 xa0.29": {
+   "n_seated": 37,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.138,
+     "d_head": 0.138,
+     "v_open": 0.872,
+     "v_head": 0.872,
+     "l": 0.244,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.934,
+     "v_head": 0.934,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.317,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.287,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.48,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.86,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.60 r0.11 p2.5 xa0.33": {
+   "n_seated": 42,
+   "stand_feet_only": {
+    "d_open": 0.14,
+    "d_head": 0.14,
+    "v_open": 0.471,
+    "v_head": 0.471,
+    "l": 0.866
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.867,
+     "v_head": 0.867,
+     "l": 0.245,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.137,
+     "d_head": 0.137,
+     "v_open": 0.931,
+     "v_head": 0.931,
+     "l": 0.212,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 76,
+    "f": 0.993,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.354,
+     0.927
+    ],
+    "hip_z": 0.834,
+    "shoulder": [
+     0.326,
+     1.295
+    ],
+    "none": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current": {
+     "d_open": 0.14,
+     "d_head": 0.144,
+     "v_open": 0.467,
+     "v_head": 0.481,
+     "l": 0.88
+    },
+    "M1": {
+     "d_open": 0.14,
+     "d_head": 0.14,
+     "v_open": 0.467,
+     "v_head": 0.467,
+     "l": 0.88
+    },
+    "current_force": {
+     "v_open": 0.902,
+     "v_head": 0.822,
+     "e_open": 0.13,
+     "e_head": 0.106
+    },
+    "M1_force": {
+     "v_open": 0.862,
+     "v_head": 0.862,
+     "e_open": 0.118,
+     "e_head": 0.118
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p0.6 xa0.25": {
+   "n_seated": 68,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.984,
+     "v_head": 0.984,
+     "l": 0.234,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 1.056,
+     "v_head": 1.056,
+     "l": 0.203,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.283,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.248,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.803,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p0.6 xa0.29": {
+   "n_seated": 79,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.975,
+     "v_head": 0.975,
+     "l": 0.237,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.048,
+     "v_head": 1.048,
+     "l": 0.205,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.32,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.287,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.86,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p0.6 xa0.33": {
+   "n_seated": 91,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.969,
+     "v_head": 0.969,
+     "l": 0.238,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.042,
+     "v_head": 1.042,
+     "l": 0.206,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.358,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.327,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.495,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p1.0 xa0.25": {
+   "n_seated": 62,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.984,
+     "v_head": 0.984,
+     "l": 0.234,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 1.056,
+     "v_head": 1.056,
+     "l": 0.203,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.282,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.247,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.802,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p1.0 xa0.29": {
+   "n_seated": 73,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.975,
+     "v_head": 0.975,
+     "l": 0.237,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.048,
+     "v_head": 1.048,
+     "l": 0.205,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.319,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.286,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.858,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p1.0 xa0.33": {
+   "n_seated": 87,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.969,
+     "v_head": 0.969,
+     "l": 0.238,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.042,
+     "v_head": 1.042,
+     "l": 0.206,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.357,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.325,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.495,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p2.5 xa0.25": {
+   "n_seated": 48,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.984,
+     "v_head": 0.984,
+     "l": 0.234,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 1.056,
+     "v_head": 1.056,
+     "l": 0.203,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.278,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.242,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.794,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p2.5 xa0.29": {
+   "n_seated": 52,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.975,
+     "v_head": 0.975,
+     "l": 0.237,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.048,
+     "v_head": 1.048,
+     "l": 0.205,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.314,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.28,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.849,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.07 p2.5 xa0.33": {
+   "n_seated": 57,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.491,
+    "v_head": 0.491,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.969,
+     "v_head": 0.969,
+     "l": 0.238,
+     "hip_drop": 0.39
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.042,
+     "v_head": 1.042,
+     "l": 0.206,
+     "hip_drop": 0.55
+    }
+   },
+   "weakest_open_current": {
+    "i": 104,
+    "f": 0.978,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.35,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.317,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.887,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p0.6 xa0.25": {
+   "n_seated": 60,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.952,
+     "v_head": 0.952,
+     "l": 0.25,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 1.016,
+     "v_head": 1.016,
+     "l": 0.219,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.282,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.249,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.489,
+     "v_head": 0.493,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.805,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p0.6 xa0.29": {
+   "n_seated": 70,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.944,
+     "v_head": 0.944,
+     "l": 0.253,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.009,
+     "v_head": 1.009,
+     "l": 0.221,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.32,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.288,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.489,
+     "v_head": 0.494,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.862,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p0.6 xa0.33": {
+   "n_seated": 81,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.938,
+     "v_head": 0.938,
+     "l": 0.254,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.004,
+     "v_head": 1.004,
+     "l": 0.222,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.358,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.328,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.489,
+     "v_head": 0.494,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p1.0 xa0.25": {
+   "n_seated": 55,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.952,
+     "v_head": 0.952,
+     "l": 0.25,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 1.016,
+     "v_head": 1.016,
+     "l": 0.219,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.281,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.248,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.489,
+     "v_head": 0.493,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.803,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p1.0 xa0.29": {
+   "n_seated": 64,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.944,
+     "v_head": 0.944,
+     "l": 0.253,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.009,
+     "v_head": 1.009,
+     "l": 0.221,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.319,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.287,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.489,
+     "v_head": 0.494,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.86,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p1.0 xa0.33": {
+   "n_seated": 76,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.938,
+     "v_head": 0.938,
+     "l": 0.254,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.004,
+     "v_head": 1.004,
+     "l": 0.222,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.357,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.327,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.489,
+     "v_head": 0.494,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p2.5 xa0.25": {
+   "n_seated": 42,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.952,
+     "v_head": 0.952,
+     "l": 0.25,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 1.016,
+     "v_head": 1.016,
+     "l": 0.219,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.279,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.245,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.489,
+     "v_head": 0.493,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.799,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p2.5 xa0.29": {
+   "n_seated": 46,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.944,
+     "v_head": 0.944,
+     "l": 0.253,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.009,
+     "v_head": 1.009,
+     "l": 0.221,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.316,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.284,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.489,
+     "v_head": 0.493,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.855,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.09 p2.5 xa0.33": {
+   "n_seated": 50,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.491,
+    "v_head": 0.491,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.938,
+     "v_head": 0.938,
+     "l": 0.254,
+     "hip_drop": 0.41
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 1.004,
+     "v_head": 1.004,
+     "l": 0.222,
+     "hip_drop": 0.57
+    }
+   },
+   "weakest_open_current": {
+    "i": 100,
+    "f": 0.986,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.353,
+     1.008
+    ],
+    "hip_z": 0.91,
+    "shoulder": [
+     0.322,
+     1.414
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.489,
+     "v_head": 0.494,
+     "l": 0.961
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.489,
+     "v_head": 0.489,
+     "l": 0.961
+    },
+    "current_force": {
+     "v_open": 0.914,
+     "v_head": 0.837,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.875,
+     "v_head": 0.875,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p0.6 xa0.25": {
+   "n_seated": 53,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.923,
+     "v_head": 0.923,
+     "l": 0.266,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.98,
+     "v_head": 0.98,
+     "l": 0.236,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.283,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.248,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.803,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p0.6 xa0.29": {
+   "n_seated": 62,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.916,
+     "v_head": 0.916,
+     "l": 0.269,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.974,
+     "v_head": 0.974,
+     "l": 0.237,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.32,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.287,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.86,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p0.6 xa0.33": {
+   "n_seated": 72,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.91,
+     "v_head": 0.91,
+     "l": 0.27,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.969,
+     "v_head": 0.969,
+     "l": 0.238,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.358,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.327,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.495,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p1.0 xa0.25": {
+   "n_seated": 48,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.923,
+     "v_head": 0.923,
+     "l": 0.266,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.98,
+     "v_head": 0.98,
+     "l": 0.236,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.281,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.246,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.801,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p1.0 xa0.29": {
+   "n_seated": 56,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.916,
+     "v_head": 0.916,
+     "l": 0.269,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.974,
+     "v_head": 0.974,
+     "l": 0.237,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.319,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.285,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.857,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p1.0 xa0.33": {
+   "n_seated": 67,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.91,
+     "v_head": 0.91,
+     "l": 0.27,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.969,
+     "v_head": 0.969,
+     "l": 0.238,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.356,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.324,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.155,
+     "v_open": 0.49,
+     "v_head": 0.495,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.886,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p2.5 xa0.25": {
+   "n_seated": 37,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.492,
+    "v_head": 0.492,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.923,
+     "v_head": 0.923,
+     "l": 0.266,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.152,
+     "d_head": 0.152,
+     "v_open": 0.98,
+     "v_head": 0.98,
+     "l": 0.236,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.277,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.241,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.793,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p2.5 xa0.29": {
+   "n_seated": 40,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.491,
+    "v_head": 0.491,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.916,
+     "v_head": 0.916,
+     "l": 0.269,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.974,
+     "v_head": 0.974,
+     "l": 0.237,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.313,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.279,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.848,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  },
+  "H1.75 r0.11 p2.5 xa0.33": {
+   "n_seated": 43,
+   "stand_feet_only": {
+    "d_open": 0.153,
+    "d_head": 0.153,
+    "v_open": 0.491,
+    "v_head": 0.491,
+    "l": 0.952
+   },
+   "bed": {
+    "0.42": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.91,
+     "v_head": 0.91,
+     "l": 0.27,
+     "hip_drop": 0.43
+    },
+    "0.58": {
+     "d_open": 0.151,
+     "d_head": 0.151,
+     "v_open": 0.969,
+     "v_head": 0.969,
+     "l": 0.238,
+     "hip_drop": 0.59
+    }
+   },
+   "weakest_open_current": {
+    "i": 94,
+    "f": 0.975,
+    "seated": false,
+    "th": 0,
+    "f_seat": 0.0,
+    "com": [
+     0.349,
+     1.005
+    ],
+    "hip_z": 0.906,
+    "shoulder": [
+     0.316,
+     1.41
+    ],
+    "none": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current": {
+     "d_open": 0.153,
+     "d_head": 0.154,
+     "v_open": 0.49,
+     "v_head": 0.494,
+     "l": 0.958
+    },
+    "M1": {
+     "d_open": 0.153,
+     "d_head": 0.153,
+     "v_open": 0.49,
+     "v_head": 0.49,
+     "l": 0.958
+    },
+    "current_force": {
+     "v_open": 0.915,
+     "v_head": 0.838,
+     "e_open": 0.133,
+     "e_head": 0.109
+    },
+    "M1_force": {
+     "v_open": 0.877,
+     "v_head": 0.877,
+     "e_open": 0.121,
+     "e_head": 0.121
+    },
+    "head_wall": {
+     "housing_top": 0.887,
+     "shoulder_below_top": false,
+     "hip_in_housing_x": true
+    }
+   }
+  }
+ }
+}
