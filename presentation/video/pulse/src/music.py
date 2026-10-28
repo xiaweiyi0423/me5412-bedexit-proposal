@@ -1,19 +1,19 @@
-"""120 BPM electronic track for the pulse cut, 45 s, synthesised (no samples). Every hit lands on the picture's beat grid.
+"""120 BPM electronic track for the pulse cut, 42 s, synthesised (no samples). Every hit lands on the picture's beat grid.
 python3 music.py out.wav"""
 import sys
 import numpy as np
 from scipy import signal
 
-SR = 48000; BEAT = 0.5; DUR = 45.0; XO = 10.0; RAW = False; N = int((DUR + 3) * SR)   # cues on the old 36 s clock move by XO after 12 s
+SR = 48000; BEAT = 0.5; DUR = 42.0; XO = 10.0; RAW = False; N = int((DUR + 3) * SR)   # cues on the old 36 s clock move by XO after 12 s
 rng = np.random.default_rng(7)
 L = np.zeros(N); R = np.zeros(N); VERB = np.zeros((2, N)); MUS = np.zeros((2, N))   # MUS = bus that gets side-chained
 
 
 def warp(t):   # old 36 s clock -> picture clock: design block inserted at 12-22, assembly (old 12-16) at double speed
     if RAW or t < 12: return t
-    if t < 16: return 23 + (t - 12) / 2
-    if t < 18: return 25 + (t - 16)
-    return t + 9
+    if t < 16: return 20 + (t - 12) / 2
+    if t < 18: return 22 + (t - 16)
+    return t + 6
 
 
 def put(x, t, g=1.0, pan=0.0, bus="mix", verb=0.0):
@@ -158,55 +158,48 @@ put(boom(), 10.0, 1.0, verb=0.4); put(crash(), 10.0, 0.8, verb=0.4); put2(pad(5,
 put(kick(), 11.0, 0.9)
 for b in np.arange(11.0, 11.75, 0.0625): put(clap() * (0.3 + 0.9 * (b - 11.0)), b, 0.6)
 put(riser(1.0, 800, 12000), 10.75, 0.9)
-# ---- design block 12-23 (raw clock): one line drawn, more people, 81 strands, design curve, points, rail, link, five candidates
+# ---- trajectory block 12-20 (raw clock): seat follows the thigh, 81 bodies, rail + link, five structures
 RAW = True
-for b in np.arange(12.0, 23.0, BEAT):
-    put(kick(0.95 if b >= 14.5 else 0.7), b)
-    if int(round(b / BEAT)) % 2 == 1 and b >= 14.5: put(clap(), b, 0.7, verb=0.25)
+for b in np.arange(12.0, 20.0, BEAT):
+    put(kick(0.95 if b >= 13.5 else 0.75), b)
+    if int(round(b / BEAT)) % 2 == 1: put(clap(), b, 0.7, verb=0.25)
     put(hat(), b + 0.25, 0.5, pan=-0.2)
-    if b >= 16: put(hat(), b + 0.125, 0.35, pan=0.35); put(hat(), b + 0.375, 0.35, pan=0.35)
-for b in np.arange(12.0, 23.0, 0.25):
-    bar = int(b // 2); n = ROOT[bar % 4] + (12 if int(b * 4) % 4 in (1, 3) else 0); put(bass_note(n, 0.22, 480 if b < 14.5 else 560), b, 0.9, bus="mus")
-for t0 in (12.0, 14.0, 16.0, 18.0, 20.0): put2(pad(int(t0 // 2), 0.09, 1800), t0, verb=0.45)
-put2(pad(11, 0.09, 1800)[:, : SR], 22.0, verb=0.45)
+    if b >= 15: put(hat(), b + 0.125, 0.35, pan=0.35); put(hat(), b + 0.375, 0.35, pan=0.35)
+for b in np.arange(12.0, 20.0, 0.25):
+    bar = int(b // 2); n = ROOT[bar % 4] + (12 if int(b * 4) % 4 in (1, 3) else 0); put(bass_note(n, 0.22, 560), b, 0.9, bus="mus")
+for t0 in (12.0, 14.0, 16.0, 18.0): put2(pad(int(t0 // 2), 0.09, 1800), t0, verb=0.45)
 put(crash(1.2), 12.0, 0.35, verb=0.3)
-for j, b in enumerate(np.arange(12.75, 14.2, 0.125)): put(ping(NOTE([81, 84, 86, 88, 91, 93][j % 6] + (12 if j >= 6 else 0)), 0.25), b, 0.16, pan=0.3 * np.sin(j), verb=0.3)   # the dots of the first line
-t_ = tt(1.6); put(filt(np.sin(2 * np.pi * np.cumsum(170 + 140 * (t_ / 1.6) ** 1.2) / SR), "lowpass", 1400) * np.hanning(len(t_)) * 0.1, 12.6, verb=0.3)
-put(whoosh(0.45), 14.3, 0.7)
-for j in range(4): put(ping(NOTE([84, 88, 91, 96][j]), 0.5), 14.55 + j * 0.15, 0.25, pan=[-0.5, 0.5, -0.3, 0.3][j], verb=0.4)
-put(riser(0.7, 1500, 10000) * np.hanning(int(0.7 * SR)), 15.3, 0.45, verb=0.4); put(whoosh(0.45), 15.85, 0.7)
-put(ping(NOTE(88), 0.9), 16.5, 0.4, verb=0.5); put(ping(NOTE(93), 1.0), 16.9, 0.45, verb=0.5)
-put(whoosh(0.4), 17.4, 0.6)
-for i in range(5): put(ping(NOTE([84, 86, 88, 91, 93][i]), 0.35), 17.8 + i * 0.03, 0.2, pan=0.5 * np.sin(i * 2), verb=0.3)
-t_ = tt(0.65); put(filt(np.sin(2 * np.pi * np.cumsum(220 + 160 * t_) / SR), "lowpass", 1400) * np.hanning(len(t_)) * 0.12, 17.95, verb=0.3)
-put(snap(), 18.65, 0.9); put(ping(NOTE(91), 0.8), 18.65, 0.4, verb=0.5); put(snap(), 19.0, 0.9); put(ping(NOTE(86), 0.8), 19.0, 0.4, verb=0.5)
-for i in range(5): put(ping(NOTE([81, 84, 88, 91, 93][i]), 0.4), 19.5 + i * 0.25, 0.28, verb=0.3)
-for j, b in enumerate((20.5, 21.0, 21.5)):          # each condition: a soft two-note step down as candidates fall back (no buzzers)
-    put(ping(NOTE(88 - 2 * j), 0.5), b, 0.3, verb=0.4); put(ping(NOTE(81 - 2 * j), 0.6), b + 0.12, 0.22, verb=0.4)
-put(ping(NOTE(93), 1.4), 22.0, 0.6, verb=0.6); put(ping(NOTE(100), 1.4), 22.0, 0.35, verb=0.6)
-for b in np.arange(22.5, 22.875, 0.0625): put(clap() * (0.4 + (b - 22.5)), b, 0.5)
-put(riser(0.7, 800, 11000), 22.2, 0.6); put(crash(1.5), 23.0, 0.6, verb=0.4)
+t_ = tt(1.5); put(filt(np.sin(2 * np.pi * np.cumsum(170 + 140 * (t_ / 1.5) ** 1.2) / SR), "lowpass", 1400) * np.hanning(len(t_)) * 0.11, 12.3, verb=0.3)
+put(whoosh(0.45), 13.55, 0.7); put(riser(0.7, 1500, 10000) * np.hanning(int(0.7 * SR)), 13.95, 0.45, verb=0.4)
+put(ping(NOTE(93), 1.0), 14.5, 0.45, verb=0.5); put(whoosh(0.4), 14.95, 0.6)
+t_ = tt(0.9); put(filt(np.sin(2 * np.pi * np.cumsum(200 + 150 * t_ / 0.9) / SR), "lowpass", 1400) * np.hanning(len(t_)) * 0.12, 15.3, verb=0.3)
+put(snap(), 15.9, 0.9); put(ping(NOTE(91), 0.8), 15.9, 0.4, verb=0.5); put(snap(), 16.2, 0.9); put(ping(NOTE(86), 0.8), 16.2, 0.4, verb=0.5)
+t_ = tt(0.8); put(filt(np.sin(2 * np.pi * np.cumsum(350 - 150 * t_ / 0.8) / SR), "lowpass", 1400) * np.hanning(len(t_)) * 0.1, 16.5, verb=0.3)
+for i in range(5): put(ping(NOTE([81, 84, 88, 91, 93][i]), 0.4), 17.5 + i * 0.15, 0.26, verb=0.3)
+put(ping(NOTE(81), 0.6), 18.6, 0.25, verb=0.4); put(ping(NOTE(93), 1.4), 18.75, 0.6, verb=0.6); put(ping(NOTE(100), 1.4), 18.75, 0.35, verb=0.6)
+for b in np.arange(19.5, 19.875, 0.0625): put(clap() * (0.4 + (b - 19.5)), b, 0.5)
+put(riser(0.7, 800, 11000), 19.2, 0.6); put(crash(1.5), 20.0, 0.6, verb=0.4)
 RAW = False
 # ---- main groove 12-36 (cut during the STOP)
 RAW = True
-LIVE = lambda t: not (37.5 <= t < 39.0)
-for b in np.arange(23.0, 43.0, BEAT):
+LIVE = lambda t: not (34.5 <= t < 36.0)
+for b in np.arange(20.0, 40.0, BEAT):
     if not LIVE(b): continue
     put(kick(), b)
     if int(round(b / BEAT)) % 2 == 1: put(clap(), b, 0.8, verb=0.25)
     put(hat(True), b + 0.25, 0.55, pan=-0.2)
     for k in (0.125, 0.375): put(hat(), b + k, 0.45, pan=0.35)
-for b in np.arange(23.0, 43.0, 0.25):
+for b in np.arange(20.0, 40.0, 0.25):
     if not LIVE(b): continue
     bar = int(b // 2); n = ROOT[bar % 4] + (12 if int(b * 4) % 4 in (1, 3) else 0); put(bass_note(n, 0.22, 650), b, 1.0, bus="mus")
 for bar in range(11, 21):
-    t0 = bar * 2.0 + 1.0
-    if 37.5 <= t0 < 39.0: continue
+    t0 = bar * 2.0 - 2.0
+    if 34.5 <= t0 < 36.0: continue
     p = pad(bar, 0.10, 2200)
-    if t0 < 37.5 < t0 + 2: p[:, int((37.5 - t0) * SR):] = 0
+    if t0 < 34.5 < t0 + 2: p[:, int((34.5 - t0) * SR):] = 0
     put2(p, t0, verb=0.45)
-for i, b in enumerate(np.arange(23.0, 43.0, 0.125)):
-    if not LIVE(b) or (33.0 <= b < 37.5 and i % 2): continue
+for i, b in enumerate(np.arange(20.0, 40.0, 0.125)):
+    if not LIVE(b) or (30.0 <= b < 34.5 and i % 2): continue
     bar = int(b // 2); notes = CH[bar % 4]; n = notes[i % 3] + 12 + (12 if (i // 3) % 2 else 0)
     put(arp_note(n, 0.11, 4200), b, 0.75, pan=0.5 * np.sin(i * 0.7), bus="mus", verb=0.2)
 RAW = False
@@ -237,7 +230,7 @@ for i, b in enumerate(np.arange(34.5, 36.0, 0.5)): put(ping(NOTE([93, 96, 100][i
 
 # ---- side-chain pump on the music bus (kick on every live beat from 4 s)
 pump = np.ones(N); tn = np.arange(N) / SR
-KT = [b for b in beats if 4 <= b < 12] + list(np.arange(12.0, 23.0, BEAT)) + [b for b in np.arange(23.0, 45.0, BEAT) if not (37.5 <= b < 39.0)]
+KT = [b for b in beats if 4 <= b < 12] + list(np.arange(12.0, 20.0, BEAT)) + [b for b in np.arange(20.0, 42.0, BEAT) if not (34.5 <= b < 36.0)]
 for b in KT:
     i = int(b * SR); n = int(0.45 * SR); seg = 1 - 0.65 * np.exp(-np.arange(n) / SR * 9); pump[i:i + n] = np.minimum(pump[i:i + n], seg[: N - i])
 L += MUS[0] * pump; R += MUS[1] * pump

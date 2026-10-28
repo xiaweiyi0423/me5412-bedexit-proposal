@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 45;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 42;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -428,18 +428,21 @@ function secI(t) {   // 33-36 end
 // ------------------------------------------------------------------ points + lines: opening, design process, end
 const DS = window.DS, XO = 10;     // sections after the design block run on the old clock (t - XO)
 T('a_s', '每一次起身，都是一条<span style="color:#19D3F0">线</span>', { s: { ...big(60, 700), color: '#C9D3DF' } });
-T('x_tag', 'DESIGN / 设计', mono(24));
+T('x_tag', 'TRAJECTORY / 轨迹', mono(24));
+T('x_d1', '座板<span style="color:#19D3F0">跟着大腿走</span><br><span style="font-size:44px;font-weight:700;color:#A8B4C4">前移、上升、前倾，一路托着人</span>', { s: big(80) });
+T('x_d2', '这条路线，按 <span style="color:#19D3F0">81 种身体</span>算出来<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">身高 · 体型 · 起身习惯 · 脚的位置</span>', { s: big(80) });
+T('x_d3', '一条导轨 + 一根连杆<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">走出这条曲线</span>', { s: big(80) });
 T('x_0', '线是怎么画的<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">座板“粘”在大腿下面，跟着人起身</span>', { s: big(80) });
 T('x_c', '座板中心走过的点，连成一条线', { s: { ...big(30, 700), color: '#fff' } });
 T('x_0b', '换一个人，就是另一条线<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">身高 × 体型 × 起身习惯 × 脚的位置 = 81 个人</span>', { s: big(80) });
 T('x_1', '先画线<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">81 个人，各自起身时座板该走的路</span>', { s: big(80) });
 T('x_2', '挑一条<span style="color:#fff;text-shadow:0 0 24px #19D3F0">设计曲线</span><br><span style="font-size:44px;font-weight:700;color:#A8B4C4">每条都拿给 81 个人试，选最吃力的人也够用的那条</span>', { s: big(80) });
 T('x_3', '再找点<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">座板上每个点，都画出自己的轨迹</span>', { s: big(80) });
-T('x_l1', '直线 → 导轨', { s: { ...big(44, 900), color: C.acc } }); T('x_l2', '圆弧 → 连杆', { s: { ...big(44, 900), color: '#8CF5A6' } });
+T('x_l1', '导轨', { s: { ...big(44, 900), color: C.acc } }); T('x_l2', '连杆', { s: { ...big(44, 900), color: '#8CF5A6' } });
 T('x_B', 'B', { cls: 'lat', s: { fontSize: '40px', fontWeight: 800, color: '#8CF5A6' } });
-T('x_4', '同样 81 个人，比五种机构', { s: big(72) });
+T('x_4', '比过五种结构，它最贴合、最省力', { s: big(72) });
 ['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'].forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
-const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '偏离曲线，连杆碰小腿', '两侧挡腿，回床转不过去', '铰点偏载太大', '三条都满足'];
+const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'];
 CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#8A96A6' } }); });
 T('x_ok', '四连杆的一根杆，换成一条<span style="color:#19D3F0">导轨</span>', { s: { ...big(40, 700), color: '#C9D3DF' } });
 const LIME = '#8CF5A6';
@@ -500,55 +503,61 @@ function prettyPaths(g, map, t, a = 1, hl = -1) {   // 81 lines as faint glowing
     const u = ((t * 0.55 + i * 0.6180339) % 1), pp = partial(P2, u), q = map(pp[pp.length - 1]); g.fillStyle = `rgba(220,250,255,${0.85 * a * Math.sin(Math.PI * u)})`; g.beginPath(); g.arc(q[0], q[1], 2.6, 0, 7); g.fill(); });
   g.restore();
 }
-function secX(t) {
+function secX(t) {   // 12-20 product voice: the seat follows the thigh; its path is built for 81 bodies; a rail + a link make it; picked from five
   fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.08); vignette(bg, 0.5); show('x_tag', { x: 80, y: 64, op: 1 });
-  if (t >= 19.5) { candX(t - 1.0); return; }
-  // camera: close on thigh + seat (12-16), the strands (16-17.5), wide for rail + B (17.5-19.5)
-  const k1 = ss(15.9, 16.4, t), k2 = ss(17.45, 17.85, t);
-  const k0 = ss(14.4, 15.0, t);   // after the first person, close in on the seat lines
-  const v = { cx: lerp(lerp(lerp(0.32, 0.17, k0), 0.135, k1), 0.25, k2), cz: lerp(lerp(lerp(0.83, 0.56, k0), 0.545, k1), 0.46, k2), sc: lerp(lerp(lerp(620, 1500, k0), 2300, k1), 1020, k2), sx: lerp(lerp(1250, 1240, k1), 1260, k2), sy: lerp(lerp(560, 560, k1), 580, k2) };
+  if (t >= 17.5) { cand2(t); return; }
+  const k0 = ss(13.6, 14.3, t), k2 = ss(15.0, 15.45, t);
+  const v = { cx: lerp(lerp(0.32, 0.14, k0), 0.25, k2), cz: lerp(lerp(0.83, 0.55, k0), 0.46, k2), sc: lerp(lerp(620, 1900, k0), 1020, k2), sx: lerp(1250, 1260, k2), sy: lerp(560, 580, k2) };
   const map = p => [v.sx + (p[0] - v.cx) * v.sc, v.sy - (p[1] - v.cz) * v.sc];
   ppoly(bg, [[-1.5, 0], [0, 0], [0, DS.Z0], [-1.5, DS.Z0]], map, '#141A22', '#2C3644', 2); pline(bg, [[-1.5, 0], [1.5, 0]], map, '#2C3644', 3);
-  if (t < 16.4) {   // how one line is drawn, then more people
-    const fa = 1 - ss(15.9, 16.3, t);
-    DM.users.forEach((u, ui) => {
-      const k = ui === 0 ? ss(12.6, 14.2, t) : ss(14.55 + (ui - 1) * 0.15, 15.45 + (ui - 1) * 0.15, t); if (ui > 0 && t < 14.5) return;
-      const st = demoState(u, k), col = DCOL[ui];
-      if (ui === 0) { const fa0 = (1 - ss(14.3, 14.7, t)) * fa; if (fa0 > 0) { drawFig(fg, st.J, map, v.sc, '#55657A', '#55657A', fa0, 4, true); drawFig(fg, st.J, map, v.sc, '#222B37', '#222B37', fa0, 0, true); } }
-      if (ui === 0 || t < 15.6) ppoly(fg, DS.mech.plate.map(c => R2(st.Q, st.phi, c)), map, ui === 0 ? 'rgba(255,255,255,.9)' : col, null, 2, (ui === 0 ? 1 : 0.3) * fa * (ui > 0 ? 1 - ss(15.4, 15.6, t) : 1 - ss(15.3, 15.6, t)));
-      const tr = demoTrail(u, k); pline(fg, tr, map, col, 3, fa, 12);
-      if (ui === 0) tr.forEach((q, j) => { if (j % 3 === 0 || j === tr.length - 1) dot(fg, map(q), 4.5, '#FFFFFF', fa); });
-      if (st.on) dot(fg, map(st.Q), 7, col, fa);
-    });
-    if (t < 14.5) { const st = demoState(DM.users[0], ss(12.6, 14.2, t)), q = map(st.Q); fg.save(); fg.globalAlpha = eo(12.3, 12.6, t) * (1 - ss(14.2, 14.5, t)); fg.strokeStyle = '#fff'; fg.lineWidth = 2; fg.setLineDash([4, 6]);
-      fg.beginPath(); fg.moveTo(q[0], q[1]); fg.lineTo(q[0] + 150, q[1] + 120); fg.stroke(); fg.restore(); show('x_c', { x: q[0] + 160, y: q[1] + 120, ay: 0.5, op: eo(12.3, 12.6, t) * (1 - ss(14.2, 14.5, t)) }); }
-    const b = ss(15.3, 15.9, t); if (b > 0) prettyPaths(fg, map, t, b * (1 - 0) );
-  } else prettyPaths(fg, map, t, t < 17.5 ? lerp(1, 0.55, ss(16.6, 17.0, t)) : lerp(0.55, 0.25, k2), t < 17.5 ? CHOSEN : -1);
-  if (t >= 16.4 && t < 17.5) {   // the chosen user's line, then the smoothed design curve on it
-    const hl = eo(16.5, 16.8, t), P2 = DS.env[CHOSEN]; pline(fg, partial(P2, hl), map, '#FFFFFF', 3, 0.9, 18);
-    const du = eo(16.9, 17.3, t); if (du > 0) pline(fg, partial(DQ, du), map, '#FFFFFF', 6, 1, 26);
+  if (t < 15.0) {
+    const u = DM.users[0], k = ss(12.3, 13.8, t), st = demoState(u, k), fa = 1 - ss(13.9, 14.3, t);
+    if (fa > 0) { drawFig(fg, st.J, map, v.sc, '#55657A', '#55657A', fa, 4, true); drawFig(fg, st.J, map, v.sc, '#222B37', '#222B37', fa, 0, true); }
+    const b = ss(14.0, 14.6, t); if (b > 0) prettyPaths(fg, map, t, b * lerp(1, 0.6, ss(14.5, 14.9, t)));
+    pline(fg, demoTrail(u, k), map, C.acc, 4, lerp(1, 0.0, ss(14.4, 14.8, t)), 16);
+    ppoly(fg, DS.mech.plate.map(c => R2(st.Q, st.phi, c)), map, 'rgba(255,255,255,.92)', null, 2, 1 - ss(14.0, 14.4, t));
+    const du = eo(14.45, 14.95, t); if (du > 0) pline(fg, partial(DQ, du), map, '#FFFFFF', 5, 1, 24);
+  } else {
+    prettyPaths(fg, map, t, 0.22); pline(fg, DQ, map, '#FFFFFF', 3, 0.55, 10);
+    const up = ss(15.3, 16.2, t), dn = ss(16.5, 17.3, t), k = up * (1 - dn), dp = designPose(k), ku = up;   // up, then back down
+    const tr = (c, kk) => { const out = []; for (let x = 0; x <= kk + 1e-9; x += 0.02) { const d = designPose(Math.min(x, kk)); out.push(R2(d.Q, d.phi, c)); } return out; };
+    const lo = DS.mech.rail_lo, hi = DS.mech.rail_hi, ur = eo(15.9, 16.25, t), mid = lerpA(lo, hi, 0.5);
+    if (ur > 0) { pline(fg, [lerpA(mid, lo, ur), lerpA(mid, hi, ur)], map, C.acc, 16, 0.32); const q = map(lerpA(lo, hi, 0.88)); show('x_l1', { x: q[0] - 30, y: q[1] - 10, ax: 1, ay: 0.5, op: ur }); }
+    const B = DS.mech.B, cp = R2(dp.Q, dp.phi, DS.mech.c2), ul = eo(16.2, 16.5, t);
+    if (ul > 0) { pline(fg, [B, lerpA(B, cp, ul)], map, LIME, 7, 0.95); ground(fg, map(B), LIME, 18); dot(fg, map(B), 7, LIME); const lq = map(lerpA(B, cp, 0.5)); show('x_l2', { x: lq[0] + 30, y: lq[1] + 24, ay: 0.5, op: ul }); }
+    pline(fg, tr(DS.mech.c1, ku), map, C.acc, 4, 0.9, 14); pline(fg, tr(DS.mech.c2, ku), map, LIME, 4, 0.9, 14);
+    ppoly(fg, DS.mech.br.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.06)', 'rgba(255,255,255,.4)', 2);
+    ppoly(fg, DS.mech.plate.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.9)', null);
+    const p1 = map(R2(dp.Q, dp.phi, DS.mech.c1)); fg.fillStyle = C.acc; fg.fillRect(p1[0] - 9, p1[1] - 9, 18, 18); dot(fg, map(cp), 7, LIME);
   }
-  if (t >= 17.5) {   // points on the plate draw their own traces as the plate rides the design curve
-    const k = ss(17.95, 18.6, t), dp = designPose(k), hl = ss(18.65, 18.85, t), hl2 = ss(19.0, 19.2, t);
-    pline(fg, DQ, map, '#FFFFFF', 3, 0.5, 0);
-    ppoly(fg, DS.mech.br.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.05)', 'rgba(255,255,255,.35)', 2);
-    ppoly(fg, DS.mech.plate.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.18)', '#FFFFFF', 3);
-    CPTS.pts.forEach((c, i) => { const ap = eback(17.8 + i * 0.008, 17.95 + i * 0.008, t); if (ap <= 0) return;
-      const tr = []; for (let x = 0; x <= k + 1e-9; x += 0.02) { const d = designPose(Math.min(x, k)); tr.push(R2(d.Q, d.phi, c)); }
-      const is1 = i === CPTS.i1, is2 = i === CPTS.i2, col = is1 ? (hl ? C.acc : '#DDE6F0') : is2 ? (hl2 ? LIME : '#DDE6F0') : '#DDE6F0';
-      const a = is1 || is2 ? 1 : lerp(0.75, 0.18, hl); pline(fg, tr, map, col, is1 && hl ? 5 : is2 && hl2 ? 5 : 1.8, a, (is1 && hl) || (is2 && hl2) ? 16 : 0);
-      dot(fg, map(R2(dp.Q, dp.phi, c)), (is1 || is2 ? 8 : 5) * clamp(ap, 0, 1.3), col, a); });
-    if (hl > 0) { const lo = DS.mech.rail_lo, hi = DS.mech.rail_hi, u = eo(18.65, 19.0, t), mid = lerpA(lo, hi, 0.5);
-      pline(fg, [lerpA(mid, lo, u), lerpA(mid, hi, u)], map, C.acc, 18, 0.28); const q = map(lerpA(lo, hi, 0.85)); show('x_l1', { x: q[0] - 30, y: q[1] - 20, ax: 1, ay: 0.5, op: u }); }
-    if (hl2 > 0) { const B = DS.mech.B, u = eo(19.0, 19.25, t), P2s = DS.mech.frames.map(f => f.P2), angs = P2s.map(p => Math.atan2(p[1] - B[1], p[0] - B[0]));
-      const a0 = Math.min(...angs) - 0.25, a1 = Math.max(...angs) + 0.25, arc = []; for (let i = 0; i <= 40; i++) { const a = lerp(a0, lerp(a0, a1, u), i / 40); arc.push([B[0] + DS.mech.link * Math.cos(a), B[1] + DS.mech.link * Math.sin(a)]); }
-      pline(fg, arc, map, LIME, 2.5, 0.8, 0, [8, 8]); const cp = R2(dp.Q, dp.phi, DS.mech.c2); pline(fg, [B, lerpA(B, cp, u)], map, LIME, 6, 0.9);
-      ground(fg, map(B), LIME, 18); dot(fg, map(B), 7, LIME); const bq = map(B); show('x_B', { x: bq[0] + 22, y: bq[1] - 34, op: u });
-      const lq = map(lerpA(B, cp, 0.45)); show('x_l2', { x: lq[0] + 30, y: lq[1] + 20, ay: 0.5, op: u }); }
+  const o1 = win(t, 12.0, 13.9, 0.25, 0.12), o2 = win(t, 13.9, 15.0, 0.2, 0.12), o3 = win(t, 15.0, 17.5, 0.2, 0.1);
+  show('x_d1', { x: 120, y: 150, op: o1, dx: (1 - eo(12, 12.3, t)) * -60 }); show('x_d2', { x: 120, y: 150, op: o2, dx: (1 - eo(13.9, 14.2, t)) * -60 });
+  show('x_d3', { x: 120, y: 150, op: o3, dx: (1 - eo(15.0, 15.3, t)) * -60 });
+}
+function cand2(t) {   // 17.5-20: five structures flash in, four step back together, the rail + link stays lit
+  show('x_4', { x: 120, y: 120, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });
+  const loop = 0.5 - 0.5 * Math.cos(2 * Math.PI * (t - 17.5) / 2.0), fade = eo(18.6, 18.9, t), win5 = eback(18.7, 18.95, t);
+  for (let i = 0; i < 5; i++) {
+    const ap = eback(17.5 + i * 0.15, 17.75 + i * 0.15, t); if (ap <= 0) continue;
+    const f5 = i < 4 ? fade : 0, pcx = 210 + i * 375, sc = 520 * clamp(ap, 0, 1.15), base = 880, map = p => [pcx + (p[0] - 0.22) * sc, base - p[1] * sc], dim = lerp(1, 0.22, f5);
+    fg.save(); fg.globalAlpha = dim;
+    ppoly(fg, [[-0.12, 0], [0, 0], [0, DS.Z0], [-0.12, DS.Z0]], map, '#1A212B', null); pline(fg, [[-0.12, 0], [0.62, 0]], map, '#3A4656', 2);
+    pline(fg, DQ, map, '#FFFFFF', 2, 0.45, 0, [5, 6]);
+    if (i === 0) { const z = lerp(DS.Z0, 0.69, loop), Q = [0.055, z]; pline(fg, [[0.055, 0], [0.055, z - 0.05]], map, '#5A6575', 10);
+      ppoly(fg, DS.mech.plate.map(c => R2(Q, 0, c)), map, '#E9EDF2', null); pline(fg, [[0.055, DS.Z0], [0.055, 0.69]], map, C.acc, 2, 0.7); }
+    else if (i < 4) { const c = DS.cands[i - 1], F = c.frames, f = F[Math.round(loop * (F.length - 1))];
+      pline(fg, F.map(x => x.Q), map, C.acc, 2, 0.7); ppoly(fg, c.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, c.plate.map(p => R2(f.Q, f.phi, p)), map, '#E9EDF2', null);
+      pline(fg, [c.A, f.P1], map, '#C9D3DF', 5); pline(fg, [c.B, f.P2], map, '#C9D3DF', 5); [f.P1, f.P2].forEach(p => dot(fg, map(p), 5, '#fff')); ground(fg, map(c.A), '#C9D3DF', 12); ground(fg, map(c.B), '#C9D3DF', 12); }
+    else { const M2 = DS.mech, F = M2.frames, f = F[Math.round(loop * (F.length - 1))]; pline(fg, [M2.rail_lo, M2.rail_hi], map, C.acc, 10, 0.55);
+      pline(fg, F.map(x => x.Q), map, C.acc, 2 + 2 * win5, 0.8, win5 ? 16 : 0); ppoly(fg, M2.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, M2.plate.map(p => R2(f.Q, f.phi, p)), map, '#E9EDF2', null);
+      const q1 = map(f.P1); fg.fillStyle = C.acc; fg.fillRect(q1[0] - 9, q1[1] - 9, 18, 18); pline(fg, [M2.B, f.P2], map, LIME, 5); dot(fg, map(f.P2), 5, '#fff'); ground(fg, map(M2.B), LIME, 12); }
+    fg.restore();
+    show('x_p' + i, { x: pcx, y: 360, ax: 0.5, ay: 0.5, op: clamp(ap) * lerp(1, 0.35, f5), col: i === 4 ? C.acc : f5 > 0.5 ? '#6B7684' : '#fff' });
+    if (f5 > 0) show('x_r' + i, { x: pcx, y: 950, ax: 0.5, ay: 0.5, op: f5 * 0.9 });
+    if (win5 > 0 && i === 4) { fg.save(); fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.globalAlpha = clamp(win5); fg.shadowColor = C.acc; fg.shadowBlur = 24; fg.beginPath(); fg.roundRect(pcx - 182, 320, 364, 660, 18); fg.stroke(); fg.restore();
+      show('x_r' + i, { x: pcx, y: 950, ax: 0.5, ay: 0.5, op: clamp(win5) }); }
   }
-  const o0 = win(t, 12.0, 14.5, 0.25, 0.12), o0b = win(t, 14.5, 16.0, 0.2, 0.12), o2 = win(t, 16.0, 17.5, 0.2, 0.12), o3 = win(t, 17.5, 19.5, 0.2, 0.1);
-  show('x_0', { x: 120, y: 150, op: o0, dx: (1 - eo(12, 12.3, t)) * -60 }); show('x_0b', { x: 120, y: 150, op: o0b, dx: (1 - eo(14.5, 14.8, t)) * -60 });
-  show('x_2', { x: 120, y: 150, op: o2, dx: (1 - eo(16, 16.3, t)) * -60 }); show('x_3', { x: 120, y: 150, op: o3, dx: (1 - eo(17.5, 17.8, t)) * -60 });
+  const okT = eo(19.0, 19.3, t); show('x_ok', { x: 960, y: 1035, ax: 0.5, ay: 0.5, op: okT, dy: (1 - okT) * 20 });
 }
 function candX(t) {   // five candidates on the old clock (18.5-22)
   // five candidates filtered by three conditions: a candidate that fails steps back and greys out (no crosses)
@@ -593,8 +602,8 @@ function secI2(t) {   // end on the old clock 33-36: the 81 lines and the design
   const fo = ss(35.6, 36, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
 
-const SH = f => t => f(t - 9), EC = t => secE(t < 25 ? 12 + 2 * (t - 23) : 16 + (t - 25));   // assembly at double speed (parts land on 16ths), then normal
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 10, secC], [10, 12, secD], [12, 23, secX], [23, 27, EC], [27, 33, SH(secF)], [33, 39, SH(secG)], [39, 42, SH(secH)], [42, 45.01, SH(secI2)]];
+const SH = f => t => f(t - 6), EC = t => secE(t < 22 ? 12 + 2 * (t - 20) : 16 + (t - 22));   // assembly at double speed (parts land on 16ths), then normal
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 10, secC], [10, 12, secD], [12, 20, secX], [20, 24, EC], [24, 30, SH(secF)], [30, 36, SH(secG)], [36, 39, SH(secH)], [39, 42.01, SH(secI2)]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   for (const [a, b, f] of SECS) if (t >= a && t < b) { f(t); break; }
