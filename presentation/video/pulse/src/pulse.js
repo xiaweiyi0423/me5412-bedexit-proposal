@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 44.5;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 47.5;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -691,10 +691,140 @@ function secEcho(t) {   // 40-44.5: same window, same bed, now with the seat: ri
   const fo = ss(44.05, 44.5, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
 
-const SH = f => t => f(t - 7), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 31, SH(secF)], [31, 37, SH(secG)], [37, 40, SH(secH)], [40, 44.51, secEcho]];
+// ------------------------------------------------------------------ context shot: the seat beside a real bed in 3/4, then swing to the side view
+const bedG = new THREE.Group(); bedG.visible = false; scene.add(bedG);
+const bedMat = c => new THREE.MeshStandardMaterial({ color: new THREE.Color(c), roughness: 0.85, metalness: 0.05 });
+const bedEdge = (geo, parent, op = 0.18) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), new THREE.LineBasicMaterial({ color: 0x8BEFFF, transparent: true, opacity: op })); parent.add(l); return l; };
+function bbox(w, d, h, x, y, z, col, op) { const g = new THREE.BoxGeometry(w, d, h); const m = new THREE.Mesh(g, bedMat(col)); m.position.set(x, y, z); bedG.add(m); const e = bedEdge(g, m, op); return m; }
+const BEDP = {};
+bbox(1.62, 2.10, 0.14, -0.81, -0.22, 0.20, '#0B0F15', 0.10);            // frame
+bbox(1.58, 2.05, 0.15, -0.80, -0.22, 0.345, '#0F141C', 0.18);           // mattress (top at 0.42, flush with the seat)
+BEDP.hb = bbox(1.66, 0.07, 0.86, -0.81, 0.86, 0.55, '#0A0D13', 0.10);             // headboard (head side = +y)
+BEDP.pl = bbox(0.50, 0.32, 0.12, -0.95, 0.62, 0.48, '#161D28', 0.10);             // pillow
+for (const [x, y] of [[-1.55, -1.2], [-0.07, -1.2], [-1.55, 0.76], [-0.07, 0.76]]) bbox(0.06, 0.06, 0.14, x, y, 0.07, '#141A22', 0.0);
+const floorGrid = new THREE.Group(); floorGrid.visible = false; scene.add(floorGrid);
+{ const pts = []; for (let v = -3; v <= 3.0001; v += 0.25) { pts.push(v, -3, 0, v, 3, 0, -3, v, 0, 3, v, 0); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); floorGrid.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x3A5A70, transparent: true, opacity: 0.25 }))); }
+// the open foot-side zone on the floor (legs swing back onto the bed through here)
+const openZone = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.62), new THREE.MeshBasicMaterial({ color: 0x19D3F0, transparent: true, opacity: 0, depthWrite: false })); openZone.position.set(0.30, -0.66, 0.004); scene.add(openZone);
+const ozEdge = new THREE.LineSegments(new THREE.EdgesGeometry(openZone.geometry), new THREE.LineBasicMaterial({ color: 0x19D3F0, transparent: true, opacity: 0 })); openZone.add(ozEdge);
+T('k_1', '机构全在<span style="color:#19D3F0">床头一侧</span>', { s: { ...big(40, 900) } });
+T('k_2', '床尾一侧<span style="color:#19D3F0">敞开</span><br><span style="font-size:28px;font-weight:700;color:#A8B4C4">回床时，腿能转过去</span>', { s: { ...big(40, 900) } });
+T('k_tag', 'IN THE ROOM / 床边', mono(24));
+// ------------------------------------------------------------------ context shot v2: hand-drawn room (boiling ink lines on dark paper), the seat fills in from line art
+const SK = { lines: [], jit: [] };   // bed/room line objects and their jitter copies
+const INKC = new THREE.Color('#DCE6F2');
+function skLines(geo, parent, op = 0.75, thr = 25) {
+  const eg = new THREE.EdgesGeometry(geo, thr), out = [];
+  for (let k = 0; k < 3; k++) { const l = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: INKC.clone(), transparent: true, opacity: k ? op * 0.35 : op })); parent.add(l); out.push(l); if (k) SK.jit.push(l); SK.lines.push(l); }
+  return out;
+}
+const sketchG = new THREE.Group(); sketchG.visible = false; scene.add(sketchG);
+function skBox(w, d, h, x, y, z, op) { const g = new THREE.BoxGeometry(w, d, h); const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: new THREE.Color().setRGB(0.0042, 0.0075, 0.0135) })); m.position.set(x, y, z); sketchG.add(m); skLines(g, m, op); return m; }   // linear values: shows as about #0E141D
+const SKB = {
+  frame: skBox(1.62, 2.10, 0.14, -0.81, -0.22, 0.20, 0.55), matt: skBox(1.58, 2.05, 0.15, -0.80, -0.22, 0.345, 0.85),
+  hb: skBox(1.66, 0.07, 0.86, -0.81, 0.86, 0.55, 0.6), pl: skBox(0.50, 0.32, 0.12, -0.95, 0.62, 0.48, 0.6),
+  duv: skBox(1.30, 1.40, 0.04, -0.95, -0.45, 0.44, 0.45),
+};
+for (const [x, y] of [[-1.55, -1.2], [-0.07, -1.2], [-1.55, 0.76], [-0.07, 0.76]]) skBox(0.06, 0.06, 0.14, x, y, 0.07, 0.5);
+{ // floor: a few long strokes, and hatching for the open foot-side zone
+  const pts = []; for (let v = -2.5; v <= 2.5001; v += 0.5) { pts.push(v, -2.5, 0, v, 2.5, 0, -2.5, v, 0, 2.5, v, 0); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); sketchG.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x3A5A70, transparent: true, opacity: 0.35 })));
+}
+const hatch = (() => { const pts = [], x0 = -0.02, x1 = 0.62, y0 = -0.98, y1 = -0.36;
+  for (let s = -0.7; s <= 0.7; s += 0.035) { const a = [x0, y0 + (s + 0.35)], b = [x0 + 0.62, y0 + (s + 0.35) - 0.62]; // 45° strokes clipped to the box
+    const seg = []; for (let k = 0; k <= 40; k++) { const p = lerpA(a, b, k / 40); if (p[0] >= x0 && p[0] <= x1 && p[1] >= y0 && p[1] <= y1) seg.push(p); }
+    if (seg.length > 1) { const p = seg[0], q = seg[seg.length - 1]; pts.push(p[0], p[1], 0.005, q[0], q[1], 0.005); } }
+  pts.push(x0, y0, .005, x1, y0, .005, x1, y0, .005, x1, y1, .005, x1, y1, .005, x0, y1, .005, x0, y1, .005, x0, y0, .005);
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); const l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x19D3F0, transparent: true, opacity: 0 })); scene.add(l); return l; })();
+const PAPER = (() => { const c = document.createElement('canvas'); c.width = 960; c.height = 540; const g = c.getContext('2d'); const im = g.createImageData(960, 540); let s = 7;
+  const rnd = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+  for (let i = 0; i < im.data.length; i += 4) { const n = 10 + rnd() * 9; im.data[i] = n; im.data[i + 1] = n + 5; im.data[i + 2] = n + 12; im.data[i + 3] = 255; } g.putImageData(im, 0, 0);
+  g.globalAlpha = 0.05; g.strokeStyle = '#8FB0D0'; for (let k = 0; k < 900; k++) { g.beginPath(); const x = rnd() * 960, y = rnd() * 540; g.moveTo(x, y); g.lineTo(x + rnd() * 24 - 12, y + rnd() * 3 - 1.5); g.stroke(); } return c; })();
+function rnd3(seed) { const r = k => ((Math.sin(seed * 12.9898 + k * 78.233) * 43758.5453) % 1 + 1) % 1; return [r(1) - 0.5, r(2) - 0.5, r(3) - 0.5]; }
+function wobblyLine(g, pts, col, lw, a, seed) { g.save(); g.globalAlpha = a; g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath();
+  pts.forEach((q, i) => { const j = rnd3(seed + i); const x = q[0] + j[0] * 2.2, y = q[1] + j[1] * 2.2; i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke(); g.restore(); }
+// ------------------------------------------------------------------ context shot v3: one line draws the bed, the camera follows it up the rail and turns out the device
+const V3d = (x, y, z) => new THREE.Vector3(x, y, z);
+const RL = D.mech ? null : null;
+const TRACE = (() => {   // the path the line travels (world, m)
+  const lo = DS.mech.rail_lo, hi = DS.mech.rail_hi, Y = 0.322;
+  const P = [V3d(-0.6, -0.9, 0.42), V3d(-0.01, -0.9, 0.42), V3d(-0.01, -0.05, 0.42), V3d(0.06, 0.0, 0.42), V3d(lo[0], Y, lo[1]), V3d(hi[0], Y, hi[1]), V3d(0.70, 0.30, 0.97), V3d(0.70, 0.06, 0.975)];
+  const L = [0]; for (let i = 1; i < P.length; i++) L.push(L[i - 1] + P[i].distanceTo(P[i - 1]));
+  return { P, L, tot: L[L.length - 1], mark: { dev: L[3], rail0: L[4], top: L[5] } };
+})();
+function traceAt(s) { s = clamp(s, 0, TRACE.tot); let i = 1; while (i < TRACE.L.length - 1 && TRACE.L[i] < s) i++; const a = TRACE.L[i - 1], b = TRACE.L[i]; return TRACE.P[i - 1].clone().lerp(TRACE.P[i], (s - a) / ((b - a) || 1)); }
+function tracePts(s0, s1, n = 80) { const out = []; for (let k = 0; k <= n; k++) out.push(traceAt(lerp(s0, s1, k / n))); return out; }
+// arc length along the path vs time: fast on the floor, steady round the bed, slower up the rail
+function sOf(u) { const M = TRACE.mark; if (u < 1.15) return 0; if (u < 1.45) return lerp(0, M.rail0, ss(1.15, 1.45, u)); return lerp(M.rail0, TRACE.tot, ss(1.45, 2.0, u)); }
+// bed edges in world space, each flies in from far away and lands on its place (the lines gather into the bed)
+const BED_EDGES = (() => { const out = []; let i = 0; sketchG.updateMatrixWorld(true);
+  for (const m of Object.values(SKB)) { const pos = m.children[0].geometry.attributes.position; for (let k = 0; k < pos.count; k += 2) {
+    const a = V3d(pos.getX(k), pos.getY(k), pos.getZ(k)).applyMatrix4(m.matrixWorld), b = V3d(pos.getX(k + 1), pos.getY(k + 1), pos.getZ(k + 1)).applyMatrix4(m.matrixWorld);
+    const j = rnd3(i * 3.7 + 1), dir = V3d(j[0] * 2, j[1] * 2, 0.4 + Math.abs(j[2]) * 1.5).normalize().multiplyScalar(1.8 + Math.abs(j[0]) * 2.2);
+    out.push({ a, b, dir, t0: 0.10 + 0.75 * ((i * 0.6180339) % 1), key: m === SKB.hb || m === SKB.pl || m === SKB.duv ? 1 : 0 }); i++; } }
+  return out; })();
+const CAMK = [   // u, azimuth, elevation, distance, target blend toward the line head (0..1), fixed target
+  [0.00, -2.05, 0.50, 4.6, 0.0, V3d(-0.75, -0.25, 0.30)], [1.15, -1.75, 0.44, 4.1, 0.0, V3d(-0.6, -0.2, 0.35)], [1.50, -1.25, 0.40, 3.5, 0.25, V3d(-0.05, -0.1, 0.45)],
+  [2.05, -0.86, 0.42, 3.5, 0.12, V3d(0.18, -0.12, 0.36)], [2.70, -0.80, 0.40, 3.4, 0.0, V3d(0.18, -0.12, 0.36)]];
+function camAt(u, head) { let i = 0; while (i < CAMK.length - 2 && CAMK[i + 1][0] < u) i++; const a = CAMK[i], b = CAMK[i + 1], k = ss(a[0], b[0], u);
+  const az = lerp(a[1], b[1], k), el = lerp(a[2], b[2], k), dist = lerp(a[3], b[3], k), bl = lerp(a[4], b[4], k), T = a[5].clone().lerp(b[5], k).lerp(head, bl); return { az, el, dist, T }; }
+function secCtx(u) {   // u: 0..3.5 s
+  bg.drawImage(PAPER, 0, 0, W, H); const r = bg.createRadialGradient(980, 560, 100, 980, 560, 1250); r.addColorStop(0, 'rgba(25,45,70,.35)'); r.addColorStop(1, 'rgba(0,0,0,.55)'); bg.fillStyle = r; bg.fillRect(0, 0, W, H);
+  sketchG.visible = true; disc.visible = false;
+  const step = Math.floor(u * 12), s = sOf(u), head = traceAt(s), M = TRACE.mark;
+  const bedDraw = ss(1.0, 1.25, u), devDraw = ss(1.2, 1.5, u), swg = ss(2.7, 3.5, u);
+  SK.jit.forEach((l, i) => { const j = rnd3(step * 31 + i); l.position.set(j[0] * 0.006, j[1] * 0.006, j[2] * 0.006); });
+  SK.lines.forEach(l => { l.material.opacity = (SK.jit.includes(l) ? 0.25 : 0.75) * bedDraw; l.visible = bedDraw > 0.01; }); Object.values(SKB).forEach(m => m.visible = bedDraw > 0.01 || u > 1.0);
+  for (const k of ['hb', 'pl', 'duv']) { const m = SKB[k], a = 1 - ss(2.8, 3.25, u); m.visible = a > 0.01; m.children.forEach(l => l.material.opacity = (l === m.children[0] ? 0.6 : 0.2) * a); }
+  // device: line art when the line reaches it, filled up to the line head as it climbs the rail
+  setLook('dark', { shell: { op: 1 } }); key.intensity = 1.25; rim.intensity = 1.1;
+  const band = u < 1.45 ? -0.2 : (u < 2.0 ? head.z + 0.05 : lerp(head.z + 0.05, 1.2, ss(2.0, 2.2, u)));
+  const pzOf = code => { const b = PART[code].geometry.boundingBox; return (b.min.z + b.max.z) / 2000 + (PART[code].parent.parent === G.fixed ? 0 : 0.35); };
+  for (const { m, k, code } of MATS) { if (k === 'bed') { m.visible = false; continue; } const pz = pzOf(code), f = ss(pz - 0.05, pz + 0.05, band);
+    if (k === 'shell') { m.opacity = lerp(0, lerp(0.55, 0.0, swg), f); m.visible = m.opacity > 0.01; } else { m.opacity = f; m.visible = f > 0.01; }
+    m.emissive.set('#19D3F0'); m.emissiveIntensity = 0.9 * Math.max(0, 1 - Math.abs(pz - band) / 0.08) * (u < 2.1 ? 1 : 0); }
+  for (const { m, k, code } of EMATS) { if (k === 'bed') { m.visible = false; continue; } const pz = pzOf(code), f = ss(pz - 0.05, pz + 0.05, band);
+    m.color.set(f < 0.5 ? '#DCE6F2' : '#8BEFFF'); m.opacity = lerp(0.75, k === 'shell' ? 0.25 * (1 - swg) : 0.18, f) * devDraw; m.visible = m.opacity > 0.01; }
+  for (const c in PG) { const el = PG[c].children[1]; if (!el) continue; const j = rnd3(step * 7 + c.charCodeAt(0) + (c.charCodeAt(1) || 0)); el.position.set(j[0] * 3, j[1] * 3, j[2] * 3); }
+  setMech(0); setSwitch(ss(1.95, 2.05, u) * (0.75 + 0.25 * Math.cos((u - 2.0) * 4 * Math.PI))); sw.visible = u > 1.2; swGlow.visible = u > 1.2;
+  // camera follows the head, then dolly-zooms to the orthographic side view used next
+  const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.62), swg), az = lerp(ca.az, -Math.PI / 2, swg), el = lerp(ca.el, 0.0, swg);
+  const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.62, swg), dist = lerp(ca.dist, 40, swg * swg);
+  pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T0.x + dist * Math.cos(el) * Math.cos(az), T0.y + dist * Math.cos(el) * Math.sin(az), T0.z + dist * Math.sin(el)); pcam.lookAt(T0); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
+  const oz = win(u, 2.2, 2.85, 0.2, 0.2); hatch.material.opacity = 0.75 * oz;
+  renderGL(pcam);
+  // the line itself: a bright head and a trail that cools to a thin ink line
+  // flying bed edges (before the 3D sketch takes over)
+  if (u < 1.3) { fg.save(); fg.lineCap = 'round';
+    for (const e of BED_EDGES) { const k = eo(e.t0, e.t0 + 0.35, u); if (k <= 0) continue; const off = e.dir.clone().multiplyScalar(1 - k), off2 = e.dir.clone().multiplyScalar(Math.min(1, 1 - k + 0.12));
+      const a = proj(e.a.clone().add(off), pcam), b = proj(e.b.clone().add(off), pcam), a2 = proj(e.a.clone().add(off2), pcam), b2 = proj(e.b.clone().add(off2), pcam), al = (1 - bedDraw) * (e.key ? 0.6 : 0.85);
+      fg.globalAlpha = al * 0.25 * (1 - k); fg.strokeStyle = '#19D3F0'; fg.lineWidth = 6; fg.beginPath(); fg.moveTo(...a2); fg.lineTo(...a); fg.moveTo(...b2); fg.lineTo(...b); fg.stroke();
+      fg.globalAlpha = al; fg.strokeStyle = k < 1 ? '#BFF4FF' : '#DCE6F2'; fg.lineWidth = k < 1 ? 2.2 : 1.6; fg.beginPath(); fg.moveTo(...a); fg.lineTo(...b); fg.stroke(); } fg.restore(); }
+  const fadeL = 1 - ss(2.6, 3.0, u), trail = tracePts(Math.max(0, s - 1.2), s, 60).map(p => proj(p, pcam)), old = tracePts(0, Math.max(0, s - 1.2), 60).map(p => proj(p, pcam));
+  if (fadeL > 0 && u >= 1.15) { wobblyLine(fg, old, '#DCE6F2', 1.6, 0.5 * fadeL, 70 + step);
+    fg.save(); fg.globalAlpha = fadeL; fg.lineCap = 'round'; fg.lineJoin = 'round'; fg.shadowColor = C.acc; fg.shadowBlur = 18;
+    for (let i = 1; i < trail.length; i++) { const k = i / trail.length; fg.strokeStyle = `rgba(25,211,240,${0.15 + 0.85 * k})`; fg.lineWidth = 1.5 + 4 * k; fg.beginPath(); fg.moveTo(...trail[i - 1]); fg.lineTo(...trail[i]); fg.stroke(); }
+    fg.restore(); if (u < 2.05) dot(fg, proj(head, pcam), 8, '#FFFFFF', fadeL, (u * 2) % 1); }
+  const lab = (id, p, dx, dy, a, seed) => { if (a <= 0) return; const q = proj(p, pcam), pts = []; for (let k = 0; k <= 12; k++) pts.push([q[0] + dx * k / 12, q[1] + dy * k / 12]);
+    wobblyLine(fg, pts.slice(0, 1 + Math.round(12 * eo(0, 1, a))), '#DCE6F2', 2.2, a, seed + step); dot(fg, q, 5, '#DCE6F2', a);
+    show(id, { x: q[0] + dx + (dx > 0 ? 14 : -14), y: q[1] + dy, ax: dx > 0 ? 0 : 1, ay: 0.5, op: a }); };
+  lab('k_1', V3d(0.30, 0.36, 0.75), 170, -110, win(u, 2.05, 2.8, 0.2, 0.2), 3);
+  if (oz > 0) { const arc = []; for (let k = 0; k <= 30; k++) { const a = lerp(-0.15, -1.45, k / 30 * eo(2.2, 2.55, u)); arc.push(proj(V3d(0.05 + 0.55 * Math.cos(a), -0.2 + 0.55 * Math.sin(a), 0.01), pcam)); }
+    wobblyLine(fg, arc, C.acc, 4, oz, 50 + step); const q1 = arc[arc.length - 1], q0 = arc[arc.length - 3], an = Math.atan2(q1[1] - q0[1], q1[0] - q0[0]);
+    fg.save(); fg.globalAlpha = oz; fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.lineCap = 'round'; fg.translate(...q1); fg.rotate(an); fg.beginPath(); fg.moveTo(-16, -10); fg.lineTo(2, 0); fg.lineTo(-16, 10); fg.stroke(); fg.restore(); }
+  lab('k_2', V3d(0.18, -0.80, 0.01), -150, -150, oz, 9);
+  show('k_tag', { x: 80, y: 64, op: 1 - swg }); vignette(fg, 0.3);
+  pcam.fov = 26;
+}
+
+const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 28.5, t => secCtx(t - 25)], [28.5, 34, SH(secF)], [34, 40, SH(secG)], [40, 43, SH(secH)], [43, 47.51, t => secEcho(t - 3)]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
+  bedG.visible = false; floorGrid.visible = false; openZone.material.opacity = 0; ozEdge.material.opacity = 0; pcam.fov = 26;
+  sketchG.visible = false; hatch.material.opacity = 0; for (const c in PG) { const el = PG[c].children[1]; if (el) el.position.set(0, 0, 0); }
+  if (window.CTX !== undefined) { secCtx(window.CTX); return; }
   for (const [a, b, f] of SECS) if (t >= a && t < b) { f(t); break; }
 };
 window.DUR = DUR;
