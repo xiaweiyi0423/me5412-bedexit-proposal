@@ -42,6 +42,7 @@ const PARTS_LAB = ['底座 · 踏板', '导轨安装板 · 连杆支座', '斜�
 T('e_tag', 'HARDWARE / 结构', mono(24));
 PARTS_LAB.forEach((w, i) => T('e_l' + i, `<span class="mono" style="color:#19D3F0;font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '36px', fontWeight: 700 } }));
 T('e_big', '一个电机<br><span style="color:#19D3F0">一个自由度</span>', { s: big(96) });
+[['斜导轨 + 滚珠丝杠', C.acc], ['电机 · 失电制动', C.acc], ['握把开关：握紧才升', C.amb]].forEach(([w, c], i) => T('e_k' + i, `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '40px', fontWeight: 700 } }));
 T('e_sub', 'MOTOR → BELT → BALL SCREW → CARRIAGE', mono(26, '#A8B4C4'));
 // mechanism
 T('f_tag', 'MOTION / 运动', mono(24));
@@ -317,7 +318,7 @@ function secE(t) {   // 12-18 hero
   disc.visible = true; const az = lerp(-1.22, -0.50, ss(12, 18.2, t)), el = lerp(0.30, 0.22, ss(12, 18, t)), dist = lerp(3.55, 3.0, eo(12, 18, t));
   const cam = heroView(az, el, dist, 300); renderGL(cam);
   // labels with leader lines (01..08), out at 16.0
-  const lo = 1 - ss(15.95, 16.25, t);
+  const lo = 0;
   for (const [i, a] of ASM.entries()) {
     const u = eo(a.t, a.t + 0.22, t); if (u <= 0 || lo <= 0) continue;
     const ax = proj(partAnchor(a.lab, a.fr), cam), rx = 1350, ry = 190 + RANK[i] * 88;
@@ -327,7 +328,12 @@ function secE(t) {   // 12-18 hero
     fg.globalAlpha = u * lo * 0.35; fg.beginPath(); fg.arc(ax[0], ax[1], 6 + 22 * (1 - Math.exp(-(t - a.t) * 3)), 0, 7); fg.stroke(); fg.restore();
   }
   show('e_tag', { x: 80, y: 64, op: 1 });
-  const b = eo(16.1, 16.45, t); show('e_big', { x: 1180, y: 400, op: b, dy: (1 - b) * 50 }); const c = eo(16.5, 16.8, t); show('e_sub', { x: 1184, y: 640, op: c });
+  const b = eo(16.1, 16.45, t); show('e_big', { x: 1180, y: 200, op: b, dy: (1 - b) * 50 });
+  const KEYS = [['D1', [0.5, 0.5, 0.6], 16.5], ['D4', [0.5, 0.5, 0.5], 17.0], [null, null, 17.5]];
+  KEYS.forEach(([code, fr, kt], i) => { const u = eo(kt, kt + 0.2, t); if (u <= 0) return; const ax = code ? proj(partAnchor(code, fr), cam) : proj(SW.clone(), cam), rx = 1200, ry = 560 + i * 92;
+    show('e_k' + i, { x: rx, y: ry, ay: 0.5, op: u, dx: (1 - u) * 40 });
+    fg.save(); fg.globalAlpha = u * 0.9; fg.strokeStyle = i === 2 ? C.amb : C.acc; fg.fillStyle = fg.strokeStyle; fg.lineWidth = 2; fg.beginPath(); fg.moveTo(ax[0], ax[1]); const mx = lerp(ax[0], rx - 30, 0.55);
+    fg.lineTo(mx, ry); fg.lineTo(lerp(mx, rx - 24, u), ry); fg.stroke(); fg.beginPath(); fg.arc(ax[0], ax[1], 7, 0, 7); fg.fill(); fg.globalAlpha = u * 0.4 * Math.exp(-(t - kt) * 2); fg.beginPath(); fg.arc(ax[0], ax[1], 7 + 30 * (1 - Math.exp(-(t - kt) * 3)), 0, 7); fg.stroke(); fg.restore(); });
   vignette(fg, 0.25);
 }
 // side views shared by F, G, H
@@ -408,11 +414,12 @@ function secH(t) {   // 30-33 sensing (dark)
   const f = kinAt(R.s), ph = f[3] * Math.PI / 180, seatPt = [(f[1] + 10 * Math.cos(ph) - 100 * Math.sin(ph)) / 1000, (f[2] - 10 * Math.sin(ph) - 100 * Math.cos(ph)) / 1000];
   const PTS = [seatPt, [0.70, 0.905], HAND_BAR, [0.40, 0.045]], LAB = [[-420, 40], [-440, -190], [110, -60], [260, -50]];
   for (let i = 0; i < 4; i++) {
-    const bt = 30.0 + i * 0.5, u = eo(bt, bt + 0.2, t); if (u <= 0) continue; const c = V.map(PTS[i]), col = i === 2 ? C.amb : C.acc;
-    fg.save(); fg.fillStyle = col; fg.shadowColor = col; fg.shadowBlur = 24; fg.beginPath(); fg.arc(c[0], c[1], 10 * u, 0, 7); fg.fill(); fg.shadowBlur = 0;
-    for (let b2 = bt; b2 <= t; b2 += BEAT) { const k = t - b2; if (k > 0.6) continue; fg.strokeStyle = col; fg.globalAlpha = 1 - k / 0.6; fg.lineWidth = 3; fg.beginPath(); fg.arc(c[0], c[1], 14 + 80 * k, 0, 7); fg.stroke(); }
+    const bt = 30.0 + i * 0.5, u0 = eo(bt, bt + 0.2, t); if (u0 <= 0) continue; const c = V.map(PTS[i]), col = i === 2 ? C.amb : C.acc;
+    const cur = Math.min(3, Math.floor((t - 30.0) / 0.5)), foc = t >= 32.0 ? 1 : i === cur ? 1 : lerp(1, 0.35, eo(bt + 0.5, bt + 0.7, t)), u = u0 * foc;
+    fg.save(); fg.globalAlpha = foc; fg.fillStyle = col; fg.shadowColor = col; fg.shadowBlur = 24; fg.beginPath(); fg.arc(c[0], c[1], 10 * u, 0, 7); fg.fill(); fg.shadowBlur = 0;
+    for (let b2 = bt; b2 <= t; b2 += BEAT) { const k = t - b2; if (k > 0.6 || (foc < 0.99)) continue; fg.strokeStyle = col; fg.globalAlpha = 1 - k / 0.6; fg.lineWidth = 3; fg.beginPath(); fg.arc(c[0], c[1], 14 + 80 * k, 0, 7); fg.stroke(); }
     fg.globalAlpha = u; fg.strokeStyle = col; fg.lineWidth = 2; const lx = c[0] + LAB[i][0], ly = c[1] + LAB[i][1]; fg.beginPath(); fg.moveTo(c[0], c[1]); fg.lineTo(lx + (LAB[i][0] < 0 ? 210 : -10), ly); fg.stroke(); fg.restore();
-    show('h_s' + i, { x: lx, y: ly, ay: 0.5, op: u, dx: (1 - u) * 30 });
+    show('h_s' + i, { x: lx, y: ly, ay: 0.5, op: u, dx: (1 - u0) * 30, sc: i === cur && t < 32 ? 1.08 : 1 });
   }
   show('h_tag', { x: 80, y: 64, op: 1 }); const a = eo(30.0, 30.3, t) * (1 - ss(31.9, 32.05, t)); show('h_1', { x: 120, y: 130, op: a, dx: (1 - eo(30.0, 30.3, t)) * -60 });
   const b = eo(32.0, 32.25, t); show('h_2', { x: 120, y: 140, op: b, dx: (1 - b) * -60 });
@@ -441,6 +448,10 @@ T('x_3', '再找点<br><span style="font-size:44px;font-weight:700;color:#A8B4C4
 T('x_l1', '导轨', { s: { ...big(44, 900), color: C.acc } }); T('x_l2', '连杆', { s: { ...big(44, 900), color: '#8CF5A6' } });
 T('x_B', 'B', { cls: 'lat', s: { fontSize: '40px', fontWeight: 800, color: '#8CF5A6' } });
 T('x_4', '比过五种结构，它最贴合、最省力', { s: big(72) });
+T('x_v', '不是直上直下，而是<span style="color:#19D3F0">一路贴着大腿</span>', { s: big(72) });
+T('x_c0', '直上直下<br><span style="font-size:30px;font-weight:700;color:#8A96A6">座板很快离开大腿</span>', { s: { ...big(46, 900), color: '#C9D3DF', textAlign: 'center' } });
+T('x_c1', '斜导轨 + 倾角连杆<br><span style="font-size:30px;font-weight:700;color:#C9D3DF">沿设计曲线，一路托着</span>', { s: { ...big(46, 900), color: C.acc, textAlign: 'center' } });
+T('x_fb', '还比过三种四连杆：会碰小腿、回床挡腿，或受力太大', { s: { ...big(32, 700), color: '#8A96A6' } });
 ['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'].forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
 const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'];
 CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#8A96A6' } }); });
@@ -496,16 +507,16 @@ function demoState(u, k) {   // user u at progress k in [0,1]: joints + seat pos
   return { J: { H: Hp, K, A, S, hd, E, Hd, toe: [A[0] + 0.72 * FOOT * sc, fz], heel: [A[0] - 0.2 * FOOT * sc, fz] }, Q, phi, on };
 }
 function demoTrail(u, k) { const F = u.fr, x = clamp(k) * (F.length - 1), out = []; for (let i = 0; i <= Math.floor(x) && i < F.length; i++) if (F[i].on) out.push(F[i].Q); const s = demoState(u, k); if (s.on) out.push(s.Q); return out; }
-function prettyPaths(g, map, t, a = 1, hl = -1) {   // 81 lines as faint glowing strands with points flowing along them
+function prettyPaths(g, map, t, a = 1, hl = -1, t0 = null) {   // 81 lines as faint glowing strands with points flowing along them; t0: draw in from t0
   g.save(); g.globalCompositeOperation = 'lighter';
-  DS.env.forEach((P2, i) => { if (i === hl) return; const gr = g.createLinearGradient(...map(P2[0]), ...map(P2[P2.length - 1])); gr.addColorStop(0, 'rgba(25,211,240,0)'); gr.addColorStop(0.35, `rgba(25,211,240,${0.16 * a})`); gr.addColorStop(1, `rgba(200,240,255,${0.30 * a})`);
+  DS.env.forEach((P2full, i) => { if (i === hl) return; const P2 = t0 === null ? P2full : partial(P2full, eo(t0 + (i % 9) * 0.1, t0 + (i % 9) * 0.1 + 0.35, t)); if (P2.length < 2) return; const gr = g.createLinearGradient(...map(P2[0]), ...map(P2[P2.length - 1])); gr.addColorStop(0, 'rgba(25,211,240,0)'); gr.addColorStop(0.35, `rgba(25,211,240,${0.16 * a})`); gr.addColorStop(1, `rgba(200,240,255,${0.30 * a})`);
     g.strokeStyle = gr; g.lineWidth = 1.6; g.lineCap = 'round'; g.beginPath(); P2.forEach((p, j) => { const q = map(p); j ? g.lineTo(...q) : g.moveTo(...q); }); g.stroke();
     const u = ((t * 0.55 + i * 0.6180339) % 1), pp = partial(P2, u), q = map(pp[pp.length - 1]); g.fillStyle = `rgba(220,250,255,${0.85 * a * Math.sin(Math.PI * u)})`; g.beginPath(); g.arc(q[0], q[1], 2.6, 0, 7); g.fill(); });
   g.restore();
 }
 function secX(t) {   // 12-20 product voice: the seat follows the thigh; its path is built for 81 bodies; a rail + a link make it; picked from five
   fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.08); vignette(bg, 0.5); show('x_tag', { x: 80, y: 64, op: 1 });
-  if (t >= 17.5) { cand2(t); return; }
+  if (t >= 17.5) { cmp2(t); return; }
   const k0 = ss(13.6, 14.3, t), k2 = ss(15.0, 15.45, t);
   const v = { cx: lerp(lerp(0.32, 0.14, k0), 0.25, k2), cz: lerp(lerp(0.83, 0.55, k0), 0.46, k2), sc: lerp(lerp(620, 1900, k0), 1020, k2), sx: lerp(1250, 1260, k2), sy: lerp(560, 580, k2) };
   const map = p => [v.sx + (p[0] - v.cx) * v.sc, v.sy - (p[1] - v.cz) * v.sc];
@@ -513,9 +524,9 @@ function secX(t) {   // 12-20 product voice: the seat follows the thigh; its pat
   if (t < 15.0) {
     const u = DM.users[0], k = ss(12.3, 13.8, t), st = demoState(u, k), fa = 1 - ss(13.9, 14.3, t);
     if (fa > 0) { drawFig(fg, st.J, map, v.sc, '#55657A', '#55657A', fa, 4, true); drawFig(fg, st.J, map, v.sc, '#222B37', '#222B37', fa, 0, true); }
-    const b = ss(14.0, 14.6, t); if (b > 0) prettyPaths(fg, map, t, b * lerp(1, 0.6, ss(14.5, 14.9, t)));
+    if (t >= 13.95) prettyPaths(fg, map, t, lerp(1, 0.6, ss(14.6, 14.95, t)), -1, 13.95);
     pline(fg, demoTrail(u, k), map, C.acc, 4, lerp(1, 0.0, ss(14.4, 14.8, t)), 16);
-    ppoly(fg, DS.mech.plate.map(c => R2(st.Q, st.phi, c)), map, 'rgba(255,255,255,.92)', null, 2, 1 - ss(14.0, 14.4, t));
+    ppoly(fg, DS.mech.plate.map(c => R2(st.Q, st.phi, c)), map, 'rgba(255,255,255,.92)', null, 2, 1 - ss(13.6, 13.9, t));
     const du = eo(14.45, 14.95, t); if (du > 0) pline(fg, partial(DQ, du), map, '#FFFFFF', 5, 1, 24);
   } else {
     prettyPaths(fg, map, t, 0.22); pline(fg, DQ, map, '#FFFFFF', 3, 0.55, 10);
@@ -533,6 +544,21 @@ function secX(t) {   // 12-20 product voice: the seat follows the thigh; its pat
   const o1 = win(t, 12.0, 13.9, 0.25, 0.12), o2 = win(t, 13.9, 15.0, 0.2, 0.12), o3 = win(t, 15.0, 17.5, 0.2, 0.1);
   show('x_d1', { x: 120, y: 150, op: o1, dx: (1 - eo(12, 12.3, t)) * -60 }); show('x_d2', { x: 120, y: 150, op: o2, dx: (1 - eo(13.9, 14.2, t)) * -60 });
   show('x_d3', { x: 120, y: 150, op: o3, dx: (1 - eo(15.0, 15.3, t)) * -60 });
+}
+function cmp2(t) {   // 17.5-20: straight-up lift vs ours, side by side, both looping
+  const loop = 0.5 - 0.5 * Math.cos(2 * Math.PI * (t - 17.5) / 2.0); show('x_v', { x: 120, y: 120, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });
+  [[0, 560], [1, 1360]].forEach(([k, pcx]) => {
+    const ap = eback(17.55 + k * 0.25, 17.8 + k * 0.25, t); if (ap <= 0) return; const sc = 720 * clamp(ap, 0, 1.1), base = 950, map = p => [pcx + (p[0] - 0.22) * sc, base - p[1] * sc];
+    ppoly(fg, [[-0.35, 0], [0, 0], [0, DS.Z0], [-0.35, DS.Z0]], map, '#1A212B', '#2C3644', 2); pline(fg, [[-0.35, 0], [0.6, 0]], map, '#3A4656', 2);
+    pline(fg, DQ, map, '#FFFFFF', 3, 0.55, 0, [8, 8]);
+    if (k === 0) { const z = lerp(DS.Z0, 0.66, loop), Q = [0.055, z]; pline(fg, [[0.055, 0], [0.055, z - 0.05]], map, '#5A6575', 14);
+      pline(fg, [[0.055, DS.Z0], [0.055, 0.66]], map, '#8A96A6', 3, 0.8); ppoly(fg, DS.mech.plate.map(c => R2(Q, 0, c)), map, '#C9D3DF', null); }
+    else { const M2 = DS.mech, F = M2.frames, f = F[Math.round(loop * (F.length - 1))]; pline(fg, [M2.rail_lo, M2.rail_hi], map, C.acc, 14, 0.5);
+      pline(fg, F.map(x => x.Q), map, C.acc, 4, 1, 18); ppoly(fg, M2.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, M2.plate.map(p => R2(f.Q, f.phi, p)), map, '#FFFFFF', null);
+      const q1 = map(f.P1); fg.fillStyle = C.acc; fg.fillRect(q1[0] - 11, q1[1] - 11, 22, 22); pline(fg, [M2.B, f.P2], map, LIME, 7); dot(fg, map(f.P2), 7, '#fff'); ground(fg, map(M2.B), LIME, 16); }
+    show('x_c' + k, { x: pcx, y: 300, ax: 0.5, ay: 0.5, op: clamp(ap) });
+  });
+  const n = eo(18.6, 18.9, t); show('x_fb', { x: 960, y: 1030, ax: 0.5, ay: 0.5, op: n * 0.9 });
 }
 function cand2(t) {   // 17.5-20: five structures flash in, four step back together, the rail + link stays lit
   show('x_4', { x: 120, y: 120, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });

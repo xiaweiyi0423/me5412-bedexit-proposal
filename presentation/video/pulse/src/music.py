@@ -179,6 +179,7 @@ for i in range(5): put(ping(NOTE([81, 84, 88, 91, 93][i]), 0.4), 17.5 + i * 0.15
 put(ping(NOTE(81), 0.6), 18.6, 0.25, verb=0.4); put(ping(NOTE(93), 1.4), 18.75, 0.6, verb=0.6); put(ping(NOTE(100), 1.4), 18.75, 0.35, verb=0.6)
 for b in np.arange(19.5, 19.875, 0.0625): put(clap() * (0.4 + (b - 19.5)), b, 0.5)
 put(riser(0.7, 800, 11000), 19.2, 0.6); put(crash(1.5), 20.0, 0.6, verb=0.4)
+for j, b in enumerate((22.5, 23.0, 23.5)): put(ping(NOTE([88, 91, 96][j]), 0.5), b, 0.3, verb=0.4)   # the three key labels after the assembly
 RAW = False
 # ---- main groove 12-36 (cut during the STOP)
 RAW = True
