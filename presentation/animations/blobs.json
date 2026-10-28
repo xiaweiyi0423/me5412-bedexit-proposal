@@ -31,5 +31,19 @@
  "fig_top": "/_blob/50cef8e46983e79d3826540b9a4ea3cc",
  "md_target": "/_blob/ab9462e6dc02a78eb42c7940f6c756ac",
  "md_candidates": "/_blob/216146ef62fbb2f90f01720a9ea2bdc8",
- "md_synthesis": "/_blob/e59fbf3e2ff1bdb7e7f40169a8c941cb"
+ "md_synthesis": "/_blob/e59fbf3e2ff1bdb7e7f40169a8c941cb",
+ "opt_lowbed": "/_blob/cce52c77347373ea793ff779e129e5f9",
+ "opt_highbed": "/_blob/d3b35427318241aae1961dad250d24c9",
+ "opt_vertical": "/_blob/5040f5f7cf3e67828d619170e1e44709",
+ "opt_ours": "/_blob/345c913f14d872c0e69ea4b5d657dee8",
+ "prior_liftchair": "/_blob/18995dee61fcd2688574845019f6b8fd",
+ "prior_highbed": "/_blob/b1e4fd0707022517d24ae7f55e36dffb",
+ "prior_cushion": "/_blob/3365a26b887c8155c3f4a211646945c4",
+ "prior_research": "/_blob/9f3e5f735f958bd461f2acde3ce0f972",
+ "still_film": "/_blob/91ed3c44eefc6bb91478790accb69e2e",
+ "still_motion": "/_blob/f82cfc5199a8b9a9527dc9dcdd41b6b5",
+ "still_sensing": "/_blob/d1a7c20cadc9371c21641845ceae9374",
+ "video_film": "/_blob/03d3d867bfe660a1c60c18578bfcd346",
+ "video_clip_motion": "/_blob/064a931e9e94e9f1ae57b6a737f45a14",
+ "video_clip_sensing": "/_blob/cbead0e4db1fdfa37dc854f5a0e8c07a"
 }

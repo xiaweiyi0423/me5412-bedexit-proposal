@@ -1,19 +1,30 @@
-<section id="sensing" data-transition="fade" style="background:#F7F5F0;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:26px;color:#9A5408;letter-spacing:2px">4 · 传感与交互</p>
-<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">手握发指令，力分布确认人准备好了</h2>
+<section id="sensing" data-transition="fade" style="background:#F7F5F0;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<p style="font-size:26px;color:#9A5408;letter-spacing:2px">4 · 传感与速度</p>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">握把发指令；四处测力决定升多快，也用来自检</h2>
 </div>
-<div style="display:grid;grid-template-columns:640px 1fr;gap:56px;align-items:center">
-<img src="/_blob/8f2bbcf0d2e5823e75ba7dfc50717dea" alt="侧视示意：1 座板测力，2 横杆测力，3 握把开关，4 踏板测力" style="width:640px;height:540px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:grid;grid-template-columns:760px 1fr;gap:48px;align-items:start">
 <div style="display:flex;flex-direction:column;gap:20px">
-<p style="font-size:30px;line-height:1.5"><b>1 座板下测力：</b><span style="color:#3F4A57">坐上了没有、坐正了没有（压力中心）；推了多少力（速度规则，按座板倾角折算）</span></p>
-<p style="font-size:30px;line-height:1.5"><b>2 横杆测力：</b><span style="color:#3F4A57">手在不在上面；人是不是挂在横杆上</span></p>
-<p style="font-size:30px;line-height:1.5"><b>3 握把式“起”开关：</b><span style="color:#3F4A57">握紧才升、松手就停</span></p>
-<p style="font-size:30px;line-height:1.5"><b>4 踏板测力：</b><span style="color:#3F4A57">脚踩实了没有；体重是不是真的转到了脚上</span></p>
-<p style="font-size:30px;line-height:1.5"><b>自检：</b><span style="color:#3F4A57">空着时查零点；抬升中三处力之和 ≈ 体重（体重在个人设置里输入）</span></p>
-<p style="font-size:30px;line-height:1.5"><b>反馈：</b><span style="color:#3F4A57">握把上的状态灯、踏板夜灯；握了不动时，用语音说明原因（如“请往前坐一点”）</span></p>
+<img src="/_blob/d1a7c20cadc9371c21641845ceae9374" data-video="/_blob/cbead0e4db1fdfa37dc854f5a0e8c07a" alt="短片片段（循环）：人坐在座板上手扶横杆，座下、横杆、握把开关、踏板四处测力点依次亮起" style="width:760px;height:428px;object-fit:cover;border-radius:20px">
+<p style="font-size:28px;line-height:1.4;background:#FCFBF8;border:1px solid #E2DED5;border-radius:16px;padding:20px 24px">v = k ×（推力上限 − 座板的力），限在 0 到最快速度之间</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:18px">
+<h3 style="font-size:28px;font-weight:700">四处测力</h3>
+<ol style="font-size:24px;line-height:1.5;color:#3F4A57">
+<li><b>座板下：</b>坐上、坐正没有（压力中心）；推了多少力</li>
+<li><b>横杆：</b>手在不在；人挂在横杆上就限速</li>
+<li><b>握把开关：</b>握紧才升、松手就停</li>
+<li><b>踏板：</b>脚踩实没有；座板卸掉的力要在踏板上出现才提速</li>
+</ol>
+<h3 style="font-size:28px;font-weight:700">速度跟着人</h3>
+<ul style="font-size:24px;line-height:1.5;color:#3F4A57">
+<li>人卸掉的体重越多升得越快；往回坐，速度变 0，不倒退</li>
+<li>个人设置：推力上限 0.5–0.6 × 体重，最快 1.5–3 cm/s</li>
+<li>16 个仿真场景都落到安全状态；典型用户约 7 s 在 0.57 m 离座（附录）</li>
+<li>自检：空着查零点；抬升中三处力之和 ≈ 体重</li>
+</ul>
 </div>
 </div>
 <p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">不用底座称重：台架和床固定后，一部分力经固定件传给床，底座测不准。先例：东京大学 Kogami 等的辅助椅用座下压力中心判断“想起身”</p>
-<aside>交互上，我们用手握来发指令：开关做在人正前方横杆的握把上，握紧才升、松手就停。座板下的测力单元测坐上了没有、坐正了没有，也测座板推了多少力，用来控制速度；座板会前倾，测力单元测的是垂直于座面的力，控制器用丝杠编码器知道当时的倾角，把它折算成竖直方向。横杆测力看手在不在、人是不是整个挂在横杆上；踏板测力看脚踩实了没有，也用来确认体重真的转到了脚上。自检分两层：空着的时候查零点；抬升中，三处的力加起来应该约等于体重。我们不用底座称重，因为台架和床固定以后，有一部分力经固定件传到床上，底座测不准。</aside>
+<aside>控制分两条线。指令：握紧横杆上的开关才升，松手就停。测力管两件事：一是升多快——速度等于 k 乘以“推力上限减座板的力”，人自己用力越多升得越快，往回坐速度就变零；座板卸掉的力要在踏板上出现才提速，挂在横杆上就限速。二是自检：三处力之和应约等于体重。16 个仿真场景都落到安全状态，典型用户约 7 秒在 0.57 米离座。</aside>
 </section>

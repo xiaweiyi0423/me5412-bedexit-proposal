@@ -1,20 +1,25 @@
 <section id="mechanism" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
 <div style="display:flex;flex-direction:column;gap:14px">
 <p style="font-size:26px;color:#9A5408;letter-spacing:2px">3 · 机构设计 ③ 斜导轨 + 倾角连杆</p>
-<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">座板上找两个点：一个走直线、一个走圆弧</h2>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">座板上找两个点：一个走直线、一个走圆弧；单侧的偏载由一对轴承和双导轨扛住</h2>
 </div>
 <div style="display:grid;grid-template-columns:720px 1fr;gap:48px;align-items:start">
-<img src="/_blob/e59fbf3e2ff1bdb7e7f40169a8c941cb" alt="侧视图：座板在起点、中间、最高三个位置；铰点 1 的轨迹是一条直线，沿斜导轨；铰点 2 的轨迹是绕底座 B 的圆弧，由连杆约束；座板中心贴住设计曲线" style="width:720px;height:625px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
+<img src="/_blob/e59fbf3e2ff1bdb7e7f40169a8c941cb" alt="侧视图：座板在起点、中间、最高三个位置；铰点 1 的轨迹是一条直线，沿斜导轨；铰点 2 的轨迹是绕底座 B 的圆弧，由连杆约束；座板中心贴住设计曲线" style="width:720px;height:560px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
 <div style="display:flex;flex-direction:column;gap:22px">
-<ul style="font-size:24px;line-height:1.5;color:#3F4A57;display:flex;flex-direction:column;gap:12px">
-<li><b>思路：</b>让座板沿设计曲线走，看座板上每个点走出的轨迹。轨迹接近直线的点装在滑块上走导轨，接近圆弧的点用连杆拉到圆心 B</li>
-<li><b>尺寸怎么定：</b>只搜座板上两个铰点的位置（4 个数），导轨和 B 由拟合得出；约束：前倾 ≤ 16°、到顶 0.69 m 时前倾 0–8°、两铰点相距 ≥ 80 mm、离床 ≥ 1.5 cm</li>
+<ul style="font-size:24px;line-height:1.5;color:#3F4A57;display:flex;flex-direction:column;gap:10px">
+<li><b>思路：</b>让座板沿设计曲线走，看座板上每个点的轨迹：接近直线的点装在滑块上走导轨（铰点 1），接近圆弧的点用连杆拉到圆心 B（铰点 2）</li>
 <li><b>结果：</b>导轨与竖直 34°、丝杠行程 331 mm、连杆 465 mm；座板中心最多差 8 mm、0.8°；前移 18.5 cm、上升 27.4 cm</li>
 <li><b>一个自由度：</b>3 个转动副 + 1 个移动副；电机 → 皮带 → 滚珠丝杠 → 滑块</li>
 </ul>
-<img src="/_blob/cce29011ddde24c7ec79959b8e6e2495" alt="CAD 模型：床头一侧半透明的机构箱，内有双导轨、丝杠和连杆，座板在行程中间" style="width:520px;height:325px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start">
+<img src="/_blob/16f223eb4ef6384984b93ad2efeb6168" alt="剖面图：座板和横梁伸向敞开一侧，右端经节点板、轴、一对圆锥滚子轴承进入焊在滑块板上的轴承座；滑块板背后是导轨滑块和机构箱侧板" style="width:400px;height:251px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:26px;font-weight:700">座板只挂在一侧，怎么扛</h3>
+<p style="font-size:24px;line-height:1.45;color:#3F4A57">100 kg × 1.5 坐在敞开侧边上：铰点 1 力矩 586 N·m → 一对圆锥滚子轴承（静安全系数 3.2）→ 滑块板 → 双导轨（最重的滑块 5.2 kN，2.5）；座板外缘下沉约 4 mm</p>
 </div>
 </div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">右下是 CAD 模型（40 个零件，座板在行程中间）；搜索用差分进化，代价 = 座板中心和前倾偏离设计曲线的最大值</p>
-<aside>第三步，定尺寸。思路很简单：让座板沿着设计曲线走一遍，看座板上每一个点会走出什么轨迹。有的点走出来接近一条直线，就把它装在滑块上，让它沿直导轨走，这就是铰点 1，蓝色这条；有的点走出来接近一段圆弧，就用一根连杆把它拉到圆心，这就是铰点 2，绿色这条，圆心就是底座上的 B 点。所以我们只需要搜索座板上两个铰点的位置，一共 4 个数；导轨的位置和角度、B 点和连杆长度都由拟合直接得出。约束是：前倾全程不超过 16 度，到顶 0.69 米时前倾在 0 到 8 度之间，两个铰点相距至少 8 厘米，所有刚性零件离床至少 1.5 厘米。结果是导轨和竖直方向成 34 度，丝杠行程 331 毫米，连杆 465 毫米，座板中心和设计曲线最多差 8 毫米。整个机构是三个转动副加一个移动副，一个自由度，一个电机经皮带带动滚珠丝杠推滑块。右下角是按这些尺寸建的 CAD 模型。</aside>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">尺寸用差分进化搜索（代价 = 座板中心和前倾偏离设计曲线的最大值）。悬臂受力是手算（静力平衡 + 梁公式），还不是有限元；完整校核见附录“单侧悬臂”页</p>
+<aside>第三步定尺寸：让座板沿设计曲线走一遍，看座板上每个点的轨迹。接近直线的点装滑块走导轨，接近圆弧的点用连杆拉到圆心 B，只需搜 4 个数。结果导轨和竖直成 34 度、连杆 465 毫米，最多差 8 毫米；三个转动副加一个移动副，一个自由度。座板只挂在一侧怎么扛？最坏情况铰点 1 受约 586 牛米力矩，由一对圆锥滚子轴承接住，再交给两根导轨，安全系数 3.2 和 2.5，座板外缘下沉约 4 毫米。这些是手算，下一步用有限元核对。</aside>
 </section>

@@ -1,16 +1,40 @@
-<section id="prior" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
-<div style="display:flex;flex-direction:column;gap:16px">
+<section id="prior" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:14px">
 <p style="font-size:26px;color:#9A5408;letter-spacing:2px">2 · 现有方案</p>
-<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">已经有什么，我们借鉴什么、不同在哪</h2>
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:52px;font-weight:700;line-height:1.2">已经有什么，我们借鉴什么、不同在哪</h2>
 </div>
-<table style="font-size:24px;color:#3F4A57">
-<tr><th style="width:24%">现有方案</th><th style="width:38%">怎么帮人站起来</th><th style="width:38%">我们借鉴 / 不同</th></tr>
-<tr><td><b>升降椅、马桶升降座</b></td><td>遥控器把整张椅子或座圈抬起，抬升 15–30 s</td><td>借鉴：按住才动、断电用电池下降。不同：用在床边，不换家具</td></tr>
-<tr><td><b>抬高床 + 床边扶手</b></td><td>床脚垫把床抬到约 0.58 m，最便宜</td><td>借鉴：扶手一直在手边。不同：床高还要照顾坐着时脚踩实，最多约 0.58 m；起身台起身时才升高</td></tr>
-<tr><td><b>UpEasy 气弹簧座垫</b></td><td>不用电，人开始起身时慢慢顶起</td><td>不同：推力可设上限，座板跟着大腿走，能升到 0.69 m</td></tr>
-<tr><td><b>东京大学辅助椅（Kogami 等）</b></td><td>座下压力中心前移判断“想起身”，再抬座面</td><td>借鉴：压力中心判断；作者也指出速度应能按人调整</td></tr>
-<tr><td><b>Panasonic 起身辅助专利</b></td><td>扶手受力 + 座面卸载才升；按拉力比例调速</td><td>借鉴：受力互锁、速度跟着力走；不同：用在床边、单自由度机构</td></tr>
-</table>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">[待补] 附录放完整的现有技术表和引用；专利号：US10022284、US9962305、US5619762</p>
-<aside>在讲我们的方案之前，先看看已经有什么。升降椅和马桶升降座能把人抬起来，但要换家具；最便宜、也最常见的办法是把床垫高再加扶手，后面我们会和它做定量比较；还有不用电的气弹簧座垫。研究方面，东京大学有一把辅助椅，用座下压力中心判断人想起身再抬座面，Panasonic 也有按拉力调速的专利。我们借鉴了这些想法，不同之处在于：用在床边、不换床，推力有上限，速度跟着人走。</aside>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:24px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:12px">
+<img src="/_blob/18995dee61fcd2688574845019f6b8fd" alt="升降椅侧视简图：整张椅子往前上方抬起并前倾，虚线为平时位置" style="width:310px;height:213px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+<h3 style="font-size:28px;font-weight:700;line-height:1.3">升降椅、马桶升降座</h3>
+<p style="font-size:24px;line-height:1.45;color:#3F4A57">整张椅子或座圈抬起，抬升 15–30 s</p>
+<p style="font-size:24px;line-height:1.45;color:#18202A"><b>借鉴：</b>按住才动、断电用电池降。<b>不同：</b>不换家具</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<img src="/_blob/b1e4fd0707022517d24ae7f55e36dffb" alt="抬高床侧视简图：床脚垫块把床抬高，床边一根扶手" style="width:310px;height:213px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+<h3 style="font-size:28px;font-weight:700;line-height:1.3">抬高床 + 床边扶手</h3>
+<p style="font-size:24px;line-height:1.45;color:#3F4A57">床脚垫到约 0.58 m，最便宜</p>
+<p style="font-size:24px;line-height:1.45;color:#18202A"><b>不同：</b>床高受“坐着脚踩实”限制；起身台起身时才升高。下一页定量比较</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<img src="/_blob/3365a26b887c8155c3f4a211646945c4" alt="气弹簧座垫侧视简图：放在椅子上，前缘铰接，后部被气弹簧顶起" style="width:310px;height:213px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+<h3 style="font-size:28px;font-weight:700;line-height:1.3">气弹簧座垫（UpEasy）</h3>
+<p style="font-size:24px;line-height:1.45;color:#3F4A57">不用电，人开始起身时慢慢顶起</p>
+<p style="font-size:24px;line-height:1.45;color:#18202A"><b>不同：</b>推力可设上限；座板跟着大腿走，能升到 0.69 m</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<img src="/_blob/9f3e5f735f958bd461f2acde3ce0f972" alt="研究原型侧视简图：座面竖直抬起，座下和扶手上的绿点是测力处" style="width:310px;height:213px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+<h3 style="font-size:28px;font-weight:700;line-height:1.3">研究椅、专利</h3>
+<p style="font-size:24px;line-height:1.45;color:#3F4A57">东京大学 Kogami 等：座下压力中心判断“想起身”；Panasonic：扶手受力 + 座面卸载才升</p>
+<p style="font-size:24px;line-height:1.45;color:#18202A"><b>借鉴：</b>受力互锁、速度跟着力走</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<img src="/_blob/3d292be079d99bda41ed6a03686db2b3" alt="床边起身台 CAD 模型：床头一侧的机构箱、伸向床尾一侧的座板、L 形扶手和脚踏板" style="width:310px;height:213px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:2px solid #B4620A">
+<h3 style="font-size:28px;font-weight:700;line-height:1.3;color:#9A5408">床边起身台</h3>
+<p style="font-size:24px;line-height:1.45;color:#3F4A57">放在床边，床不换；座板跟着大腿前移、上升、前倾</p>
+<p style="font-size:24px;line-height:1.45;color:#18202A">一个电机；机构在床头一侧，床尾敞开</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">前四张是侧视简图（不按比例，橙色为会动的部分）；最后一张是我们的 CAD 模型。附录（待补）放完整的现有技术表和引用；专利号：US10022284、US9962305、US5619762</p>
+<aside>现有方案里，升降椅和马桶升降座能把人抬起来，我们借鉴了“按住才动、断电用电池降”，但它们要换家具。最便宜的是把床垫高加扶手，下一页定量比较。气弹簧座垫推力不能设上限。研究椅和 Panasonic 专利用座下和扶手受力判断人想起身，我们借鉴了这种受力互锁。我们的不同：放在床边、床不换，座板跟着大腿走。</aside>
 </section>
