@@ -19,3 +19,16 @@ D = dict(Z0=P["consts"]["Z0"],
                 for k, m, f in (("mid", mid, mid["frames"]), ("sides", sides, sides["frames"]), ("oneside", osd, fourbar_frames(osd, 0.69)))])
 open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "design.js"), "w").write("window.DS=" + json.dumps(D) + ";")
 print(len(D["env"]), "paths;", [len(c["frames"]) for c in D["cands"]], "cand frames;", len(D["mech"]["frames"]), "mech frames")
+
+# ---- how a line is drawn: a few users' rise postures paired with their thigh-carried seat poses (export as design_demo.js)
+import seat_1dof_design as SD
+DEMO = [(1.60, 0.09, 1.0, 0.29), (1.50, 0.07, 0.6, 0.25), (1.75, 0.11, 2.5, 0.33), (1.50, 0.11, 2.5, 0.29), (1.75, 0.07, 0.6, 0.33)]
+demo = []
+for u in DEMO:
+    sub, p = SD.path_of(u); q, Q, phi = SD.curve_fit(p, 30.0); n = len(Q) - 15
+    idx = np.linspace(0, len(p) - 1, 48).round().astype(int)
+    demo.append(dict(key=SD.ukey(u), H=u[0], fr=[dict(Hp=r(p[i]["Hp"]), K=r(p[i]["K"]), A=r(p[i]["A"]), f=round(float(p[i]["f"]), 3),
+                     Q=r(Q[15 + min(i, n - 1)]), phi=round(float(phi[15 + min(i, n - 1)]), 2), on=bool(i < n)) for i in idx]))
+open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "design_demo.js"), "w").write(
+    "window.DEMO=" + json.dumps(dict(users=demo, chosen=P["design_curve"]["chosen"], keys=list(P["envelope"].keys()))) + ";")
+print("demo users", [d["key"] for d in demo], "chosen", P["design_curve"]["chosen"])
