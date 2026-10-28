@@ -1,4 +1,4 @@
-"""Hold the 81-bodies frame 1 s longer and stretch the sensing shot to 4 s.
+"""Hold the 81-bodies frame 1 s longer and stretch the sensing shot to 4 s; the rain leads into the echo.
 python3 music_v11.py music_v10_44.wav music.wav   (44 s in -> 46 s out)"""
 import sys
 import numpy as np
@@ -36,6 +36,15 @@ H, MH = groove(4.0, [(0.0, 2.0, 0), (2.0, 2.0, 1)])
 add(H, boom(1.0), 0.0, 0.5)
 for k, b in enumerate((0.0, 0.75, 1.5, 2.25)): add(H, ping(NOTE([84, 88, 91, 96][k]), 0.7), b, 0.5, pan=[-0.5, 0.5, 0.3, -0.3][k])
 for n in CH[0]: add(H, arp_note(n + 24, 0.4, 5000) * 2, 3.0, 0.8)
+# the room comes back at the end: the groove thins out and the rain leads in under the window (J-cut into the echo)
+fadeG = np.r_[np.ones(int(3.4 * SR)), np.linspace(1, 0.45, H.shape[1] - int(3.4 * SR))]; H *= fadeG[None, :]; MH *= fadeG[None, :]
+rngr = np.random.default_rng(7)
+def rain(d):
+    x = filt(noise(d), "bandpass", [700, 7000]) * 0.06 + filt(noise(d), "lowpass", 220) * 0.03; y = np.stack([x, np.roll(x, 777)])
+    for _ in range(int(d * 9)):
+        t0 = rngr.random() * (d - 0.1); f = 2200 + 2200 * rngr.random(); add(y, np.sin(2 * np.pi * f * tt(0.04)) * np.exp(-tt(0.04) * 90) * 0.05, t0, 1.0, pan=rngr.random() * 2 - 1)
+    return y
+rn = rain(0.6) * np.linspace(0, 1, int(0.6 * SR))[None, :] ** 1.5; add(H, rn, 3.4, 2.0)
 H = verb(H + MH, 0.35, 0.6); H[:, -int(0.03 * SR):] *= np.linspace(1, 0, int(0.03 * SR))
 sr, core = wavfile.read(sys.argv[1]); core = core.astype(float).T / 32767
 rms = lambda x: 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-9)

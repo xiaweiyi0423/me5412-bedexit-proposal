@@ -65,7 +65,7 @@ T('h_tag', 'SENSING / 传感', mono(24));
 T('h_1', '起身全程，四处测力', { s: big(76) });
 const SENS = [['座下测力', '坐稳了没有'], ['横杆测力', '手在不在'], ['握把开关', '握紧才升'], ['踏板测力', '脚踩实了没有']];
 SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight:900">${a}</div><div style="font-size:28px;font-weight:500;color:#A8B4C4;margin-top:4px">${b}</div>`, { s: {} }));
-T('h_2', '握紧才升 · 松手即停 · <span style="color:#19D3F0">失电制动</span>', { s: big(76) });
+T('h_2', '握紧才升<br>松手即停<br><span style="color:#19D3F0">失电制动</span>', { s: { ...big(72), lineHeight: 1.3 } });
 // end
 T('i_t', '床边起身台', { s: big(120) });
 T('i_s', '帮老人自己，从床边站起来', { s: { ...big(36, 500), color: '#C9D3DF', textAlign: 'center', lineHeight: 1.5 } });
@@ -428,22 +428,35 @@ function secG(t) {   // 24-30 how-to (light)
   for (let i = 0; i < 4; i++) { const a = 24 + i * 1.5, f = clamp((t - a) / 1.5); bg.fillStyle = '#C9D0D9'; bg.fillRect(120 + i * 190, 1000, 170, 6); bg.fillStyle = C.ink; bg.fillRect(120 + i * 190, 1000, 170 * f, 6); }
 }
 function secH(t) {   // 30-33 sensing (dark)
-  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07);
-  const V = sideView(0.36, 0.78, 0.86); const kf = lerp(2, 9, ss(30, 33, t)), R = rise(kf); setLook('dark', { shell: { op: 0 } }); setMech(R.s); disc.visible = false; setSwitch(0.9);
-  floor2D(bg, V.map, '#2C3644'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); renderGL(V.cam);
-  ghostFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#FFFFFF', 0.08, 4);
+  // seated, hands on the bar, ready to rise; at the end the camera eases to the rainy-room framing, a point draws the window, rain fills it (the echo starts on this frame)
+  const tr = ss(32.3, 33.0, t), lf = 1 - ss(32.3, 32.55, t), T = t + 7;   // T: film time
+  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07 * (1 - tr));
+  const V = sideView(lerp(0.36, 0.55, tr), lerp(0.78, 0.85, tr), lerp(0.86, 0.95, tr)), R = rise(-1); setLook('dark', { shell: { op: 0 } });
+  if (tr > 0) for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = lerp(m.opacity, 0.2, tr); m.visible = true; }
+  setMech(R.s); disc.visible = false; setSwitch(0.9 * (1 - ss(32.5, 32.9, t)));
+  const gw = ss(32.72, 33.0, t); if (gw > 0) { bg.save(); bg.globalAlpha = gw; drawRoom(V, T, 1, 0); bg.restore(); }
+  const wp = ss(32.35, 32.8, t); if (wp > 0) { const a = V.map([WIN.x0, WIN.z1]), b = V.map([WIN.x1, WIN.z0]), P = [[a[0], b[1]], [b[0], b[1]], [b[0], a[1]], [a[0], a[1]], [a[0], b[1]]];
+    const L = P.slice(1).map((q, i) => Math.hypot(q[0] - P[i][0], q[1] - P[i][1])), tot = L.reduce((x, y) => x + y, 0); let left = wp * tot; const pts = [P[0]];
+    for (let i = 0; i < 4 && left > 0; i++) { const k = Math.min(1, left / L[i]); pts.push([lerp(P[i][0], P[i + 1][0], k), lerp(P[i][1], P[i + 1][1], k)]); left -= L[i]; }
+    bg.save(); bg.globalAlpha = 1 - gw; bg.strokeStyle = C.acc; bg.shadowColor = C.acc; bg.shadowBlur = 16; bg.lineWidth = 4; bg.lineJoin = 'round'; bg.beginPath(); pts.forEach((q, i) => i ? bg.lineTo(...q) : bg.moveTo(...q)); bg.stroke(); bg.restore();
+    if (wp < 1) dot(bg, pts[pts.length - 1], 8, '#FFFFFF', 1); }
+  floor2D(bg, V.map, lerpC('#2C3644', '#243041', tr)); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); renderGL(V.cam);
+  const fs = ss(32.6, 33.0, t), J0 = joints(R.pose, HAND_BAR);
+  if (fs < 1) { fg.save(); fg.globalAlpha = 1 - fs; ghostFig(fg, J0, V.map, V.sc, '#FFFFFF', 0.08, 4); fg.restore(); }
+  if (fs > 0) { fg.save(); fg.globalAlpha = fs; drawFig(fg, J0, V.map, V.sc, '#DDE5EE', '#DDE5EE', 0.9, 0, true); fg.restore(); }
   const f = kinAt(R.s), ph = f[3] * Math.PI / 180, seatPt = [(f[1] + 10 * Math.cos(ph) - 100 * Math.sin(ph)) / 1000, (f[2] - 10 * Math.sin(ph) - 100 * Math.cos(ph)) / 1000];
   const PTS = [seatPt, [0.70, 0.905], HAND_BAR, [0.40, 0.045]], LAB = [[-420, 40], [-480, -30], [110, -60], [260, -50]];
   for (let i = 0; i < 4; i++) {
-    const bt = 30.0 + i * 0.5, u0 = eo(bt, bt + 0.2, t); if (u0 <= 0) continue; const c = V.map(PTS[i]), col = i === 2 ? C.amb : C.acc;
+    const bt = 30.0 + i * 0.5, u0 = eo(bt, bt + 0.2, t) * lf; if (u0 <= 0) continue; const c = V.map(PTS[i]), col = i === 2 ? C.amb : C.acc;
     const cur = Math.min(3, Math.floor((t - 30.0) / 0.5)), foc = t >= 32.0 ? 1 : i === cur ? 1 : lerp(1, 0.35, eo(bt + 0.5, bt + 0.7, t)), u = u0 * foc;
-    fg.save(); fg.globalAlpha = foc; fg.fillStyle = col; fg.shadowColor = col; fg.shadowBlur = 24; fg.beginPath(); fg.arc(c[0], c[1], 10 * u, 0, 7); fg.fill(); fg.shadowBlur = 0;
-    for (let b2 = bt; b2 <= t; b2 += BEAT) { const k = t - b2; if (k > 0.6 || (foc < 0.99)) continue; fg.strokeStyle = col; fg.globalAlpha = 1 - k / 0.6; fg.lineWidth = 3; fg.beginPath(); fg.arc(c[0], c[1], 14 + 80 * k, 0, 7); fg.stroke(); }
+    fg.save(); fg.globalAlpha = foc * lf; fg.fillStyle = col; fg.shadowColor = col; fg.shadowBlur = 24; fg.beginPath(); fg.arc(c[0], c[1], 10 * u, 0, 7); fg.fill(); fg.shadowBlur = 0;
+    for (let b2 = bt; b2 <= t; b2 += BEAT) { const k = t - b2; if (k > 0.6 || (foc < 0.99)) continue; fg.strokeStyle = col; fg.globalAlpha = (1 - k / 0.6) * lf; fg.lineWidth = 3; fg.beginPath(); fg.arc(c[0], c[1], 14 + 80 * k, 0, 7); fg.stroke(); }
     fg.globalAlpha = u; fg.strokeStyle = col; fg.lineWidth = 2; const lx = c[0] + LAB[i][0], ly = c[1] + LAB[i][1]; fg.beginPath(); fg.moveTo(c[0], c[1]); fg.lineTo(lx + (LAB[i][0] < 0 ? 210 : -10), ly); fg.stroke(); fg.restore();
     show('h_s' + i, { x: lx, y: ly, ay: 0.5, op: u, dx: (1 - u0) * 30, sc: i === cur && t < 32 ? 1.08 : 1 });
   }
-  show('h_tag', { x: 80, y: 64, op: 1 }); const a = eo(30.0, 30.3, t) * (1 - ss(31.9, 32.05, t)); show('h_1', { x: 120, y: 130, op: a, dx: (1 - eo(30.0, 30.3, t)) * -60 });
-  const b = eo(32.0, 32.25, t); show('h_2', { x: 120, y: 140, op: b, dx: (1 - b) * -60 });
+  vignette(fg, 0.45 * tr);
+  show('h_tag', { x: 80, y: 64, op: 1 - tr }); const a = eo(30.0, 30.3, t) * (1 - ss(31.9, 32.05, t)); show('h_1', { x: 120, y: 130, op: a, dx: (1 - eo(30.0, 30.3, t)) * -60 });
+  const b = eo(32.0, 32.25, t); show('h_2', { x: 1800, y: 540, ax: 1, ay: 0.5, op: b, dx: (1 - b) * 60 });
 }
 function secI(t) {   // 33-36 end
   fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07); vignette(bg, 0.7);
@@ -716,6 +729,7 @@ function secEcho(t) {   // 40-46: same window, same bed, now with the seat: rise
   vignette(fg, 0.45 - 0.2 * dawn);
   const a = eo(44.2, 44.55, t); show('i_t', { x: 420, y: 250, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
   const b = eo(44.5, 44.8, t); show('i_s', { x: 420, y: 400, ax: 0.5, ay: 0.5, op: b });
+  if (t < 40.4) show('h_2', { x: 1800, y: 540, ax: 1, ay: 0.5, op: 1 - ss(40.05, 40.35, t) });
   const c = eo(44.8, 45.1, t); show('i_g', { x: 1500, y: 1030, ax: 0.5, ay: 0.5, op: c });
   const fo = ss(45.55, 46.0, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
@@ -997,7 +1011,7 @@ const EN = {   // id: [english, px, colour]
   m_a0: ['Slide onto the seat', 30], m_a1: ['Hold the switch', 30], m_a2: ['Rise together', 30], m_a3: ['Let go, it stops', 30],
   
   h_1: ['Four force sensors, all through the rise', 28], 
-  h_2: ['Rises while held · stops when released · brakes on power loss', 24], i_s: ['Helping older adults get up on their own', 22],
+  i_s: ['Helping older adults get up on their own', 22],
 };
 for (const [id, [txt, px, col]] of Object.entries(EN)) { const d = document.createElement('div'); d.className = 'lat'; d.textContent = txt; Object.assign(d.style, { fontSize: px + 'px', fontWeight: 500, color: col || '#8FA0B5', letterSpacing: '0.01em', marginTop: '6px', lineHeight: 1.25, whiteSpace: 'nowrap', textAlign: 'inherit', textShadow: 'none', WebkitTextStroke: '0', background: 'none' }); TX[id].appendChild(d); }
 const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
