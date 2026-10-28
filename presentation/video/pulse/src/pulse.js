@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 49;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 44;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -52,7 +52,7 @@ T('f_3', '人站稳，<span style="color:#19D3F0">座板停住</span>', { s: big
 ['前移', '上升', '前倾'].forEach((w, i) => T('f_a' + i, w, { s: { ...big(40, 700), color: C.acc } }));
 // how to
 T('g_tag', 'HOW TO / 用法', mono(24, '#5A6575'));
-const STEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '座板托着人前移、上升、前倾'], ['松手即停', '座板停在原位，坐回也接得住']];
+const STEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']];
 STEPS.forEach(([a, b], i) => {
   T('g_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '210px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #07090D', lineHeight: 1 } });
   T('g_a' + i, a, { s: { ...big(96), color: C.ink } });
@@ -61,7 +61,7 @@ STEPS.forEach(([a, b], i) => {
 T('g_stop', 'STOP', { cls: 'lat', s: { fontSize: '44px', fontWeight: 900, color: '#fff', background: C.red, padding: '6px 18px', borderRadius: '8px', letterSpacing: '.08em' } });
 // sensing
 T('h_tag', 'SENSING / 传感', mono(24));
-T('h_1', '四处测力，确认人准备好了', { s: big(76) });
+T('h_1', '起身全程，四处测力', { s: big(76) });
 const SENS = [['座下测力', '坐稳了没有'], ['横杆测力', '手在不在'], ['握把开关', '握紧才升'], ['踏板测力', '脚踩实了没有']];
 SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight:900">${a}</div><div style="font-size:28px;font-weight:500;color:#A8B4C4;margin-top:4px">${b}</div>`, { s: {} }));
 T('h_2', '握紧才升 · 松手即停 · <span style="color:#19D3F0">失电制动</span>', { s: big(76) });
@@ -249,8 +249,8 @@ function problemFig(kind, t, tl) {     // tl: local time in the panel
   const toe = [A[0] + 0.15 * Math.cos(-0.75), A[1] + 0.15 * Math.sin(-0.75)], heel = [A[0] - 0.04, A[1] + 0.01];
   return { top, J: joints({ Hp, K: Kp, A, tr: 6, toe, heel }, null) };
 }
-function secB(t) {   // 4-8 problem, light
-  fillBG(C.paper); grid(bg, '#0A0E14', 60, 0.045);
+function secB(t) {   // 4-8 problem, light (a dimmer cool grey, so the cut from the dark opening is not a flash)
+  fillBG('#C3C9D1'); grid(bg, '#0A0E14', 60, 0.045);
   const sc = 540, wp = ss(5.95, 6.15, t) * W;          // whip between the two panels
   for (const [kind, ox] of [['low', -wp], ['high', W - wp]]) {
     if (ox <= -W || ox >= W) continue; const map = p => [ox + 1180 + p[0] * sc, 960 - p[1] * sc], tl = kind === 'low' ? t - 4 : t - 6;
@@ -280,7 +280,7 @@ function secC(t) {   // 8-10 pivot
 }
 function secD(t) {   // 10-12 title
   fillBG(C.ink); vignette(bg, 0.6);
-  const fl = 1 - ss(10.0, 10.18, t); if (fl > 0) { bg.fillStyle = `rgba(255,255,255,${fl})`; bg.fillRect(0, 0, W, H); }
+  const fl = 1 - ss(10.0, 10.18, t); if (fl > 0) { bg.fillStyle = `rgba(140,225,250,${0.16 * fl})`; bg.fillRect(0, 0, W, H); }
   const a = eo(10.0, 10.45, t), out = ss(11.6, 12.0, t);
   show('d_t', { x: 960, y: 470, ax: 0.5, ay: 0.5, op: a * (1 - out), ls: lerp(0.55, 0.06, a), sc: 1 + 0.6 * out, blur: out * 14 });
   TX.d_t.style.backgroundPosition = `${lerp(100, -60, ss(10.5, 11.3, t))}% 0`;
@@ -467,7 +467,7 @@ T('x_4', '比过五种结构，它最贴合、最省力', { s: big(72) });
 T('x_v', '不是直上直下，而是<span style="color:#19D3F0">一路贴着大腿</span>', { s: big(72) });
 T('x_c0', '直上直下<br><span style="font-size:30px;font-weight:700;color:#8A96A6">座板很快离开大腿</span>', { s: { ...big(46, 900), color: '#C9D3DF', textAlign: 'center' } });
 T('x_c1', '斜导轨 + 倾角连杆<br><span style="font-size:30px;font-weight:700;color:#C9D3DF">沿设计曲线，一路托着</span>', { s: { ...big(46, 900), color: C.acc, textAlign: 'center' } });
-T('x_fb', '还比过三种四连杆：会碰小腿、回床挡腿，或受力太大', { s: { ...big(32, 700), color: '#8A96A6' } });
+T('x_fb', '还比过三种四连杆：会碰小腿、回床挡腿，或受力太大', { s: { ...big(38, 700), color: '#C9D3DF' } });
 ['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'].forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
 const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'];
 CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#8A96A6' } }); });
@@ -574,7 +574,7 @@ function cmp2(t) {   // 17.5-20: straight-up lift vs ours, side by side, both lo
       const q1 = map(f.P1); fg.fillStyle = C.acc; fg.fillRect(q1[0] - 11, q1[1] - 11, 22, 22); pline(fg, [M2.B, f.P2], map, LIME, 7); dot(fg, map(f.P2), 7, '#fff'); ground(fg, map(M2.B), LIME, 16); }
     show('x_c' + k, { x: pcx, y: 300, ax: 0.5, ay: 0.5, op: clamp(ap) });
   });
-  const n = eo(18.6, 18.9, t); show('x_fb', { x: 960, y: 1030, ax: 0.5, ay: 0.5, op: n * 0.9 });
+  const n = eo(17.9, 18.2, t); show('x_fb', { x: 960, y: 1030, ax: 0.5, ay: 0.5, op: n * 0.9 });
 }
 function cand2(t) {   // 17.5-20: five structures flash in, four step back together, the rail + link stays lit
   show('x_4', { x: 120, y: 120, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });
@@ -693,14 +693,15 @@ function secRain(t) {   // 8-11: after the failed rises, rain; the hip's line cl
 function secEcho(t) {   // 40-46: same window, same bed, now with the seat: rise all the way, the rain stops, dawn; then pull out into the 3D room, sun through the window
   const V = RV(), kf = t < 40.6 ? -1 : t < 40.85 ? lerp(-1, 0, (t - 40.6) / 0.25) : lerp(0, FR.length - 1, ss(40.85, 42.2, t)), R = rise(kf);
   const rain = 1 - ss(41.0, 42.0, t), dawn = ss(41.3, 43.0, t), x2d = 1 - ss(42.3, 42.65, t);
-  setLook('dark', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.55; m.visible = true; }
+  setLook('dark', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.2; m.visible = true; }
   setMech(R.s); disc.visible = false; setSwitch(t >= 40.5 && !R.released ? 1 : ss(40.4, 40.5, t) * 0.4);
   const P3 = echoPull(t, R, dawn);
-  if (P3) { fillBG('#07070D'); aurora(bg, t, ss(42.4, 43.4, t)); setLook('hero', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.5; m.visible = true; } }
+  if (P3) { fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.08); const k = ss(42.4, 43.4, t), sp = bg.createRadialGradient(W * 0.62, -80, 40, W * 0.62, 260, 900); sp.addColorStop(0, `rgba(210,235,255,${0.22 * k})`); sp.addColorStop(1, 'rgba(210,235,255,0)'); bg.fillStyle = sp; bg.fillRect(0, 0, W, H); vignette(bg, 0.5);
+    setLook('hero', { shell: { op: 0 } }); key.position.set(0.4, 0.2, 6); key.intensity = 1.5; rim.intensity = 1.4; for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.35; m.visible = true; } }
   if (x2d > 0) { bg.save(); bg.globalAlpha = x2d; drawRoom(V, t, rain, dawn); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); bg.restore(); }
-  renderGL(P3 ? P3.cam : V.cam); if (P3) pcam.clearViewOffset();
+  renderGL(P3 ? P3.cam : V.cam); if (P3) { pcam.clearViewOffset(); key.position.set(3, -4, 5); }
   const hips = []; if (kf >= 0) for (let x = 0; x <= kf; x += 0.25) hips.push(poseAt(x).Hp); if (kf >= 0) hips.push(R.pose.Hp);
-  if (x2d > 0) { fg.save(); fg.globalAlpha = x2d; drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#0B1018', 1); pline(fg, hips, V.map, C.acc, 6, 1, 24);
+  if (x2d > 0) { fg.save(); fg.globalAlpha = x2d; drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#DDE5EE', 0.9, 0, true); pline(fg, hips, V.map, C.acc, 6, 1, 24);
     if (hips.length) dot(fg, V.map(hips[hips.length - 1]), 9, '#FFFFFF', 1, ((t - 40.85) % 0.5) / 0.5); fg.restore(); }
   vignette(fg, 0.45 - 0.2 * dawn);
   const a = eo(44.2, 44.55, t); show('i_t', { x: 420, y: 250, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
@@ -807,9 +808,14 @@ function secCtx(u) {   // u: 0..3.5 s
   for (const c in PG) { const el = PG[c].children[1]; if (!el) continue; const j = rnd3(step * 7 + c.charCodeAt(0) + (c.charCodeAt(1) || 0)); el.position.set(j[0] * 3, j[1] * 3, j[2] * 3); }
   setMech(0); setSwitch(ss(1.95, 2.05, u) * (0.75 + 0.25 * Math.cos((u - 2.0) * 4 * Math.PI))); sw.visible = u > 1.2; swGlow.visible = u > 1.2;
   // camera follows the head, then dolly-zooms to the orthographic side view used next
-  const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.52), swg), az = lerp(ca.az, -Math.PI / 2 + F25.az, swg), el = lerp(ca.el, F25.el, swg);
-  const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.62 * F25.hh, swg), dist = lerp(ca.dist, F25.dist, swg);
+  const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.60), swg), az = lerp(ca.az, -Math.PI / 2 + F25.az, swg), el = lerp(ca.el, F25.el, swg);
+  const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.74 * F25.hh, swg), dist = lerp(ca.dist, F25.dist, swg);
   pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T0.x + dist * Math.cos(el) * Math.cos(az), T0.y + dist * Math.cos(el) * Math.sin(az), T0.z + dist * Math.sin(el)); pcam.lookAt(T0); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
+  const gb = win(u, 2.15, 2.85, 0.15, 0.2); if (gb > 0) {   // back to bed: sit, turn toward the foot end, legs up (rendered before the main pass)
+    const k = ss(2.3, 2.8, u), P0 = sunk(F0, DZ0), Hp = [P0.Hp[0] - 0.10 * k, P0.Hp[1] + 0.02 * k], K = lerpA(P0.K, [Hp[0] + 0.38, Hp[1] + 0.04], k), A = lerpA(P0.A, [Hp[0] + 0.76, Hp[1] + 0.0], k);
+    const Jb = joints({ Hp, K, A, tr: lerp(F0.tr, -12, k), toe: [A[0] + 0.15, A[1] + 0.05], heel: [A[0] - 0.04, A[1] - 0.02] }, null), yaw = -1.35 * k, c = V3d(Hp[0], 0, 0);
+    setTube(Jb); tubeG.rotation.set(0, 0, yaw); const cs = Math.cos(yaw), sn = Math.sin(yaw); tubeG.position.set(c.x - (cs * c.x - sn * c.y), c.y - (sn * c.x + cs * c.y), 0);
+    figPass(pcam); tubeG.rotation.set(0, 0, 0); tubeG.position.set(0, 0, 0); }
   const oz = win(u, 2.2, 2.85, 0.2, 0.2); hatch.material.opacity = 0.75 * oz;
   renderGL(pcam);
   // the line itself: a bright head and a trail that cools to a thin ink line
@@ -832,6 +838,7 @@ function secCtx(u) {   // u: 0..3.5 s
     wobblyLine(fg, arc, C.acc, 4, oz, 50 + step); const q1 = arc[arc.length - 1], q0 = arc[arc.length - 3], an = Math.atan2(q1[1] - q0[1], q1[0] - q0[0]);
     fg.save(); fg.globalAlpha = oz; fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.lineCap = 'round'; fg.translate(...q1); fg.rotate(an); fg.beginPath(); fg.moveTo(-16, -10); fg.lineTo(2, 0); fg.lineTo(-16, 10); fg.stroke(); fg.restore(); }
   lab('k_2', V3d(0.18, -0.80, 0.01), -150, -150, oz, 9);
+  if (gb > 0) { fg.save(); fg.globalAlpha = 0.5 * gb; fg.drawImage(FIGC, 0, 0); fg.restore(); }
   show('k_tag', { x: 80, y: 64, op: 1 - swg }); vignette(fg, 0.3);
   pcam.fov = 26;
 }
@@ -882,7 +889,7 @@ const hipTube = (() => { const pts = []; for (let x = 0; x <= FR.length - 1; x +
   const curve = new THREE.CatmullRomCurve3(pts), g1 = new THREE.TubeGeometry(curve, 80, 0.009, 10), g2 = new THREE.TubeGeometry(curve, 80, 0.03, 10);
   const a = new THREE.Mesh(g1, new THREE.MeshBasicMaterial({ color: lin(0.1, 0.75, 0.95), transparent: true, opacity: 0 })), b = new THREE.Mesh(g2, new THREE.MeshBasicMaterial({ color: lin(0.1, 0.6, 0.9), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
   tubeG.add(a, b); return [a, b]; })();
-const POP = ['#FF5DA2', '#FF9F43', '#FFD93D', '#4BE3AC', '#4CC9F0', '#9B5DE5'];
+const POP = ['#19D3F0', '#19D3F0', '#19D3F0', '#FFB020', '#19D3F0', '#19D3F0'];
 const RINGS = Array.from({ length: 6 }, () => { const m = new THREE.Mesh(new THREE.RingGeometry(0.97, 1.0, 96), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
   m.position.set(0.40, 0.05, 0.003); scene.add(m); return m; });
 const BLOBS = Array.from({ length: 7 }, (_, i) => ({ c: POP[i % 6], x: 0.15 + 0.7 * ((i * 0.618) % 1), y: 0.2 + 0.6 * ((i * 0.381 + 0.2) % 1), r: 420 + 160 * ((i * 0.77) % 1), sp: 0.12 + 0.05 * i }));
@@ -893,7 +900,7 @@ function aurora(g, t, a) {   // soft moving colour fields on near-black
   g.globalCompositeOperation = 'source-over'; const v = g.createRadialGradient(W * 0.6, H * 0.65, 200, W * 0.6, H * 0.65, 900); v.addColorStop(0, 'rgba(8,8,16,.45)'); v.addColorStop(1, 'rgba(8,8,16,0)'); g.fillStyle = v; g.fillRect(0, 0, W, H); g.restore(); }
 function pulseRings(t, a) {   // one ring per beat from the seat's base, cycling through the colours
   RINGS.forEach((m, i) => { const b0 = Math.floor(t / BEAT) - i, age = t - b0 * BEAT, k = age / 3.0; if (k < 0 || k > 1 || a <= 0) { m.material.opacity = 0; return; }
-    m.scale.setScalar(0.35 + 2.6 * Math.pow(k, 0.7)); m.material.color.set(POP[((b0 % 6) + 6) % 6]); m.material.opacity = a * 0.9 * (1 - k); }); }
+    m.scale.setScalar(0.35 + 2.6 * Math.pow(k, 0.7)); m.material.color.set(POP[((b0 % 6) + 6) % 6]); m.material.opacity = a * 0.55 * (1 - k); }); }
 function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade, the seat alone turns in a pulsing colour field
   const p = ss(42.3, 44.9, t); if (p <= 0) return null;
   hipTube[0].material.opacity = 0.9 * (1 - ss(44.6, 45.3, t)); hipTube[1].material.opacity = 0.3 * (1 - ss(44.6, 45.3, t)); tubeG.visible = true;
@@ -907,8 +914,63 @@ function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade
   return { cam: pcam, p };
 }
 
+// ------------------------------------------------------------------ merged "how it moves": the four steps, 2.5D turning to the flat side view, the path and arrows inside step 03
+const MSTEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']];
+T('m_tag', 'HOW IT MOVES / 起身', mono(24));
+MSTEPS.forEach(([a, b], i) => {
+  T('m_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '170px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #FFFFFF', lineHeight: 1 } });
+  T('m_a' + i, a, { s: { ...big(84), color: '#fff' } }); T('m_b' + i, b, { s: { ...big(38, 500), color: '#A8B4C4' } });
+});
+const MT = [0, 1.5, 2.5, 5.0, 6.5];   // step starts (local)
+function secM(u) {   // u: 0..6.5
+  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07);
+  const rk = ss(2.6, 4.6, u), hh = lerp(0.74, 0.95, rk), cx = lerp(0.20, 0.12, rk), cz = lerp(0.70, 0.86, rk), V0 = sideView(cx, cz, hh);
+  const q = 1 - ss(1.4, 2.6, u); let V = V0;
+  if (q > 0.001) { const Tt = V3d(cx, 0, cz - 0.10 * q), az = -Math.PI / 2 + F25.az * q, el = F25.el * q, dist = Math.exp(lerp(Math.log(40), Math.log(F25.dist), q));
+    pcam.fov = 2 * Math.atan(hh * lerp(1, F25.hh, q) / dist) * 180 / Math.PI; pcam.position.set(Tt.x + dist * Math.cos(el) * Math.cos(az), Tt.y + dist * Math.cos(el) * Math.sin(az), Tt.z + dist * Math.sin(el)); pcam.lookAt(Tt); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
+    V = { cam: pcam, sc: V0.sc, map: p => proj(V3d(p[0], 0, p[1]), pcam) }; }
+  sketchG.visible = q > 0.01; SK.lines.forEach(l => { l.visible = true; l.material.opacity = (SK.jit.includes(l) ? 0.25 : 0.75) * q; l.position.set(0, 0, 0); });
+  Object.values(SKB).forEach(m => { m.visible = q > 0.01 && m !== SKB.hb && m !== SKB.pl && m !== SKB.duv; m.children.forEach(l => l.geometry.setDrawRange(0, Infinity)); });
+  // pose: scoot (01), hold (02), rise (03), release (04)
+  let pose, hands = HAND_BAR, s = 0, swv = 0, rel = 0;
+  if (u < 1.5) { const k = ss(0.1, 1.2, u); pose = scootPose(k); const lap = joints(pose, null).Hd; const hk = ss(0.6, 1.35, u); hands = lerpA(lap, HAND_BAR, hk); hands[1] += 0.08 * Math.sin(Math.PI * hk); }
+  else if (u < 2.5) { pose = rise(-1).pose; swv = ss(1.95, 2.05, u) * (0.75 + 0.25 * Math.cos((u - 2.0) * 4 * Math.PI)); }
+  else { const kf = u < 2.75 ? lerp(-1, 0, (u - 2.5) / 0.25) : lerp(0, FR.length - 1, ss(2.75, 4.8, u)), R = rise(kf); pose = R.pose; s = R.s; swv = u < 5.0 ? 1 : 0;
+    if (u >= 5.0) { rel = eo(5.0, 5.35, u); const S = joints(pose, null).S; hands = lerpA(HAND_BAR, [S[0] + 0.03, S[1] - Lua - Lfa * 0.9], rel); } }
+  setLook('dark', { shell: { op: 0 } }); setMech(s); disc.visible = false; setSwitch(swv);
+  bg.save(); bg.globalAlpha = 1 - q; floor2D(bg, V0.map, '#2C3644'); drawBed2D(bg, V0.map, V0.sc, 0.42, false, -1.9); bg.restore();
+  const J = joints(pose, hands);
+  tubeG.visible = false; if (q > 0.01) { setTube(J); figPass(V.cam); }
+  renderGL(V.cam);
+  if (q > 0.01) { fg.save(); fg.globalAlpha = 0.5 * q; fg.drawImage(FIGC, 0, 0); fg.restore(); }
+  // step 03: the seat's path, a ghost of the seat on each beat, arrows
+  if (u >= 2.5) { const pts = pathTo(s), fa = 1 - ss(6.0, 6.4, u); fg.save(); fg.globalAlpha = fa; fg.lineCap = 'round'; fg.lineJoin = 'round';
+    fg.strokeStyle = 'rgba(25,211,240,.25)'; fg.lineWidth = 16; fg.beginPath(); pts.forEach((p, i) => { const qq = V.map(p); i ? fg.lineTo(...qq) : fg.moveTo(...qq); }); fg.stroke(); fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.stroke();
+    for (let bt = 3.0; bt <= Math.min(u, 4.75); bt += BEAT) { const kb = lerp(0, FR.length - 1, ss(2.75, 4.8, bt)), sb = rise(kb).s, poly = seatOutline(sb); fg.globalAlpha = fa * 0.55 * Math.exp(-(u - bt) * 0.6); fg.strokeStyle = C.acc; fg.lineWidth = 2.5; fg.beginPath(); poly.forEach((p, i) => { const qq = V.map(p); i ? fg.lineTo(...qq) : fg.moveTo(...qq); }); fg.closePath(); fg.stroke(); }
+    fg.restore(); }
+  if (q < 0.99) { fg.save(); fg.globalAlpha = 1 - q; ghostFig(fg, J, V0.map, V0.sc, '#FFFFFF', 0.10 * (1 - q), 5); fg.restore(); }
+  const q0 = kinAt(0), qr = kinAt(S_REL), A0 = [q0[1] / 1000, q0[2] / 1000], AR = [qr[1] / 1000, qr[2] / 1000];
+  const arrow = (a, b, k, id, lab) => { if (k <= 0) return; const p = V.map(a), qq = V.map(b), e = [lerp(p[0], qq[0], k), lerp(p[1], qq[1], k)]; fg.save(); fg.strokeStyle = C.acc; fg.fillStyle = C.acc; fg.lineWidth = 4; fg.beginPath(); fg.moveTo(...p); fg.lineTo(...e); fg.stroke();
+    const an = Math.atan2(qq[1] - p[1], qq[0] - p[0]); fg.translate(...e); fg.rotate(an); fg.beginPath(); fg.moveTo(4, 0); fg.lineTo(-16, -10); fg.lineTo(-16, 10); fg.fill(); fg.restore(); show(id, { x: lab[0], y: lab[1], ax: 0.5, ay: 0.5, op: k }); };
+  const fa = 1 - ss(4.9, 5.1, u), u1 = eo(3.25, 3.5, u) * fa, u2 = eo(3.5, 3.75, u) * fa, u3 = eo(3.75, 4.0, u) * fa;
+  const yb = A0[1] - 0.20; arrow([A0[0] - 0.02, yb], [AR[0] + 0.04, yb], u1, 'f_a0', V0.map([(A0[0] + AR[0]) / 2, yb - 0.07]));
+  const xr = AR[0] + 0.30; arrow([xr, A0[1]], [xr, AR[1] + 0.02], u2, 'f_a1', V0.map([xr + 0.10, (A0[1] + AR[1]) / 2]));
+  if (u3 > 0) { const c = V0.map([AR[0], AR[1]]), rr = 0.17 * V0.sc; fg.save(); fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.globalAlpha = u3; fg.beginPath(); fg.arc(c[0], c[1], rr, Math.PI - 0.30 * u3, Math.PI); fg.stroke(); fg.restore(); show('f_a2', { x: c[0] - rr - 30, y: c[1] + 10, ax: 1, ay: 0.5, op: u3 }); }
+  // step 02: grip pulses on the beats
+  if (u >= 1.5 && u < 2.75) { const c = V.map(HAND_BAR); for (let bt = 2.0; bt <= u; bt += BEAT) { const k = u - bt; if (k > 0.5) continue; fg.save(); fg.strokeStyle = C.amb; fg.globalAlpha = 1 - k / 0.5; fg.lineWidth = 5; fg.beginPath(); fg.arc(c[0], c[1], 26 + 90 * k, 0, 7); fg.stroke(); fg.restore(); } }
+  // step 04: seat held, STOP
+  if (u >= 5.0) { const poly = seatOutline(s).map(V0.map), xs = poly.map(p => p[0]), ys = poly.map(p => p[1]), x0 = Math.min(...xs) - 16, x1 = Math.max(...xs) + 16, y0 = Math.min(...ys) - 16, y1 = Math.max(...ys) + 16, L = 22;
+    const k = eback(5.0, 5.2, u); fg.save(); fg.strokeStyle = C.red; fg.lineWidth = 5; fg.globalAlpha = clamp(k); fg.beginPath();
+    for (const [x, y, dx, dy] of [[x0, y0, 1, 1], [x1, y0, -1, 1], [x0, y1, 1, -1], [x1, y1, -1, -1]]) { fg.moveTo(x + dx * L, y); fg.lineTo(x, y); fg.lineTo(x, y + dy * L); } fg.stroke(); fg.restore();
+    show('g_stop', { x: x0 - 20, y: y0 - 6, ay: 1, ax: 1, op: clamp(k), sc: k }); }
+  show('m_tag', { x: 80, y: 64, op: 1 });
+  for (let i = 0; i < 4; i++) { const a = MT[i], b = MT[i + 1], o = win(u, a, b, 0.12, 0.08), k = eo(a, a + 0.25, u);
+    show('m_n' + i, { x: 110, y: 120, op: o, dy: (1 - k) * 40 }); show('m_a' + i, { x: 420, y: 140, op: o, dx: (1 - k) * 50 }); show('m_b' + i, { x: 424, y: 250, op: o * eo(a + 0.1, a + 0.35, u) }); }
+  for (let i = 0; i < 4; i++) { const f = clamp((u - MT[i]) / (MT[i + 1] - MT[i])); bg.fillStyle = '#2A3442'; bg.fillRect(120 + i * 190, 1010, 170, 6); bg.fillStyle = C.acc; bg.fillRect(120 + i * 190, 1010, 170 * f, 6); }
+}
+
 const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 28.5, t => secCtx(t - 25)], [28.5, 34, SH(secF)], [34, 40, SH(secG)], [40, 43, SH(secH)], [43, 49.01, t => secEcho(t - 3)]];
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 28.5, t => secCtx(t - 25)], [28.5, 35, t => secM(t - 28.5)], [35, 38, t => secH(t - 5)], [38, 44.01, t => secEcho(t + 2)]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   bedG.visible = false; floorGrid.visible = false; openZone.material.opacity = 0; ozEdge.material.opacity = 0; pcam.fov = 26;
