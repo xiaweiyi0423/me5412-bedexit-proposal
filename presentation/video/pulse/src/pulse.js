@@ -62,7 +62,7 @@ STEPS.forEach(([a, b], i) => {
 T('g_stop', 'STOP', { cls: 'lat', s: { fontSize: '44px', fontWeight: 900, color: '#fff', background: C.red, padding: '6px 18px', borderRadius: '8px', letterSpacing: '.08em' } });
 // sensing
 T('h_tag', 'SENSING / 传感', mono(24));
-T('h_1', '起身全程，四处测力', { s: big(76) });
+T('h_1', '起身之前，四处确认', { s: big(76) });
 const SENS = [['座下测力', '坐稳了没有'], ['横杆测力', '手在不在'], ['握把开关', '握紧才升'], ['踏板测力', '脚踩实了没有']];
 SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight:900">${a}</div><div style="font-size:28px;font-weight:500;color:#A8B4C4;margin-top:4px">${b}</div>`, { s: {} }));
 T('h_2', '握紧才升<br>松手即停<br><span style="color:#19D3F0">失电制动</span>', { s: { ...big(72), lineHeight: 1.3 } });
@@ -1010,7 +1010,7 @@ const EN = {   // id: [english, px, colour]
   
   m_a0: ['Slide onto the seat', 30], m_a1: ['Hold the switch', 30], m_a2: ['Rise together', 30], m_a3: ['Let go, it stops', 30],
   
-  h_1: ['Four force sensors, all through the rise', 28], 
+  h_1: ['Four checks before rising', 28], 
   i_s: ['Helping older adults get up on their own', 22],
 };
 for (const [id, [txt, px, col]] of Object.entries(EN)) { const d = document.createElement('div'); d.className = 'lat'; d.textContent = txt; Object.assign(d.style, { fontSize: px + 'px', fontWeight: 500, color: col || '#8FA0B5', letterSpacing: '0.01em', marginTop: '6px', lineHeight: 1.25, whiteSpace: 'nowrap', textAlign: 'inherit', textShadow: 'none', WebkitTextStroke: '0', background: 'none' }); TX[id].appendChild(d); }
