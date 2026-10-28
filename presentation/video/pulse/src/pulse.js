@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 44;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 46;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -42,8 +42,9 @@ const PARTS_LAB = ['底座 · 踏板', '导轨安装板 · 连杆支座', '斜�
 T('e_tag', 'HARDWARE / 结构', mono(24));
 PARTS_LAB.forEach((w, i) => T('e_l' + i, `<span class="mono" style="color:#19D3F0;font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '36px', fontWeight: 700 } }));
 T('e_big', '一个电机<br><span style="color:#19D3F0">一个自由度</span>', { s: big(96) });
-[['斜导轨 + 滚珠丝杠', C.acc], ['电机 · 失电制动', C.acc], ['握把开关：握紧才升', C.amb]].forEach(([w, c], i) => T('e_k' + i, `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '40px', fontWeight: 700 } }));
+[['双导轨 + 滚珠丝杠：扛住偏载', C.acc], ['电机 · 失电制动', C.acc], ['握把开关：握紧才升', C.amb]].forEach(([w, c], i) => T('e_k' + i, `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '40px', fontWeight: 700 } }));
 T('e_sub', 'MOTOR → BELT → BALL SCREW → CARRIAGE', mono(26, '#A8B4C4'));
+T('e_dof', '3 个铰点 + 1 个滑块 = <span style="color:#19D3F0">1 个自由度</span>', { s: big(34, 700) });
 // mechanism
 T('f_tag', 'MOTION / 运动', mono(24));
 T('f_1', '座板不是直上直下', { s: big(84) });
@@ -104,7 +105,7 @@ function poseAt(k) { k = clamp(k, 0, FR.length - 1); const i = Math.min(FR.lengt
   if (!seat) { const last = FR[NSEAT - 1].seat; seat = { Q: last.Q, phi: last.phi, released: true }; } o.seat = seat; return o; }
 function joints(p, hands) {           // p: {Hp, K, A, tr}; hands: [x,z] target or null (lap)
   const tr = p.tr * Math.PI / 180, ut = [Math.sin(tr), Math.cos(tr)], S = [p.Hp[0] + Ltr * ut[0], p.Hp[1] + Ltr * ut[1]];
-  const up = [ut[0] * 0.45, ut[1] * 0.45 + 0.55], n = Math.hypot(...up), hd = [S[0] + 0.165 * up[0] / n, S[1] + 0.165 * up[1] / n];
+  const hd = [S[0] + 0.135 * ut[0], S[1] + 0.135 * ut[1]];   // model head: centre past the shoulder along the trunk
   const lap = [lerp(p.Hp[0], p.K[0], 0.66), lerp(p.Hp[1], p.K[1], 0.66) + 0.07];
   const Hd = hands || lap, E = elbowIK(S, Hd);
   const fz = Math.max(0.025, p.A[1] - 0.04), toe = p.toe || [p.A[0] + 0.72 * FOOT, fz], heel = p.heel || [p.A[0] - 0.2 * FOOT, fz];
@@ -119,8 +120,8 @@ function ghostFig(g, J, map, sc, col, fillA = 0.10, lw = 4) {   // outline-only 
 function drawFig(g, J, map, sc, col, bgc, alpha = 1, grow = 0, noGap = false) {     // map: [x,z] -> [px,py]; sc: px per metre; grow: extra px per stroke
   const m = J2 => map(J2), w = v => v * sc + grow; g.save(); g.globalAlpha = alpha; g.lineCap = 'round'; g.lineJoin = 'round';
   const poly = (pts, lw, c) => { g.strokeStyle = c; g.lineWidth = lw; g.beginPath(); pts.forEach((p, i) => { const q = m(p); i ? g.lineTo(...q) : g.moveTo(...q); }); g.stroke(); };
-  poly([J.H, J.S], w(0.135), col);                                              // torso
-  g.fillStyle = col; g.beginPath(); g.arc(...m(J.hd), w(0.098) - grow / 2, 0, 7); g.fill();  // head
+  const tdir = [J.S[0] - J.H[0], J.S[1] - J.H[1]], tl = Math.hypot(...tdir) || 1; poly([J.H, [J.S[0] - 0.03 * tdir[0] / tl, J.S[1] - 0.03 * tdir[1] / tl]], w(0.135), col);   // torso
+  g.fillStyle = col; g.beginPath(); g.arc(...m(J.hd), w(0.088) - grow / 2, 0, 7); g.fill();  // head
   if (!noGap && !grow) { poly([J.H, J.K, J.A], w(0.118), bgc); poly([J.heel, J.toe], w(0.085), bgc); }   // gap outline
   poly([J.H, J.K, J.A], w(0.088), col); poly([J.heel, J.toe], w(0.055), col);   // leg + foot
   if (!noGap && !grow) poly([J.S, J.E, J.Hd], w(0.098), bgc); poly([J.S, J.E, J.Hd], w(0.068), col);   // arm
@@ -329,8 +330,12 @@ function secE(t) {   // 12-18 hero
   }
   show('e_tag', { x: 80, y: 64, op: 1 });
   const b = eo(16.1, 16.45, t); show('e_big', { x: 1180, y: 200, op: b, dy: (1 - b) * 50 });
+  const hr = eo(16.25, 16.5, t); if (hr > 0) { const k0 = kinAt(0), Rj = [V3d(k0[4] / 1000, 0.26, k0[5] / 1000), V3d(k0[6] / 1000, 0.26, k0[7] / 1000), V3d(BB[0] / 1000, 0.276, BB[1] / 1000)];
+    Rj.forEach((p, i) => { const q = proj(p, cam); fg.save(); fg.globalAlpha = hr; fg.strokeStyle = '#FFFFFF'; fg.lineWidth = 3; fg.beginPath(); fg.arc(q[0], q[1], 11, 0, 7); fg.stroke(); fg.fillStyle = C.acc; fg.beginPath(); fg.arc(q[0], q[1], 4, 0, 7); fg.fill(); fg.restore(); });
+    const sq = proj(V3d((k0[4] + 40) / 1000, 0.32, (k0[5] + 30) / 1000), cam); fg.save(); fg.globalAlpha = hr; fg.strokeStyle = '#FFFFFF'; fg.lineWidth = 3; fg.strokeRect(sq[0] - 10, sq[1] - 10, 20, 20); fg.restore();
+    show('e_dof', { x: 1184, y: 470, op: hr }); }
   const KEYS = [['D1', [0.5, 0.5, 0.6], 16.5], ['D4', [0.5, 0.5, 0.5], 17.0], [null, null, 17.5]];
-  KEYS.forEach(([code, fr, kt], i) => { const u = eo(kt, kt + 0.2, t); if (u <= 0) return; const ax = code ? proj(partAnchor(code, fr), cam) : proj(SW.clone(), cam), rx = 1200, ry = 560 + i * 92;
+  KEYS.forEach(([code, fr, kt], i) => { const u = eo(kt, kt + 0.2, t); if (u <= 0) return; const ax = code ? proj(partAnchor(code, fr), cam) : proj(SW.clone(), cam), rx = 1200, ry = 600 + i * 104;
     show('e_k' + i, { x: rx, y: ry, ay: 0.5, op: u, dx: (1 - u) * 40 });
     fg.save(); fg.globalAlpha = u * 0.9; fg.strokeStyle = i === 2 ? C.amb : C.acc; fg.fillStyle = fg.strokeStyle; fg.lineWidth = 2; fg.beginPath(); fg.moveTo(ax[0], ax[1]); const mx = lerp(ax[0], rx - 30, 0.55);
     fg.lineTo(mx, ry); fg.lineTo(lerp(mx, rx - 24, u), ry); fg.stroke(); fg.beginPath(); fg.arc(ax[0], ax[1], 7, 0, 7); fg.fill(); fg.globalAlpha = u * 0.4 * Math.exp(-(t - kt) * 2); fg.beginPath(); fg.arc(ax[0], ax[1], 7 + 30 * (1 - Math.exp(-(t - kt) * 3)), 0, 7); fg.stroke(); fg.restore(); });
@@ -428,7 +433,7 @@ function secH(t) {   // 30-33 sensing (dark)
   floor2D(bg, V.map, '#2C3644'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); renderGL(V.cam);
   ghostFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#FFFFFF', 0.08, 4);
   const f = kinAt(R.s), ph = f[3] * Math.PI / 180, seatPt = [(f[1] + 10 * Math.cos(ph) - 100 * Math.sin(ph)) / 1000, (f[2] - 10 * Math.sin(ph) - 100 * Math.cos(ph)) / 1000];
-  const PTS = [seatPt, [0.70, 0.905], HAND_BAR, [0.40, 0.045]], LAB = [[-420, 40], [-440, -190], [110, -60], [260, -50]];
+  const PTS = [seatPt, [0.70, 0.905], HAND_BAR, [0.40, 0.045]], LAB = [[-420, 40], [-480, -30], [110, -60], [260, -50]];
   for (let i = 0; i < 4; i++) {
     const bt = 30.0 + i * 0.5, u0 = eo(bt, bt + 0.2, t); if (u0 <= 0) continue; const c = V.map(PTS[i]), col = i === 2 ? C.amb : C.acc;
     const cur = Math.min(3, Math.floor((t - 30.0) / 0.5)), foc = t >= 32.0 ? 1 : i === cur ? 1 : lerp(1, 0.35, eo(bt + 0.5, bt + 0.7, t)), u = u0 * foc;
@@ -464,10 +469,13 @@ T('x_3', '再找点<br><span style="font-size:44px;font-weight:700;color:#A8B4C4
 T('x_l1', '导轨', { s: { ...big(44, 900), color: C.acc } }); T('x_l2', '连杆', { s: { ...big(44, 900), color: '#8CF5A6' } });
 T('x_B', 'B', { cls: 'lat', s: { fontSize: '40px', fontWeight: 800, color: '#8CF5A6' } });
 T('x_4', '比过五种结构，它最贴合、最省力', { s: big(72) });
+T('n_81', '<span class="lat" style="font-size:150px;font-weight:900;color:#19D3F0;line-height:1">0</span><span style="font-size:40px;font-weight:700;margin-left:16px">种身体组合</span>', { s: {} });
+T('n_h', '身高 1.50–1.75 m', { s: { ...big(30, 700), color: '#0A0E14', background: '#19D3F0', padding: '6px 16px', borderRadius: '6px' } });
+T('n_err', '轨迹误差 ≤ 8 mm', { s: { ...big(30, 700), color: '#0A0E14', background: '#19D3F0', padding: '6px 16px', borderRadius: '6px' } });
 T('x_v', '不是直上直下，而是<span style="color:#19D3F0">一路贴着大腿</span>', { s: big(72) });
 T('x_c0', '直上直下<br><span style="font-size:30px;font-weight:700;color:#8A96A6">座板很快离开大腿</span>', { s: { ...big(46, 900), color: '#C9D3DF', textAlign: 'center' } });
 T('x_c1', '斜导轨 + 倾角连杆<br><span style="font-size:30px;font-weight:700;color:#C9D3DF">沿设计曲线，一路托着</span>', { s: { ...big(46, 900), color: C.acc, textAlign: 'center' } });
-T('x_fb', '还比过三种四连杆：会碰小腿、回床挡腿，或受力太大', { s: { ...big(38, 700), color: '#C9D3DF' } });
+T('x_fb', '还比过三种四连杆：会碰小腿、回床挡腿，或受力太大', { s: { ...big(36, 700), color: '#FFB020' } });
 ['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'].forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
 const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'];
 CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#8A96A6' } }); });
@@ -501,7 +509,7 @@ function secA(t) {   // 0-4: joints pop in as points, bones join them as lines, 
   if (eo(1.75, 2.0, t) > 0) { fg.save(); fg.strokeStyle = '#fff'; fg.lineWidth = 4; fg.globalAlpha = 0.85 * eo(1.75, 2.0, t); fg.beginPath(); fg.arc(hq[0], hq[1], 0.098 * sc * eo(1.75, 2.0, t), 0, 7); fg.stroke(); fg.restore(); }
   show('a_tagL', { x: 80, y: 64, op: ss(0.1, 0.4, t) }); show('a_tagR', { x: 1840, y: 64, ax: 1, op: ss(0.1, 0.4, t) });
   const h = eo(1.0, 1.3, t); show('a_h', { x: 120, y: 300, op: h, dx: (1 - h) * -60, blur: (1 - h) * 6 });
-  const s2 = eo(2.5, 2.8, t); show('a_s', { x: 124, y: 440, op: s2, dx: (1 - s2) * -40 });
+  const s2 = eo(2.5, 2.8, t); show('a_s', { x: 124, y: 480, op: s2, dx: (1 - s2) * -40 });
 }
 // design block 12-22
 function xView(t) {     // camera for the design block: close on the paths, then wide enough for the rail and B
@@ -516,7 +524,7 @@ function demoState(u, k) {   // user u at progress k in [0,1]: joints + seat pos
   const F = u.fr, x = clamp(k) * (F.length - 1), i = Math.min(F.length - 2, Math.floor(x)), f = x - i, a = F[i], b = F[i + 1], sc = u.H / 1.60;
   const Hp = lerpA(a.Hp, b.Hp, f), K = lerpA(a.K, b.K, f), A = lerpA(a.A, b.A, f), pf = lerp(a.f, b.f, f);
   const tr = pf < 0.35 ? lerp(22, 52, ss(0, 0.35, pf)) : lerp(52, 0, ss(0.35, 1, pf)), t2 = tr * Math.PI / 180, ut = [Math.sin(t2), Math.cos(t2)], S = [Hp[0] + Ltr * sc * ut[0], Hp[1] + Ltr * sc * ut[1]];
-  const up = [ut[0] * 0.45, ut[1] * 0.45 + 0.55], n = Math.hypot(...up), hd = [S[0] + 0.165 * sc * up[0] / n, S[1] + 0.165 * sc * up[1] / n];
+  const hd = [S[0] + 0.135 * sc * ut[0], S[1] + 0.135 * sc * ut[1]];
   const Hd = [lerp(Hp[0], K[0], 0.66), lerp(Hp[1], K[1], 0.66) + 0.07], E = elbowIK(S, Hd), fz = Math.max(0.025, A[1] - 0.04);
   const on = (b.on ? f : 0) + (a.on ? 1 - f : 0) > 0.5, last = F.filter(r => r.on).slice(-1)[0];
   const Q = on ? lerpA(a.Q, b.Q, f) : last.Q, phi = on ? lerp(a.phi, b.phi, f) : last.phi;
@@ -527,7 +535,7 @@ function prettyPaths(g, map, t, a = 1, hl = -1, t0 = null) {   // 81 lines as fa
   g.save(); g.globalCompositeOperation = 'lighter';
   DS.env.forEach((P2full, i) => { if (i === hl) return; const P2 = t0 === null ? P2full : partial(P2full, eo(t0 + (i % 9) * 0.1, t0 + (i % 9) * 0.1 + 0.35, t)); if (P2.length < 2) return; const gr = g.createLinearGradient(...map(P2[0]), ...map(P2[P2.length - 1])); gr.addColorStop(0, 'rgba(25,211,240,0)'); gr.addColorStop(0.35, `rgba(25,211,240,${0.16 * a})`); gr.addColorStop(1, `rgba(200,240,255,${0.30 * a})`);
     g.strokeStyle = gr; g.lineWidth = 1.6; g.lineCap = 'round'; g.beginPath(); P2.forEach((p, j) => { const q = map(p); j ? g.lineTo(...q) : g.moveTo(...q); }); g.stroke();
-    const u = ((t * 0.55 + i * 0.6180339) % 1), pp = partial(P2, u), q = map(pp[pp.length - 1]); g.fillStyle = `rgba(220,250,255,${0.85 * a * Math.sin(Math.PI * u)})`; g.beginPath(); g.arc(q[0], q[1], 2.6, 0, 7); g.fill(); });
+    const u = (((window.XFLOW ?? t) * 0.55 + i * 0.6180339) % 1), pp = partial(P2, u), q = map(pp[pp.length - 1]); g.fillStyle = `rgba(220,250,255,${0.85 * a * Math.sin(Math.PI * u)})`; g.beginPath(); g.arc(q[0], q[1], 2.6, 0, 7); g.fill(); });
   g.restore();
 }
 function secX(t) {   // 12-20 product voice: the seat follows the thigh; its path is built for 81 bodies; a rail + a link make it; picked from five
@@ -560,11 +568,13 @@ function secX(t) {   // 12-20 product voice: the seat follows the thigh; its pat
   const o1 = win(t, 12.0, 13.9, 0.25, 0.12), o2 = win(t, 13.9, 15.0, 0.2, 0.12), o3 = win(t, 15.0, 17.5, 0.2, 0.1);
   show('x_d1', { x: 120, y: 150, op: o1, dx: (1 - eo(12, 12.3, t)) * -60 }); show('x_d2', { x: 120, y: 150, op: o2, dx: (1 - eo(13.9, 14.2, t)) * -60 });
   show('x_d3', { x: 120, y: 150, op: o3, dx: (1 - eo(15.0, 15.3, t)) * -60 });
+  const cnt = eo(14.0, 14.6, t); TX.n_81.firstChild.textContent = String(Math.round(81 * cnt)); show('n_81', { x: 120, y: 440, op: o2 * eo(13.95, 14.1, t) });
+  show('n_h', { x: 124, y: 640, op: o2 * eo(14.4, 14.6, t) }); show('n_err', { x: 124, y: 400, op: o3 * eo(16.3, 16.5, t), dx: (1 - eo(16.3, 16.5, t)) * -30 });
 }
 function cmp2(t) {   // 17.5-20: straight-up lift vs ours, side by side, both looping
-  const loop = 0.5 - 0.5 * Math.cos(2 * Math.PI * (t - 17.5) / 2.0); show('x_v', { x: 120, y: 120, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });
+  const loop = 0.5 - 0.5 * Math.cos(2 * Math.PI * (t - 17.5) / 2.0); show('x_v', { x: 120, y: 100, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });
   [[0, 560], [1, 1360]].forEach(([k, pcx]) => {
-    const ap = eback(17.55 + k * 0.25, 17.8 + k * 0.25, t); if (ap <= 0) return; const sc = 720 * clamp(ap, 0, 1.1), base = 950, map = p => [pcx + (p[0] - 0.22) * sc, base - p[1] * sc];
+    const ap = eback(17.55 + k * 0.25, 17.8 + k * 0.25, t); if (ap <= 0) return; const sc = 600 * clamp(ap, 0, 1.1), base = 1000, map = p => [pcx + (p[0] - 0.22) * sc, base - p[1] * sc];
     ppoly(fg, [[-0.35, 0], [0, 0], [0, DS.Z0], [-0.35, DS.Z0]], map, '#1A212B', '#2C3644', 2); pline(fg, [[-0.35, 0], [0.6, 0]], map, '#3A4656', 2);
     pline(fg, DQ, map, '#FFFFFF', 3, 0.55, 0, [8, 8]);
     if (k === 0) { const z = lerp(DS.Z0, 0.66, loop), Q = [0.055, z]; pline(fg, [[0.055, 0], [0.055, z - 0.05]], map, '#5A6575', 14);
@@ -572,9 +582,9 @@ function cmp2(t) {   // 17.5-20: straight-up lift vs ours, side by side, both lo
     else { const M2 = DS.mech, F = M2.frames, f = F[Math.round(loop * (F.length - 1))]; pline(fg, [M2.rail_lo, M2.rail_hi], map, C.acc, 14, 0.5);
       pline(fg, F.map(x => x.Q), map, C.acc, 4, 1, 18); ppoly(fg, M2.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, M2.plate.map(p => R2(f.Q, f.phi, p)), map, '#FFFFFF', null);
       const q1 = map(f.P1); fg.fillStyle = C.acc; fg.fillRect(q1[0] - 11, q1[1] - 11, 22, 22); pline(fg, [M2.B, f.P2], map, LIME, 7); dot(fg, map(f.P2), 7, '#fff'); ground(fg, map(M2.B), LIME, 16); }
-    show('x_c' + k, { x: pcx, y: 300, ax: 0.5, ay: 0.5, op: clamp(ap) });
+    show('x_c' + k, { x: pcx, y: 410, ax: 0.5, ay: 0.5, op: clamp(ap) });
   });
-  const n = eo(17.9, 18.2, t); show('x_fb', { x: 960, y: 1030, ax: 0.5, ay: 0.5, op: n * 0.9 });
+  const n = eo(17.9, 18.2, t); show('x_fb', { x: 124, y: 238, op: n, dx: (1 - n) * -30 });
 }
 function cand2(t) {   // 17.5-20: five structures flash in, four step back together, the rail + link stays lit
   show('x_4', { x: 120, y: 120, op: eo(17.5, 17.8, t), dx: (1 - eo(17.5, 17.8, t)) * -60 });
@@ -688,7 +698,7 @@ function secRain(t) {   // 8-11: after the failed rises, rain; the hip's line cl
     if (z < 0.42) return; fg.save(); fg.globalAlpha = 0.8 * (1 - clamp(dt / 0.9)); fg.strokeStyle = '#9DB8D8'; fg.lineWidth = 2; fg.beginPath(); fg.moveTo(q[0], q[1] - 10 * dt * 6); fg.lineTo(q[0], q[1]); fg.stroke(); fg.restore(); });
   vignette(fg, 0.55);
   const a1 = eo(9.6, 9.95, t), a2 = eo(10.2, 10.55, t), fr = 1 - ss(10.85, 11.0, t);
-  show('c_1', { x: 1130, y: 420, op: a1 * fr, dy: (1 - a1) * 30 }); show('c_2', { x: 1130, y: 540, op: a2 * fr, dy: (1 - a2) * 30 });
+  show('c_1', { x: 1130, y: 420, op: a1 * fr, dy: (1 - a1) * 30 }); show('c_2', { x: 1130, y: 570, op: a2 * fr, dy: (1 - a2) * 30 });
 }
 function secEcho(t) {   // 40-46: same window, same bed, now with the seat: rise all the way, the rain stops, dawn; then pull out into the 3D room, sun through the window
   const V = RV(), kf = t < 40.6 ? -1 : t < 40.85 ? lerp(-1, 0, (t - 40.6) / 0.25) : lerp(0, FR.length - 1, ss(40.85, 42.2, t)), R = rise(kf);
@@ -701,7 +711,7 @@ function secEcho(t) {   // 40-46: same window, same bed, now with the seat: rise
   if (x2d > 0) { bg.save(); bg.globalAlpha = x2d; drawRoom(V, t, rain, dawn); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); bg.restore(); }
   renderGL(P3 ? P3.cam : V.cam); if (P3) { pcam.clearViewOffset(); key.position.set(3, -4, 5); }
   const hips = []; if (kf >= 0) for (let x = 0; x <= kf; x += 0.25) hips.push(poseAt(x).Hp); if (kf >= 0) hips.push(R.pose.Hp);
-  if (x2d > 0) { fg.save(); fg.globalAlpha = x2d; drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#DDE5EE', 0.9, 0, true); pline(fg, hips, V.map, C.acc, 6, 1, 24);
+  if (x2d > 0) { fg.save(); fg.globalAlpha = x2d; drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#DDE5EE', 0.9, 0, true); pline(fg, hips, V.map, C.acc, 6, 1 - ss(42.25, 42.55, t), 24);
     if (hips.length) dot(fg, V.map(hips[hips.length - 1]), 9, '#FFFFFF', 1, ((t - 40.85) % 0.5) / 0.5); fg.restore(); }
   vignette(fg, 0.45 - 0.2 * dawn);
   const a = eo(44.2, 44.55, t); show('i_t', { x: 420, y: 250, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
@@ -879,7 +889,7 @@ function tseg(m, p, q, rx, rz = rx) { const d = q.clone().sub(p), L = d.length()
 function tball(m, p, r, sx = 1, sy = 1, sz = 1) { m.position.copy(p); m.quaternion.identity(); m.scale.set(r * sx, r * sy, r * sz); }
 function setTube(J) {
   const P = (p, y) => V3d(p[0], y, p[1]);
-  tseg(TB.torso, P(J.H, 0), P(J.S, 0), 0.062, 0.115); tball(TB.pelvis, P(J.H, 0), 0.07, 1, 1.5, 1); tball(TB.head, P(J.hd, 0), 0.098);
+  tseg(TB.torso, P(J.H, 0), P(J.S, 0), 0.062, 0.115); tball(TB.pelvis, P(J.H, 0), 0.07, 1, 1.5, 1); tball(TB.head, P(J.hd, 0), 0.088);
   for (const [s, y] of [['L', -0.085], ['R', 0.085]]) { tseg(TB['th' + s], P(J.H, y), P(J.K, y), 0.044); tseg(TB['sh' + s], P(J.K, y), P(J.A, y), 0.044); tball(TB['k' + s], P(J.K, y), 0.044); tball(TB['a' + s], P(J.A, y), 0.044);
     tseg(TB['ft' + s], P(J.heel, y), P(J.toe, y), 0.028); }
   for (const [s, ys, yh] of [['L', -0.15, -0.02], ['R', 0.15, 0.14]]) { const S = P(J.S, ys), Hd = V3d(J.Hd[0], yh, J.Hd[1]), E = P(J.E, (ys + yh) / 2);
@@ -903,7 +913,7 @@ function pulseRings(t, a) {   // one ring per beat from the seat's base, cycling
     m.scale.setScalar(0.35 + 2.6 * Math.pow(k, 0.7)); m.material.color.set(POP[((b0 % 6) + 6) % 6]); m.material.opacity = a * 0.55 * (1 - k); }); }
 function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade, the seat alone turns in a pulsing colour field
   const p = ss(42.3, 44.9, t); if (p <= 0) return null;
-  hipTube[0].material.opacity = 0.9 * (1 - ss(44.6, 45.3, t)); hipTube[1].material.opacity = 0.3 * (1 - ss(44.6, 45.3, t)); tubeG.visible = true;
+  hipTube[0].material.opacity = 0; hipTube[1].material.opacity = 0; tubeG.visible = true;
   Object.values(TB).forEach(m => m.visible = false);
   const spin = 0.10 * ss(44.4, 46.0, t) * (t - 44.4);
   const T0 = V3d(0.55, 0, 0.85), T1 = V3d(0.38, 0.05, 0.55), T = T0.clone().lerp(T1, p), az = lerp(-Math.PI / 2, -0.95, p) + spin, el = lerp(0, 0.30, p);
@@ -952,10 +962,14 @@ function secM(u) {   // u: 0..6.5
   const q0 = kinAt(0), qr = kinAt(S_REL), A0 = [q0[1] / 1000, q0[2] / 1000], AR = [qr[1] / 1000, qr[2] / 1000];
   const arrow = (a, b, k, id, lab) => { if (k <= 0) return; const p = V.map(a), qq = V.map(b), e = [lerp(p[0], qq[0], k), lerp(p[1], qq[1], k)]; fg.save(); fg.strokeStyle = C.acc; fg.fillStyle = C.acc; fg.lineWidth = 4; fg.beginPath(); fg.moveTo(...p); fg.lineTo(...e); fg.stroke();
     const an = Math.atan2(qq[1] - p[1], qq[0] - p[0]); fg.translate(...e); fg.rotate(an); fg.beginPath(); fg.moveTo(4, 0); fg.lineTo(-16, -10); fg.lineTo(-16, 10); fg.fill(); fg.restore(); show(id, { x: lab[0], y: lab[1], ax: 0.5, ay: 0.5, op: k }); };
-  const fa = 1 - ss(4.9, 5.1, u), u1 = eo(3.25, 3.5, u) * fa, u2 = eo(3.5, 3.75, u) * fa, u3 = eo(3.75, 4.0, u) * fa;
+  const fa = 1 - ss(4.9, 5.1, u), u1 = eo(3.25, 3.5, u) * fa, u2 = eo(3.5, 3.75, u) * fa;
   const yb = A0[1] - 0.20; arrow([A0[0] - 0.02, yb], [AR[0] + 0.04, yb], u1, 'f_a0', V0.map([(A0[0] + AR[0]) / 2, yb - 0.07]));
   const xr = AR[0] + 0.30; arrow([xr, A0[1]], [xr, AR[1] + 0.02], u2, 'f_a1', V0.map([xr + 0.10, (A0[1] + AR[1]) / 2]));
-  if (u3 > 0) { const c = V0.map([AR[0], AR[1]]), rr = 0.17 * V0.sc; fg.save(); fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.globalAlpha = u3; fg.beginPath(); fg.arc(c[0], c[1], rr, Math.PI - 0.30 * u3, Math.PI); fg.stroke(); fg.restore(); show('f_a2', { x: c[0] - rr - 30, y: c[1] + 10, ax: 1, ay: 0.5, op: u3 }); }
+  const ta = eo(3.25, 3.5, u) * (1 - ss(5.9, 6.3, u)); if (ta > 0 && u >= 2.5) {   // live tilt: dashed level line, the seat's top line, the angle
+    const f = kinAt(s), ph = f[3] * Math.PI / 180, back = [(f[1] - 85 * Math.cos(ph)) / 1000, (f[2] + 85 * Math.sin(ph)) / 1000], front = [(f[1] + 120 * Math.cos(ph)) / 1000, (f[2] - 120 * Math.sin(ph)) / 1000], lvl = [back[0] + 0.205, back[1]];
+    const pb = V0.map(back), pf = V0.map(front), pl = V0.map(lvl); fg.save(); fg.globalAlpha = ta; fg.strokeStyle = '#FFFFFF'; fg.lineWidth = 2; fg.setLineDash([8, 7]); fg.beginPath(); fg.moveTo(...pb); fg.lineTo(...pl); fg.stroke(); fg.setLineDash([]);
+    fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.beginPath(); fg.moveTo(...pb); fg.lineTo(...pf); fg.stroke(); const rr = 0.14 * V0.sc; fg.beginPath(); fg.arc(pb[0], pb[1], rr, 0, ph); fg.stroke(); fg.restore();
+    TX.f_a2.innerHTML = `前倾 <span class="lat" style="font-size:52px;font-weight:900">${Math.round(f[3])}°</span>`; show('f_a2', { x: pb[0] - 30, y: pb[1] - 40, ax: 1, ay: 0.5, op: ta }); }
   // step 02: grip pulses on the beats
   if (u >= 1.5 && u < 2.75) { const c = V.map(HAND_BAR); for (let bt = 2.0; bt <= u; bt += BEAT) { const k = u - bt; if (k > 0.5) continue; fg.save(); fg.strokeStyle = C.amb; fg.globalAlpha = 1 - k / 0.5; fg.lineWidth = 5; fg.beginPath(); fg.arc(c[0], c[1], 26 + 90 * k, 0, 7); fg.stroke(); fg.restore(); } }
   // step 04: seat held, STOP
@@ -965,12 +979,29 @@ function secM(u) {   // u: 0..6.5
     show('g_stop', { x: x0 - 20, y: y0 - 6, ay: 1, ax: 1, op: clamp(k), sc: k }); }
   show('m_tag', { x: 80, y: 64, op: 1 });
   for (let i = 0; i < 4; i++) { const a = MT[i], b = MT[i + 1], o = win(u, a, b, 0.12, 0.08), k = eo(a, a + 0.25, u);
-    show('m_n' + i, { x: 110, y: 120, op: o, dy: (1 - k) * 40 }); show('m_a' + i, { x: 420, y: 140, op: o, dx: (1 - k) * 50 }); show('m_b' + i, { x: 424, y: 250, op: o * eo(a + 0.1, a + 0.35, u) }); }
+    show('m_n' + i, { x: 110, y: 120, op: o, dy: (1 - k) * 40 }); show('m_a' + i, { x: 420, y: 140, op: o, dx: (1 - k) * 50 }); show('m_b' + i, { x: 424, y: 300, op: o * eo(a + 0.1, a + 0.35, u) }); }
   for (let i = 0; i < 4; i++) { const f = clamp((u - MT[i]) / (MT[i + 1] - MT[i])); bg.fillStyle = '#2A3442'; bg.fillRect(120 + i * 190, 1010, 170, 6); bg.fillStyle = C.acc; bg.fillRect(120 + i * 190, 1010, 170 * f, 6); }
 }
 
+const EN = {   // id: [english, px, colour]
+  a_h: ['Getting up from the bed edge, at night', 30], a_s: ['Every rise is a line', 26],
+  b_l2: ['Too low: can\'t stand up', 30, '#3A4554'], b_h2: ['Too high: feet can\'t reach the floor', 30, '#3A4554'], b_sum: ['A fixed-height bed can\'t do both', 26, '#3A4554'],
+  c_1: ['Normally, as low as the bed.', 28], c_2: ['When you rise, it rises with you.', 28],
+  x_d1: ['The seat follows the thigh: forward, up, tilting', 28], x_d2: ['A path computed for 81 bodies', 28], x_d3: ['One rail and one link trace that curve', 28],
+  n_81: ['body combinations · height × build × rising habit × foot position', 22], n_h: ['height 1.50–1.75 m', 18, '#0A0E14'], n_err: ['path error ≤ 8 mm', 18, '#0A0E14'],
+  x_v: ['Not straight up: it stays with the thigh', 28], x_c0: ['Straight lift: leaves the thigh early', 20], x_c1: ['Inclined rail + tilt link: on the curve all the way', 20],
+  x_fb: ['Three four-bar layouts also tried: hit the shin, block the legs, or overload the pivots', 22, '#C9A15A'],
+  e_big: ['One motor, one degree of freedom', 28], e_dof: ['3 hinges + 1 slider = 1 DoF', 20], e_k0: ['Twin rails + ball screw carry the offset load', 20], e_k1: ['Motor + fail-safe brake', 20], e_k2: ['Grip switch: rises only while held', 20],
+  k_1: ['All the mechanism sits at the head end', 20], k_2: ['Foot end open: legs swing through, out of bed and back', 18],
+  m_a0: ['Slide onto the seat', 30], m_a1: ['Hold the switch', 30], m_a2: ['Rise together', 30], m_a3: ['Let go, it stops', 30],
+  m_b0: ['Level with the bed, slide across', 22], m_b1: ['It rises only while held', 22], m_b2: ['Hips and thighs supported, no sliding forward', 22], m_b3: ['The seat holds its place; sit back any time', 22],
+  h_1: ['Four force sensors, all through the rise', 28], h_s0: ['Seat load: seated properly?', 18], h_s1: ['Bar load: hands on?', 18], h_s2: ['Grip switch: held?', 18], h_s3: ['Footplate load: feet planted?', 18],
+  h_2: ['Rises while held · stops when released · brakes on power loss', 24], i_s: ['As low as the bed · rises with you · stops when you let go', 22],
+};
+for (const [id, [txt, px, col]] of Object.entries(EN)) { const d = document.createElement('div'); d.className = 'lat'; d.textContent = txt; Object.assign(d.style, { fontSize: px + 'px', fontWeight: 500, color: col || '#8FA0B5', letterSpacing: '0.01em', marginTop: '6px', lineHeight: 1.25, whiteSpace: 'nowrap', textAlign: 'inherit', textShadow: 'none', WebkitTextStroke: '0', background: 'none' }); TX[id].appendChild(d); }
 const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 28.5, t => secCtx(t - 25)], [28.5, 35, t => secM(t - 28.5)], [35, 38, t => secH(t - 5)], [38, 44.01, t => secEcho(t + 2)]];
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 22, t => { const x = t - 1; window.XFLOW = x; secX(x < 14.95 ? x : x < 15.95 ? 14.95 : x - 1); }], [22, 26, t => EC(t - 1)], [26, 29.5, t => secCtx(t - 26)], [29.5, 36, t => secM(t - 29.5)],
+  [36, 40, t => { const v = t - 36; secH(v <= 3 ? 30 + v / 1.5 : 32 + (v - 3)); }], [40, 46.01, t => secEcho(t)]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   bedG.visible = false; floorGrid.visible = false; openZone.material.opacity = 0; ozEdge.material.opacity = 0; pcam.fov = 26;
