@@ -728,7 +728,7 @@ const floorGrid = new THREE.Group(); floorGrid.visible = false; scene.add(floorG
 const openZone = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.62), new THREE.MeshBasicMaterial({ color: 0x19D3F0, transparent: true, opacity: 0, depthWrite: false })); openZone.position.set(0.30, -0.66, 0.004); scene.add(openZone);
 const ozEdge = new THREE.LineSegments(new THREE.EdgesGeometry(openZone.geometry), new THREE.LineBasicMaterial({ color: 0x19D3F0, transparent: true, opacity: 0 })); openZone.add(ozEdge);
 T('k_1', '机构全在<span style="color:#19D3F0">床头一侧</span>', { s: { ...big(40, 900) } });
-T('k_2', '床尾一侧<span style="color:#19D3F0">敞开</span><br><span style="font-size:28px;font-weight:700;color:#A8B4C4">回床时，腿能转过去</span>', { s: { ...big(40, 900) } });
+T('k_2', '床尾一侧<span style="color:#19D3F0">敞开</span><br><span style="font-size:28px;font-weight:700;color:#A8B4C4">下床、回床时，腿都能转过去</span>', { s: { ...big(40, 900) } });
 T('k_tag', 'IN THE ROOM / 床边', mono(24));
 // ------------------------------------------------------------------ context shot v2: hand-drawn room (boiling ink lines on dark paper), the seat fills in from line art
 const SK = { lines: [], jit: [] };   // bed/room line objects and their jitter copies
@@ -811,8 +811,8 @@ function secCtx(u) {   // u: 0..3.5 s
   const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.60), swg), az = lerp(ca.az, -Math.PI / 2 + F25.az, swg), el = lerp(ca.el, F25.el, swg);
   const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.74 * F25.hh, swg), dist = lerp(ca.dist, F25.dist, swg);
   pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T0.x + dist * Math.cos(el) * Math.cos(az), T0.y + dist * Math.cos(el) * Math.sin(az), T0.z + dist * Math.sin(el)); pcam.lookAt(T0); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
-  const gb = win(u, 2.15, 2.85, 0.15, 0.2); if (gb > 0) {   // back to bed: sit, turn toward the foot end, legs up (rendered before the main pass)
-    const k = ss(2.3, 2.8, u), P0 = sunk(F0, DZ0), Hp = [P0.Hp[0] - 0.10 * k, P0.Hp[1] + 0.02 * k], K = lerpA(P0.K, [Hp[0] + 0.38, Hp[1] + 0.04], k), A = lerpA(P0.A, [Hp[0] + 0.76, Hp[1] + 0.0], k);
+  const gb = win(u, 2.15, 2.85, 0.15, 0.2); if (gb > 0) {   // out of bed: lying, turn, legs down over the open foot side, sit on the seat (rendered before the main pass)
+    const k = 1 - ss(2.3, 2.8, u), P0 = sunk(F0, DZ0), Hp = [P0.Hp[0] - 0.10 * k, P0.Hp[1] + 0.02 * k], K = lerpA(P0.K, [Hp[0] + 0.38, Hp[1] + 0.04], k), A = lerpA(P0.A, [Hp[0] + 0.76, Hp[1] + 0.0], k);
     const Jb = joints({ Hp, K, A, tr: lerp(F0.tr, -12, k), toe: [A[0] + 0.15, A[1] + 0.05], heel: [A[0] - 0.04, A[1] - 0.02] }, null), yaw = -1.35 * k, c = V3d(Hp[0], 0, 0);
     setTube(Jb); tubeG.rotation.set(0, 0, yaw); const cs = Math.cos(yaw), sn = Math.sin(yaw); tubeG.position.set(c.x - (cs * c.x - sn * c.y), c.y - (sn * c.x + cs * c.y), 0);
     figPass(pcam); tubeG.rotation.set(0, 0, 0); tubeG.position.set(0, 0, 0); }
@@ -834,7 +834,7 @@ function secCtx(u) {   // u: 0..3.5 s
     wobblyLine(fg, pts.slice(0, 1 + Math.round(12 * eo(0, 1, a))), '#DCE6F2', 2.2, a, seed + step); dot(fg, q, 5, '#DCE6F2', a);
     show(id, { x: q[0] + dx + (dx > 0 ? 14 : -14), y: q[1] + dy, ax: dx > 0 ? 0 : 1, ay: 0.5, op: a }); };
   lab('k_1', V3d(0.30, 0.36, 0.75), 170, -110, win(u, 2.05, 2.8, 0.2, 0.2), 3);
-  if (oz > 0) { const arc = []; for (let k = 0; k <= 30; k++) { const a = lerp(-0.15, -1.45, k / 30 * eo(2.2, 2.55, u)); arc.push(proj(V3d(0.05 + 0.55 * Math.cos(a), -0.2 + 0.55 * Math.sin(a), 0.01), pcam)); }
+  if (oz > 0) { const arc = []; for (let k = 0; k <= 30; k++) { const a = lerp(-1.45, -0.15, k / 30 * eo(2.2, 2.55, u)); arc.push(proj(V3d(0.05 + 0.55 * Math.cos(a), -0.2 + 0.55 * Math.sin(a), 0.01), pcam)); }
     wobblyLine(fg, arc, C.acc, 4, oz, 50 + step); const q1 = arc[arc.length - 1], q0 = arc[arc.length - 3], an = Math.atan2(q1[1] - q0[1], q1[0] - q0[0]);
     fg.save(); fg.globalAlpha = oz; fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.lineCap = 'round'; fg.translate(...q1); fg.rotate(an); fg.beginPath(); fg.moveTo(-16, -10); fg.lineTo(2, 0); fg.lineTo(-16, 10); fg.stroke(); fg.restore(); }
   lab('k_2', V3d(0.18, -0.80, 0.01), -150, -150, oz, 9);
