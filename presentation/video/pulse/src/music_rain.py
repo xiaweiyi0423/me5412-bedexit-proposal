@@ -52,8 +52,8 @@ add(R, riser(0.6, 600, 9000), 2.35, 0.7)
 for i, b in enumerate(np.arange(2.5, 2.95, 0.0625)): add(R, arp_note([69, 72, 76][i % 3] + 12, 0.1, 2500 + 4000 * i / 8), b, 1.2)
 R = verb(R, 0.45, 0.8); R[:, int(2.95 * SR):] = 0                                                                  # rain freezes on the title hit
 R[:, int(2.9 * SR):int(2.95 * SR)] *= np.linspace(1, 0, int(0.05 * SR))
-# ---- echo ending, 4.5 s
-E = seg(4.5)
+# ---- echo ending, 6.0 s (stand at 2.0, pull out into the sunlit room 2.3-4.9, title 3.6)
+E = seg(6.0)
 rn = rain(2.4) * np.r_[np.ones(int(1.0 * SR)), np.linspace(1, 0, int(1.4 * SR))][None, :]; add(E, rn, 0.0, 2.0)
 add(E, pad(0, 0.14, 1000)[:, : 2 * SR], 0.0)
 add(E, ping(NOTE(81), 0.9), 0.5, 0.4); add(E, snap() * 0.4, 0.5)
@@ -62,12 +62,14 @@ for i, b in enumerate(np.arange(0.85, 2.0, 0.125)): add(E, arp_note([69, 72, 76,
 for b in (1.0, 1.5): add(E, filt(kick(0.6), "lowpass", 400), b)
 add(E, riser(0.7, 800, 10000), 1.3, 0.5)
 add(E, boom(2.4) * 0.9, 2.0); add(E, crash(2.4), 2.0, 0.8)
-hold = np.zeros((2, int(2.5 * SR)))
+hold = np.zeros((2, int(4.0 * SR)))
 for n in (60, 64, 67, 72):                                                                                          # C major, open
     for det in (-0.006, 0.0, 0.006):
-        s_ = saw(NOTE(n), 2.5, det); hold[0] += s_; hold[1] += np.roll(s_, 200)
-hold = np.array([filt(c, "lowpass", 2400) for c in hold]) * 0.022 * np.linspace(1, 0, hold.shape[1]) ** 1.3; add(E, hold, 2.0)
-for i, n in enumerate((84, 88, 91)): add(E, ping(NOTE(n), 1.4), 2.5 + i * 0.08, 0.25)
+        s_ = saw(NOTE(n), 4.0, det); hold[0] += s_; hold[1] += np.roll(s_, 200)
+open_ = np.concatenate([np.array([filt(c[i:i + 4800], "lowpass", 1400 + 3200 * min(1, i / (2.6 * SR))) for c in hold]) for i in range(0, hold.shape[1], 4800)], axis=1)   # filter opens as the sun comes in
+hold = open_[:, : hold.shape[1]] * 0.024 * np.clip((4.0 - np.arange(hold.shape[1]) / SR) / 1.1, 0, 1) ** 1.5; add(E, hold, 2.0)   # full until the title has landed, then fades
+for i, (n, t0) in enumerate(((88, 2.6), (91, 3.0), (96, 3.4), (100, 4.2))): add(E, ping(NOTE(n), 1.0), t0, 0.16, pan=[-0.4, 0.4, -0.2, 0.2][i])
+for i, n in enumerate((84, 88, 91)): add(E, ping(NOTE(n), 1.4), 4.2 + i * 0.08, 0.25)
 E = verb(E, 0.45, 0.9); E[:, -int(0.45 * SR):] *= np.linspace(1, 0, int(0.45 * SR)) ** 2
 # ---- splice into the core score: old 0-8 | rain | old 10-39 | echo
 sr, core = wavfile.read(sys.argv[1]); core = core.astype(float).T / 32767

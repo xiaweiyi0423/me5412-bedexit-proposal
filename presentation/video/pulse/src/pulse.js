@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 47.5;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 49;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -66,7 +66,7 @@ const SENS = [['座下测力', '坐稳了没有'], ['横杆测力', '手在不�
 SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight:900">${a}</div><div style="font-size:28px;font-weight:500;color:#A8B4C4;margin-top:4px">${b}</div>`, { s: {} }));
 T('h_2', '握紧才升 · 松手即停 · <span style="color:#19D3F0">失电制动</span>', { s: big(76) });
 // end
-T('i_t', '床边起身台', { s: big(132) });
+T('i_t', '床边起身台', { s: big(120) });
 T('i_s', '平时和床一样低 · 起身时跟着你升起来<br>松手就停', { s: { ...big(36, 500), color: '#C9D3DF', textAlign: 'center', lineHeight: 1.5 } });
 T('i_g', 'ME5412 ROBOTICS FOR HEALTHCARE · GROUP 16', mono(24));
 
@@ -346,14 +346,30 @@ const SEAT_POLY = [[-85, 0], [85, 0], [85, -60], [60, -92], [-40, -92], [-85, -5
 function seatOutline(s) { const f = kinAt(s), ph = f[3] * Math.PI / 180, c = Math.cos(ph), sn = Math.sin(ph);
   return SEAT_POLY.map(([x, z]) => [(f[1] + x * c + z * sn) / 1000, (f[2] - x * sn + z * c) / 1000]); }
 function pathTo(s) { const pts = []; for (const r of K) { if (r[0] > s) break; pts.push([r[1] / 1000, r[2] / 1000]); } const f = kinAt(s); pts.push([f[1] / 1000, f[2] / 1000]); return pts; }
-function secF(t) {   // 18-24 motion (dark side view)
-  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07);
-  const hh = lerp(0.62, 0.95, ss(19.0, 22.0, t)), cx = lerp(0.20, 0.12, ss(19, 22, t)), cz = lerp(0.62, 0.86, ss(19.0, 22.0, t)); const V = sideView(cx, cz, hh);
+const F25 = { az: 0.52, el: 0.16, dist: 4.2, hh: 1.32 };   // the 2.5D angle the motion shot starts from (hh: frame scale vs the flat view)
+const figScene = new THREE.Scene(); figScene.add(new THREE.HemisphereLight(0xffffff, 0x8090a0, 1.1)); { const d = new THREE.DirectionalLight(0xffffff, 0.6); d.position.set(2, -3, 4); figScene.add(d); }
+const FIGC = document.createElement('canvas'); FIGC.width = W; FIGC.height = H; const figg = FIGC.getContext('2d');
+function figPass(cam) {   // render the tube figure alone, keep it as an image (no see-through overlaps when drawn translucent)
+  const parent = tubeG.parent; figScene.add(tubeG); tubeG.visible = true; hipTube.forEach(h => h.visible = false); tubeM.transparent = false; tubeM.depthWrite = true; tubeM.opacity = 1;
+  renderer.clear(); renderer.render(figScene, cam); figg.clearRect(0, 0, W, H); figg.drawImage(renderer.domElement, 0, 0); renderer.clear();
+  parent.add(tubeG); tubeG.visible = false; hipTube.forEach(h => h.visible = true);
+}
+function secF(t) {   // 18-24 motion: 2.5D at first, turning to the flat side view as the seat rises
+  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07 * (1 - 0)); 
+  const hh = lerp(0.62, 0.95, ss(19.0, 22.0, t)), cx = lerp(0.20, 0.12, ss(19, 22, t)), cz = lerp(0.62, 0.86, ss(19.0, 22.0, t)); const V0 = sideView(cx, cz, hh);
+  const q = 1 - ss(19.6, 21.0, t); let V = V0;
+  if (q > 0.001) { const T = V3d(cx, 0, cz - 0.10 * q), az = -Math.PI / 2 + F25.az * q, el = F25.el * q, dist = Math.exp(lerp(Math.log(40), Math.log(F25.dist), q));
+    pcam.fov = 2 * Math.atan(hh * lerp(1, F25.hh, q) / dist) * 180 / Math.PI; pcam.position.set(T.x + dist * Math.cos(el) * Math.cos(az), T.y + dist * Math.cos(el) * Math.sin(az), T.z + dist * Math.sin(el)); pcam.lookAt(T); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
+    V = { cam: pcam, sc: V0.sc, map: p => proj(V3d(p[0], 0, p[1]), pcam) }; }
+  sketchG.visible = q > 0.01; SK.lines.forEach(l => { l.visible = true; l.material.opacity = (SK.jit.includes(l) ? 0.25 : 0.75) * q; l.position.set(0, 0, 0); });
+  Object.values(SKB).forEach(m => { m.visible = q > 0.01 && m !== SKB.hb && m !== SKB.pl && m !== SKB.duv; m.children.forEach(l => l.geometry.setDrawRange(0, Infinity)); });
   const kf = t < 19.0 ? -1 : t < 19.35 ? lerp(-1, 0, (t - 19.0) / 0.35) : lerp(0, FR.length - 1, ss(19.35, 22.6, t));
   const R = rise(kf); setLook('dark', { shell: { op: 0 } }); setMech(R.s); disc.visible = false;
   const sw = t >= 18.5 ? (R.released ? 0.25 : 1) * (0.8 + 0.2 * Math.cos((t - 18.5) * 4 * Math.PI)) : ss(18.4, 18.5, t); setSwitch(sw);
-  floor2D(bg, V.map, '#2C3644'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9);
+  bg.save(); bg.globalAlpha = 1 - q; floor2D(bg, V0.map, '#2C3644'); drawBed2D(bg, V0.map, V0.sc, 0.42, false, -1.9); bg.restore();
+  tubeG.visible = false; if (q > 0.01) { setTube(joints(R.pose, HAND_BAR)); figPass(V.cam); }
   renderGL(V.cam);
+  if (q > 0.01) { fg.save(); fg.globalAlpha = 0.5 * q; fg.drawImage(FIGC, 0, 0); fg.restore(); }
   // trajectory + strobe ghosts of the seat on each beat
   const pts = pathTo(R.s); fg.save(); fg.lineCap = 'round'; fg.lineJoin = 'round';
   fg.strokeStyle = 'rgba(25,211,240,.25)'; fg.lineWidth = 16; fg.beginPath(); pts.forEach((p, i) => { const q = V.map(p); i ? fg.lineTo(...q) : fg.moveTo(...q); }); fg.stroke();
@@ -361,7 +377,7 @@ function secF(t) {   // 18-24 motion (dark side view)
   for (let bt = 19.5; bt <= Math.min(t, 22.5); bt += BEAT) { const kb = bt < 19.35 ? lerp(-1, 0, (bt - 19.0) / 0.35) : lerp(0, FR.length - 1, ss(19.35, 22.6, bt)); const sb = rise(kb).s;
     const poly = seatOutline(sb); fg.globalAlpha = 0.55 * Math.exp(-(t - bt) * 0.6); fg.strokeStyle = C.acc; fg.lineWidth = 2.5; fg.beginPath(); poly.forEach((p, i) => { const q = V.map(p); i ? fg.lineTo(...q) : fg.moveTo(...q); }); fg.closePath(); fg.stroke(); }
   fg.restore();
-  ghostFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#FFFFFF', 0.10, 5);
+  if (q < 0.99) { fg.save(); fg.globalAlpha = 1 - q; ghostFig(fg, joints(R.pose, HAND_BAR), V0.map, V0.sc, '#FFFFFF', 0.10 * (1 - q), 5); fg.restore(); }
   // arrows: forward / up / tilt
   const q0 = kinAt(0), qr = kinAt(S_REL), A0 = [q0[1] / 1000, q0[2] / 1000], AR = [qr[1] / 1000, qr[2] / 1000];
   const arrow = (a, b, u, id, lab) => { if (u <= 0) return; const p = V.map(a), q = V.map(b), e = [lerp(p[0], q[0], u), lerp(p[1], q[1], u)]; fg.save(); fg.strokeStyle = C.acc; fg.fillStyle = C.acc; fg.lineWidth = 4; fg.beginPath(); fg.moveTo(...p); fg.lineTo(...e); fg.stroke();
@@ -674,21 +690,23 @@ function secRain(t) {   // 8-11: after the failed rises, rain; the hip's line cl
   const a1 = eo(9.6, 9.95, t), a2 = eo(10.2, 10.55, t), fr = 1 - ss(10.85, 11.0, t);
   show('c_1', { x: 1130, y: 420, op: a1 * fr, dy: (1 - a1) * 30 }); show('c_2', { x: 1130, y: 540, op: a2 * fr, dy: (1 - a2) * 30 });
 }
-function secEcho(t) {   // 40-44.5: same window, same bed, now with the seat: rise all the way, the rain stops, dawn
+function secEcho(t) {   // 40-46: same window, same bed, now with the seat: rise all the way, the rain stops, dawn; then pull out into the 3D room, sun through the window
   const V = RV(), kf = t < 40.6 ? -1 : t < 40.85 ? lerp(-1, 0, (t - 40.6) / 0.25) : lerp(0, FR.length - 1, ss(40.85, 42.2, t)), R = rise(kf);
-  const rain = 1 - ss(41.0, 42.0, t), dawn = ss(41.3, 43.0, t);
-  drawRoom(V, t, rain, dawn); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9);
+  const rain = 1 - ss(41.0, 42.0, t), dawn = ss(41.3, 43.0, t), x2d = 1 - ss(42.3, 42.65, t);
   setLook('dark', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.55; m.visible = true; }
-  setMech(R.s); disc.visible = false; setSwitch(t >= 40.5 && !R.released ? 1 : ss(40.4, 40.5, t) * 0.4); renderGL(V.cam);
+  setMech(R.s); disc.visible = false; setSwitch(t >= 40.5 && !R.released ? 1 : ss(40.4, 40.5, t) * 0.4);
+  const P3 = echoPull(t, R, dawn);
+  if (P3) { bg.drawImage(PAPER, 0, 0, W, H); const gr = bg.createRadialGradient(620, 300, 50, 620, 300, 1300); gr.addColorStop(0, `rgba(120,80,40,${0.35 * ss(42.4, 44.2, t)})`); gr.addColorStop(1, 'rgba(0,0,0,.5)'); bg.fillStyle = gr; bg.fillRect(0, 0, W, H); }
+  if (x2d > 0) { bg.save(); bg.globalAlpha = x2d; drawRoom(V, t, rain, dawn); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); bg.restore(); }
+  renderGL(P3 ? P3.cam : V.cam);
   const hips = []; if (kf >= 0) for (let x = 0; x <= kf; x += 0.25) hips.push(poseAt(x).Hp); if (kf >= 0) hips.push(R.pose.Hp);
-  drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#0B1018', 1);
-  pline(fg, hips, V.map, C.acc, 6, 1, 24);
-  if (hips.length) dot(fg, V.map(hips[hips.length - 1]), 9, '#FFFFFF', 1, ((t - 40.85) % 0.5) / 0.5);
+  if (x2d > 0) { fg.save(); fg.globalAlpha = x2d; drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#0B1018', 1); pline(fg, hips, V.map, C.acc, 6, 1, 24);
+    if (hips.length) dot(fg, V.map(hips[hips.length - 1]), 9, '#FFFFFF', 1, ((t - 40.85) % 0.5) / 0.5); fg.restore(); }
   vignette(fg, 0.45 - 0.2 * dawn);
-  const a = eo(42.5, 42.85, t); show('i_t', { x: 1540, y: 400, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
-  const b = eo(42.9, 43.2, t); show('i_s', { x: 1540, y: 560, ax: 0.5, ay: 0.5, op: b });
-  const c = eo(43.3, 43.6, t); show('i_g', { x: 1540, y: 1010, ax: 0.5, ay: 0.5, op: c });
-  const fo = ss(44.05, 44.5, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
+  const a = eo(44.2, 44.55, t); show('i_t', { x: 420, y: 230, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
+  const b = eo(44.5, 44.8, t); show('i_s', { x: 420, y: 380, ax: 0.5, ay: 0.5, op: b });
+  const c = eo(44.8, 45.1, t); show('i_g', { x: 1500, y: 1030, ax: 0.5, ay: 0.5, op: c });
+  const fo = ss(45.55, 46.0, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
 
 // ------------------------------------------------------------------ context shot: the seat beside a real bed in 3/4, then swing to the side view
@@ -789,8 +807,8 @@ function secCtx(u) {   // u: 0..3.5 s
   for (const c in PG) { const el = PG[c].children[1]; if (!el) continue; const j = rnd3(step * 7 + c.charCodeAt(0) + (c.charCodeAt(1) || 0)); el.position.set(j[0] * 3, j[1] * 3, j[2] * 3); }
   setMech(0); setSwitch(ss(1.95, 2.05, u) * (0.75 + 0.25 * Math.cos((u - 2.0) * 4 * Math.PI))); sw.visible = u > 1.2; swGlow.visible = u > 1.2;
   // camera follows the head, then dolly-zooms to the orthographic side view used next
-  const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.62), swg), az = lerp(ca.az, -Math.PI / 2, swg), el = lerp(ca.el, 0.0, swg);
-  const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.62, swg), dist = lerp(ca.dist, 40, swg * swg);
+  const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.52), swg), az = lerp(ca.az, -Math.PI / 2 + F25.az, swg), el = lerp(ca.el, F25.el, swg);
+  const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.62 * F25.hh, swg), dist = lerp(ca.dist, F25.dist, swg);
   pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T0.x + dist * Math.cos(el) * Math.cos(az), T0.y + dist * Math.cos(el) * Math.sin(az), T0.z + dist * Math.sin(el)); pcam.lookAt(T0); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
   const oz = win(u, 2.2, 2.85, 0.2, 0.2); hatch.material.opacity = 0.75 * oz;
   renderGL(pcam);
@@ -818,12 +836,72 @@ function secCtx(u) {   // u: 0..3.5 s
   pcam.fov = 26;
 }
 
+// ------------------------------------------------------------------ echo pull-out: the same room in 3D (ink-line bed, wall, sunlit window), tube figure, the hip line kept in space
+const lin = (r, g, b) => new THREE.Color().setRGB(r, g, b);          // linear colour (the renderer encodes to sRGB)
+const roomG = new THREE.Group(); roomG.visible = false; scene.add(roomG);
+const WALL_Y = 0.93, WX = [-1.05, -0.35], WZ = [0.95, 1.60];
+{ const wall = new THREE.Mesh(new THREE.PlaneGeometry(7, 3.2), new THREE.MeshBasicMaterial({ color: lin(0.006, 0.009, 0.016) })); wall.rotation.x = Math.PI / 2; wall.position.set(-0.4, WALL_Y + 0.01, 1.6); roomG.add(wall);
+  const gl = new THREE.Mesh(new THREE.PlaneGeometry(WX[1] - WX[0], WZ[1] - WZ[0]), new THREE.MeshBasicMaterial({ color: lin(1, 0.62, 0.30) })); gl.rotation.x = Math.PI / 2; gl.position.set((WX[0] + WX[1]) / 2, WALL_Y, (WZ[0] + WZ[1]) / 2); roomG.add(gl); roomG.userData.glass = gl;
+  const fr = []; const y = WALL_Y - 0.01, xm = (WX[0] + WX[1]) / 2, zm = (WZ[0] + WZ[1]) / 2;
+  fr.push(WX[0], y, WZ[0], WX[1], y, WZ[0], WX[1], y, WZ[0], WX[1], y, WZ[1], WX[1], y, WZ[1], WX[0], y, WZ[1], WX[0], y, WZ[1], WX[0], y, WZ[0], xm, y, WZ[0], xm, y, WZ[1], WX[0], y, zm, WX[1], y, zm);
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(fr, 3)); roomG.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x3A4656 }))); }
+// sun shafts: thin additive sheets running from the window into the room, fading with distance
+const SUN_D = new THREE.Vector3(0.30, -1.0, -0.62).normalize();
+const shaftTex = (() => { const c = document.createElement('canvas'); c.width = 256; c.height = 4; const g = c.getContext('2d'); const r = g.createLinearGradient(0, 0, 256, 0); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.6, 'rgba(255,255,255,.35)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 256, 4); return new THREE.CanvasTexture(c); })();
+const SHAFTS = [];
+function shaft(a, b, len, op) {   // sheet spanned by segment a-b (on the window) and the sun direction
+  const pts = [a, b, b.clone().addScaledVector(SUN_D, len), a.clone().addScaledVector(SUN_D, len)], g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pts.flatMap(p => [p.x, p.y, p.z]), 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 0, 1, 1, 1, 1, 0], 2)); g.setIndex([0, 1, 2, 0, 2, 3]);
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: shaftTex, color: lin(1, 0.66, 0.36), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  roomG.add(m); SHAFTS.push({ m, op }); }
+for (let k = 0; k < 6; k++) { const z = lerp(WZ[0] + 0.05, WZ[1] - 0.05, k / 5); shaft(new THREE.Vector3(WX[0], WALL_Y - 0.02, z), new THREE.Vector3(WX[1], WALL_Y - 0.02, z), 2.3, 0.10); }
+for (let k = 0; k < 4; k++) { const x = lerp(WX[0] + 0.05, WX[1] - 0.05, k / 3); shaft(new THREE.Vector3(x, WALL_Y - 0.02, WZ[0]), new THREE.Vector3(x, WALL_Y - 0.02, WZ[1]), 2.3, 0.10); }
+{ // the window's patch of light on the bed (window corners carried along the sun direction to the mattress top)
+  const hit = p => { const k = (0.425 - p.z) / SUN_D.z; return p.clone().addScaledVector(SUN_D, k); };
+  const c = [V3d(WX[0], WALL_Y, WZ[0]), V3d(WX[1], WALL_Y, WZ[0]), V3d(WX[1], WALL_Y, WZ[1]), V3d(WX[0], WALL_Y, WZ[1])].map(hit), g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(c.flatMap(p => [p.x, p.y, p.z]), 3)); g.setIndex([0, 1, 2, 0, 2, 3]);
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: lin(1, 0.62, 0.32), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })); roomG.add(m); roomG.userData.patch = m; }
+const sunLight = new THREE.DirectionalLight(0xffc38a, 0); sunLight.position.copy(SUN_D.clone().multiplyScalar(-5)); scene.add(sunLight);
+// tube figure (same proportions as the flat pictogram) and the hip line as a tube
+const tubeG = new THREE.Group(); tubeG.visible = false; scene.add(tubeG);
+const tubeM = new THREE.MeshStandardMaterial({ color: '#DDE5EE', roughness: 0.95, metalness: 0, emissive: new THREE.Color('#4A5562') });
+const CYL = new THREE.CylinderGeometry(1, 1, 1, 20), SPH = new THREE.SphereGeometry(1, 24, 16), TB = {};
+['torso', 'head', 'pelvis', 'thL', 'thR', 'shL', 'shR', 'ftL', 'ftR', 'uaL', 'uaR', 'faL', 'faR', 'kL', 'kR', 'aL', 'aR', 'eL', 'eR', 'sL', 'sR', 'hL', 'hR'].forEach(k => { TB[k] = new THREE.Mesh(k.length === 2 && 'kaesh'.includes(k[0]) || k === 'head' || k === 'pelvis' ? SPH : CYL, tubeM); tubeG.add(TB[k]); });
+const _up = new THREE.Vector3(0, 1, 0);
+function tseg(m, p, q, rx, rz = rx) { const d = q.clone().sub(p), L = d.length(); m.position.copy(p).add(q).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(_up, d.normalize()); m.scale.set(rx, L, rz); }
+function tball(m, p, r, sx = 1, sy = 1, sz = 1) { m.position.copy(p); m.quaternion.identity(); m.scale.set(r * sx, r * sy, r * sz); }
+function setTube(J) {
+  const P = (p, y) => V3d(p[0], y, p[1]);
+  tseg(TB.torso, P(J.H, 0), P(J.S, 0), 0.062, 0.115); tball(TB.pelvis, P(J.H, 0), 0.07, 1, 1.5, 1); tball(TB.head, P(J.hd, 0), 0.098);
+  for (const [s, y] of [['L', -0.085], ['R', 0.085]]) { tseg(TB['th' + s], P(J.H, y), P(J.K, y), 0.044); tseg(TB['sh' + s], P(J.K, y), P(J.A, y), 0.044); tball(TB['k' + s], P(J.K, y), 0.044); tball(TB['a' + s], P(J.A, y), 0.044);
+    tseg(TB['ft' + s], P(J.heel, y), P(J.toe, y), 0.028); }
+  for (const [s, ys, yh] of [['L', -0.15, -0.02], ['R', 0.15, 0.14]]) { const S = P(J.S, ys), Hd = V3d(J.Hd[0], yh, J.Hd[1]), E = P(J.E, (ys + yh) / 2);
+    tseg(TB['ua' + s], S, E, 0.034); tseg(TB['fa' + s], E, Hd, 0.034); tball(TB['s' + s], S, 0.036); tball(TB['e' + s], E, 0.034); tball(TB['h' + s], Hd, 0.036); }
+}
+const hipTube = (() => { const pts = []; for (let x = 0; x <= FR.length - 1; x += 0.5) { const h = poseAt(x).Hp; pts.push(V3d(h[0], -0.12, h[1])); }
+  const curve = new THREE.CatmullRomCurve3(pts), g1 = new THREE.TubeGeometry(curve, 80, 0.009, 10), g2 = new THREE.TubeGeometry(curve, 80, 0.03, 10);
+  const a = new THREE.Mesh(g1, new THREE.MeshBasicMaterial({ color: lin(0.1, 0.75, 0.95), transparent: true, opacity: 0 })), b = new THREE.Mesh(g2, new THREE.MeshBasicMaterial({ color: lin(0.1, 0.6, 0.9), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+  tubeG.add(a, b); return [a, b]; })();
+function echoPull(t, R, dawn) {   // t: echo clock; returns the camera for the pull-out, or null before it starts
+  const p = ss(42.3, 44.9, t); if (p <= 0) return null;
+  roomG.visible = true; tubeG.visible = true; sketchG.visible = true;
+  SK.lines.forEach(l => { l.visible = true; l.material.opacity = (SK.jit.includes(l) ? 0.18 : 0.6) * ss(42.3, 42.8, t); l.position.set(0, 0, 0); });
+  Object.values(SKB).forEach(m => { m.visible = true; m.children.forEach(l => l.geometry.setDrawRange(0, Infinity)); });
+  const sun = ss(42.4, 44.2, t); roomG.userData.glass.material.color.copy(lin(0.25 + 0.75 * sun, 0.16 + 0.56 * sun, 0.10 + 0.25 * sun));
+  SHAFTS.forEach(s => s.m.material.opacity = s.op * sun); roomG.userData.patch.material.opacity = 0.28 * sun; sunLight.intensity = 1.6 * sun;
+  setTube(joints(R.pose, HAND_BAR)); tubeM.transparent = false; tubeM.depthWrite = true; tubeM.opacity = 1; hipTube[0].material.opacity = 1; hipTube[1].material.opacity = 0.35;
+  const T0 = V3d(0.55, 0, 0.85), T1 = V3d(-0.15, 0.0, 0.72), T = T0.clone().lerp(T1, p), az = lerp(-Math.PI / 2, -1.02, p), el = lerp(0, 0.26, p);
+  const dist = Math.exp(lerp(Math.log(40), Math.log(5.4), p)), halfH = lerp(0.95, 5.4 * Math.tan(15 * Math.PI / 180), p);
+  pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T.x + dist * Math.cos(el) * Math.cos(az), T.y + dist * Math.cos(el) * Math.sin(az), T.z + dist * Math.sin(el)); pcam.lookAt(T); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
+  return { cam: pcam, p };
+}
+
 const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 28.5, t => secCtx(t - 25)], [28.5, 34, SH(secF)], [34, 40, SH(secG)], [40, 43, SH(secH)], [43, 47.51, t => secEcho(t - 3)]];
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 28.5, t => secCtx(t - 25)], [28.5, 34, SH(secF)], [34, 40, SH(secG)], [40, 43, SH(secH)], [43, 49.01, t => secEcho(t - 3)]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   bedG.visible = false; floorGrid.visible = false; openZone.material.opacity = 0; ozEdge.material.opacity = 0; pcam.fov = 26;
-  sketchG.visible = false; hatch.material.opacity = 0; for (const c in PG) { const el = PG[c].children[1]; if (el) el.position.set(0, 0, 0); }
+  sketchG.visible = false; hatch.material.opacity = 0; roomG.visible = false; tubeG.visible = false; sunLight.intensity = 0; for (const c in PG) { const el = PG[c].children[1]; if (el) el.position.set(0, 0, 0); }
   if (window.CTX !== undefined) { secCtx(window.CTX); return; }
   for (const [a, b, f] of SECS) if (t >= a && t < b) { f(t); break; }
 };
