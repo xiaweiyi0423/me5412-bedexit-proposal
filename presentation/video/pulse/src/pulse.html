@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#07090D}
+canvas{display:block;position:absolute;left:0;top:0}
+#txt{position:absolute;inset:0;pointer-events:none;font-family:'Noto Sans SC',sans-serif;color:#fff}
+.t{position:absolute;white-space:nowrap;opacity:0;will-change:transform,opacity}
+.mono{font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:.12em}
+.lat{font-family:'Inter Tight',sans-serif}
+</style></head><body>
+<canvas id="bg" width="1920" height="1080"></canvas>
+<div id="gl"></div>
+<canvas id="fg" width="1920" height="1080"></canvas>
+<div id="txt"></div>
+<script src="three.min.js"></script>
+<script src="data.js"></script>
+<script src="pulse.js"></script>
+</body></html>
