@@ -25,7 +25,7 @@ const mono = (px, col = C.grey) => ({ cls: 'mono', s: { fontSize: px + 'px', col
 // cold open
 T('a_tagL', 'ME5412 · ROBOTICS FOR HEALTHCARE', mono(24)); T('a_tagR', 'GROUP 16', mono(24));
 T('a_tc', '', mono(24, C.acc));
-T('a_h', '夜里，从床沿站起来', { s: big(104) });
+T('a_h', '夜里，老人从床沿站起来', { s: big(92) });
 // problem
 T('b_l1', '床低', { s: { ...big(200), color: C.ink } }); T('b_l2', '→ 站不起来', { s: { ...big(76, 700), color: C.ink } });
 T('b_h1', '床高', { s: { ...big(200), color: C.ink } }); T('b_h2', '→ 脚踩不实', { s: { ...big(76, 700), color: C.ink } });
@@ -42,7 +42,7 @@ const PARTS_LAB = ['底座 · 踏板', '导轨安装板 · 连杆支座', '斜�
 T('e_tag', 'HARDWARE / 结构', mono(24));
 PARTS_LAB.forEach((w, i) => T('e_l' + i, `<span class="mono" style="color:#19D3F0;font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '36px', fontWeight: 700 } }));
 T('e_big', '一个电机<br><span style="color:#19D3F0">一个自由度</span>', { s: big(96) });
-[['双导轨 + 滚珠丝杠：扛住偏载', C.acc], ['电机 · 失电制动', C.acc], ['握把开关：握紧才升', C.amb]].forEach(([w, c], i) => T('e_k' + i, `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '40px', fontWeight: 700 } }));
+[['双导轨 + 滚珠丝杠：扛住偏载', C.acc], ['握把开关：握紧才升', C.amb]].forEach(([w, c], i) => T('e_k' + i, `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '40px', fontWeight: 700 } }));
 T('e_sub', 'MOTOR → BELT → BALL SCREW → CARRIAGE', mono(26, '#A8B4C4'));
 T('e_dof', '3 个铰点 + 1 个滑块 = <span style="color:#19D3F0">1 个自由度</span>', { s: big(34, 700) });
 // mechanism
@@ -68,7 +68,7 @@ SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight
 T('h_2', '握紧才升 · 松手即停 · <span style="color:#19D3F0">失电制动</span>', { s: big(76) });
 // end
 T('i_t', '床边起身台', { s: big(120) });
-T('i_s', '平时和床一样低 · 起身时跟着你升起来<br>松手就停', { s: { ...big(36, 500), color: '#C9D3DF', textAlign: 'center', lineHeight: 1.5 } });
+T('i_s', '帮老人自己，从床边站起来', { s: { ...big(36, 500), color: '#C9D3DF', textAlign: 'center', lineHeight: 1.5 } });
 T('i_g', 'ME5412 ROBOTICS FOR HEALTHCARE · GROUP 16', mono(24));
 
 // ------------------------------------------------------------------ 2D canvases
@@ -334,10 +334,10 @@ function secE(t) {   // 12-18 hero
     Rj.forEach((p, i) => { const q = proj(p, cam); fg.save(); fg.globalAlpha = hr; fg.strokeStyle = '#FFFFFF'; fg.lineWidth = 3; fg.beginPath(); fg.arc(q[0], q[1], 11, 0, 7); fg.stroke(); fg.fillStyle = C.acc; fg.beginPath(); fg.arc(q[0], q[1], 4, 0, 7); fg.fill(); fg.restore(); });
     const sq = proj(V3d((k0[4] + 40) / 1000, 0.32, (k0[5] + 30) / 1000), cam); fg.save(); fg.globalAlpha = hr; fg.strokeStyle = '#FFFFFF'; fg.lineWidth = 3; fg.strokeRect(sq[0] - 10, sq[1] - 10, 20, 20); fg.restore();
     show('e_dof', { x: 1184, y: 470, op: hr }); }
-  const KEYS = [['D1', [0.5, 0.5, 0.6], 16.5], ['D4', [0.5, 0.5, 0.5], 17.0], [null, null, 17.5]];
+  const KEYS = [['D1', [0.5, 0.5, 0.6], 16.5], [null, null, 17.0]];
   KEYS.forEach(([code, fr, kt], i) => { const u = eo(kt, kt + 0.2, t); if (u <= 0) return; const ax = code ? proj(partAnchor(code, fr), cam) : proj(SW.clone(), cam), rx = 1200, ry = 600 + i * 104;
     show('e_k' + i, { x: rx, y: ry, ay: 0.5, op: u, dx: (1 - u) * 40 });
-    fg.save(); fg.globalAlpha = u * 0.9; fg.strokeStyle = i === 2 ? C.amb : C.acc; fg.fillStyle = fg.strokeStyle; fg.lineWidth = 2; fg.beginPath(); fg.moveTo(ax[0], ax[1]); const mx = lerp(ax[0], rx - 30, 0.55);
+    fg.save(); fg.globalAlpha = u * 0.9; fg.strokeStyle = code ? C.acc : C.amb; fg.fillStyle = fg.strokeStyle; fg.lineWidth = 2; fg.beginPath(); fg.moveTo(ax[0], ax[1]); const mx = lerp(ax[0], rx - 30, 0.55);
     fg.lineTo(mx, ry); fg.lineTo(lerp(mx, rx - 24, u), ry); fg.stroke(); fg.beginPath(); fg.arc(ax[0], ax[1], 7, 0, 7); fg.fill(); fg.globalAlpha = u * 0.4 * Math.exp(-(t - kt) * 2); fg.beginPath(); fg.arc(ax[0], ax[1], 7 + 30 * (1 - Math.exp(-(t - kt) * 3)), 0, 7); fg.stroke(); fg.restore(); });
   vignette(fg, 0.25);
 }
@@ -457,9 +457,9 @@ function secI(t) {   // 33-36 end
 const DS = window.DS, XO = 10;     // sections after the design block run on the old clock (t - XO)
 T('a_s', '每一次起身，都是一条<span style="color:#19D3F0">线</span>', { s: { ...big(60, 700), color: '#C9D3DF' } });
 T('x_tag', 'TRAJECTORY / 轨迹', mono(24));
-T('x_d1', '座板<span style="color:#19D3F0">跟着大腿走</span><br><span style="font-size:44px;font-weight:700;color:#A8B4C4">前移、上升、前倾，一路托着人</span>', { s: big(80) });
-T('x_d2', '这条路线，按 <span style="color:#19D3F0">81 种身体</span>算出来<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">身高 · 体型 · 起身习惯 · 脚的位置</span>', { s: big(80) });
-T('x_d3', '一条导轨 + 一根连杆<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">走出这条曲线</span>', { s: big(80) });
+T('x_d1', '座板<span style="color:#19D3F0">跟着大腿走</span>', { s: big(80) });
+T('x_d2', '座板怎么走，按 <span style="color:#19D3F0">81 种身体</span>算出来<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">身高 · 体型 · 起身习惯 · 脚的位置</span>', { s: big(80) });
+T('x_d3', '只用<span style="color:#19D3F0">一条导轨 + 一根连杆</span>', { s: big(80) });
 T('x_0', '线是怎么画的<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">座板“粘”在大腿下面，跟着人起身</span>', { s: big(80) });
 T('x_c', '座板中心走过的点，连成一条线', { s: { ...big(30, 700), color: '#fff' } });
 T('x_0b', '换一个人，就是另一条线<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">身高 × 体型 × 起身习惯 × 脚的位置 = 81 个人</span>', { s: big(80) });
@@ -474,8 +474,8 @@ T('n_h', '身高 1.50–1.75 m', { s: { ...big(30, 700), color: '#0A0E14', backg
 T('n_err', '轨迹误差 ≤ 8 mm', { s: { ...big(30, 700), color: '#0A0E14', background: '#19D3F0', padding: '6px 16px', borderRadius: '6px' } });
 T('x_v', '不是直上直下，而是<span style="color:#19D3F0">一路贴着大腿</span>', { s: big(72) });
 T('x_c0', '直上直下<br><span style="font-size:30px;font-weight:700;color:#8A96A6">座板很快离开大腿</span>', { s: { ...big(46, 900), color: '#C9D3DF', textAlign: 'center' } });
-T('x_c1', '斜导轨 + 倾角连杆<br><span style="font-size:30px;font-weight:700;color:#C9D3DF">沿设计曲线，一路托着</span>', { s: { ...big(46, 900), color: C.acc, textAlign: 'center' } });
-T('x_fb', '还比过三种四连杆：会碰小腿、回床挡腿，或受力太大', { s: { ...big(36, 700), color: '#FFB020' } });
+T('x_c1', '斜导轨 + 倾角连杆', { s: { ...big(46, 900), color: C.acc, textAlign: 'center' } });
+T('x_fb', '四连杆也比过：会碰小腿、挡腿，或受力太大', { s: { ...big(36, 700), color: '#FFB020' } });
 ['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'].forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
 const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'];
 CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#8A96A6' } }); });
@@ -509,7 +509,7 @@ function secA(t) {   // 0-4: joints pop in as points, bones join them as lines, 
   if (eo(1.75, 2.0, t) > 0) { fg.save(); fg.strokeStyle = '#fff'; fg.lineWidth = 4; fg.globalAlpha = 0.85 * eo(1.75, 2.0, t); fg.beginPath(); fg.arc(hq[0], hq[1], 0.098 * sc * eo(1.75, 2.0, t), 0, 7); fg.stroke(); fg.restore(); }
   show('a_tagL', { x: 80, y: 64, op: ss(0.1, 0.4, t) }); show('a_tagR', { x: 1840, y: 64, ax: 1, op: ss(0.1, 0.4, t) });
   const h = eo(1.0, 1.3, t); show('a_h', { x: 120, y: 300, op: h, dx: (1 - h) * -60, blur: (1 - h) * 6 });
-  const s2 = eo(2.5, 2.8, t); show('a_s', { x: 124, y: 480, op: s2, dx: (1 - s2) * -40 });
+  
 }
 // design block 12-22
 function xView(t) {     // camera for the design block: close on the paths, then wide enough for the rail and B
@@ -582,7 +582,7 @@ function cmp2(t) {   // 17.5-20: straight-up lift vs ours, side by side, both lo
     else { const M2 = DS.mech, F = M2.frames, f = F[Math.round(loop * (F.length - 1))]; pline(fg, [M2.rail_lo, M2.rail_hi], map, C.acc, 14, 0.5);
       pline(fg, F.map(x => x.Q), map, C.acc, 4, 1, 18); ppoly(fg, M2.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, M2.plate.map(p => R2(f.Q, f.phi, p)), map, '#FFFFFF', null);
       const q1 = map(f.P1); fg.fillStyle = C.acc; fg.fillRect(q1[0] - 11, q1[1] - 11, 22, 22); pline(fg, [M2.B, f.P2], map, LIME, 7); dot(fg, map(f.P2), 7, '#fff'); ground(fg, map(M2.B), LIME, 16); }
-    show('x_c' + k, { x: pcx, y: 410, ax: 0.5, ay: 0.5, op: clamp(ap) });
+    show('x_c' + k, { x: pcx, y: 350, ax: 0.5, ay: 0, op: clamp(ap) });
   });
   const n = eo(17.9, 18.2, t); show('x_fb', { x: 124, y: 238, op: n, dx: (1 - n) * -30 });
 }
@@ -801,6 +801,7 @@ function camAt(u, head) { let i = 0; while (i < CAMK.length - 2 && CAMK[i + 1][0
 function secCtx(u) {   // u: 0..3.5 s
   bg.drawImage(PAPER, 0, 0, W, H); const r = bg.createRadialGradient(980, 560, 100, 980, 560, 1250); r.addColorStop(0, 'rgba(25,45,70,.35)'); r.addColorStop(1, 'rgba(0,0,0,.55)'); bg.fillStyle = r; bg.fillRect(0, 0, W, H);
   sketchG.visible = true; disc.visible = false;
+  { const d = ss(2.7, 3.5, u); if (d > 0) { bg.save(); bg.globalAlpha = d; bg.fillStyle = C.ink; bg.fillRect(0, 0, W, H); bg.restore(); grid(bg, '#3A5A70', 60, 0.07 * d); } }
   const step = Math.floor(u * 12), s = sOf(u), head = traceAt(s), M = TRACE.mark;
   const bedDraw = ss(1.0, 1.25, u), devDraw = ss(1.2, 1.5, u), swg = ss(2.7, 3.5, u);
   SK.jit.forEach((l, i) => { const j = rnd3(step * 31 + i); l.position.set(j[0] * 0.006, j[1] * 0.006, j[2] * 0.006); });
@@ -821,9 +822,9 @@ function secCtx(u) {   // u: 0..3.5 s
   const ca = camAt(u, head), T0 = ca.T.clone().lerp(V3d(0.20, 0.0, 0.60), swg), az = lerp(ca.az, -Math.PI / 2 + F25.az, swg), el = lerp(ca.el, F25.el, swg);
   const halfH = lerp(ca.dist * Math.tan(13 * Math.PI / 180), 0.74 * F25.hh, swg), dist = lerp(ca.dist, F25.dist, swg);
   pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T0.x + dist * Math.cos(el) * Math.cos(az), T0.y + dist * Math.cos(el) * Math.sin(az), T0.z + dist * Math.sin(el)); pcam.lookAt(T0); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
-  const gb = win(u, 2.15, 2.85, 0.15, 0.2); if (gb > 0) {   // out of bed: lying, turn, legs down over the open foot side, sit on the seat (rendered before the main pass)
-    const k = 1 - ss(2.3, 2.8, u), P0 = sunk(F0, DZ0), Hp = [P0.Hp[0] - 0.10 * k, P0.Hp[1] + 0.02 * k], K = lerpA(P0.K, [Hp[0] + 0.38, Hp[1] + 0.04], k), A = lerpA(P0.A, [Hp[0] + 0.76, Hp[1] + 0.0], k);
-    const Jb = joints({ Hp, K, A, tr: lerp(F0.tr, -12, k), toe: [A[0] + 0.15, A[1] + 0.05], heel: [A[0] - 0.04, A[1] - 0.02] }, null), yaw = -1.35 * k, c = V3d(Hp[0], 0, 0);
+  const gb = eo(2.15, 2.3, u); if (gb > 0) {   // out of bed: lying, turn, legs down over the open foot side, end sitting on the bed edge (step 01 starts from this pose)
+    const k = 1 - ss(2.3, 2.9, u), E = scootPose(0), Hp = [E.Hp[0], E.Hp[1] + 0.02 * k], K = lerpA(E.K, [Hp[0] + 0.38, Hp[1] + 0.04], k), A = lerpA(E.A, [Hp[0] + 0.76, Hp[1] + 0.0], k), fz = Math.max(0.025, A[1] - 0.04);
+    const Jb = joints({ Hp, K, A, tr: lerp(E.tr, -12, k), toe: lerpA([A[0] + 0.72 * FOOT, fz], [A[0] + 0.15, A[1] + 0.05], k), heel: lerpA([A[0] - 0.2 * FOOT, fz], [A[0] - 0.04, A[1] - 0.02], k) }, null), yaw = -1.35 * k, c = V3d(Hp[0], 0, 0);
     setTube(Jb); tubeG.rotation.set(0, 0, yaw); const cs = Math.cos(yaw), sn = Math.sin(yaw); tubeG.position.set(c.x - (cs * c.x - sn * c.y), c.y - (sn * c.x + cs * c.y), 0);
     figPass(pcam); tubeG.rotation.set(0, 0, 0); tubeG.position.set(0, 0, 0); }
   const oz = win(u, 2.2, 2.85, 0.2, 0.2); hatch.material.opacity = 0.75 * oz;
@@ -849,7 +850,7 @@ function secCtx(u) {   // u: 0..3.5 s
     fg.save(); fg.globalAlpha = oz; fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.lineCap = 'round'; fg.translate(...q1); fg.rotate(an); fg.beginPath(); fg.moveTo(-16, -10); fg.lineTo(2, 0); fg.lineTo(-16, 10); fg.stroke(); fg.restore(); }
   lab('k_2', V3d(0.18, -0.80, 0.01), -150, -150, oz, 9);
   if (gb > 0) { fg.save(); fg.globalAlpha = 0.5 * gb; fg.drawImage(FIGC, 0, 0); fg.restore(); }
-  show('k_tag', { x: 80, y: 64, op: 1 - swg }); vignette(fg, 0.3);
+  show('k_tag', { x: 80, y: 64, op: 1 - swg }); vignette(fg, 0.3 * (1 - swg));
   pcam.fov = 26;
 }
 
@@ -925,7 +926,7 @@ function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade
 }
 
 // ------------------------------------------------------------------ merged "how it moves": the four steps, 2.5D turning to the flat side view, the path and arrows inside step 03
-const MSTEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']];
+const MSTEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', ''], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']];
 T('m_tag', 'HOW IT MOVES / 起身', mono(24));
 MSTEPS.forEach(([a, b], i) => {
   T('m_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '170px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #FFFFFF', lineHeight: 1 } });
@@ -984,19 +985,19 @@ function secM(u) {   // u: 0..6.5
 }
 
 const EN = {   // id: [english, px, colour]
-  a_h: ['Getting up from the bed edge, at night', 30], a_s: ['Every rise is a line', 26],
+  a_h: ['At night, an older adult gets up from the bed edge', 30], a_s: ['Every rise is a line', 26],
   b_l2: ['Too low: can\'t stand up', 30, '#3A4554'], b_h2: ['Too high: feet can\'t reach the floor', 30, '#3A4554'], b_sum: ['A fixed-height bed can\'t do both', 26, '#3A4554'],
   c_1: ['Normally, as low as the bed.', 28], c_2: ['When you rise, it rises with you.', 28],
-  x_d1: ['The seat follows the thigh: forward, up, tilting', 28], x_d2: ['A path computed for 81 bodies', 28], x_d3: ['One rail and one link trace that curve', 28],
-  n_81: ['body combinations · height × build × rising habit × foot position', 22], n_h: ['height 1.50–1.75 m', 18, '#0A0E14'], n_err: ['path error ≤ 8 mm', 18, '#0A0E14'],
-  x_v: ['Not straight up: it stays with the thigh', 28], x_c0: ['Straight lift: leaves the thigh early', 20], x_c1: ['Inclined rail + tilt link: on the curve all the way', 20],
-  x_fb: ['Three four-bar layouts also tried: hit the shin, block the legs, or overload the pivots', 22, '#C9A15A'],
-  e_big: ['One motor, one degree of freedom', 28], e_dof: ['3 hinges + 1 slider = 1 DoF', 20], e_k0: ['Twin rails + ball screw carry the offset load', 20], e_k1: ['Motor + fail-safe brake', 20], e_k2: ['Grip switch: rises only while held', 20],
-  k_1: ['All the mechanism sits at the head end', 20], k_2: ['Foot end open: legs swing through, out of bed and back', 18],
+  x_d1: ['The seat follows the thigh', 28], x_d2: ['Worked out for 81 bodies', 28], x_d3: ['Just one rail and one link', 28],
+  
+  x_v: ['Not straight up: it stays with the thigh', 28], 
+  
+  e_big: ['One motor, one degree of freedom', 28], 
+  
   m_a0: ['Slide onto the seat', 30], m_a1: ['Hold the switch', 30], m_a2: ['Rise together', 30], m_a3: ['Let go, it stops', 30],
-  m_b0: ['Level with the bed, slide across', 22], m_b1: ['It rises only while held', 22], m_b2: ['Hips and thighs supported, no sliding forward', 22], m_b3: ['The seat holds its place; sit back any time', 22],
-  h_1: ['Four force sensors, all through the rise', 28], h_s0: ['Seat load: seated properly?', 18], h_s1: ['Bar load: hands on?', 18], h_s2: ['Grip switch: held?', 18], h_s3: ['Footplate load: feet planted?', 18],
-  h_2: ['Rises while held · stops when released · brakes on power loss', 24], i_s: ['As low as the bed · rises with you · stops when you let go', 22],
+  
+  h_1: ['Four force sensors, all through the rise', 28], 
+  h_2: ['Rises while held · stops when released · brakes on power loss', 24], i_s: ['Helping older adults get up on their own', 22],
 };
 for (const [id, [txt, px, col]] of Object.entries(EN)) { const d = document.createElement('div'); d.className = 'lat'; d.textContent = txt; Object.assign(d.style, { fontSize: px + 'px', fontWeight: 500, color: col || '#8FA0B5', letterSpacing: '0.01em', marginTop: '6px', lineHeight: 1.25, whiteSpace: 'nowrap', textAlign: 'inherit', textShadow: 'none', WebkitTextStroke: '0', background: 'none' }); TX[id].appendChild(d); }
 const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
