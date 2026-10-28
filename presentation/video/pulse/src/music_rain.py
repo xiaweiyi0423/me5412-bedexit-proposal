@@ -70,6 +70,10 @@ open_ = np.concatenate([np.array([filt(c[i:i + 4800], "lowpass", 1400 + 3200 * m
 hold = open_[:, : hold.shape[1]] * 0.024 * np.clip((4.0 - np.arange(hold.shape[1]) / SR) / 1.1, 0, 1) ** 1.5; add(E, hold, 2.0)   # full until the title has landed, then fades
 for i, (n, t0) in enumerate(((88, 2.6), (91, 3.0), (96, 3.4), (100, 4.2))): add(E, ping(NOTE(n), 1.0), t0, 0.16, pan=[-0.4, 0.4, -0.2, 0.2][i])
 for i, n in enumerate((84, 88, 91)): add(E, ping(NOTE(n), 1.4), 4.2 + i * 0.08, 0.25)
+for b in np.arange(2.5, 5.5, 0.5):                                                                                  # the pulse comes back with the colour: kick on every ring
+    add(E, kick(0.85), b); add(E, hat(), b + 0.25, 0.4, pan=-0.2)
+    if int(round(b / 0.5)) % 2 == 1: add(E, clap(), b, 0.5)
+for i, b in enumerate(np.arange(2.5, 5.4, 0.125)): add(E, arp_note([72, 76, 79, 84][i % 4] + (12 if (i // 4) % 2 else 0), 0.1, 5200), b, 0.9, pan=0.5 * np.sin(i * 0.7))
 E = verb(E, 0.45, 0.9); E[:, -int(0.45 * SR):] *= np.linspace(1, 0, int(0.45 * SR)) ** 2
 # ---- splice into the core score: old 0-8 | rain | old 10-39 | echo
 sr, core = wavfile.read(sys.argv[1]); core = core.astype(float).T / 32767

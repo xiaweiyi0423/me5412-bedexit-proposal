@@ -696,15 +696,15 @@ function secEcho(t) {   // 40-46: same window, same bed, now with the seat: rise
   setLook('dark', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.55; m.visible = true; }
   setMech(R.s); disc.visible = false; setSwitch(t >= 40.5 && !R.released ? 1 : ss(40.4, 40.5, t) * 0.4);
   const P3 = echoPull(t, R, dawn);
-  if (P3) { bg.drawImage(PAPER, 0, 0, W, H); const gr = bg.createRadialGradient(620, 300, 50, 620, 300, 1300); gr.addColorStop(0, `rgba(120,80,40,${0.35 * ss(42.4, 44.2, t)})`); gr.addColorStop(1, 'rgba(0,0,0,.5)'); bg.fillStyle = gr; bg.fillRect(0, 0, W, H); }
+  if (P3) { fillBG('#07070D'); aurora(bg, t, ss(42.4, 43.4, t)); setLook('hero', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.5; m.visible = true; } }
   if (x2d > 0) { bg.save(); bg.globalAlpha = x2d; drawRoom(V, t, rain, dawn); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9); bg.restore(); }
-  renderGL(P3 ? P3.cam : V.cam);
+  renderGL(P3 ? P3.cam : V.cam); if (P3) pcam.clearViewOffset();
   const hips = []; if (kf >= 0) for (let x = 0; x <= kf; x += 0.25) hips.push(poseAt(x).Hp); if (kf >= 0) hips.push(R.pose.Hp);
   if (x2d > 0) { fg.save(); fg.globalAlpha = x2d; drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#0B1018', 1); pline(fg, hips, V.map, C.acc, 6, 1, 24);
     if (hips.length) dot(fg, V.map(hips[hips.length - 1]), 9, '#FFFFFF', 1, ((t - 40.85) % 0.5) / 0.5); fg.restore(); }
   vignette(fg, 0.45 - 0.2 * dawn);
-  const a = eo(44.2, 44.55, t); show('i_t', { x: 420, y: 230, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
-  const b = eo(44.5, 44.8, t); show('i_s', { x: 420, y: 380, ax: 0.5, ay: 0.5, op: b });
+  const a = eo(44.2, 44.55, t); show('i_t', { x: 420, y: 250, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
+  const b = eo(44.5, 44.8, t); show('i_s', { x: 420, y: 400, ax: 0.5, ay: 0.5, op: b });
   const c = eo(44.8, 45.1, t); show('i_g', { x: 1500, y: 1030, ax: 0.5, ay: 0.5, op: c });
   const fo = ss(45.55, 46.0, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
@@ -882,17 +882,28 @@ const hipTube = (() => { const pts = []; for (let x = 0; x <= FR.length - 1; x +
   const curve = new THREE.CatmullRomCurve3(pts), g1 = new THREE.TubeGeometry(curve, 80, 0.009, 10), g2 = new THREE.TubeGeometry(curve, 80, 0.03, 10);
   const a = new THREE.Mesh(g1, new THREE.MeshBasicMaterial({ color: lin(0.1, 0.75, 0.95), transparent: true, opacity: 0 })), b = new THREE.Mesh(g2, new THREE.MeshBasicMaterial({ color: lin(0.1, 0.6, 0.9), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
   tubeG.add(a, b); return [a, b]; })();
-function echoPull(t, R, dawn) {   // t: echo clock; returns the camera for the pull-out, or null before it starts
+const POP = ['#FF5DA2', '#FF9F43', '#FFD93D', '#4BE3AC', '#4CC9F0', '#9B5DE5'];
+const RINGS = Array.from({ length: 6 }, () => { const m = new THREE.Mesh(new THREE.RingGeometry(0.97, 1.0, 96), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  m.position.set(0.40, 0.05, 0.003); scene.add(m); return m; });
+const BLOBS = Array.from({ length: 7 }, (_, i) => ({ c: POP[i % 6], x: 0.15 + 0.7 * ((i * 0.618) % 1), y: 0.2 + 0.6 * ((i * 0.381 + 0.2) % 1), r: 420 + 160 * ((i * 0.77) % 1), sp: 0.12 + 0.05 * i }));
+function aurora(g, t, a) {   // soft moving colour fields on near-black
+  if (a <= 0) return; g.save(); g.globalAlpha = a; g.fillStyle = '#0B0A14'; g.fillRect(0, 0, W, H); g.globalCompositeOperation = 'lighter';
+  for (const b of BLOBS) { const x = (b.x + 0.06 * Math.sin(t * b.sp * 6 + b.y * 9)) * W, y = (b.y + 0.05 * Math.cos(t * b.sp * 5 + b.x * 7)) * H, r = b.r * (1 + 0.08 * Math.sin(t * 2 * Math.PI + b.x * 6));
+    const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, b.c + 'B0'); gr.addColorStop(0.55, b.c + '30'); gr.addColorStop(1, b.c + '00'); g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
+  g.globalCompositeOperation = 'source-over'; const v = g.createRadialGradient(W * 0.6, H * 0.65, 200, W * 0.6, H * 0.65, 900); v.addColorStop(0, 'rgba(8,8,16,.45)'); v.addColorStop(1, 'rgba(8,8,16,0)'); g.fillStyle = v; g.fillRect(0, 0, W, H); g.restore(); }
+function pulseRings(t, a) {   // one ring per beat from the seat's base, cycling through the colours
+  RINGS.forEach((m, i) => { const b0 = Math.floor(t / BEAT) - i, age = t - b0 * BEAT, k = age / 3.0; if (k < 0 || k > 1 || a <= 0) { m.material.opacity = 0; return; }
+    m.scale.setScalar(0.35 + 2.6 * Math.pow(k, 0.7)); m.material.color.set(POP[((b0 % 6) + 6) % 6]); m.material.opacity = a * 0.9 * (1 - k); }); }
+function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade, the seat alone turns in a pulsing colour field
   const p = ss(42.3, 44.9, t); if (p <= 0) return null;
-  roomG.visible = true; tubeG.visible = true; sketchG.visible = true;
-  SK.lines.forEach(l => { l.visible = true; l.material.opacity = (SK.jit.includes(l) ? 0.18 : 0.6) * ss(42.3, 42.8, t); l.position.set(0, 0, 0); });
-  Object.values(SKB).forEach(m => { m.visible = true; m.children.forEach(l => l.geometry.setDrawRange(0, Infinity)); });
-  const sun = ss(42.4, 44.2, t); roomG.userData.glass.material.color.copy(lin(0.25 + 0.75 * sun, 0.16 + 0.56 * sun, 0.10 + 0.25 * sun));
-  SHAFTS.forEach(s => s.m.material.opacity = s.op * sun); roomG.userData.patch.material.opacity = 0.28 * sun; sunLight.intensity = 1.6 * sun;
-  setTube(joints(R.pose, HAND_BAR)); tubeM.transparent = false; tubeM.depthWrite = true; tubeM.opacity = 1; hipTube[0].material.opacity = 1; hipTube[1].material.opacity = 0.35;
-  const T0 = V3d(0.55, 0, 0.85), T1 = V3d(-0.15, 0.0, 0.72), T = T0.clone().lerp(T1, p), az = lerp(-Math.PI / 2, -1.02, p), el = lerp(0, 0.26, p);
-  const dist = Math.exp(lerp(Math.log(40), Math.log(5.4), p)), halfH = lerp(0.95, 5.4 * Math.tan(15 * Math.PI / 180), p);
-  pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T.x + dist * Math.cos(el) * Math.cos(az), T.y + dist * Math.cos(el) * Math.sin(az), T.z + dist * Math.sin(el)); pcam.lookAt(T); pcam.clearViewOffset(); pcam.updateProjectionMatrix();
+  hipTube[0].material.opacity = 0.9 * (1 - ss(44.6, 45.3, t)); hipTube[1].material.opacity = 0.3 * (1 - ss(44.6, 45.3, t)); tubeG.visible = true;
+  Object.values(TB).forEach(m => m.visible = false);
+  const spin = 0.10 * ss(44.4, 46.0, t) * (t - 44.4);
+  const T0 = V3d(0.55, 0, 0.85), T1 = V3d(0.38, 0.05, 0.55), T = T0.clone().lerp(T1, p), az = lerp(-Math.PI / 2, -0.95, p) + spin, el = lerp(0, 0.30, p);
+  const dist = Math.exp(lerp(Math.log(40), Math.log(4.4), p)), halfH = lerp(0.95, 4.4 * Math.tan(13 * Math.PI / 180), p);
+  pcam.fov = 2 * Math.atan(halfH / dist) * 180 / Math.PI; pcam.position.set(T.x + dist * Math.cos(el) * Math.cos(az), T.y + dist * Math.cos(el) * Math.sin(az), T.z + dist * Math.sin(el)); pcam.lookAt(T);
+  pcam.setViewOffset(W, H, -260 * p, 0, W, H); pcam.updateProjectionMatrix();
+  pulseRings(t, ss(42.6, 43.2, t));
   return { cam: pcam, p };
 }
 
@@ -901,7 +912,7 @@ const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], 
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   bedG.visible = false; floorGrid.visible = false; openZone.material.opacity = 0; ozEdge.material.opacity = 0; pcam.fov = 26;
-  sketchG.visible = false; hatch.material.opacity = 0; roomG.visible = false; tubeG.visible = false; sunLight.intensity = 0; for (const c in PG) { const el = PG[c].children[1]; if (el) el.position.set(0, 0, 0); }
+  sketchG.visible = false; hatch.material.opacity = 0; roomG.visible = false; tubeG.visible = false; sunLight.intensity = 0; RINGS.forEach(m => m.material.opacity = 0); Object.values(TB).forEach(m => m.visible = true); for (const c in PG) { const el = PG[c].children[1]; if (el) el.position.set(0, 0, 0); }
   if (window.CTX !== undefined) { secCtx(window.CTX); return; }
   for (const [a, b, f] of SECS) if (t >= a && t < b) { f(t); break; }
 };
