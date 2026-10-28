@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 42;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 44.5;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -32,8 +32,8 @@ T('b_h1', '床高', { s: { ...big(200), color: C.ink } }); T('b_h2', '→ 脚踩
 T('b_tag', 'PROBLEM / 问题', mono(24, '#5A6575')); T('b_x', '✕', { s: { ...big(120), color: C.red } }); T('b_x2', '✕', { s: { ...big(120), color: C.red } });
 T('b_sum', '固定高度的床，两头难兼顾', { s: { ...big(54, 700), color: C.ink } });
 // pivot + title
-T('c_1', '平时，<span style="color:#19D3F0">和床一样低</span>。', { s: big(112) });
-T('c_2', '起身时，<span style="color:#19D3F0">跟着你升起来</span>。', { s: big(112) });
+T('c_1', '平时，<span style="color:#19D3F0">和床一样低</span>。', { s: big(68) });
+T('c_2', '起身时，<span style="color:#19D3F0">跟着你升起来</span>。', { s: big(68) });
 T('d_t', '床边起身台', { s: { ...big(232), backgroundImage: 'linear-gradient(100deg,#fff 0%,#fff 40%,#9ff3ff 48%,#fff 56%,#fff 100%)', backgroundSize: '300% 100%', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' } });
 T('d_e', 'BED-EXIT SEAT', { cls: 'lat', s: { fontSize: '62px', fontWeight: 800, color: C.acc, letterSpacing: '.32em' } });
 T('d_g', 'ME5412 ROBOTICS FOR HEALTHCARE · GROUP 16', mono(24));
@@ -66,8 +66,8 @@ const SENS = [['座下测力', '坐稳了没有'], ['横杆测力', '手在不�
 SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight:900">${a}</div><div style="font-size:28px;font-weight:500;color:#A8B4C4;margin-top:4px">${b}</div>`, { s: {} }));
 T('h_2', '握紧才升 · 松手即停 · <span style="color:#19D3F0">失电制动</span>', { s: big(76) });
 // end
-T('i_t', '床边起身台', { s: big(176) });
-T('i_s', '平时和床一样低 · 起身时跟着你升起来 · 松手就停', { s: { ...big(40, 500), color: '#C9D3DF' } });
+T('i_t', '床边起身台', { s: big(132) });
+T('i_s', '平时和床一样低 · 起身时跟着你升起来<br>松手就停', { s: { ...big(36, 500), color: '#C9D3DF', textAlign: 'center', lineHeight: 1.5 } });
 T('i_g', 'ME5412 ROBOTICS FOR HEALTHCARE · GROUP 16', mono(24));
 
 // ------------------------------------------------------------------ 2D canvases
@@ -628,8 +628,71 @@ function secI2(t) {   // end on the old clock 33-36: the 81 lines and the design
   const fo = ss(35.6, 36, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
 
-const SH = f => t => f(t - 6), EC = t => secE(t < 22 ? 12 + 2 * (t - 20) : 16 + (t - 22));   // assembly at double speed (parts land on 16ths), then normal
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 10, secC], [10, 12, secD], [12, 20, secX], [20, 24, EC], [24, 30, SH(secF)], [30, 36, SH(secG)], [36, 39, SH(secH)], [39, 42.01, SH(secI2)]];
+// ------------------------------------------------------------------ rain night (mood) and its echo at the end: same window, same bed, same camera
+const RV = () => sideView(0.55, 0.85, 0.95);                    // shared framing; the window hangs on the wall above the bed
+const WIN = { x0: -1.05, x1: -0.35, z0: 0.95, z1: 1.60 };
+const RAIN = Array.from({ length: 150 }, (_, i) => { const r = k => ((Math.sin(i * 12.9898 + k * 78.233) * 43758.5453) % 1 + 1) % 1; return { x: r(1), ph: r(2), sp: 0.9 + 0.6 * r(3), len: 0.04 + 0.05 * r(4), a: 0.25 + 0.5 * r(5) }; });
+const DROPS = Array.from({ length: 46 }, (_, i) => { const r = k => ((Math.sin(i * 91.17 + k * 17.31) * 24634.6345) % 1 + 1) % 1; return { x: r(1), z: r(2), r: 1.5 + 2.5 * r(3), slide: r(4) < 0.3 }; });
+function drawRoom(V, t, rain, dawn) {   // rain: 0..1 strength; dawn: 0..1 light behind the glass
+  const g = bg; const top = V.map([0, 3])[1];
+  const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, lerpC('#0A0F17', '#141821', dawn)); gr.addColorStop(1, lerpC('#0C121B', '#17171C', dawn)); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  const a = V.map([WIN.x0, WIN.z1]), b = V.map([WIN.x1, WIN.z0]), w = b[0] - a[0], h = b[1] - a[1];
+  // glass: night blue, warming toward dawn from the bottom edge
+  const gl = g.createLinearGradient(0, a[1], 0, b[1]); gl.addColorStop(0, lerpC('#101C2C', '#2A3550', dawn)); gl.addColorStop(1, lerpC('#16263A', '#E39A5C', dawn * 0.85)); g.fillStyle = gl; g.fillRect(a[0], a[1], w, h);
+  // light cast on the bed and floor through the window
+  g.save(); g.globalAlpha = 0.10 + 0.14 * dawn; g.fillStyle = lerpC('#7FA8D8', '#FFC27A', dawn); const p1 = V.map([WIN.x0 + 0.55, 0.42]), p2 = V.map([WIN.x1 + 0.75, 0.42]);
+  g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], a[1]); g.lineTo(p2[0], p2[1]); g.lineTo(p1[0], p1[1]); g.closePath(); g.fill(); g.restore();
+  g.save(); g.beginPath(); g.rect(a[0], a[1], w, h); g.clip();
+  if (rain > 0) { g.lineCap = 'round'; for (const d of RAIN) { const y = ((d.ph + t * d.sp * 1.6) % 1.2 - 0.1), x = a[0] + d.x * w + (y * h) * 0.12, yy = a[1] + y * h, L = d.len * V.sc;
+      g.strokeStyle = `rgba(170,200,235,${d.a * rain})`; g.lineWidth = 1.6; g.beginPath(); g.moveTo(x, yy); g.lineTo(x - L * 0.12, yy + L); g.stroke(); } }
+  for (const d of DROPS) { const zz = d.slide ? ((d.z + t * 0.05 * rain) % 1) : d.z, q = [a[0] + d.x * w, a[1] + zz * h]; g.fillStyle = `rgba(${dawn > 0.3 ? '255,220,180' : '200,220,245'},${0.35 + 0.4 * dawn})`; g.beginPath(); g.arc(q[0], q[1], d.r, 0, 7); g.fill(); }
+  g.restore();
+  g.strokeStyle = '#3A4656'; g.lineWidth = 6; g.strokeRect(a[0], a[1], w, h); g.lineWidth = 4; g.beginPath(); g.moveTo(a[0] + w / 2, a[1]); g.lineTo(a[0] + w / 2, b[1]); g.moveTo(a[0], a[1] + h / 2); g.lineTo(b[0], a[1] + h / 2); g.stroke();
+  g.fillStyle = '#2A3442'; g.fillRect(a[0] - 14, b[1], w + 28, 10);
+}
+function lerpC(c1, c2, k) { const p = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)), A = p(c1), B = p(c2); return '#' + A.map((v, i) => Math.round(lerp(v, B[i], clamp(k))).toString(16).padStart(2, '0')).join(''); }
+function secRain(t) {   // 8-11: after the failed rises, rain; the hip's line climbs a little, sags, and breaks into drops
+  const V = RV(); drawRoom(V, t, 1, 0); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.40, false, -1.9);
+  const bump = u => Math.max(0, Math.sin(Math.PI * clamp(u))), b = bump((t - 8.35) / 0.95), slump = ss(9.3, 9.9, t);
+  const Hp = [-0.08 + 0.05 * b, 0.40 + 0.085 + 0.03 * b], A = [0.30, 0.062], tr = 26 + 26 * b + 6 * slump + 1.2 * Math.sin(t * 2.4);
+  const J = joints({ Hp, K: kneeIK(Hp, A), A, tr }, null); const fwd = [Math.sin((tr + 40 * slump) * Math.PI / 180), Math.cos((tr + 40 * slump) * Math.PI / 180)];
+  J.hd = [J.S[0] + 0.15 * fwd[0], J.S[1] + 0.15 * fwd[1]];                     // head bows
+  // the self it pictures: a faint standing outline and the dashed way there, gone when the try fails
+  const wish = eo(8.25, 8.55, t) * (1 - ss(9.3, 9.7, t)); if (wish > 0) { const Pst = poseAt(FR.length - 1), Js = joints(Object.assign({}, Pst, { A: [0.30, 0.062] }), null);
+    fg.save(); fg.globalAlpha = 0.55 * wish; ghostFig(fg, Js, V.map, V.sc, '#BFD6EE', 0.04, 3); fg.restore();
+    const dash = []; for (let k = 0; k <= 24; k++) { const u = k / 24, P0 = [-0.06, 0.49], P1 = [0.05, 0.86], P2 = [0.29, 0.834]; dash.push([(1 - u) ** 2 * P0[0] + 2 * u * (1 - u) * P1[0] + u * u * P2[0], (1 - u) ** 2 * P0[1] + 2 * u * (1 - u) * P1[1] + u * u * P2[1]]); }
+    pline(fg, dash, V.map, '#BFD6EE', 2.5, 0.6 * wish, 0, [8, 10]); dot(fg, V.map(dash[24]), 6, '#BFD6EE', 0.7 * wish); }
+  drawFig(fg, J, V.map, V.sc, '#8C9AAD', '#0B1018', 1);
+  // the line it wanted: from the hip toward standing; it gets about half way, sags under its own weight, then breaks into drops
+  const reach = 0.45 * eo(8.45, 8.95, t), sag = ss(8.95, 9.3, t), tr0 = [];
+  for (let k = 0; k <= 24; k++) { const u = reach * k / 24, P0 = [-0.06, 0.49], P1 = [0.05, 0.86], P2 = [0.29, 0.834], q = [(1 - u) ** 2 * P0[0] + 2 * u * (1 - u) * P1[0] + u * u * P2[0], (1 - u) ** 2 * P0[1] + 2 * u * (1 - u) * P1[1] + u * u * P2[1]];
+    q[1] -= sag * 0.28 * (k / 24) ** 1.6; tr0.push(q); }
+  if (t < 9.3) { if (reach > 0.01) { pline(fg, tr0, V.map, lerpC('#19D3F0', '#5A6B80', sag), 7, 1, 20); dot(fg, V.map(tr0[tr0.length - 1]), 8, lerpC('#FFFFFF', '#5A6B80', sag)); } }
+  else tr0.forEach((p, i) => { const dt = t - 9.3 - i * 0.012; if (dt < 0) { dot(fg, V.map(p), 3, '#5A6B80', 0.8); return; } const z = p[1] - 1.6 * dt * dt, q = V.map([p[0] + 0.02 * dt, z]);
+    if (z < 0.42) return; fg.save(); fg.globalAlpha = 0.8 * (1 - clamp(dt / 0.9)); fg.strokeStyle = '#9DB8D8'; fg.lineWidth = 2; fg.beginPath(); fg.moveTo(q[0], q[1] - 10 * dt * 6); fg.lineTo(q[0], q[1]); fg.stroke(); fg.restore(); });
+  vignette(fg, 0.55);
+  const a1 = eo(9.6, 9.95, t), a2 = eo(10.2, 10.55, t), fr = 1 - ss(10.85, 11.0, t);
+  show('c_1', { x: 1130, y: 420, op: a1 * fr, dy: (1 - a1) * 30 }); show('c_2', { x: 1130, y: 540, op: a2 * fr, dy: (1 - a2) * 30 });
+}
+function secEcho(t) {   // 40-44.5: same window, same bed, now with the seat: rise all the way, the rain stops, dawn
+  const V = RV(), kf = t < 40.6 ? -1 : t < 40.85 ? lerp(-1, 0, (t - 40.6) / 0.25) : lerp(0, FR.length - 1, ss(40.85, 42.2, t)), R = rise(kf);
+  const rain = 1 - ss(41.0, 42.0, t), dawn = ss(41.3, 43.0, t);
+  drawRoom(V, t, rain, dawn); floor2D(bg, V.map, '#243041'); drawBed2D(bg, V.map, V.sc, 0.42, false, -1.9);
+  setLook('dark', { shell: { op: 0 } }); for (const c of ['H2', 'H3', 'H4', 'H5']) { const m = PART[c].material; m.opacity = 0.55; m.visible = true; }
+  setMech(R.s); disc.visible = false; setSwitch(t >= 40.5 && !R.released ? 1 : ss(40.4, 40.5, t) * 0.4); renderGL(V.cam);
+  const hips = []; if (kf >= 0) for (let x = 0; x <= kf; x += 0.25) hips.push(poseAt(x).Hp); if (kf >= 0) hips.push(R.pose.Hp);
+  drawFig(fg, joints(R.pose, HAND_BAR), V.map, V.sc, '#DDE5EE', '#0B1018', 1);
+  pline(fg, hips, V.map, C.acc, 6, 1, 24);
+  if (hips.length) dot(fg, V.map(hips[hips.length - 1]), 9, '#FFFFFF', 1, ((t - 40.85) % 0.5) / 0.5);
+  vignette(fg, 0.45 - 0.2 * dawn);
+  const a = eo(42.5, 42.85, t); show('i_t', { x: 1540, y: 400, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.12, 1, a), blur: (1 - a) * 8, ls: lerp(0.3, 0.05, a) });
+  const b = eo(42.9, 43.2, t); show('i_s', { x: 1540, y: 560, ax: 0.5, ay: 0.5, op: b });
+  const c = eo(43.3, 43.6, t); show('i_g', { x: 1540, y: 1010, ax: 0.5, ay: 0.5, op: c });
+  const fo = ss(44.05, 44.5, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
+}
+
+const SH = f => t => f(t - 7), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 21, S1(secX)], [21, 25, EC], [25, 31, SH(secF)], [31, 37, SH(secG)], [37, 40, SH(secH)], [40, 44.51, secEcho]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   for (const [a, b, f] of SECS) if (t >= a && t < b) { f(t); break; }
