@@ -1,7 +1,7 @@
 // "Pulse" cut of the bed-exit seat film: 36 s at 120 BPM (beat = 0.5 s). renderAt(t) draws the frame at time t; no clocks.
 // Layers: #bg 2D canvas (backgrounds, bed, floor) -> three.js (CAD device, transparent clear) -> #fg 2D canvas (figure, lines) -> #txt DOM type.
 // World: metres, x forward from the bed edge, y along the bed (+y = head side), z up.
-const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 36;
+const W = 1920, H = 1080, D = window.DATA, BEAT = 0.5, DUR = 46;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t, lerpA = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -26,7 +26,6 @@ const mono = (px, col = C.grey) => ({ cls: 'mono', s: { fontSize: px + 'px', col
 T('a_tagL', 'ME5412 · ROBOTICS FOR HEALTHCARE', mono(24)); T('a_tagR', 'GROUP 16', mono(24));
 T('a_tc', '', mono(24, C.acc));
 T('a_h', '夜里，从床沿站起来', { s: big(104) });
-['腿力', '床高', '头晕'].forEach((w, i) => T('a_c' + i, w, { s: { ...big(44, 700), padding: '10px 26px', border: '2px solid rgba(255,255,255,.55)', borderRadius: '999px' } }));
 // problem
 T('b_l1', '床低', { s: { ...big(200), color: C.ink } }); T('b_l2', '→ 站不起来', { s: { ...big(76, 700), color: C.ink } });
 T('b_h1', '床高', { s: { ...big(200), color: C.ink } }); T('b_h2', '→ 脚踩不实', { s: { ...big(76, 700), color: C.ink } });
@@ -237,14 +236,6 @@ function resetFrame() { for (const k in TX) TX[k].style.opacity = 0; bg.clearRec
 let glOn = false;
 function renderGL(cam) { renderer.render(scene, cam); glOn = true; }
 
-function secA(t) {   // 0-4 cold open: monitor sweep
-  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.10); vignette(bg, 0.7);
-  drawECG(fg, { x0: 0, y0: 640, t0: 0, t, speed: 480, amp: 210, col: 'rgba(25,211,240,1)', tail: 900 });
-  show('a_tagL', { x: 80, y: 64, op: ss(0.1, 0.4, t) }); show('a_tagR', { x: 1840, y: 64, ax: 1, op: ss(0.1, 0.4, t) });
-  TX.a_tc.textContent = 'T+' + t.toFixed(2).padStart(5, '0') + ' s'; show('a_tc', { x: 1840, y: 1000, ax: 1, op: 0.85 });
-  const h = eo(2.0, 2.25, t); show('a_h', { x: 960, y: 330, ax: 0.5, ay: 0.5, op: h, sc: lerp(1.12, 1, h), blur: (1 - h) * 8 });
-  for (let i = 0; i < 3; i++) { const u = eback(3.0 + i * 0.25, 3.25 + i * 0.25, t); show('a_c' + i, { x: 960 + (i - 1) * 230, y: 830, ax: 0.5, ay: 0.5, op: clamp(u * 3), sc: u }); }
-}
 function problemFig(kind, t, tl) {     // tl: local time in the panel
   if (kind === 'low') {
     const top = 0.40, bump = u => Math.max(0, Math.sin(Math.PI * clamp(u / 0.55))) ;
@@ -434,7 +425,135 @@ function secI(t) {   // 33-36 end
   const c = eo(34.8, 35.1, t); show('i_g', { x: 960, y: 900, ax: 0.5, ay: 0.5, op: c });
   const fo = ss(35.6, 36, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
 }
-const SECS = [[0, 4, secA], [4, 8, secB], [8, 10, secC], [10, 12, secD], [12, 18, secE], [18, 24, secF], [24, 30, secG], [30, 33, secH], [33, 36.01, secI]];
+// ------------------------------------------------------------------ points + lines: opening, design process, end
+const DS = window.DS, XO = 10;     // sections after the design block run on the old clock (t - XO)
+T('a_s', '每一次起身，都是一条<span style="color:#19D3F0">线</span>', { s: { ...big(60, 700), color: '#C9D3DF' } });
+T('x_tag', 'DESIGN / 设计', mono(24));
+T('x_1', '先画线<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">81 个人，各自起身时座板该走的路</span>', { s: big(80) });
+T('x_2', '合成一条<span style="color:#fff;text-shadow:0 0 24px #19D3F0">设计曲线</span>', { s: big(80) });
+T('x_3', '再找点<br><span style="font-size:44px;font-weight:700;color:#A8B4C4">座板上每个点，都画出自己的轨迹</span>', { s: big(80) });
+T('x_l1', '直线 → 导轨', { s: { ...big(44, 900), color: C.acc } }); T('x_l2', '圆弧 → 连杆', { s: { ...big(44, 900), color: '#8CF5A6' } });
+T('x_B', 'B', { cls: 'lat', s: { fontSize: '40px', fontWeight: 800, color: '#8CF5A6' } });
+T('x_4', '同样 81 个人，比五种机构', { s: big(72) });
+const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '连杆会碰小腿', '回床时腿转不过去', '铰点偏载太大', '轨迹最准 · 驱动力最小'];
+CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#FF8A7A' } }); });
+T('x_ok', '四连杆的一根杆，换成一条<span style="color:#19D3F0">导轨</span>', { s: { ...big(40, 700), color: '#C9D3DF' } });
+const LIME = '#8CF5A6';
+const R2 = (Q, phi, c) => { const p = phi * Math.PI / 180, cs = Math.cos(p), sn = Math.sin(p); return [Q[0] + cs * c[0] + sn * c[1], Q[1] - sn * c[0] + cs * c[1]]; };
+function pline(g, pts, map, col, lw, a = 1, glow = 0, dash) { if (pts.length < 2) return; g.save(); g.globalAlpha = a; g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.lineJoin = 'round';
+  if (dash) g.setLineDash(dash); if (glow) { g.shadowColor = col; g.shadowBlur = glow; } g.beginPath(); pts.forEach((p, i) => { const q = map(p); i ? g.lineTo(...q) : g.moveTo(...q); }); g.stroke(); g.restore(); }
+function ppoly(g, pts, map, fill, stroke, lw = 2, a = 1) { g.save(); g.globalAlpha = a; g.beginPath(); pts.forEach((p, i) => { const q = map(p); i ? g.lineTo(...q) : g.moveTo(...q); }); g.closePath();
+  if (fill) { g.fillStyle = fill; g.fill(); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw; g.stroke(); } g.restore(); }
+function dot(g, q, r, col, a = 1, ring = 0) { g.save(); g.globalAlpha = a; g.fillStyle = col; g.shadowColor = col; g.shadowBlur = 18; g.beginPath(); g.arc(q[0], q[1], r, 0, 7); g.fill();
+  if (ring) { g.shadowBlur = 0; g.strokeStyle = col; g.lineWidth = 2; g.globalAlpha = a * (1 - ring); g.beginPath(); g.arc(q[0], q[1], r + 26 * ring, 0, 7); g.stroke(); } g.restore(); }
+function ground(g, q, col, s = 14) { g.save(); g.fillStyle = col; g.beginPath(); g.moveTo(q[0], q[1]); g.lineTo(q[0] - s * 0.7, q[1] + s); g.lineTo(q[0] + s * 0.7, q[1] + s); g.closePath(); g.fill(); g.restore(); }
+const partial = (pts, u) => { if (u <= 0) return []; if (u >= 1) return pts; const n = (pts.length - 1) * u, i = Math.floor(n), f = n - i; return pts.slice(0, i + 1).concat([lerpA(pts[i], pts[i + 1], f)]); };
+const DQ = DS.design.Q, DPHI = DS.design.phi;
+function designPose(k) { k = clamp(k) * (DQ.length - 1); const i = Math.min(DQ.length - 2, Math.floor(k)), f = k - i; return { Q: lerpA(DQ[i], DQ[i + 1], f), phi: lerp(DPHI[i], DPHI[i + 1], f) }; }
+
+function secA(t) {   // 0-4: joints pop in as points, bones join them as lines, the rise leaves a line behind the hip
+  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.10); vignette(bg, 0.7);
+  const sc = 430, map = p => [1250 + p[0] * sc, 930 - p[1] * sc];
+  const lu = eo(0.0, 0.8, t); pline(bg, [[-1.4, 0], [lerp(-1.4, 1.2, lu), 0]], map, '#2C3644', 3); pline(bg, [[-1.4, 0.42], [lerp(-1.4, 0, lu), 0.42]], map, '#3A4656', 3);
+  const kf = lerp(0, FR.length - 1, ss(2.0, 3.55, t)), J = joints(poseAt(kf), null);
+  const PTS = [J.A, J.K, J.H, J.S, J.hd, J.E, J.Hd, J.toe], BONES = [[0, 1], [1, 2], [2, 3], [3, 5], [5, 6], [0, 7], [3, 4]];
+  BONES.forEach(([a, b], i) => { const u = eo(1.0 + i * 0.125, 1.35 + i * 0.125, t); if (u > 0) pline(fg, [PTS[a], lerpA(PTS[a], PTS[b], u)], map, '#FFFFFF', 4, 0.85); });
+  // trails (head faint, hip bright) once the rise starts
+  if (t > 2.0) { const tr = k => { const out = []; for (let x = 0; x <= k; x += 0.25) out.push(joints(poseAt(x), null)); out.push(joints(poseAt(k), null)); return out; }, TR = tr(kf);
+    pline(fg, TR.map(j => j.hd), map, '#19D3F0', 2, 0.35, 0, [6, 8]); pline(fg, TR.map(j => j.K), map, '#19D3F0', 2, 0.25, 0, [6, 8]); pline(fg, TR.map(j => j.H), map, '#19D3F0', 5, 1, 22); }
+  PTS.forEach((p, i) => { const u = eback(i * 0.125, i * 0.125 + 0.2, t); if (u <= 0) return; const q = map(p), hip = i === 2;
+    dot(fg, q, (hip ? 13 : 9) * clamp(u, 0, 1.3), hip ? C.acc : '#FFFFFF', 1, clamp((t - i * 0.125) / 0.5)); });
+  fg.save(); fg.fillStyle = '#fff'; fg.beginPath(); const hq = map(J.hd); fg.globalAlpha = eo(1.75, 1.95, t) * 0.0; fg.arc(hq[0], hq[1], 0.098 * sc, 0, 7); fg.fill(); fg.restore();
+  if (eo(1.75, 2.0, t) > 0) { fg.save(); fg.strokeStyle = '#fff'; fg.lineWidth = 4; fg.globalAlpha = 0.85 * eo(1.75, 2.0, t); fg.beginPath(); fg.arc(hq[0], hq[1], 0.098 * sc * eo(1.75, 2.0, t), 0, 7); fg.stroke(); fg.restore(); }
+  show('a_tagL', { x: 80, y: 64, op: ss(0.1, 0.4, t) }); show('a_tagR', { x: 1840, y: 64, ax: 1, op: ss(0.1, 0.4, t) });
+  const h = eo(1.0, 1.3, t); show('a_h', { x: 120, y: 300, op: h, dx: (1 - h) * -60, blur: (1 - h) * 6 });
+  const s2 = eo(2.5, 2.8, t); show('a_s', { x: 124, y: 440, op: s2, dx: (1 - s2) * -40 });
+}
+// design block 12-22
+function xView(t) {     // camera for the design block: close on the paths, then wide enough for the rail and B
+  const k = ss(16.0, 16.6, t); return { cx: lerp(0.135, 0.25, k), cz: lerp(0.545, 0.46, k), sc: lerp(2300, 1020, k), sx: lerp(1240, 1260, k), sy: lerp(560, 580, k) };
+}
+const CPTS = (() => { const c1 = DS.mech.c1, c2 = DS.mech.c2, pts = [];
+  for (const x of [-0.10, -0.05, 0.0, 0.05, 0.10]) for (const z of [-0.02, -0.07, -0.13, -0.19]) pts.push([x, z]);
+  const near = c => pts.reduce((b, p, i) => Math.hypot(p[0] - c[0], p[1] - c[1]) < Math.hypot(pts[b][0] - c[0], pts[b][1] - c[1]) ? i : b, 0);
+  const i1 = near(c1); pts[i1] = c1; const i2 = near(c2); pts[i2] = c2; return { pts, i1, i2 }; })();
+function secX(t) {
+  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.08); vignette(bg, 0.5);
+  show('x_tag', { x: 80, y: 64, op: 1 });
+  if (t < 18.5) {
+    const v = xView(t), map = p => [v.sx + (p[0] - v.cx) * v.sc, v.sy - (p[1] - v.cz) * v.sc];
+    ppoly(bg, [[-1, 0], [0, 0], [0, DS.Z0], [-1, DS.Z0]], map, '#141A22', '#2C3644', 2); pline(bg, [[-1, 0], [1, 0]], map, '#2C3644', 3);
+    // 81 ideal paths
+    const ga = t < 14 ? 0.55 : lerp(0.55, 0.18, ss(14, 14.6, t));
+    DS.env.forEach((P2, i) => { const a0 = 12.0 + i * 0.012, u = eo(a0, a0 + 0.5, t); if (u <= 0) return; const pts = partial(P2, u); pline(fg, pts, map, '#B9C6D6', 1.6, ga);
+      if (t < 16) dot(fg, map(pts[pts.length - 1]), 2.5, '#DDE6F0', ga); });
+    // design curve
+    const du = eo(14.0, 14.7, t); if (du > 0) pline(fg, partial(DQ, du), map, '#FFFFFF', t < 16 ? 6 : 3, t < 16 ? 1 : 0.5, 26);
+    if (t >= 14.7 && t < 16.0) { const k = ss(14.8, 15.9, t), dp = designPose(k); ppoly(fg, DS.mech.plate.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.18)', '#FFFFFF', 3); dot(fg, map(dp.Q), 7, '#fff'); }
+    if (t >= 16.0) {   // candidate points on the plate draw their own traces as the plate rides the design curve
+      const k = ss(16.6, 17.5, t), dp = designPose(k), hl = ss(17.55, 17.8, t), hl2 = ss(18.0, 18.25, t);
+      ppoly(fg, DS.mech.br.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.05)', 'rgba(255,255,255,.35)', 2);
+      ppoly(fg, DS.mech.plate.map(c => R2(dp.Q, dp.phi, c)), map, 'rgba(255,255,255,.18)', '#FFFFFF', 3);
+      CPTS.pts.forEach((c, i) => { const ap = eback(16.3 + i * 0.012, 16.5 + i * 0.012, t); if (ap <= 0) return;
+        const tr = []; for (let x = 0; x <= k + 1e-9; x += 0.02) { const d = designPose(Math.min(x, k)); tr.push(R2(d.Q, d.phi, c)); }
+        const is1 = i === CPTS.i1, is2 = i === CPTS.i2, col = is1 ? (hl ? C.acc : '#DDE6F0') : is2 ? (hl2 ? LIME : '#DDE6F0') : '#DDE6F0';
+        const a = is1 || is2 ? 1 : lerp(0.75, 0.18, hl); pline(fg, tr, map, col, is1 && hl ? 5 : is2 && hl2 ? 5 : 1.8, a, (is1 && hl) || (is2 && hl2) ? 16 : 0);
+        dot(fg, map(R2(dp.Q, dp.phi, c)), (is1 || is2 ? 8 : 5) * clamp(ap, 0, 1.3), col, a); });
+      if (hl > 0) { const lo = DS.mech.rail_lo, hi = DS.mech.rail_hi, u = eo(17.55, 17.95, t), mid = lerpA(lo, hi, 0.5);
+        pline(fg, [lerpA(mid, lo, u), lerpA(mid, hi, u)], map, C.acc, 18, 0.28); const q = map(lerpA(lo, hi, 0.85)); show('x_l1', { x: q[0] - 30, y: q[1] - 20, ax: 1, ay: 0.5, op: u }); }
+      if (hl2 > 0) { const B = DS.mech.B, u = eo(18.0, 18.3, t), P2s = DS.mech.frames.map(f => f.P2), angs = P2s.map(p => Math.atan2(p[1] - B[1], p[0] - B[0]));
+        const a0 = Math.min(...angs) - 0.25, a1 = Math.max(...angs) + 0.25, arc = []; for (let i = 0; i <= 40; i++) { const a = lerp(a0, lerp(a0, a1, u), i / 40); arc.push([B[0] + DS.mech.link * Math.cos(a), B[1] + DS.mech.link * Math.sin(a)]); }
+        pline(fg, arc, map, LIME, 2.5, 0.8, 0, [8, 8]); const cp = R2(dp.Q, dp.phi, DS.mech.c2); pline(fg, [B, lerpA(B, cp, u)], map, LIME, 6, 0.9);
+        ground(fg, map(B), LIME, 18); dot(fg, map(B), 7, LIME); const bq = map(B); show('x_B', { x: bq[0] + 22, y: bq[1] - 34, op: u });
+        const lq = map(lerpA(B, cp, 0.45)); show('x_l2', { x: lq[0] + 30, y: lq[1] + 20, ay: 0.5, op: u }); }
+    }
+    const o1 = win(t, 12.0, 14.0, 0.25, 0.12), o2 = win(t, 14.0, 16.0, 0.2, 0.12), o3 = win(t, 16.0, 18.5, 0.2, 0.1);
+    show('x_1', { x: 120, y: 150, op: o1, dx: (1 - eo(12, 12.3, t)) * -60 }); show('x_2', { x: 120, y: 150, op: o2, dx: (1 - eo(14, 14.3, t)) * -60 });
+    show('x_3', { x: 120, y: 150, op: o3, dx: (1 - eo(16, 16.3, t)) * -60 });
+    return;
+  }
+  // five candidates, each looping its own motion
+  show('x_4', { x: 120, y: 120, op: eo(18.5, 18.8, t), dx: (1 - eo(18.5, 18.8, t)) * -60 });
+  const loop = 0.5 - 0.5 * Math.cos(2 * Math.PI * (t - 18.5) / 2.0);
+  for (let i = 0; i < 5; i++) {
+    const ap = eback(18.5 + i * 0.25, 18.75 + i * 0.25, t); if (ap <= 0) continue;
+    const pcx = 210 + i * 375, sc = 520 * clamp(ap, 0, 1.15), base = 880, map = p => [pcx + (p[0] - 0.22) * sc, base - p[1] * sc];
+    const rej = i < 4 ? eback(19.5 + i * 0.25, 19.7 + i * 0.25, t) : 0, ok = i === 4 ? eback(20.5, 20.75, t) : 0, dim = i < 4 ? lerp(1, 0.38, clamp(rej)) : 1;
+    fg.save(); fg.globalAlpha = dim;
+    ppoly(fg, [[-0.12, 0], [0, 0], [0, DS.Z0], [-0.12, DS.Z0]], map, '#1A212B', null); pline(fg, [[-0.12, 0], [0.62, 0]], map, '#3A4656', 2);
+    pline(fg, DQ, map, '#FFFFFF', 2, 0.35, 0, [5, 6]);
+    if (i === 0) { const z = lerp(DS.Z0, 0.69, loop), Q = [0.055, z]; pline(fg, [[0.055, 0], [0.055, z - 0.05]], map, '#5A6575', 10);
+      ppoly(fg, DS.mech.plate.map(c => R2(Q, 0, c)), map, '#E9EDF2', null); pline(fg, [[0.13, DS.Z0 + 0.02], [0.13, 0.69]], map, '#FF6B5A', 2.5, 0.8); }
+    else if (i < 4) { const c = DS.cands[i - 1], F = c.frames, f = F[Math.round(loop * (F.length - 1))];
+      pline(fg, F.map(x => x.Q), map, C.acc, 2, 0.6); ppoly(fg, c.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, c.plate.map(p => R2(f.Q, f.phi, p)), map, '#E9EDF2', null);
+      pline(fg, [c.A, f.P1], map, '#C9D3DF', 5); pline(fg, [c.B, f.P2], map, '#C9D3DF', 5); [f.P1, f.P2].forEach(p => dot(fg, map(p), 5, '#fff')); ground(fg, map(c.A), '#C9D3DF', 12); ground(fg, map(c.B), '#C9D3DF', 12); }
+    else { const M2 = DS.mech, F = M2.frames, f = F[Math.round(loop * (F.length - 1))]; pline(fg, [M2.rail_lo, M2.rail_hi], map, C.acc, 10, 0.55);
+      pline(fg, F.map(x => x.Q), map, C.acc, 2, 0.6); ppoly(fg, M2.br.map(p => R2(f.Q, f.phi, p)), map, 'rgba(160,170,182,.6)', null); ppoly(fg, M2.plate.map(p => R2(f.Q, f.phi, p)), map, '#E9EDF2', null);
+      const q1 = map(f.P1); fg.fillStyle = C.acc; fg.fillRect(q1[0] - 9, q1[1] - 9, 18, 18); pline(fg, [M2.B, f.P2], map, LIME, 5); dot(fg, map(f.P2), 5, '#fff'); ground(fg, map(M2.B), LIME, 12); }
+    fg.restore();
+    show('x_p' + i, { x: pcx, y: 360, ax: 0.5, ay: 0.5, op: clamp(ap) * dim });
+    if (rej > 0) { fg.save(); fg.strokeStyle = C.red; fg.lineWidth = 9; fg.lineCap = 'round'; fg.globalAlpha = clamp(rej); const c = [pcx, 640], r = 64 * clamp(rej, 0, 1.2);
+      fg.beginPath(); fg.moveTo(c[0] - r, c[1] - r); fg.lineTo(c[0] + r, c[1] + r); fg.moveTo(c[0] + r, c[1] - r); fg.lineTo(c[0] - r, c[1] + r); fg.stroke(); fg.restore();
+      show('x_r' + i, { x: pcx, y: 930, ax: 0.5, ay: 0.5, op: clamp(rej) }); }
+    if (ok > 0) { fg.save(); fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.globalAlpha = clamp(ok); fg.shadowColor = C.acc; fg.shadowBlur = 24; fg.beginPath(); fg.roundRect(pcx - 182, 320, 364, 650, 18); fg.stroke(); fg.restore();
+      show('x_r' + i, { x: pcx, y: 930, ax: 0.5, ay: 0.5, op: clamp(ok) }); }
+  }
+  const okT = eo(20.75, 21.05, t); show('x_ok', { x: 960, y: 1025, ax: 0.5, ay: 0.5, op: okT, dy: (1 - okT) * 20 });
+}
+function secI2(t) {   // end on the old clock 33-36: the 81 lines and the design curve under the title, a point riding the curve
+  fillBG(C.ink); grid(bg, '#3A5A70', 60, 0.07); vignette(bg, 0.7);
+  const sc = 1000, map = p => [960 + (p[0] - 0.135) * sc, 980 - (p[1] - 0.40) * sc];
+  DS.env.forEach((P2, i) => { const u = eo(33.0 + i * 0.006, 33.5 + i * 0.006, t); if (u > 0) pline(fg, partial(P2, u), map, '#B9C6D6', 1.2, 0.22); });
+  const du = eo(33.4, 34.0, t); if (du > 0) pline(fg, partial(DQ, du), map, C.acc, 5, 1, 22);
+  if (t >= 34.0) { const k = ((t - 34.0) / 1.0) % 1, dp = designPose(ss(0, 1, k)); dot(fg, map(dp.Q), 9, '#fff', 1, k); }
+  const a = eo(34.0, 34.35, t); show('i_t', { x: 960, y: 330, ax: 0.5, ay: 0.5, op: a, sc: lerp(1.15, 1, a), blur: (1 - a) * 10, ls: lerp(0.3, 0.05, a) });
+  const b = eo(34.4, 34.7, t); show('i_s', { x: 960, y: 480, ax: 0.5, ay: 0.5, op: b });
+  const c = eo(34.8, 35.1, t); show('i_g', { x: 960, y: 1030, ax: 0.5, ay: 0.5, op: c });
+  const fo = ss(35.6, 36, t); if (fo > 0) { fg.fillStyle = `rgba(0,0,0,${fo})`; fg.fillRect(0, 0, W, H); }
+}
+
+const SH = f => t => f(t - XO);
+const SECS = [[0, 4, secA], [4, 8, secB], [8, 10, secC], [10, 12, secD], [12, 22, secX], [22, 28, SH(secE)], [28, 34, SH(secF)], [34, 40, SH(secG)], [40, 43, SH(secH)], [43, 46.01, SH(secI2)]];
 window.renderAt = function (t) {
   resetFrame(); for (const c in PG) PG[c].position.set(0, 0, 0);
   for (const [a, b, f] of SECS) if (t >= a && t < b) { f(t); break; }
