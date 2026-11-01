@@ -194,9 +194,12 @@ def replace_with_movie(slide, pic, video, auto):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("inp"), ap.add_argument("out")
-    for name, (video, *_) in TARGETS.items():
+    for name, (video, still, *_) in TARGETS.items():
         ap.add_argument(f"--{name}", type=Path, default=video, help=f"video file (default {video.relative_to(REPO)})")
+        ap.add_argument(f"--{name}-still", type=Path, default=still, help="reference still to find the picture by (default: the Chinese deck's)")
     args = ap.parse_args()
+    for name, t in list(TARGETS.items()):
+        TARGETS[name] = (t[0], getattr(args, name.replace("-", "_") + "_still"), *t[2:])
     prs = Presentation(args.inp)
     print(f"matching stills in {args.inp}:")
     for name, (slide, pic) in find_targets(prs).items():
