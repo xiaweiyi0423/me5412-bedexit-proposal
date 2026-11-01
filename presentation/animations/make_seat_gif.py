@@ -4,9 +4,13 @@
   seat_mech.png        the mechanism at three heights with labels (for the mechanism slide)
   seat_vs_vertical.png the same early-hip user on the vertical lift and on the curved seat at the same moment
 Data: model/calc_v13/seat_1dof/page.json (built by seat_1dof_page_data_v5.py).
-Usage: python3 make_seat_gif.py
+Usage: python3 make_seat_gif.py [--lang zh|en]
+  --lang zh (default) writes the Chinese figures above.
+  --lang en writes English copies of the figures the deck uses, next to the originals with an _en suffix:
+            seat_rise_en.gif, seat_step{1..5}_en.png, seat_statemachine_en.png, seat_force_en.png
+            (labels from EN below, terms from presentation/slides_en/STYLE.md; Latin font, no CJK).
 """
-import json, math, os
+import argparse, json, math, os
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -20,6 +24,75 @@ for f in font_manager.findSystemFonts():
 font_manager.fontManager.addfont("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc") if os.path.exists("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc") else None
 plt.rcParams["font.family"] = ["Noto Sans CJK SC", "WenQuanYi Zen Hei", "DejaVu Sans"]
 plt.rcParams["axes.unicode_minus"] = False
+
+LANG = "zh"
+# every user-visible string is looked up by its Chinese text; templates keep their {placeholders}; "\n" splits badge lines
+EN = {
+    # scene, badge
+    "床": "Bed", "状态": "State",
+    # state names (STYLE.md)
+    "待机": "Standby", "已坐上": "Seated", "抬升": "Lifting", "停住": "Stopped", "站立保持": "Standing hold",
+    "下降": "Lowering", "空座板停住": "Empty seat held", "锁定": "Locked",
+    # badge readout lines
+    "座板 {z:.2f} m（坐垫面与床面齐平）· 前倾 {phi:.0f}°": "Seat {z:.2f} m · tilt {phi:.0f}°\nCushion flush with bed",
+    "人坐进坐垫约 {cm:.0f} cm": "User sinks ~{cm:.0f} cm into cushion",
+    "座板 {z:.2f} m · 前倾 {phi:.0f}°": "Seat {z:.2f} m · tilt {phi:.0f}°",
+    "座板和人一起先升约 3 cm": "Seat and user rise ~3 cm together",
+    "座面 {z:.2f} m · 前倾 {phi:.0f}°": "Seat {z:.2f} m · tilt {phi:.0f}°",
+    "坐垫接触 {len:.0f} cm · 峰值 {p:.0f} kPa": "Cushion contact {len:.0f} cm\nPeak pressure {p:.0f} kPa",
+    "座板停在放手高度": "Seat stops at release height",
+    # step captions (passed as cap only if a caller asks for them)
+    "坐在床沿，挪上和床齐平的座板": "Sit on the bed edge, slide onto the flush seat",
+    "双手握住身前横杆的握把": "Both hands on the grab bar grip",
+    "握紧开关：座板跟着大腿前移、上升、前倾": "Hold the grip switch: seat moves forward, up, tilts",
+    "坐垫托住臀部和大腿近端，人自己也发力": "Cushion supports hips and upper thighs; user also pushes",
+    "站稳；座板停在放手高度，坐回也接得住": "Standing; seat stays at release height and catches a sit-back",
+    # sizing figure
+    "静载：100 kg 猛坐 1.5 倍体重": "Static: 100 kg, hard sit (1.5× body weight)",
+    "起身：100 kg，座板推 0.5 倍体重": "Rise: 100 kg, seat pushes 0.5× body weight",
+    "起身：60 kg": "Rise: 60 kg",
+    "座面高度 (m)": "Seat height (m)", "丝杠推力 (N)": "Ball-screw force (N)", "座板前倾 (°)": "Seat tilt (°)",
+    "绿带 = 机构综合时的上限 16°": "Green band = 16° limit used in synthesis",
+    # state machine
+    "坐上座板": "Sits on seat",
+    "握紧开关 + 手在杆上\n+ 脚踩实 + 坐正": "Grip switch + hands on bar + feet flat + upright",
+    "离座 0.3 s": "Off seat 0.3 s", "人走开": "User leaves",
+    "松手 / 故障 / 断电\n/ 推不动或到顶": "Release / fault\n/ power loss\n/ stall or at top",
+    "再握紧": "Grip again",
+    "按住“降”": "Hold “Down”", "松开“降”": "Release “Down”",
+    "按住“降”\n（座板高于齐平）": "Hold “Down”\n(seat above flush)",
+    "到齐平": "At flush",
+    "坐回：座板不动，接住人": "Sit back: seat holds\nstill and catches user",
+    "回床：按住“降”，空座板停在回床高度（默认 0.50 m），坐上去；再按住“降”降到床面（空着时松开再按住，也降到床面）":
+        "Return to bed: hold “Down” → empty seat stops at 0.50 m → sit → "
+        "hold “Down” to bed level (if empty: release, hold again)",
+    "任意状态": "Any state",
+    "自检：抬升中力之和与体重差\n15–35%：减速 + 语音提示\n>35% 或空载零点不过（0.5 s）\n→ 锁定，只能按住“降”慢降":
+        "Self-check while lifting:\nforce sum vs weight off by\n15–35% → slow down + voice cue\n"
+        ">35% or empty-seat zero fails (0.5 s)\n→ Locked: hold “Down” to lower slowly",
+    "停住时坐着很久不动：提醒并呼叫家属，座板不会自己动":
+        "Sitting still in Stopped for long: reminder + call family; the seat never moves by itself",
+}
+# label positions that move in English (longer text); geometry and data are unchanged
+EN_POS = {"grip": (5.6, 4.0), "release": (6.05, 2.05), "hold_down_up": (2.35, 2.05), "sitback": (10.35, 1.75),
+          "selfcheck": (14.2, 1.74), "anystate": (14.98, 2.0), "leaves": (12.72, 3.75), "at_flush": (4.45, 2.05),
+          "grip_again": (8.75, 2.05)}
+
+def T(zh, **kw):
+    s = EN.get(zh, zh) if LANG == "en" else zh
+    return s.format(**kw) if kw else s
+
+def set_lang(lang):
+    global LANG
+    LANG = lang
+    if lang == "en":
+        plt.rcParams["font.family"] = ["Inter", "DejaVu Sans"]
+
+def out(name):
+    """output path: <name> for zh, <stem>_en.<ext> for en."""
+    if LANG == "en":
+        stem, ext = os.path.splitext(name); name = f"{stem}_en{ext}"
+    return os.path.join(HERE, name)
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 D = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/page.json")))
 for _u in D["users"]:
@@ -45,7 +118,7 @@ def scene(ax, x0=-0.45, x1=1.05, z1=1.55):
     ax.add_patch(Rectangle((x0, -0.04), x1 - x0, z1 + 0.04, color=BG, zorder=0))
     ax.plot([x0, x1], [0, 0], color=MUTED, lw=1.5, zorder=1)
     ax.add_patch(Rectangle((x0, 0), -x0, 0.36, color=BED, zorder=1)); ax.add_patch(Rectangle((x0, 0.36), -x0, 0.06, color=MAT, zorder=1))
-    ax.text(x0 / 2, 0.17, "床", ha="center", va="center", color="#6B7480", fontsize=13)
+    ax.text(x0 / 2, 0.17, T("床"), ha="center", va="center", color="#6B7480", fontsize=13)
     ax.add_patch(Rectangle((0.03, 0), 0.75, 0.04, color=DEV, zorder=2))
 
 def housing(ax, alpha=0.30):
@@ -101,12 +174,20 @@ def strip(ax, cu):
         ax.plot(s[i:i + 2, 0], s[i:i + 2, 1], color=col, lw=6, solid_capstyle="round", zorder=10)
 
 def badge(ax, state, lines, step=None, cap=None):
-    ax.add_patch(FancyBboxPatch((0.30, 1.36), 0.36, 0.12, boxstyle="round,pad=0.01,rounding_size=0.03", color="#FFFFFF", ec="#D9DDE2", zorder=11))
-    ax.text(0.32, 1.42, "状态", color="#6B7480", fontsize=12, va="center", zorder=12)
-    ax.text(0.42, 1.42, state, color=ACC, fontsize=15, fontweight="bold", va="center", zorder=12)
+    box = FancyBboxPatch((0.30, 1.36), 0.36, 0.12, boxstyle="round,pad=0.01,rounding_size=0.03", color="#FFFFFF", ec="#D9DDE2", zorder=11)
+    ax.add_patch(box)
+    lab = ax.text(0.32, 1.42, T("状态"), color="#6B7480", fontsize=12, va="center", zorder=12)
+    x_st = 0.42
+    if LANG == "en":                  # English: state name after the measured label, box grown to fit the name
+        ax.apply_aspect(); r = ax.figure.canvas.get_renderer(); inv = ax.transData.inverted()   # aspect first, else frame 1 is off
+        x_st = inv.transform((lab.get_window_extent(r).x1, 0))[0] + 0.02
+    st = ax.text(x_st, 1.42, T(state), color=ACC, fontsize=15, fontweight="bold", va="center", zorder=12)
+    if LANG == "en":
+        x1 = inv.transform((st.get_window_extent(r).x1, 0))[0]; box.set_width(max(0.36, x1 + 0.02 - 0.30))
+    lines = [l for t in lines for l in t.split("\n")]
     for i, t in enumerate(lines): ax.text(0.30, 1.30 - 0.065 * i, t, color=INK, fontsize=12, zorder=12)
-    if step: ax.text(-0.43, 1.50, step, color=ACC, fontsize=16, fontweight="bold", va="top", zorder=12)
-    if cap: ax.text(-0.43, 1.41, cap, color=INK, fontsize=14, va="top", zorder=12, linespacing=1.5)
+    if step: ax.text(-0.43, 1.50, T(step), color=ACC, fontsize=16, fontweight="bold", va="top", zorder=12)
+    if cap: ax.text(-0.43, 1.41, T(cap), color=INK, fontsize=14, va="top", zorder=12, linespacing=1.5)
 
 def frame_state(fr, released):
     if released: return "站立保持"
@@ -131,16 +212,16 @@ def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True,
         Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]; mechanism(ax, Q, phi)
         c0 = fr.get("cush", {}).get(cush) or {}; dz = (c0.get("sink_mm") or 0) / 1000 if isinstance(flush, bool) else flush
         person(ax, A, sunk(A, fr, dz), bar=hands, rb=A.get("rb", 0.09))
-        badge(ax, state or "已坐上", [f"座板 {Q[1]:.2f} m（坐垫面与床面齐平）· 前倾 {phi:.0f}°", f"人坐进坐垫约 {100 * dz:.0f} cm"], step, cap); return dict(Q=Q, phi=phi)
+        badge(ax, state or "已坐上", [T("座板 {z:.2f} m（坐垫面与床面齐平）· 前倾 {phi:.0f}°", z=Q[1], phi=phi), T("人坐进坐垫约 {cm:.0f} cm", cm=100 * dz)], step, cap); return dict(Q=Q, phi=phi)
     if cu and not cu.get("lost"): Q, phi = cu["Q"], cu["phi"]
     elif fr.get("seat"): Q, phi = fr["seat"]["Q"], fr["seat"]["phi"]
     elif last_seat: Q, phi = last_seat["Q"], last_seat["phi"]
     else: Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]
     mechanism(ax, Q, phi); person(ax, A, fr, bar=hands, rb=A.get("rb", 0.09))
     if cu and not cu.get("lost"): strip(ax, cu)
-    lines = [f"座面 {Q[1]:.2f} m · 前倾 {phi:.0f}°"]
-    if cu and not cu.get("lost"): lines.append(f"坐垫接触 {cu['len_cm']:.0f} cm · 峰值 {cu['p_max']:.0f} kPa")
-    elif released: lines.append("座板停在放手高度")
+    lines = [T("座面 {z:.2f} m · 前倾 {phi:.0f}°", z=Q[1], phi=phi)]
+    if cu and not cu.get("lost"): lines.append(T("坐垫接触 {len:.0f} cm · 峰值 {p:.0f} kPa", len=cu['len_cm'], p=cu['p_max']))
+    elif released: lines.append(T("座板停在放手高度"))
     badge(ax, state or ("站立保持" if released else ("抬升" if fr.get("seat") else "已坐上")), lines, step, cap)
     return dict(Q=Q, phi=phi)
 
@@ -153,14 +234,15 @@ def render_gif(path, user=REF, fps=10):
         if 8 <= n_ < 13:                  # v5.6b: start of the lift: board and person rise together until the foam carries 0.5 BW
             w = (n_ - 7) / 6; Q = (1 - w) * Qf + w * np.array(c0["Q"]); ph = (1 - w) * pf + w * c0["phi"]
             scene(ax); housing(ax); handrail(ax); mechanism(ax, Q, ph); person(ax, A, sunk(A, f0, (1 - w) * dz0), rb=A.get("rb", 0.09))
-            badge(ax, "抬升", [f"座板 {Q[1]:.2f} m · 前倾 {ph:.0f}°", "座板和人一起先升约 3 cm"])
+            badge(ax, "抬升", [T("座板 {z:.2f} m · 前倾 {phi:.0f}°", z=Q[1], phi=ph), T("座板和人一起先升约 3 cm")])
             fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB")); continue
         s = draw_frame(ax, A, fr, last, state=stt, flush=(n_ < 8))
         if fr.get("seat"): last = fr["seat"]
         fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB"))
     q = [im.quantize(colors=96, method=Image.Quantize.MEDIANCUT) for im in imgs]
     q[0].save(path, save_all=True, append_images=q[1:], duration=int(1000 / fps), loop=0, optimize=True, disposal=1)
-    imgs[-1].save(path.replace(".gif", "_last.png")); imgs[len(imgs) // 2].save(path.replace(".gif", "_mid.png")); plt.close(fig)
+    if LANG == "zh": imgs[-1].save(path.replace(".gif", "_last.png")); imgs[len(imgs) // 2].save(path.replace(".gif", "_mid.png"))
+    plt.close(fig)
 
 def render_steps(prefix, user=REF):
     A = D["anim"][user]; fr = A["frames"]; idx_seat = [i for i, f in enumerate(fr) if f.get("seat")]
@@ -173,7 +255,7 @@ def render_steps(prefix, user=REF):
         for f in fr[:k + 1]:
             if f.get("seat"): last = f["seat"]
         draw_frame(ax, A, fr[k], last, hands=(n != 1), state=["已坐上", "已坐上", "抬升", "抬升", "站立保持"][n - 1], flush=(n <= 2))
-        fig.savefig(f"{prefix}{n}.png", facecolor=BG); plt.close(fig)
+        fig.savefig(f"{prefix}{n}{'_en' if LANG == 'en' else ''}.png", facecolor=BG); plt.close(fig)
 
 def render_mech(path):
     fig = plt.figure(figsize=(9.0, 8.0), dpi=120); ax = fig.add_axes([0, 0, 1, 1]); scene(ax, -0.25, 0.95, 1.05); housing(ax, 0.22); handrail(ax)
@@ -220,12 +302,12 @@ def render_force(path):
     fig, axs = plt.subplots(1, 2, figsize=(11.6, 4.4), dpi=120); fig.patch.set_facecolor("#FFFFFF")
     ax = axs[0]
     for k, lab, col in (("hold100", "静载：100 kg 猛坐 1.5 倍体重", RED), ("lift100", "起身：100 kg，座板推 0.5 倍体重", STEEL), ("lift60", "起身：60 kg", ACC)):
-        ax.plot(fc["z"], fc[k], color=col, lw=2.4, label=lab)
-    ax.set_xlabel("座面高度 (m)", fontsize=13); ax.set_ylabel("丝杠推力 (N)", fontsize=13); ax.set_ylim(0, None); ax.grid(alpha=.3); ax.legend(fontsize=11, frameon=False)
+        ax.plot(fc["z"], fc[k], color=col, lw=2.4, label=T(lab))
+    ax.set_xlabel(T("座面高度 (m)"), fontsize=13); ax.set_ylabel(T("丝杠推力 (N)"), fontsize=13); ax.set_ylim(0, None); ax.grid(alpha=.3); ax.legend(fontsize=11, frameon=False)
     ax.tick_params(labelsize=12)
     ax = axs[1]; ax.axhspan(0, 16, color="#E3F1EA"); ax.plot(tc["z"], tc["phi"], color=ACC, lw=2.6)
-    ax.set_xlabel("座面高度 (m)", fontsize=13); ax.set_ylabel("座板前倾 (°)", fontsize=13); ax.set_ylim(-2, 20); ax.grid(alpha=.3); ax.tick_params(labelsize=12)
-    ax.text(tc["z"][0], 17.0, "绿带 = 机构综合时的上限 16°", fontsize=11, color=GOOD)
+    ax.set_xlabel(T("座面高度 (m)"), fontsize=13); ax.set_ylabel(T("座板前倾 (°)"), fontsize=13); ax.set_ylim(-2, 20); ax.grid(alpha=.3); ax.tick_params(labelsize=12)
+    ax.text(tc["z"][0], 17.0, T("绿带 = 机构综合时的上限 16°"), fontsize=11, color=GOOD)
     fig.tight_layout(); fig.savefig(path, facecolor="#FFFFFF"); plt.close(fig)
 
 def render_sensors(path, user=REF):
@@ -241,14 +323,14 @@ def render_sensors(path, user=REF):
 
 def _box(ax, xy, w, h, txt, fc, fs=17, ec=INK):
     ax.add_patch(FancyBboxPatch((xy[0] - w / 2, xy[1] - h / 2), w, h, boxstyle="round,pad=0.02,rounding_size=0.12", facecolor=fc, edgecolor=ec, lw=1.6, zorder=3))
-    ax.text(xy[0], xy[1], txt, ha="center", va="center", fontsize=fs, fontweight="bold", color=INK, zorder=4)
+    ax.text(xy[0], xy[1], T(txt), ha="center", va="center", fontsize=fs, fontweight="bold", color=INK, zorder=4)
 
 def _arrow(ax, a, b, lab="", rad=0.0, lxy=None, fs=12.5, col=STEEL, ls="-"):
     from matplotlib.patches import FancyArrowPatch
     ax.add_patch(FancyArrowPatch(a, b, connectionstyle=f"arc3,rad={rad}", arrowstyle="-|>", mutation_scale=18, lw=1.8, color=col, linestyle=ls, zorder=2, shrinkA=4, shrinkB=4))
     if lab:
         x, y = lxy if lxy else ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
-        ax.text(x, y, lab, ha="center", va="center", fontsize=fs, color=INK, zorder=5, linespacing=1.25,
+        ax.text(x, y, T(lab), ha="center", va="center", fontsize=fs, color=INK, zorder=5, linespacing=1.25,
                 bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none", alpha=0.92))
 
 def render_statemachine(path):
@@ -262,24 +344,25 @@ def render_statemachine(path):
     for k, xy in P.items(): _box(ax, xy, W_ if k != "空座板停住" else 2.3, H_, k, FC.get(k, "#F4F6F8"))
     e = lambda k, dx=0, dy=0: (P[k][0] + dx, P[k][1] + dy)
     _arrow(ax, e("待机", 0.95), e("已坐上", -0.95), "坐上座板", lxy=(2.05, 3.75))
-    _arrow(ax, e("已坐上", 0.95), e("抬升", -0.95), "握紧开关 + 手在杆上\n+ 脚踩实 + 坐正", lxy=(5.5, 3.95))
+    en = LANG == "en"; pos = lambda k, zh_xy: EN_POS[k] if en else zh_xy
+    _arrow(ax, e("已坐上", 0.95), e("抬升", -0.95), "握紧开关 + 手在杆上\n+ 脚踩实 + 坐正", lxy=pos("grip", (5.5, 3.95)), fs=12 if en else 12.5)
     _arrow(ax, e("抬升", 0.95), e("站立保持", -0.95), "离座 0.3 s", lxy=(9.3, 3.75))
-    _arrow(ax, e("站立保持", 1.0), e("空座板停住", -1.15), "人走开", lxy=(12.85, 3.75))
-    _arrow(ax, e("抬升", -0.35, -0.39), e("停住", -0.35, 0.39), "松手 / 故障 / 断电\n/ 推不动或到顶", lxy=(6.2, 2.05))
-    _arrow(ax, e("停住", 0.35, 0.39), e("抬升", 0.35, -0.39), "再握紧", lxy=(8.2, 2.05))
+    _arrow(ax, e("站立保持", 1.0), e("空座板停住", -1.15), "人走开", lxy=pos("leaves", (12.85, 3.75)))
+    _arrow(ax, e("抬升", -0.35, -0.39), e("停住", -0.35, 0.39), "松手 / 故障 / 断电\n/ 推不动或到顶", lxy=pos("release", (6.2, 2.05)))
+    _arrow(ax, e("停住", 0.35, 0.39), e("抬升", 0.35, -0.39), "再握紧", lxy=pos("grip_again", (8.2, 2.05)))
     _arrow(ax, e("停住", -0.95), e("下降", 0.95), "按住“降”", rad=0.0, lxy=(5.5, 0.98))
     _arrow(ax, e("下降", 0.95, -0.2), e("停住", -0.95, -0.2), "松开“降”", lxy=(5.5, 0.22))
-    _arrow(ax, e("已坐上", -0.3, -0.39), e("下降", -0.3, 0.39), "按住“降”\n（座板高于齐平）", lxy=(2.5, 2.05))
-    _arrow(ax, e("下降", 0.3, 0.39), e("已坐上", 0.3, -0.39), "到齐平", lxy=(4.4, 2.05))
-    _arrow(ax, e("站立保持", -0.5, -0.39), e("停住", 0.95, 0.1), "坐回：座板不动，接住人", rad=-0.15, lxy=(10.6, 1.75))
+    _arrow(ax, e("已坐上", -0.3, -0.39), e("下降", -0.3, 0.39), "按住“降”\n（座板高于齐平）", lxy=pos("hold_down_up", (2.5, 2.05)))
+    _arrow(ax, e("下降", 0.3, 0.39), e("已坐上", 0.3, -0.39), "到齐平", lxy=pos("at_flush", (4.4, 2.05)))
+    _arrow(ax, e("站立保持", -0.5, -0.39), e("停住", 0.95, 0.1), "坐回：座板不动，接住人", rad=-0.15, lxy=pos("sitback", (10.6, 1.75)))
     ax.plot([14.5, 14.5, 3.6], [3.8, 4.38, 4.38], color=MUTED, lw=1.8, zorder=2)
     _arrow(ax, (3.6, 4.38), e("已坐上", 0.0, 0.40), "", col=MUTED)
-    ax.text(9.0, 4.38, "回床：按住“降”，空座板停在回床高度（默认 0.50 m），坐上去；再按住“降”降到床面（空着时松开再按住，也降到床面）", ha="center", va="center", fontsize=12.5, color=INK, zorder=5,
+    ax.text(9.0, 4.38, T("回床：按住“降”，空座板停在回床高度（默认 0.50 m），坐上去；再按住“降”降到床面（空着时松开再按住，也降到床面）"), ha="center", va="center", fontsize=12 if en else 12.5, color=INK, zorder=5,
             bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="none"))
-    ax.text(14.5, 2.15, "任意状态", ha="center", va="center", fontsize=13, color=MUTED)
+    ax.text(*pos("anystate", (14.5, 2.15)), T("任意状态"), ha="center", va="center", fontsize=13, color=MUTED)
     _arrow(ax, (14.5, 1.95), e("锁定", 0, 0.42), "", col=RED, ls="--")
-    ax.text(14.25, 1.62, "自检：抬升中力之和与体重差\n15–35%：减速 + 语音提示\n>35% 或空载零点不过（0.5 s）\n→ 锁定，只能按住“降”慢降", ha="right", va="center", fontsize=12, color=INK, linespacing=1.3)
-    ax.text(7.4, -0.12, "停住时坐着很久不动：提醒并呼叫家属，座板不会自己动", ha="center", va="center", fontsize=13, color=ACC, fontweight="bold")
+    ax.text(*pos("selfcheck", (14.25, 1.62)), T("自检：抬升中力之和与体重差\n15–35%：减速 + 语音提示\n>35% 或空载零点不过（0.5 s）\n→ 锁定，只能按住“降”慢降"), ha="right", va="center", fontsize=12, color=INK, linespacing=1.3)
+    ax.text(7.4, -0.12, T("停住时坐着很久不动：提醒并呼叫家属，座板不会自己动"), ha="center", va="center", fontsize=13, color=ACC, fontweight="bold")
     fig.savefig(path, facecolor="#FFFFFF"); plt.close(fig)
 
 def render_top(path):
@@ -317,7 +400,16 @@ def render_top(path):
     ax.text((Y["base_open"] + Y["base_head"]) / 2 - 0.05, 0.93, f"台架沿床长占 {100 * (Y['base_head'] - Y['base_open']):.0f} cm", fontsize=12, color=INK, ha="center", va="bottom")
     fig.savefig(path, facecolor=BG); plt.close(fig)
 
+def main_en():
+    """English copies of the figures the deck uses (seat_top/mech/sensors/vs_vertical are no longer on any slide)."""
+    set_lang("en")
+    render_force(out("seat_force.png")); render_statemachine(out("seat_statemachine.png"))
+    render_steps(os.path.join(HERE, "seat_step")); render_gif(out("seat_rise.gif"))
+    print("done (en)")
+
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(); ap.add_argument("--lang", choices=("zh", "en"), default="zh"); args = ap.parse_args()
+    if args.lang == "en": main_en(); raise SystemExit
     render_force(os.path.join(HERE, "seat_force.png")); render_sensors(os.path.join(HERE, "seat_sensors.png"))
     render_statemachine(os.path.join(HERE, "seat_statemachine.png")); render_top(os.path.join(HERE, "seat_top.png"))
     render_gif(os.path.join(HERE, "seat_rise.gif")); render_steps(os.path.join(HERE, "seat_step")); render_mech(os.path.join(HERE, "seat_mech.png")); render_vs(os.path.join(HERE, "seat_vs_vertical.png"))

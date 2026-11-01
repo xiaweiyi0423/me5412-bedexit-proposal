@@ -1,8 +1,10 @@
 """Figures for the mechanism-design slides (deck v5.7): where the seat must go, five candidate mechanisms, how the
 inclined rail + tilt link was sized. All geometry comes from model/calc_v13/seat_1dof/{page,v5,fourbar_oneside}.json.
-Output: presentation/assets_v57/{md_target,md_candidates,md_synthesis}.png
+Output: presentation/assets_v57/{md_target,md_candidates,md_synthesis}.png (default, Chinese)
+  python mech_design_figs.py --lang en --out presentation/assets_en   ->  md_*_en.png (English labels, same geometry/size)
+Importing this module (e.g. prep_design.py uses fourbar_frames) does not write any file.
 """
-import json, os, sys
+import argparse, json, os, sys
 import numpy as np
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -18,13 +20,37 @@ P = J("page.json"); V5 = J("v5.json"); OS = J("fourbar_oneside.json")
 M = P["mech"]; Z0 = P["consts"]["Z0"]
 
 plt.rcParams["font.sans-serif"] = ["Noto Sans CJK SC", "WenQuanYi Zen Hei", "DejaVu Sans"]; plt.rcParams["axes.unicode_minus"] = False
+FONTS = {"zh": ["Noto Sans CJK SC", "WenQuanYi Zen Hei", "DejaVu Sans"], "en": ["Inter", "DejaVu Sans"]}
+LABELS = {
+    "zh": dict(
+        bed="床",
+        t_vert="竖直升降\n11/81 合格", t_grey="灰线：81 人各自\n理想的座板路径", t_design="橙线：设计曲线",
+        t_mech="黑虚线：机构实际走的\n（最多差 8 mm）", t_start="起点：和床面齐平",
+        t_xlabel="座板中心在床沿前（cm）", t_ylabel="座面高度（cm）",
+        c_vert="竖直升降", c_mid="四连杆 · 座板正下方中间", c_sides="四连杆 · 两腿外侧各一套", c_oneside="四连杆 · 只在床头一侧",
+        c_slider="斜导轨 + 倾角连杆（采用）",
+        s_p1="铰点 1：轨迹是直线\n→ 装滑块，走导轨", s_p2="铰点 2：轨迹是圆弧\n→ 连杆拉到 B", s_q="座板中心\n贴住设计曲线",
+    ),
+    "en": dict(
+        bed="Bed",
+        t_vert="Vertical lift\n11/81 pass", t_grey="Grey: ideal seat paths\nof 81 simulated users", t_design="Orange: design path",
+        t_mech="Dashed: mechanism\n(max. 8 mm off)", t_start="Start: flush with bed",
+        t_xlabel="Seat centre ahead of bed edge (cm)", t_ylabel="Seat height (cm)",
+        c_vert="Vertical lift", c_mid="Four-bar under the seat", c_sides="Four-bar on both sides", c_oneside="Four-bar, bed-head side",
+        c_slider="Inclined guide + tilt link",
+        s_p1="Pivot 1 path: straight line\n→ carriage on guide", s_p2="Pivot 2 path: arc\n→ link to B", s_q="Seat centre follows\nthe design path",
+    ),
+}
+LANG = "zh"; SUFFIX = ""
+L = lambda k: LABELS[LANG][k]
+out_png = lambda name: os.path.join(OUT, name + SUFFIX + ".png")
 INK, BODY, MUTED, OR, G1, G2, BLUE, GREEN, RED, BED = "#18202A", "#3F4A57", "#66707C", "#B4620A", "#C3C9D1", "#7D8792", "#2F5A95", "#2F7A55", "#A2431F", "#E3E6EA"
 
 
 def bed(ax, x0=-0.12, cm=False, label_z=None):
     k = 100 if cm else 1
     ax.add_patch(Rectangle((x0 * k, 0), -x0 * k, Z0 * k, fc=BED, ec="none", zorder=0))
-    ax.text(x0 * k / 2, label_z if label_z is not None else Z0 * k * 0.5, "床", ha="center", va="center", color=MUTED, fontsize=11)
+    ax.text(x0 * k / 2, label_z if label_z is not None else Z0 * k * 0.5, L("bed"), ha="center", va="center", color=MUTED, fontsize=11)
 
 
 # ---------------------------------------------------------------- A: target path
@@ -38,16 +64,16 @@ def fig_target():
     ax.plot(Qm[:, 0], Qm[:, 1], color=INK, lw=1.8, ls=(0, (4, 3)), zorder=4)
     x0 = Qd[0, 0]; ax.plot([x0, x0], [Z0 * 100, 69], color=RED, lw=2.4, ls=(0, (6, 3)), zorder=2)
     bed(ax, -0.10, cm=True, label_z=40)
-    ax.text(x0 - 1.0, 63, "竖直升降\n11/81 合格", color=RED, fontsize=FS, ha="right", va="center")
-    ax.annotate("灰线：81 人各自\n理想的座板路径", xy=(19.5, 57), xytext=(26, 45), fontsize=FS, color=BODY, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.9))
-    ax.annotate("橙线：设计曲线", xy=(Qd[-15, 0], Qd[-15, 1]), xytext=(10, 71.2), fontsize=FS, color=OR, arrowprops=dict(arrowstyle="-", color=OR, lw=0.9))
-    ax.annotate("黑虚线：机构实际走的\n（最多差 8 mm）", xy=(Qm[-4, 0], Qm[-4, 1]), xytext=(26, 60), fontsize=FS, color=INK, arrowprops=dict(arrowstyle="-", color=INK, lw=0.9))
-    ax.plot([x0], [Z0 * 100], "o", color=INK, ms=6, zorder=5); ax.text(x0 + 0.8, Z0 * 100 - 2.0, "起点：和床面齐平", fontsize=FS - 2, color=BODY)
+    ax.text(x0 - 1.0, 63, L("t_vert"), color=RED, fontsize=FS, ha="right", va="center")
+    ax.annotate(L("t_grey"), xy=(19.5, 57), xytext=(26, 45), fontsize=FS, color=BODY, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.9))
+    ax.annotate(L("t_design"), xy=(Qd[-15, 0], Qd[-15, 1]), xytext=(10, 71.2), fontsize=FS, color=OR, arrowprops=dict(arrowstyle="-", color=OR, lw=0.9))
+    ax.annotate(L("t_mech"), xy=(Qm[-4, 0], Qm[-4, 1]), xytext=(26, 60), fontsize=FS, color=INK, arrowprops=dict(arrowstyle="-", color=INK, lw=0.9))
+    ax.plot([x0], [Z0 * 100], "o", color=INK, ms=6, zorder=5); ax.text(x0 + 0.8, Z0 * 100 - 2.0, L("t_start"), fontsize=FS - 2, color=BODY)
     ax.set_xlim(-10, 44); ax.set_ylim(38, 73); ax.set_aspect("equal")
-    ax.set_xlabel("座板中心在床沿前（cm）", fontsize=FS - 1, color=BODY); ax.set_ylabel("座面高度（cm）", fontsize=FS - 1, color=BODY)
+    ax.set_xlabel(L("t_xlabel"), fontsize=FS - 1, color=BODY); ax.set_ylabel(L("t_ylabel"), fontsize=FS - 1, color=BODY)
     for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
     ax.tick_params(colors=MUTED, labelsize=FS - 3); ax.grid(alpha=0.25)
-    fig.tight_layout(); fig.savefig(os.path.join(OUT, "md_target.png"), facecolor="white"); plt.close(fig)
+    fig.tight_layout(); fig.savefig(out_png("md_target"), facecolor="white"); plt.close(fig)
 
 
 # ---------------------------------------------------------------- four-bar forward kinematics (for the one-side layout)
@@ -84,9 +110,9 @@ def pivot(ax, p, ground=False, z=6):
 def fig_candidates():
     mid, sides = V5["layouts"]["mid"]["mech"], V5["layouts"]["sides"]["mech"]
     osd = OS["mech"]; os_frames = fourbar_frames(osd, 0.69)
-    panels = [("竖直升降", "vert", None), ("四连杆 · 座板正下方中间", "fb", (mid, mid["frames"])),
-              ("四连杆 · 两腿外侧各一套", "fb", (sides, sides["frames"])), ("四连杆 · 只在床头一侧", "fb", (osd, os_frames)),
-              ("斜导轨 + 倾角连杆（采用）", "slider", (M, M["frames"]))]
+    panels = [(L("c_vert"), "vert", None), (L("c_mid"), "fb", (mid, mid["frames"])),
+              (L("c_sides"), "fb", (sides, sides["frames"])), (L("c_oneside"), "fb", (osd, os_frames)),
+              (L("c_slider"), "slider", (M, M["frames"]))]
     fig, axs = plt.subplots(1, 5, figsize=(17, 4.4), dpi=200)
     for ax, (title, kind, data) in zip(axs, panels):
         bed(ax, -0.12); ax.plot([-0.12, 0.58], [0, 0], color=G2, lw=1.2, zorder=0)
@@ -117,8 +143,9 @@ def fig_candidates():
                 if al == 1.0: pivot(ax, f["P1"]); pivot(ax, f["P2"])
             pivot(ax, M["B"], ground=True)
         ax.set_xlim(-0.12, 0.58); ax.set_ylim(-0.02, 0.90); ax.set_aspect("equal"); ax.axis("off")
-        ax.set_title(title, fontsize=19, color=INK if "采用" not in title else OR, fontweight="bold" if "采用" in title else "normal", pad=4)
-    fig.subplots_adjust(left=0.01, right=0.99, bottom=0.02, top=0.90, wspace=0.05); fig.savefig(os.path.join(OUT, "md_candidates.png"), facecolor="white"); plt.close(fig)
+        chosen = kind == "slider"  # the adopted mechanism: orange + bold
+        ax.set_title(title, fontsize=19, color=OR if chosen else INK, fontweight="bold" if chosen else "normal", pad=4)
+    fig.subplots_adjust(left=0.01, right=0.99, bottom=0.02, top=0.90, wspace=0.05); fig.savefig(out_png("md_candidates"), facecolor="white"); plt.close(fig)
     # sanity: the one-side four-bar re-simulated here should match its stored path error roughly
     Qd = np.array(P["design_curve"]["poses"]["Q"]); Qo = np.array([f["Q"] for f in os_frames])
     err = max(np.hypot(*(Qo - q).T).min() for q in Qd[Qd[:, 1] <= Qo[:, 1].max()])
@@ -147,13 +174,21 @@ def fig_synthesis():
     pivot(ax, B, ground=True, z=7)
     mid = lambda a: a[len(a) // 2]
     FS = 17
-    ax.annotate("铰点 1：轨迹是直线\n→ 装滑块，走导轨", xy=mid(P1), xytext=(-0.115, 0.84), fontsize=FS, color=BLUE, arrowprops=dict(arrowstyle="-", color=BLUE, lw=0.9))
-    ax.annotate("铰点 2：轨迹是圆弧\n→ 连杆拉到 B", xy=mid(P2), xytext=(0.07, 0.02), fontsize=FS, color=GREEN, arrowprops=dict(arrowstyle="-", color=GREEN, lw=0.9))
+    ax.annotate(L("s_p1"), xy=mid(P1), xytext=(-0.115, 0.84), fontsize=FS, color=BLUE, arrowprops=dict(arrowstyle="-", color=BLUE, lw=0.9))
+    ax.annotate(L("s_p2"), xy=mid(P2), xytext=(0.07, 0.02), fontsize=FS, color=GREEN, arrowprops=dict(arrowstyle="-", color=GREEN, lw=0.9))
     ax.text(B[0] + 0.012, B[1] + 0.025, "B", fontsize=FS, color=INK)
-    ax.annotate("座板中心\n贴住设计曲线", xy=(Q[-8, 0], Q[-8, 1]), xytext=(0.36, 0.70), fontsize=FS, color=OR, arrowprops=dict(arrowstyle="-", color=OR, lw=0.9))
+    ax.annotate(L("s_q"), xy=(Q[-8, 0], Q[-8, 1]), xytext=(0.36, 0.70), fontsize=FS, color=OR, arrowprops=dict(arrowstyle="-", color=OR, lw=0.9))
     ax.set_xlim(-0.12, 0.66); ax.set_ylim(-0.02, 0.92); ax.set_aspect("equal"); ax.axis("off")
-    fig.tight_layout(); fig.savefig(os.path.join(OUT, "md_synthesis.png"), facecolor="white"); plt.close(fig)
+    fig.tight_layout(); fig.savefig(out_png("md_synthesis"), facecolor="white"); plt.close(fig)
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--lang", choices=("zh", "en"), default="zh")
+    ap.add_argument("--out", default=None, help="output directory (default presentation/assets_v57)")
+    a = ap.parse_args()
+    LANG = a.lang; SUFFIX = "" if LANG == "zh" else "_" + LANG
+    if a.out: OUT = os.path.abspath(a.out)
+    os.makedirs(OUT, exist_ok=True)
+    plt.rcParams["font.sans-serif"] = FONTS[LANG]
     fig_target(); fig_candidates(); fig_synthesis(); print("figures written to", OUT)

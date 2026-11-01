@@ -12,8 +12,48 @@ const C = { ink: '#07090D', ink2: '#0E131A', paper: '#F2F4F7', acc: '#19D3F0', a
 
 // ------------------------------------------------------------------ type layer
 const TX = {}, txt = document.getElementById('txt');
-function T(id, html, css) { const e = document.createElement('div'); e.className = 't ' + (css.cls || ''); e.innerHTML = html; Object.assign(e.style, css.s || {}); txt.appendChild(e); TX[id] = e; return e; }
+// language: ?lang=en (or window.LANG = 'en') makes English the main caption everywhere; default zh keeps the original film
+const LANG = window.LANG || new URLSearchParams(location.search).get('lang') || 'zh', EN_ON = LANG === 'en';
+if (EN_ON) { txt.style.fontFamily = "'Inter Tight','Inter',sans-serif"; txt.style.letterSpacing = '-0.01em'; document.documentElement.lang = 'en'; }
+const L = (zh, en) => EN_ON ? en : zh;
+const ACC = w => `<span style="color:#19D3F0">${w}</span>`, SUBL = (w, px = 44, col = '#A8B4C4') => `<br><span style="font-size:${px}px;font-weight:700;color:${col}">${w}</span>`;
+const ENT = {   // id: {h: html, s: style overrides} used when EN_ON
+  a_h: { h: 'Night. An older adult<br>gets up from the bed edge.', s: { fontSize: '80px' } }, a_s: { h: `Every rise draws a ${ACC('line')}` },
+  b_l1: { h: 'Bed too low', s: { fontSize: '150px' } }, b_l2: { h: '→ can’t stand up' }, b_h1: { h: 'Bed too high', s: { fontSize: '150px' } }, b_h2: { h: '→ feet don’t reach the floor' },
+  b_tag: { h: 'PROBLEM' }, b_sum: { h: 'A fixed-height bed can’t do both' },
+  c_1: { h: `Normally,<br>${ACC('as low as the bed.')}`, s: { fontSize: '64px', lineHeight: 1.12 } }, c_2: { h: `When you rise,<br>${ACC('it rises with you.')}`, s: { fontSize: '64px', lineHeight: 1.12 } },
+  d_t: { h: 'Bed-Exit Seat', s: { fontSize: '196px' } }, d_e: { h: 'SIT-TO-STAND AT THE BEDSIDE', s: { fontSize: '40px', fontWeight: 700 } },
+  e_tag: { h: 'HARDWARE' }, e_big: { h: `One motor,<br>${ACC('one degree<br>of freedom')}`, s: { fontSize: '76px' } }, e_dof: { h: `3 pivots + 1 slider = ${ACC('1 DOF')}` },
+  f_tag: { h: 'MOTION' }, f_1: { h: 'The seat doesn’t go straight up' }, f_2: { h: `Forward · up · tilt${SUBL('moving with the thigh', 52)}` }, f_3: { h: `You stand, ${ACC('the seat stops')}` },
+  g_tag: { h: 'HOW TO' }, h_tag: { h: 'SENSING' }, h_1: { h: 'Before rising, four checks', s: { fontSize: '72px' } },
+  h_2: { h: `Hold to rise<br>Release to stop<br>${ACC('Brake on power loss')}`, s: { fontSize: '60px' } },
+  i_t: { h: 'Bed-Exit Seat', s: { fontSize: '104px' } }, i_s: { h: 'Helping older adults get up on their own', s: { fontSize: '34px' } },
+  x_tag: { h: 'TRAJECTORY' }, x_d1: { h: `The seat ${ACC('follows the thigh')}` },
+  x_d2: { h: `Worked out for ${ACC('81 bodies')}${SUBL('Height · build · way of rising · foot position')}` }, x_d3: { h: `Just ${ACC('one guide + one link')}` },
+  x_0: { h: `How a line is drawn${SUBL('The seat “sticks” under the thigh and rises with it')}` }, x_c: { h: 'The seat centre’s points join into a line' },
+  x_0b: { h: `Another person, another line${SUBL('Height × build × way of rising × foot position = 81 people')}` },
+  x_1: { h: `First, draw the lines${SUBL('81 people: where the seat should go for each')}` },
+  x_2: { h: `Pick one <span style="color:#fff;text-shadow:0 0 24px #19D3F0">design path</span>${SUBL('Tried on all 81 people: it still works for the hardest case')}` },
+  x_3: { h: `Then find the points${SUBL('Every point on the seat traces its own path')}` }, x_l1: { h: 'Guide' }, x_l2: { h: 'Link' },
+  x_4: { h: 'Of five structures, it fits best with least effort' },
+  n_81: { h: '<span class="lat" style="font-size:150px;font-weight:900;color:#19D3F0;line-height:1">0</span><span style="font-size:40px;font-weight:700;margin-left:16px">body types</span>' },
+  n_h: { h: 'Height 1.50–1.75 m' }, n_err: { h: 'Path error ≤ 8 mm' },
+  x_v: { h: `Not straight up: ${ACC('it stays with the thigh')}` },
+  x_c0: { h: `Straight up<br><span style="font-size:30px;font-weight:700;color:#8A96A6">Seat soon leaves the thigh</span>` }, x_c1: { h: 'Inclined guide + tilt link' },
+  x_fb: { h: 'Four-bar layouts also tried: hit the shin, block the legs, or overload' }, x_ok: { h: `One four-bar link, swapped for a ${ACC('guide')}` },
+  k_1: { h: `Mechanism on the ${ACC('bed-head side')}` }, k_2: { h: `Foot end ${ACC('open')}<br><span style="font-size:28px;font-weight:700;color:#A8B4C4">Legs swing through, out of bed and back</span>` },
+  k_tag: { h: 'IN THE ROOM' }, m_tag: { h: 'HOW IT MOVES' },
+};
+const ENP = {   // id: o -> o, position tweaks where English is wider (EN_ON only)
+  c_1: o => ({ ...o, x: 1010, y: o.y - 90 }), c_2: o => ({ ...o, x: 1010, y: o.y - 30 }),
+  d_t: o => ({ ...o, ls: o.ls === undefined ? o.ls : 0.02 + (o.ls - 0.06) * 0.35 }),
+  d_e: o => ({ ...o, ls: o.ls === undefined ? o.ls : 0.18 + (o.ls - 0.32) * 0.5 }),
+  i_t: o => ({ ...o, x: o.x === 420 ? 540 : o.x, ls: o.ls === undefined ? o.ls : 0.0 + (o.ls - 0.05) * 0.3 }), i_s: o => ({ ...o, x: o.x === 420 ? 540 : o.x }),
+};
+function T(id, html, css) { if (EN_ON && ENT[id]) { html = ENT[id].h; css = Object.assign({}, css, { s: Object.assign({}, css.s, ENT[id].s) }); }
+  const e = document.createElement('div'); e.className = 't ' + (css.cls || ''); e.innerHTML = html; Object.assign(e.style, css.s || {}); txt.appendChild(e); TX[id] = e; return e; }
 function show(id, o = {}) {           // o: {op, x, y, sc, dx, dy, blur, ls, col, ax (anchor 0..1)}
+  if (EN_ON && ENP[id]) o = ENP[id](o);
   const e = TX[id]; e.style.opacity = o.op ?? 1; if (o.x !== undefined) e.style.left = o.x + 'px'; if (o.y !== undefined) e.style.top = o.y + 'px';
   const ax = o.ax ?? 0, ay = o.ay ?? 0;
   e.style.transform = `translate(${-ax * 100}%,${-ay * 100}%) translate(${o.dx || 0}px,${o.dy || 0}px) scale(${o.sc ?? 1})`;
@@ -38,11 +78,12 @@ T('d_t', '床边起身台', { s: { ...big(232), backgroundImage: 'linear-gradien
 T('d_e', 'BED-EXIT SEAT', { cls: 'lat', s: { fontSize: '62px', fontWeight: 800, color: C.acc, letterSpacing: '.32em' } });
 T('d_g', 'ME5412 ROBOTICS FOR HEALTHCARE · GROUP 16', mono(24));
 // hero
-const PARTS_LAB = ['底座 · 踏板', '导轨安装板 · 连杆支座', '斜导轨 + 滚珠丝杠', '电机 · 失电制动', '滑块', '倾角连杆', '座板 · 分区坐垫', 'L 形扶手 · 握把开关'];
+const PARTS_LAB = L(['底座 · 踏板', '导轨安装板 · 连杆支座', '斜导轨 + 滚珠丝杠', '电机 · 失电制动', '滑块', '倾角连杆', '座板 · 分区坐垫', 'L 形扶手 · 握把开关'],
+  ['Base · footplate', 'Guide mount · link bracket', 'Inclined guide + ball screw', 'Motor · power-off brake', 'Carriage', 'Tilt link', 'Seat · zoned cushion', 'L-shaped grab bar · grip switch']);
 T('e_tag', 'HARDWARE / 结构', mono(24));
 PARTS_LAB.forEach((w, i) => T('e_l' + i, `<span class="mono" style="color:#19D3F0;font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '36px', fontWeight: 700 } }));
 T('e_big', '一个电机<br><span style="color:#19D3F0">一个自由度</span>', { s: big(96) });
-[['双导轨 + 滚珠丝杠：扛住偏载', C.acc], ['握把开关：握紧才升', C.amb]].forEach(([w, c], i) => T('e_k' + i, `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: '40px', fontWeight: 700 } }));
+L([['双导轨 + 滚珠丝杠：扛住偏载', C.acc], ['握把开关：握紧才升', C.amb]], [['Twin guides + ball screw<br>carry the offset load', C.acc], ['Grip switch: hold to rise', C.amb]]).forEach(([w, c], i) => T('e_k' + i, EN_ON ? `<span class="mono" style="color:${c};font-size:24px;margin-right:18px;vertical-align:top;line-height:${i ? 1.05 : 1.6}">0${i + 1}</span><span style="display:inline-block;vertical-align:top;line-height:1.1">${w}</span>` : `<span class="mono" style="color:${c};font-size:24px;margin-right:18px">0${i + 1}</span>${w}`, { s: { fontSize: EN_ON ? '38px' : '40px', fontWeight: 700 } }));
 T('e_sub', 'MOTOR → BELT → BALL SCREW → CARRIAGE', mono(26, '#A8B4C4'));
 T('e_dof', '3 个铰点 + 1 个滑块 = <span style="color:#19D3F0">1 个自由度</span>', { s: big(34, 700) });
 // mechanism
@@ -50,10 +91,11 @@ T('f_tag', 'MOTION / 运动', mono(24));
 T('f_1', '座板不是直上直下', { s: big(84) });
 T('f_2', '前移 · 上升 · 前倾<br><span style="font-size:52px;font-weight:700;color:#A8B4C4">跟着大腿一起走</span>', { s: big(84) });
 T('f_3', '人站稳，<span style="color:#19D3F0">座板停住</span>', { s: big(84) });
-['前移', '上升', '前倾'].forEach((w, i) => T('f_a' + i, w, { s: { ...big(40, 700), color: C.acc } }));
+L(['前移', '上升', '前倾'], ['Forward', 'Up', 'Tilt']).forEach((w, i) => T('f_a' + i, w, { s: { ...big(40, 700), color: C.acc } }));
 // how to
 T('g_tag', 'HOW TO / 用法', mono(24, '#5A6575'));
-const STEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']];
+const STEPS = L([['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']],
+  [['Slide onto the seat', 'Level with the bed: just slide across'], ['Hold the switch', 'Hold to rise'], ['Rise together', 'Supports hips and thighs,<br>so you don’t slide forward'], ['Let go, it stops', 'The seat stays put,<br>ready if you sit back down']]);
 STEPS.forEach(([a, b], i) => {
   T('g_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '210px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #07090D', lineHeight: 1 } });
   T('g_a' + i, a, { s: { ...big(96), color: C.ink } });
@@ -63,7 +105,8 @@ T('g_stop', 'STOP', { cls: 'lat', s: { fontSize: '44px', fontWeight: 900, color:
 // sensing
 T('h_tag', 'SENSING / 传感', mono(24));
 T('h_1', '起身之前，四处确认', { s: big(76) });
-const SENS = [['座下测力', '坐稳了没有'], ['横杆测力', '手在不在'], ['握把开关', '握紧才升'], ['踏板测力', '脚踩实了没有']];
+const SENS = L([['座下测力', '坐稳了没有'], ['横杆测力', '手在不在'], ['握把开关', '握紧才升'], ['踏板测力', '脚踩实了没有']],
+  [['Seat load', 'Seated properly?'], ['Bar load', 'Hands on?'], ['Grip switch', 'Held?'], ['Footplate load', 'Feet planted?']]);
 SENS.forEach(([a, b], i) => T('h_s' + i, `<div style="font-size:38px;font-weight:900">${a}</div><div style="font-size:28px;font-weight:500;color:#A8B4C4;margin-top:4px">${b}</div>`, { s: {} }));
 T('h_2', '握紧才升<br>松手即停<br><span style="color:#19D3F0">失电制动</span>', { s: { ...big(72), lineHeight: 1.3 } });
 // end
@@ -489,8 +532,9 @@ T('x_v', '不是直上直下，而是<span style="color:#19D3F0">一路贴着大
 T('x_c0', '直上直下<br><span style="font-size:30px;font-weight:700;color:#8A96A6">座板很快离开大腿</span>', { s: { ...big(46, 900), color: '#C9D3DF', textAlign: 'center' } });
 T('x_c1', '斜导轨 + 倾角连杆', { s: { ...big(46, 900), color: C.acc, textAlign: 'center' } });
 T('x_fb', '四连杆也比过：会碰小腿、挡腿，或受力太大', { s: { ...big(36, 700), color: '#FFB020' } });
-['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'].forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
-const CANDN = ['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], CANDR = ['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'];
+L(['① 跟得上设计曲线', '② 床尾敞开，腿能转回床', '③ 受力小'], ['① Follows the design path', '② Foot end open: legs swing back', '③ Low forces']).forEach((w, k) => T('x_g' + k, w, { s: big(38, 900) }));
+const CANDN = L(['竖直升降', '四连杆 · 中间', '四连杆 · 两侧', '四连杆 · 床头一侧', '斜导轨 + 倾角连杆'], ['Vertical lift', 'Four-bar · middle', 'Four-bar · both sides', 'Four-bar · head side', 'Inclined guide + tilt link']),
+  CANDR = L(['跟不上大腿', '会碰小腿', '回床时挡腿', '受力太大', '最贴合 · 最省力'], ['Can’t follow the thigh', 'Hits the shin', 'Blocks the legs', 'Forces too high', 'Best fit · least effort']);
 CANDN.forEach((n, i) => { T('x_p' + i, n, { s: { ...big(32, 900), color: i === 4 ? C.acc : '#fff' } }); T('x_r' + i, CANDR[i], { s: { ...big(28, 700), color: i === 4 ? '#fff' : '#8A96A6' } }); });
 T('x_ok', '四连杆的一根杆，换成一条<span style="color:#19D3F0">导轨</span>', { s: { ...big(40, 700), color: '#C9D3DF' } });
 const LIME = '#8CF5A6';
@@ -940,11 +984,12 @@ function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade
 }
 
 // ------------------------------------------------------------------ merged "how it moves": the four steps, 2.5D turning to the flat side view, the path and arrows inside step 03
-const MSTEPS = [['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', ''], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']];
+const MSTEPS = L([['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', ''], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']],
+  [['Slide onto the seat', 'Level with the bed: just slide across'], ['Hold the switch', ''], ['Rise together', 'Supports hips and thighs,<br>so you don’t slide forward'], ['Let go, it stops', 'The seat stays put,<br>ready if you sit back down']]);
 T('m_tag', 'HOW IT MOVES / 起身', mono(24));
 MSTEPS.forEach(([a, b], i) => {
   T('m_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '170px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #FFFFFF', lineHeight: 1 } });
-  T('m_a' + i, a, { s: { ...big(84), color: '#fff' } }); T('m_b' + i, b, { s: { ...big(38, 500), color: '#A8B4C4' } });
+  T('m_a' + i, a, { s: { ...big(EN_ON ? 76 : 84), color: '#fff' } }); T('m_b' + i, b, { s: { ...big(38, 500), color: '#A8B4C4' } });
 });
 const MT = [0, 1.5, 2.5, 5.0, 6.5];   // step starts (local)
 function secM(u) {   // u: 0..6.5
@@ -984,7 +1029,7 @@ function secM(u) {   // u: 0..6.5
     const f = kinAt(s), ph = f[3] * Math.PI / 180, back = [(f[1] - 85 * Math.cos(ph)) / 1000, (f[2] + 85 * Math.sin(ph)) / 1000], front = [(f[1] + 120 * Math.cos(ph)) / 1000, (f[2] - 120 * Math.sin(ph)) / 1000], lvl = [back[0] + 0.205, back[1]];
     const pb = V0.map(back), pf = V0.map(front), pl = V0.map(lvl); fg.save(); fg.globalAlpha = ta; fg.strokeStyle = '#FFFFFF'; fg.lineWidth = 2; fg.setLineDash([8, 7]); fg.beginPath(); fg.moveTo(...pb); fg.lineTo(...pl); fg.stroke(); fg.setLineDash([]);
     fg.strokeStyle = C.acc; fg.lineWidth = 4; fg.beginPath(); fg.moveTo(...pb); fg.lineTo(...pf); fg.stroke(); const rr = 0.14 * V0.sc; fg.beginPath(); fg.arc(pb[0], pb[1], rr, 0, ph); fg.stroke(); fg.restore();
-    TX.f_a2.innerHTML = `前倾 <span class="lat" style="font-size:52px;font-weight:900">${Math.round(f[3])}°</span>`; show('f_a2', { x: pb[0] - 30, y: pb[1] - 40, ax: 1, ay: 0.5, op: ta }); }
+    TX.f_a2.innerHTML = `${L('前倾', 'Tilt')} <span class="lat" style="font-size:52px;font-weight:900">${Math.round(f[3])}°</span>`; show('f_a2', { x: pb[0] - 30, y: pb[1] - 40, ax: 1, ay: 0.5, op: ta }); }
   // step 02: grip pulses on the beats
   if (u >= 1.5 && u < 2.75) { const c = V.map(HAND_BAR); for (let bt = 2.0; bt <= u; bt += BEAT) { const k = u - bt; if (k > 0.5) continue; fg.save(); fg.strokeStyle = C.amb; fg.globalAlpha = 1 - k / 0.5; fg.lineWidth = 5; fg.beginPath(); fg.arc(c[0], c[1], 26 + 90 * k, 0, 7); fg.stroke(); fg.restore(); } }
   // step 04: seat held, STOP
@@ -1013,7 +1058,7 @@ const EN = {   // id: [english, px, colour]
   h_1: ['Four checks before rising', 28], 
   i_s: ['Helping older adults get up on their own', 22],
 };
-for (const [id, [txt, px, col]] of Object.entries(EN)) { const d = document.createElement('div'); d.className = 'lat'; d.textContent = txt; Object.assign(d.style, { fontSize: px + 'px', fontWeight: 500, color: col || '#8FA0B5', letterSpacing: '0.01em', marginTop: '6px', lineHeight: 1.25, whiteSpace: 'nowrap', textAlign: 'inherit', textShadow: 'none', WebkitTextStroke: '0', background: 'none' }); TX[id].appendChild(d); }
+if (!EN_ON) for (const [id, [txt, px, col]] of Object.entries(EN)) { const d = document.createElement('div'); d.className = 'lat'; d.textContent = txt; Object.assign(d.style, { fontSize: px + 'px', fontWeight: 500, color: col || '#8FA0B5', letterSpacing: '0.01em', marginTop: '6px', lineHeight: 1.25, whiteSpace: 'nowrap', textAlign: 'inherit', textShadow: 'none', WebkitTextStroke: '0', background: 'none' }); TX[id].appendChild(d); }
 const SH = f => t => f(t - 10), EC = t => secE(t < 23 ? 12 + 2 * (t - 21) : 16 + (t - 23)), S1 = f => t => f(t - 1);   // assembly at double speed (parts land on 16ths), then normal
 const SECS = [[0, 4, secA], [4, 8, secB], [8, 11, secRain], [11, 13, S1(secD)], [13, 22, t => { const x = t - 1; window.XFLOW = x; secX(x < 14.95 ? x : x < 15.95 ? 14.95 : x - 1); }], [22, 26, t => EC(t - 1)], [26, 29.5, t => secCtx(t - 26)], [29.5, 36, t => secM(t - 29.5)],
   [36, 40, t => { const v = t - 36; secH(v <= 3 ? 30 + v / 1.5 : 32 + (v - 3)); }], [40, 46.01, t => secEcho(t)]];
@@ -1029,5 +1074,6 @@ window.DUR = DUR;
 (async () => {
   const all = Array.from(txt.querySelectorAll('.t')).map(e => e.textContent).join('') + '0123456789T+.s ';
   await Promise.all(['500', '700', '900'].flatMap(w => [document.fonts.load(`${w} 40px "Noto Sans SC"`, all), document.fonts.load(`${w} 40px "Inter Tight"`, all)]).concat([document.fonts.load('500 40px "JetBrains Mono"', all)]));
+  if (EN_ON) { const left = Object.entries(TX).filter(([, e]) => /[\u2E80-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF\u3000-\u303F]/.test(e.textContent)).map(([k]) => k); if (left.length) console.error('CJK left in EN mode: ' + left.join(', ')); }
   await document.fonts.ready; RANK = heroRanks(); document.title = 'ready';
 })();

@@ -1,0 +1,28 @@
+<section id="fall_exit" data-transition="fade" style="background:#F7F5F0;color:#18202A;font-family:'Inter', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:26px;color:#9A5408;letter-spacing:2px">APPENDIX · FALL PREVENTION ② FALLS WHEN LEAVING</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">Falls when stepping off: existing footplate and grab-bar load cells can spot them in principle, but only tested on synthetic data</h2>
+</div>
+<div style="display:grid;grid-template-columns:860px 1fr;gap:48px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;color:#66707C">Normal step-off vs fall: what the footplate sees (medians)</p>
+<table style="font-size:24px;color:#3F4A57;border-collapse:collapse;width:100%">
+<tr><th style="text-align:left;padding:8px 12px;border-bottom:2px solid #E2DED5;font-size:24px;color:#66707C">Signal</th><th style="text-align:left;padding:8px 12px;border-bottom:2px solid #E2DED5;font-size:24px;color:#66707C;white-space:nowrap">Normal exit</th><th style="text-align:left;padding:8px 12px;border-bottom:2px solid #E2DED5;font-size:24px;color:#66707C">Fall</th></tr>
+<tr><td style="padding:8px 12px;border-bottom:1px solid #E2DED5">Time to unload the feet</td><td style="padding:8px 12px;border-bottom:1px solid #E2DED5">0.54&nbsp;s</td><td style="padding:8px 12px;border-bottom:1px solid #E2DED5;font-weight:700;color:#18202A">0.37&nbsp;s (faster)</td></tr>
+<tr><td style="padding:8px 12px;border-bottom:1px solid #E2DED5">CoP distance from foot centre (0 = centre, 1 = foot edge)</td><td style="padding:8px 12px;border-bottom:1px solid #E2DED5">0.24</td><td style="padding:8px 12px;border-bottom:1px solid #E2DED5;font-weight:700;color:#18202A">0.70 (at foot edge)</td></tr>
+<tr><td style="padding:8px 12px;border-bottom:1px solid #E2DED5">Knee or hip impact on the footplate</td><td style="padding:8px 12px;border-bottom:1px solid #E2DED5">None</td><td style="padding:8px 12px;border-bottom:1px solid #E2DED5;font-weight:700;color:#18202A">1.5–3 × body weight if legs give way</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.4;color:#3F4A57">No single signal separates them (best AUC only 0.79; 0.5 = guessing, 1.0 = perfect); only combined signals work</p>
+<p style="font-size:24px;line-height:1.4;color:#9A5408"><b>Detection can only raise an alarm</b> (light, voice, call family); it cannot stop this fall</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-size:24px;color:#66707C">Falls detected at 5 false alarms per 100 normal exits</p>
+<div style="background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:14px 24px;display:flex;flex-direction:column;gap:4px"><p style="font-size:44px;font-weight:700;color:#18202A">98%</p><p style="font-size:24px;line-height:1.3;color:#3F4A57">Base case (logistic regression, 7 features)</p></div>
+<div style="background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:14px 24px;display:flex;flex-direction:column;gap:4px"><p style="font-size:44px;font-weight:700;color:#B4620A">80%</p><p style="font-size:24px;line-height:1.3;color:#3F4A57">Worst case: 2× CoP noise + normal users also fast and on foot edge + slow falls</p></div>
+<div style="background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:14px 24px;display:flex;flex-direction:column;gap:4px"><p style="font-size:44px;font-weight:700;color:#18202A">75%</p><p style="font-size:24px;line-height:1.3;color:#3F4A57">Three threshold rules (3.9 false alarms / 100), no training</p></div>
+<p style="font-size:24px;line-height:1.35;color:#66707C">Falls after both feet leave the footplate: not seen by these sensors; need radar or wearables; out of scope</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">Synthetic data: about 500 normal exits and 500 falls; falls from an inverted-pendulum model, so results are optimistic. Next: volunteers fall on soft mats + older adults step off normally; continue only if detection ≥&nbsp;80% and false alarms ≤&nbsp;5 / 100</p>
+<aside>Second fall question: if someone falls while stepping off the footplate after use, can we tell? We add no new sensors. We only use the four load cells in the footplate and the force sensing in the grab bar. In a normal step-off, the force leaves the feet slowly, and the centre of pressure stays in the middle of the standing foot. In a fall, the force goes faster, the centre of pressure first moves to the foot edge, and if the legs give way, the knees hit the footplate. No single signal is enough. Combined, on our generated data, at five false alarms per hundred normal exits, we detect about 98% of falls. Under very bad conditions, about 80%. Two points. First, we made this data with a model, so the result is optimistic. We must test real people: volunteers falling on soft mats, and older adults stepping off normally. We continue only at 80% detection and at most five false alarms per hundred. Second, detection can only raise an alarm, turn on lights and call family. It cannot stop this fall. A fall after the user has left the footplate is not seen, and is out of our scope.</aside>
+</section>
