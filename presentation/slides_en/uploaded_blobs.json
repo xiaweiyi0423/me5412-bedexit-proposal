@@ -35,5 +35,11 @@
  "presentation/assets_v7/whynot_highbed.png": "/_blob/0a759bdc878faa09ebcc0b8bf3cd7697",
  "presentation/assets_v7/whynot_lowbed.png": "/_blob/d0a3627abb76cf149cfd7cb219342441",
  "presentation/assets_v7/whynot_ours.png": "/_blob/47eeacbb881ac0a226b6baebfcb1232b",
- "presentation/assets_v7/whynot_vertical.png": "/_blob/a2886b764dccbc99ef41e27ae1eb49d8"
+ "presentation/assets_v7/whynot_vertical.png": "/_blob/a2886b764dccbc99ef41e27ae1eb49d8",
+ "presentation/video/pulse/bedexit_pulse_en.mp4": "/_blob/f80734610d4f83b11aa6d253d9569147",
+ "presentation/assets_en/clip_motion_en.mp4": "/_blob/7d4cdf90368dd79f6134e76917ab2775",
+ "presentation/assets_en/clip_sensing_en.mp4": "/_blob/ccda482587898bdb405fbcb19cf85320",
+ "presentation/assets_en/still_film_en.jpg": "/_blob/83bb0bda7aa87bd525718087df56f627",
+ "presentation/assets_en/still_motion_en.jpg": "/_blob/b384e96a40b67ee29195cd800bc9c9e7",
+ "presentation/assets_en/still_sensing_en.jpg": "/_blob/e53a725e58dbfb7d12069a8f1b4fff89"
 }

@@ -1,4 +1,6 @@
-# Presentation draft (Chinese)
+# Presentation
+
+**Final (English) deck:** https://claude.ai/artifact/SXJiL81jVLqL7TJH4jStDE — sources in `slides_en/` (glossary `slides_en/STYLE.md`), built by `tools/build_en_deck.py` (maps the Chinese deck's image ids to English figures; uploaded ids in `slides_en/uploaded_blobs.json`). PowerPoint: `BedExitSeat_EN.pptx` (pages as images, speaker notes, film plays on click with sound, two clips loop) — rebuild with `tools/render_en_png.js` → `tools/build_pptx.py` → `tools/pptx_embed_videos.py`. Slides must use only the Slides CSS subset: check with `tools/check_slide_css.py`.
 
 **10/28, deck v6 (15-minute version):** 19 main slides (cover, 46 s film, agenda, 15 content pages, team) at about 15 min by the talk guide's estimate; concept, cantilever, speed, fall_exit and nextsteps moved to the appendix; problem + users and sensing + speed merged; prior-art and comparison pages carry side-view pictograms (`assets_v6/`); the motion and sensing pages loop clips from the film. Published deck: https://claude.ai/artifact/FkeDBuTMtDLJvWpUHrZL4p · talk guide: https://claude.ai/artifact/7Qmsv5uJLjYDeoM6FvR7qh
 

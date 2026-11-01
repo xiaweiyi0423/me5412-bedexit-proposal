@@ -67,10 +67,16 @@
 | `src/encode.sh` | 帧 + 音频 → mp4（响度 −14 LUFS） |
 
 重新生成：
-1. 在 `src/` 放好 `three.min.js`、`data.js`（由 `presentation/video/tools` 里的 3D 场景 `prep.py` 生成）和字体目录 `fonts/`（Noto Sans SC、Inter Tight、JetBrains Mono）。
+1. 在 `src/` 放好 `three.min.js`（three r150，`https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js`）、`data.js`（运行 `python3 prep_data.py`，从 page.json、`cad/travel_table.csv`、`cad/out/mesh.json` 重建；原来的 prep.py 没有提交）和字体目录 `fonts/`（在 `src/fonts/` 里运行 `python3 ../get_fonts.py`）。
 2. 运行 `python3 prep_design.py`，再运行 `node render.js video 0 1380`（断点续渲：已存在的帧会跳过，改了画面要先删掉对应帧）。
 3. 运行 `python3 music.py music_core42.wav`，再运行 `python3 music_rain.py music_core42.wav music.wav`（把雨夜和呼应两段音乐拼进去，得到 44.5 秒版本，存为 music_v6_445.wav），最后运行 `python3 music_ctx.py music_v6_445.wav music.wav`（插入床边镜头的 3.5 秒，得到 music_v9_49.wav），最后运行 `python3 music_merge.py music_v9_49.wav music.wav`（把运动段和用法段的声音换成合并后的四步，得到 44 秒，存为 music_v10_44.wav），最后运行 `python3 music_v11.py music_v10_44.wav music.wav`（得到 46 秒）。
 4. 运行 `./encode.sh`。
+
+## 英文版
+**`bedexit_pulse_en.mp4`**（46 秒，同一条音轨）：画面、时间、动画都和中文版相同，英文是主字幕，画面里没有中文。
+- `pulse.js` 有语言开关：`pulse.html?lang=en`（或 `window.LANG='en'`）。英文文本在 `ENT`（按字幕 id）和各数组的 `L(zh, en)` 里，个别位置微调在 `ENP`。默认仍是中文，中文渲染逐像素不变。
+- 渲染：`node render.js video 0 1380 --lang=en --out=<帧目录>`（可分 4 段并行）；编码时视频用新帧，音频直接从 `bedexit_pulse.mp4` 复制。
+- 片段和静帧在 `presentation/assets_en/`（`clip_motion_en.mp4`、`clip_sensing_en.mp4`、`still_*_en.jpg`），截取方式和 `assets_v6` 的中文版相同。
 
 ## 待确认
 - 音效和配乐都是代码合成的，没有人耳试听过，请戴耳机听一遍。
