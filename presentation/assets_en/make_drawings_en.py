@@ -1,6 +1,11 @@
 """English versions of the engineering drawings on the 'drawings' appendix slide.
 
   dw_assembly_flush_en.png, dw_C1_en.png, dw_J3_en.png, dw_S7_en.png, dw_J1_en.png   (2520 x 1782, as in assets_v57)
+  dw_C1_slide_en.png, dw_J3_slide_en.png, dw_S7_slide_en.png, dw_J1_slide_en.png        (1440 x 1020, slide versions)
+
+Slide versions (drawings slide, 360 x 255 px boxes): title block, key-dimension table and isometric are cropped away; the
+main view(s) are enlarged, the sheet's own dimension numbers are kept at slide size, and 2-3 key dimensions / fits from
+the sheet's key-dimension table are added as large labels with leaders (76 px at 1440 wide = 19 px on the slide).
 
 Usage: python3 presentation/assets_en/make_drawings_en.py      (writes into presentation/assets_en/)
 
@@ -114,15 +119,74 @@ def translate(svg):
 RENDER_JS = r"""
 const { chromium } = require('playwright'); const fs = require('fs');
 (async () => {
-  const jobs = JSON.parse(fs.readFileSync(process.argv[2], 'utf8')); const b = await chromium.launch();
+  const jobs = JSON.parse(fs.readFileSync(process.argv[2], 'utf8')); let b = await chromium.launch();
   for (const j of jobs) {
-    const p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
+    let p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
     await p.goto('file://' + j.html); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(200);
-    await p.screenshot({ path: j.png }); await p.close(); console.log('wrote', j.png);
+    try { await p.screenshot({ path: j.png }); }
+    catch (e) {   // Chromium sometimes refuses a capture after a page of another size: retry in a fresh browser
+      await b.close(); b = await chromium.launch(); p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
+      await p.goto('file://' + j.html); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(500);
+      await p.screenshot({ path: j.png });
+    }
+    await p.close(); console.log('wrote', j.png);
   }
   await b.close();
 })();
 """
+
+
+SW, SH, FS = 1440, 1020, 76
+# part -> (crop [x, y, w, h] in sheet mm, placement [x, y, w, h] on the canvas,
+#          labels [(text or [lines], text x, text y, anchor, leader target in sheet mm or None)])
+SLIDE = {
+    "C1": ((6, 3, 146, 128), (0, 100, 940, 820), [
+        ("Ø55 H7", 1000, 470, "start", (55.7, 48.2)),
+        (["R42 about", "pivot 1"], 1000, 200, "start", (27.3, 28.7)),
+        (["16 × Ø4.5", "(carriages)"], 980, 760, "start", (114.4, 120.0)),
+    ]),
+    "J3": ((3, 3, 102, 182), (0, 0, 570, 1020), [
+        (["Ø75 tube", "Ø55 H7 bore"], 620, 230, "start", (82.9, 82.9)),
+        (["80° window", "for arm J4"], 620, 780, "start", (29.0, 146.0)),
+    ]),
+    "S7": ((0, 3, 277, 46), (0, 90, SW, 245), [
+        ("Length 409", 860, 440, "middle", None),
+        (["Rectangular tube", "50 × 30 × 4, S355"], 40, 640, "start", None),
+        (["Root end: fillet weld", "all round to S8"], 40, 900, "start", None),
+    ]),
+    "J1": ((3, 3, 204, 102), (0, 0, SW, 727), [
+        ("6 × Ø11 PCD 55", 30, 960, "start", (39.7, 77.3)),
+        ("Ø30 k5", 1000, 860, "start", (160.0, 78.5)),
+        ("M30 × 1.5", 900, 90, "start", (124.0, 48.5)),
+    ]),
+}
+SLIDE_CSS = (".sl { font:500 %dpx 'Inter', 'DejaVu Sans', Arial, sans-serif; fill:#18202A; paint-order:stroke; stroke:#fff;"
+             " stroke-width:14px; stroke-linejoin:round } .sldr { stroke:#9A5408; stroke-width:4; fill:none } .sldot { fill:#9A5408 }" % FS)
+
+
+def slide_svg(part, svg):
+    (cx, cy, cw, ch), (px, py, pw, ph), labels = SLIDE[part]
+    s = min(pw / cw, ph / ch); ox = px + (pw - cw * s) / 2; oy = py + (ph - ch * s) / 2
+    M = lambda X, Y: (round(ox + (X - cx) * s), round(oy + (Y - cy) * s))
+    fs_mm = FS / s
+    def keep(m):   # keep the sheet's dimension numbers (font-size 3.2), at slide size; drop every other text
+        t = m.group(0)
+        return re.sub(r'font-size="3.2"', f'font-size="{fs_mm:.2f}"', t) if 'font-size="3.2"' in t else ""
+    inner = re.sub(r"<text[^>]*>.*?</text>", keep, svg, flags=re.S)
+    inner = re.sub(r'<rect x="5.00" y="5.00"[^>]*/>', "", inner)                       # sheet border
+    inner = re.sub(r'stroke-width="([\d.]+)"', lambda m: f'stroke-width="{float(m.group(1)) * 1.8:.2f}"', inner)
+    inner = re.sub(r'<svg xmlns="http://www.w3.org/2000/svg" viewBox="[^"]*" width="\d+" height="\d+"',
+                   f'<svg x="{px}" y="{py}" width="{pw}" height="{ph}" viewBox="{cx} {cy} {cw} {ch}"', inner, count=1)
+    o = []
+    for t, x, y, anc, tgt in labels:
+        lines = t if isinstance(t, list) else [t]
+        if tgt and anc == "start":
+            ax, ay = M(*tgt); lx = x - 12 if anc == "start" else x + 12; ly = y - FS * 0.35
+            o.append(f'<path class="sldr" d="M{lx},{ly:.0f} L{ax},{ay}"/><circle class="sldot" cx="{ax}" cy="{ay}" r="9"/>')
+        sp = "".join(f'<tspan x="{x}" dy="{0 if i == 0 else round(FS * 1.12)}">{l}</tspan>' for i, l in enumerate(lines))
+        o.append(f'<text class="sl" x="{x}" y="{y}" text-anchor="{anc}">{sp}</text>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {SW} {SH}" width="{SW}" height="{SH}" style="display:block">'
+            f'<rect width="{SW}" height="{SH}" fill="#fff"/>{inner}{"".join(o)}</svg>')
 
 
 def main():
@@ -133,6 +197,11 @@ def main():
             hp = os.path.join(tmp, name + ".html")
             open(hp, "w", encoding="utf-8").write(f'<!doctype html><meta charset="utf-8"><style>html,body{{margin:0;background:#fff}} svg{{display:block}}</style>{svg}')
             jobs.append(dict(html=hp, png=os.path.join(HERE, name + "_en.png"), w=W, h=H))
+            if src in SLIDE:
+                hp = os.path.join(tmp, name + "_slide.html")
+                open(hp, "w", encoding="utf-8").write(f'<!doctype html><meta charset="utf-8"><style>html,body{{margin:0;background:#fff}} '
+                                                      f'svg{{display:block}} {SLIDE_CSS}</style>{slide_svg(src, svg)}')
+                jobs.append(dict(html=hp, png=os.path.join(HERE, name + "_slide_en.png"), w=SW, h=SH))
         jp = os.path.join(tmp, "jobs.json"); json.dump(jobs, open(jp, "w"))
         js = os.path.join(tmp, "render.js"); open(js, "w").write(RENDER_JS)
         subprocess.run(["node", js, jp], check=True)

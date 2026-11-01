@@ -135,12 +135,16 @@ RENDER_JS = r"""
 const { chromium } = require('playwright'); const fs = require('fs');
 (async () => {
   const jobs = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-  const b = await chromium.launch();
+  let b = await chromium.launch();
   for (const j of jobs) {
-    const p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
+    let p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
     await p.goto('file://' + j.html); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(300);
     try { await p.screenshot({ path: j.png }); }
-    catch (e) { await p.waitForTimeout(1000); await p.screenshot({ path: j.png, clip: { x: 0, y: 0, width: j.w, height: j.h } }); }
+    catch (e) {   // Chromium sometimes refuses a capture after a page of another size: retry in a fresh browser
+      await b.close(); b = await chromium.launch(); p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
+      await p.goto('file://' + j.html); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(500);
+      await p.screenshot({ path: j.png });
+    }
     await p.close(); console.log('wrote', j.png);
   }
   await b.close();
