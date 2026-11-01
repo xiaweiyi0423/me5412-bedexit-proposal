@@ -1,0 +1,22 @@
+<section id="mechanism" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Inter', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<p style="font-size:26px;color:#9A5408;letter-spacing:2px">3 · MECHANISM DESIGN ③ INCLINED GUIDE + TILT LINK</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:48px;font-weight:700;line-height:1.2">One point on a line, one on an arc; twin guides take the side load</h2>
+</div>
+<div style="display:grid;grid-template-columns:720px 1fr;gap:48px;align-items:start">
+<img src="/_blob/e59fbf3e2ff1bdb7e7f40169a8c941cb" alt="Side view: seat at start, middle and top; pivot 1 moves on a straight line along the inclined guide; pivot 2 moves on an arc around base point B, held by the link; seat centre stays on the design path" style="width:720px;height:560px;object-fit:contain;background:#FFFFFF;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:flex;flex-direction:column;gap:22px">
+<ul style="font-size:24px;line-height:1.5;color:#3F4A57">
+<li><b>Idea:</b> trace seat points along the path. Near-line point → carriage on guide (pivot 1); near-arc point → link to centre B (pivot 2)</li>
+<li><b>Result:</b> guide 34° from vertical, ball-screw stroke 331 mm, link 465 mm; seat centre within 8 mm, 0.8°; 18.5 cm forward, 27.4 cm up</li>
+<li><b>1-DOF:</b> 3 revolute + 1 prismatic joint; motor → belt → ball screw → carriage</li>
+</ul>
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:24px;line-height:1.4;color:#3F4A57"><b style="color:#18202A">How a one-sided seat holds:</b> load flows ①→②→③ to the guides; seat outer edge sags about 4 mm in total</p>
+<img src="/_blob/7908cbe7876e4c667c5658118fb7d287" alt="Section view: ① offset load 100 kg × 1.5, 10 cm toward the open side plus 0.3× side push, on the seat; ② load goes along the pivot-1 shaft into a pair of tapered roller bearings, moment 586 N·m, SF 3.2; ③ then via the bearing housing welded to the carriage plate, and the plate, to the twin linear guides; most loaded carriage 5.2 kN, SF 2.5" style="width:896px;height:340px;object-fit:contain;background:#FFFFFF;border-radius:16px;border:1px solid #E2DED5">
+</div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">Sized by differential evolution (cost = max deviation of seat centre and tilt from the design path). Cantilever loads are hand calculations (statics + beam formulas), not yet FEA; full check in the appendix "One-sided cantilever" slide</p>
+<aside>Step three is sizing. We move the seat along the design path and trace every point on it. A point that moves almost in a line rides a carriage on a guide. A point that moves almost on an arc is held by a link to centre B. So we search only 4 numbers. Result: guide 34 degrees from vertical, link 465 millimetres, error at most 8 millimetres. Three revolute joints and one prismatic joint: one degree of freedom. How does a seat held on one side carry the load? In the worst case, pivot 1 takes about 586 newton-metres. A pair of tapered roller bearings passes it to the two guides, with safety factors 3.2 and 2.5. The outer edge sags about 4 millimetres. These are hand calculations; next, we check them with FEA.</aside>
+</section>

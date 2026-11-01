@@ -45,6 +45,7 @@ const ENT = {   // id: {h: html, s: style overrides} used when EN_ON
   k_tag: { h: 'IN THE ROOM' }, m_tag: { h: 'HOW IT MOVES' },
 };
 const ENP = {   // id: o -> o, position tweaks where English is wider (EN_ON only)
+  k_1: o => ({ ...o, ay: 1, dy: (o.dy || 0) + 8 }),
   c_1: o => ({ ...o, x: 1010, y: o.y - 90 }), c_2: o => ({ ...o, x: 1010, y: o.y - 30 }),
   d_t: o => ({ ...o, ls: o.ls === undefined ? o.ls : 0.02 + (o.ls - 0.06) * 0.35 }),
   d_e: o => ({ ...o, ls: o.ls === undefined ? o.ls : 0.18 + (o.ls - 0.32) * 0.5 }),
@@ -95,7 +96,7 @@ L(['前移', '上升', '前倾'], ['Forward', 'Up', 'Tilt']).forEach((w, i) => T
 // how to
 T('g_tag', 'HOW TO / 用法', mono(24, '#5A6575'));
 const STEPS = L([['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', '握紧才升'], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']],
-  [['Slide onto the seat', 'Level with the bed: just slide across'], ['Hold the switch', 'Hold to rise'], ['Rise together', 'Supports hips and thighs,<br>so you don’t slide forward'], ['Let go, it stops', 'The seat stays put,<br>ready if you sit back down']]);
+  [['Slide onto the seat', 'Level with the bed:<br>just slide across'], ['Hold the switch', 'Hold to rise'], ['Rise together', 'Supports hips and thighs,<br>so you don’t slide forward'], ['Let go, it stops', 'The seat stays put,<br>ready if you sit back down']]);
 STEPS.forEach(([a, b], i) => {
   T('g_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '210px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #07090D', lineHeight: 1 } });
   T('g_a' + i, a, { s: { ...big(96), color: C.ink } });
@@ -985,7 +986,7 @@ function echoPull(t, R, dawn) {   // t: echo clock; the person and the room fade
 
 // ------------------------------------------------------------------ merged "how it moves": the four steps, 2.5D turning to the flat side view, the path and arrows inside step 03
 const MSTEPS = L([['挪上座板', '座板和床一样高，平移过去'], ['握紧开关', ''], ['一起起身', '托住臀部和大腿，人不往前滑'], ['松手即停', '座板停在原位，坐回也接得住']],
-  [['Slide onto the seat', 'Level with the bed: just slide across'], ['Hold the switch', ''], ['Rise together', 'Supports hips and thighs,<br>so you don’t slide forward'], ['Let go, it stops', 'The seat stays put,<br>ready if you sit back down']]);
+  [['Slide onto the seat', 'Level with the bed:<br>just slide across'], ['Hold the switch', ''], ['Rise together', 'Supports hips and thighs,<br>so you don’t slide forward'], ['Let go, it stops', 'The seat stays put,<br>ready if you sit back down']]);
 T('m_tag', 'HOW IT MOVES / 起身', mono(24));
 MSTEPS.forEach(([a, b], i) => {
   T('m_n' + i, '0' + (i + 1), { cls: 'lat', s: { fontSize: '170px', fontWeight: 900, color: 'transparent', WebkitTextStroke: '3px #FFFFFF', lineHeight: 1 } });

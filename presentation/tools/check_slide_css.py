@@ -22,5 +22,7 @@ for sid in ids:
             elif "var(" in v: msg = "var()"
             elif p == "justify-content" and "display:grid" in st.replace(" ", ""): msg = "justify-content on grid"
             elif p.startswith("margin") : continue
+            elif tag == "span" and p not in ("color", "font-weight", "font-style", "text-decoration"): msg = "span takes colour/weight only"
+            elif p == "display" and tag not in ("section", "div"): msg = "display only on section/div"
             if msg: bad += 1; print(f"{sid}: <{tag}> {decl}  -> {msg}")
 print("issues:", bad)
