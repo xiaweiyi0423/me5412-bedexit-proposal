@@ -25,11 +25,17 @@ def marker(ax, n, xy, targets):
     for t in targets:
         ax.plot([xy[0], t[0]], [xy[1], t[1]], color=MARK, lw=3.0, zorder=20, solid_capstyle="round")
         ax.add_patch(Circle(t, 0.013, facecolor=MARK, edgecolor="#FFFFFF", lw=1.2, zorder=21))
-    ax.add_patch(Circle(xy, 0.056, facecolor=MARK, edgecolor="#FFFFFF", lw=2.5, zorder=22))
-    ax.text(xy[0], xy[1] - 0.002, str(n), ha="center", va="center", fontsize=38, fontweight="bold", color="#FFFFFF", zorder=23, fontfamily="DejaVu Sans")
+    lab = str(n)
+    if len(lab) == 1:
+        ax.add_patch(Circle(xy, 0.056, facecolor=MARK, edgecolor="#FFFFFF", lw=2.5, zorder=22)); fs = 38
+    else:                                                    # two-character label: same style, pill-shaped badge
+        w, h = 0.160, 0.112
+        ax.add_patch(FancyBboxPatch((xy[0] - w / 2, xy[1] - h / 2), w, h, boxstyle=f"round,pad=0,rounding_size={h/2}",
+                                    facecolor=MARK, edgecolor="#FFFFFF", lw=2.5, zorder=22)); fs = 32
+    ax.text(xy[0], xy[1] - 0.002, lab, ha="center", va="center", fontsize=fs, fontweight="bold", color="#FFFFFF", zorder=23, fontfamily="DejaVu Sans")
 
 
-def render(path, user=G.REF, k=15):
+def render(path, user=G.REF, k=15, labels=(1, 2, 5, 6, 6)):
     A = G.D["anim"][user]; fr = A["frames"][k]; Q, phi = fr["seat"]["Q"], fr["seat"]["phi"]
     x0, x1, z0, z1 = -0.38, 1.06, -0.03, 1.21
     fig = plt.figure(figsize=(8.2, 8.2 * (z1 - z0) / (x1 - x0)), dpi=145); ax = fig.add_axes([0, 0, 1, 1])
@@ -58,13 +64,19 @@ def render(path, user=G.REF, k=15):
     ax.plot([rear[0], rear[0] + 0.26], [rear[1], rear[1]], color=INK, lw=1.2, ls=(0, (4, 3)), zorder=11)
     a = np.radians(np.linspace(-phi, 0, 20)); ax.plot(rear[0] + 0.24 * np.cos(a), rear[1] + 0.24 * np.sin(a), color=INK, lw=2.4, zorder=11)
     mot = np.mean(L["motor"], axis=0)
-    marker(ax, 1, (-0.27, 0.58), [tuple(rear + np.array([0.0, -0.02])), tuple(P1)])          # soft rear edge; bracket through the brush slot (seat side edge 3 cm from the housing wall)
-    marker(ax, 2, (-0.22, 0.90), [tuple(G.W(Q, phi, (0.05, -0.03)))])                                # cushion
-    marker(ax, 5, (0.96, 0.60), [tuple(mot), (lx - 0.045, lz - 0.035)])                           # motor + brake; lever under the bar corner
-    marker(ax, 6, (0.96, 1.12), [(BAR["x"] + 0.03, BAR["z"] + 0.03)])                            # bar end
-    marker(ax, 6, (-0.27, 0.10), [(-0.055, 0.10)])                                                # base fixed to the bed
+    m1, m2, m5, m6bar, m6bed = labels
+    marker(ax, m1, (-0.27, 0.58), [tuple(rear + np.array([0.0, -0.02])), tuple(P1)])          # soft rear edge; bracket through the brush slot (seat side edge 3 cm from the housing wall)
+    marker(ax, m2, (-0.22, 0.90), [tuple(G.W(Q, phi, (0.05, -0.03)))])                                # cushion
+    marker(ax, m5, (0.96, 0.60), [tuple(mot), (lx - 0.045, lz - 0.035)])                           # motor + brake; lever under the bar corner
+    marker(ax, m6bar, (0.96, 1.12), [(BAR["x"] + 0.03, BAR["z"] + 0.03)])                            # bar end
+    marker(ax, m6bed, (-0.27, 0.10), [(-0.055, 0.10)])                                                # base fixed to the bed
     fig.savefig(path, facecolor=BG); plt.close(fig)
 
 
 if __name__ == "__main__":
-    render(os.path.join(HERE, "risk_anatomy.png")); print("done")
+    import sys as _s
+    if "--en" in _s.argv or "--all" in _s.argv:   # English deck: risks renumbered 1,2,3,4a,4b (see slides_en risk slide)
+        render(os.path.join(HERE, "risk_anatomy_en.png"), labels=(1, 2, 3, "4b", "4a"))
+    if "--en" not in _s.argv:
+        render(os.path.join(HERE, "risk_anatomy.png"))
+    print("done")

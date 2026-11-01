@@ -40,14 +40,25 @@ def main(path, k=None, lang="zh"):
         ax.add_patch(Circle((x, z), r, facecolor=G.ACC, edgecolor="white", lw=2.0, zorder=20))
         ax.text(x, z - 0.002, str(n), ha="center", va="center", color="white", fontsize=fs, fontweight="bold", fontfamily="DejaVu Sans", zorder=21)
     Hp, K = np.array(f["Hp"]), np.array(f["K"])
-    mark(1, -0.11, 0.68)                                                   # the use situation: person at the bed edge
+    if lang == "zh":                                                       # zh figure: original layout, unchanged
+        mark(1, -0.11, 0.68)                                               # the use situation: person at the bed edge
+    else:                                                                  # en: role 1 = whole system -> corner badge + label
+        cx, cz = x0 + 0.075, z1 - 0.075
+        mark(1, cx, cz)
+        ax.text(cx + R + 0.025, cz - 0.002, "whole system", ha="left", va="center", color=G.INK, fontsize=13,
+                fontfamily="DejaVu Sans", zorder=21)
     th = (Hp + K) / 2; mark(2, th[0] - 0.02, th[1] + 0.11)                 # hip / thigh: the rising model
     lk = np.array(G.M["B"]) * 0.45 + np.array(G.W(Q, phi, G.M["c2"])) * 0.55
     mark(3, lk[0] + 0.07, lk[1] - 0.05)                                    # rail + link + seat
     mark(4, 0.60, 0.29)                                                    # base / housing / bed fixing / post
-    mark(5, BAR["x"] + 0.11, BAR["z"] + 0.05)                              # grip switch + bar sensor
-    mark(5, foot_s[0] + 0.16, 0.075, r=0.036, fs=15)                        # footplate sensor
-    mark(5, 0.035, 0.475, r=0.036, fs=15)           # seat sensor
+    if lang == "zh":
+        mark(5, BAR["x"] + 0.11, BAR["z"] + 0.05)                          # grip switch + bar sensor
+        mark(5, foot_s[0] + 0.16, 0.075, r=0.036, fs=15)                    # footplate sensor
+        mark(5, 0.035, 0.475, r=0.036, fs=15)       # seat sensor
+    else:                                                                  # en: each 5 sits right next to its sensor
+        mark(5, grip_s[0] + 0.026 + R + 0.012, grip_s[1])                  # grip switch (bar top)
+        mark(5, foot_s[0] + 0.018 + 0.036 + 0.012, foot_s[1] + 0.012, r=0.036, fs=15)   # footplate sensor
+        mark(5, seat_s[0] - 0.018 - 0.036 - 0.012, seat_s[1], r=0.036, fs=15)            # seat sensor
     fig.savefig(path, facecolor=G.BG); plt.close(fig)
     print(path, "frame", k, "seat Q", Q, "phi", round(phi, 1))
 

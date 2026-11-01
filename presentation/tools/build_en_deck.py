@@ -28,6 +28,9 @@ def zh_local(name):
         if os.path.exists(f): return f
 
 
+OVR = P + "/slides_en/en_overrides.json"  # {default English file: slide-specific replacement}, repo-relative
+
+
 def en_variant(zh):
     d, base = os.path.split(zh); stem, ext = os.path.splitext(base)
     for f in [f"{P}/assets_en/{stem}_en{e}" for e in (ext, ".png", ".jpg", ".gif", ".mp4")] + [f"{d}/{stem}_en{ext}"]:
@@ -48,7 +51,9 @@ def plan():
             if bid in m: continue
             n = by_id.get(bid); zh = zh_local(n) if n else None
             if not zh or not os.path.exists(zh): unknown.append((sid, bid, n)); continue
-            en = en_variant(zh); m[bid] = os.path.relpath(en or zh, R)
+            en = en_variant(zh); rel = os.path.relpath(en or zh, R)
+            ov = json.load(open(OVR)) if os.path.exists(OVR) else {}
+            m[bid] = ov.get(rel, rel)
             if not en: no_en.append((sid, n, os.path.relpath(zh, R)))
     os.makedirs(OUT, exist_ok=True)
     json.dump({"map": m, "upload": sorted(set(m.values()))}, open(OUT + "/plan.json", "w"), indent=1)

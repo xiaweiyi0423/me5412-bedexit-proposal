@@ -29,7 +29,7 @@ LANG = "zh"
 # every user-visible string is looked up by its Chinese text; templates keep their {placeholders}; "\n" splits badge lines
 EN = {
     # scene, badge
-    "床": "Bed", "状态": "State",
+    "床": "Bed", "状态": "State", "在床沿": "On bed edge",
     # state names (STYLE.md)
     "待机": "Standby", "已坐上": "Seated", "抬升": "Lifting", "停住": "Stopped", "站立保持": "Standing hold",
     "下降": "Lowering", "空座板停住": "Empty seat held", "锁定": "Locked",
@@ -113,9 +113,9 @@ def ik(S, P, l1, l2):
     a = math.atan2(d[1], d[0]); b = math.acos(max(-1, min(1, (l1 * l1 + Lr * Lr - l2 * l2) / (2 * l1 * Lr))))
     return S + l1 * np.array([math.cos(a - b), math.sin(a - b)])
 
-def scene(ax, x0=-0.45, x1=1.05, z1=1.55):
-    ax.clear(); ax.set_xlim(x0, x1); ax.set_ylim(-0.04, z1); ax.set_aspect("equal"); ax.axis("off")
-    ax.add_patch(Rectangle((x0, -0.04), x1 - x0, z1 + 0.04, color=BG, zorder=0))
+def scene(ax, x0=-0.45, x1=1.05, z1=1.55, z0=-0.04):
+    ax.clear(); ax.set_xlim(x0, x1); ax.set_ylim(z0, z1); ax.set_aspect("equal"); ax.axis("off")
+    ax.add_patch(Rectangle((x0, z0), x1 - x0, z1 - z0, color=BG, zorder=0))
     ax.plot([x0, x1], [0, 0], color=MUTED, lw=1.5, zorder=1)
     ax.add_patch(Rectangle((x0, 0), -x0, 0.36, color=BED, zorder=1)); ax.add_patch(Rectangle((x0, 0.36), -x0, 0.06, color=MAT, zorder=1))
     ax.text(x0 / 2, 0.17, T("床"), ha="center", va="center", color="#6B7480", fontsize=13)
@@ -173,7 +173,11 @@ def strip(ax, cu):
         w = min(1.0, (p[i] + p[i + 1]) / 40); col = (0.76, 0.25 + 0.55 * (1 - w), 0.18 + 0.55 * (1 - w))
         ax.plot(s[i:i + 2, 0], s[i:i + 2, 1], color=col, lw=6, solid_capstyle="round", zorder=10)
 
+SHOW_BADGE = True      # False: no state bubble (English step images / small GIF: the slide text carries the state)
+SCENE_KW = {}          # extra scene() view arguments (x0, x1, z1) for re-framed renders
+
 def badge(ax, state, lines, step=None, cap=None):
+    if not SHOW_BADGE: return
     box = FancyBboxPatch((0.30, 1.36), 0.36, 0.12, boxstyle="round,pad=0.01,rounding_size=0.03", color="#FFFFFF", ec="#D9DDE2", zorder=11)
     ax.add_patch(box)
     lab = ax.text(0.32, 1.42, T("状态"), color="#6B7480", fontsize=12, va="center", zorder=12)
@@ -205,7 +209,7 @@ def sunk(A, fr, dz):
     return dict(fr, Hp=Hp.tolist(), K=K.tolist())
 
 def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True, state=None, flush=False):
-    scene(ax); housing(ax); handrail(ax)
+    scene(ax, **SCENE_KW); housing(ax); handrail(ax)
     released = fr.get("seat") is None and last_seat is not None
     cu = fr.get("cush", {}).get(cush) if (fr.get("seat") and not flush) else None
     if flush:                         # v5.6: sitting before the lift: board flush with the bed, the person sunk into the foam
@@ -225,15 +229,15 @@ def draw_frame(ax, A, fr, last_seat, cush="z1", step=None, cap=None, hands=True,
     badge(ax, state or ("站立保持" if released else ("抬升" if fr.get("seat") else "已坐上")), lines, step, cap)
     return dict(Q=Q, phi=phi)
 
-def render_gif(path, user=REF, fps=10):
-    A = D["anim"][user]; fig = plt.figure(figsize=(8.0, 8.0), dpi=110); ax = fig.add_axes([0, 0, 1, 1]); imgs = []; last = None
+def render_gif(path, user=REF, fps=10, size=(8.0, 8.0)):
+    A = D["anim"][user]; fig = plt.figure(figsize=size, dpi=110); ax = fig.add_axes([0, 0, 1, 1]); imgs = []; last = None
     frames = [A["frames"][0]] * 13 + A["frames"] + [A["frames"][-1]] * 12
     states = ["已坐上"] * 8 + ["抬升"] * 5 + [None] * len(A["frames"]) + ["站立保持"] * 12
     f0 = A["frames"][0]; c0 = f0["cush"]["z1"]; dz0 = c0["sink_mm"] / 1000; Qf, pf = np.array(M["frames"][0]["Q"]), M["frames"][0]["phi"]
     for n_, (fr, stt) in enumerate(zip(frames, states)):
         if 8 <= n_ < 13:                  # v5.6b: start of the lift: board and person rise together until the foam carries 0.5 BW
             w = (n_ - 7) / 6; Q = (1 - w) * Qf + w * np.array(c0["Q"]); ph = (1 - w) * pf + w * c0["phi"]
-            scene(ax); housing(ax); handrail(ax); mechanism(ax, Q, ph); person(ax, A, sunk(A, f0, (1 - w) * dz0), rb=A.get("rb", 0.09))
+            scene(ax, **SCENE_KW); housing(ax); handrail(ax); mechanism(ax, Q, ph); person(ax, A, sunk(A, f0, (1 - w) * dz0), rb=A.get("rb", 0.09))
             badge(ax, "抬升", [T("座板 {z:.2f} m · 前倾 {phi:.0f}°", z=Q[1], phi=ph), T("座板和人一起先升约 3 cm")])
             fig.canvas.draw(); imgs.append(Image.frombuffer("RGBA", fig.canvas.get_width_height(), fig.canvas.buffer_rgba()).convert("RGB")); continue
         s = draw_frame(ax, A, fr, last, state=stt, flush=(n_ < 8))
@@ -254,8 +258,38 @@ def render_steps(prefix, user=REF):
         fig = plt.figure(figsize=(6.0, 6.0), dpi=120); ax = fig.add_axes([0, 0, 1, 1])
         for f in fr[:k + 1]:
             if f.get("seat"): last = f["seat"]
-        draw_frame(ax, A, fr[k], last, hands=(n != 1), state=["已坐上", "已坐上", "抬升", "抬升", "站立保持"][n - 1], flush=(n <= 2))
+        if n == 1 and LANG == "en": draw_bed_edge(ax, A, fr[0], state="在床沿")
+        else: draw_frame(ax, A, fr[k], last, hands=(n != 1), state=["已坐上", "已坐上", "抬升", "抬升", "站立保持"][n - 1], flush=(n <= 2))
         fig.savefig(f"{prefix}{n}{'_en' if LANG == 'en' else ''}.png", facecolor=BG); plt.close(fig)
+
+def draw_bed_edge(ax, A, fr, state="在床沿", dx=-0.27, lean=42.0):
+    """English step 1: the user still sits on the mattress edge (hip shifted toward the bed, away from the empty flush seat),
+    feet on the base plate, trunk leaning forward, arm reaching toward the bar but not yet holding it."""
+    scene(ax, **SCENE_KW); housing(ax); handrail(ax)
+    Q, phi = M["frames"][0]["Q"], M["frames"][0]["phi"]; mechanism(ax, Q, phi)
+    Ls, Lt, Ltr, Lua, Lfa = A["L"]
+    Hp = np.array([fr["Hp"][0] + dx, 0.42 + A.get("rb", 0.09) - 0.015])          # on the mattress (top 0.42 m), slight sink
+    An = np.array([fr["A"][0] - 0.12, fr["A"][1]])                                   # feet pulled back toward the bed edge
+    d = Hp - An; Lr = np.hypot(*d); a = math.atan2(d[1], d[0]); b = math.acos(max(-1, min(1, (Ls * Ls + Lr * Lr - Lt * Lt) / (2 * Ls * Lr))))
+    K = max((An + Ls * np.array([math.cos(a + sg * b), math.sin(a + sg * b)]) for sg in (-1, 1)), key=lambda k: k[0])
+    f1 = dict(fr, Hp=Hp.tolist(), K=K.tolist(), A=An.tolist(), tr=lean)
+    S = person(ax, A, f1, bar=False, rb=A.get("rb", 0.09))
+    P = np.array([BAR["x"], BAR["z"]]); u = (P - S) / np.hypot(*(P - S)); n_ = np.array([u[1], -u[0]])          # normal pointing down-forward: elbow sags below the shoulder-hand line
+    reach = min(Lua + Lfa - 0.02, np.hypot(*(P - S)) - 0.11)                        # hand stops ~11 cm short of the bar
+    H = S + reach * u; E = (S + H) / 2 + n_ * 0.035                                  # slightly bent elbow
+    ax.plot([S[0], E[0], H[0]], [S[1], E[1], H[1]], color=LIMB, lw=7, solid_capstyle="round", solid_joinstyle="round", zorder=9)
+    ax.annotate("", xy=P - u * 0.035, xytext=H + u * 0.02, arrowprops=dict(arrowstyle="-|>", color=ACC, lw=2, ls=(0, (2, 2)), mutation_scale=14), zorder=9)
+    badge(ax, state, [])
+    return dict(Q=Q, phi=phi)
+
+def render_rise_nobubble(path, px=(976, 550), z0=-0.03, z1=1.62, xc=0.36):
+    """English motion-slide GIF: same animation, no state bubble, 16:9 frame over heights z0..z1 (m), centred at x = xc.
+    Full body: z0=-0.03, z1=1.62.  Zoomed on seat + cushion band: z0=0.12, z1=1.30 (standing head cropped)."""
+    global SHOW_BADGE, SCENE_KW
+    w = (z1 - z0) * px[0] / px[1]
+    SHOW_BADGE, SCENE_KW = False, dict(x0=xc - w / 2, x1=xc + w / 2, z0=z0, z1=z1)
+    try: render_gif(path, size=(px[0] / 110, px[1] / 110))
+    finally: SHOW_BADGE, SCENE_KW = True, {}
 
 def render_mech(path):
     fig = plt.figure(figsize=(9.0, 8.0), dpi=120); ax = fig.add_axes([0, 0, 1, 1]); scene(ax, -0.25, 0.95, 1.05); housing(ax, 0.22); handrail(ax)
@@ -404,7 +438,10 @@ def main_en():
     """English copies of the figures the deck uses (seat_top/mech/sensors/vs_vertical are no longer on any slide)."""
     set_lang("en")
     render_force(out("seat_force.png")); render_statemachine(out("seat_statemachine.png"))
-    render_steps(os.path.join(HERE, "seat_step")); render_gif(out("seat_rise.gif"))
+    global SHOW_BADGE
+    SHOW_BADGE = False; render_steps(os.path.join(HERE, "seat_step")); SHOW_BADGE = True   # step images: no state bubble
+    render_gif(out("seat_rise.gif")); render_rise_nobubble(out("seat_rise_nobubble.gif"))
+    render_rise_nobubble(out("seat_rise_nobubble_zoom.gif"), z0=0.12, z1=1.30, xc=0.40)
     print("done (en)")
 
 if __name__ == "__main__":

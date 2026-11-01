@@ -1,6 +1,7 @@
 """English versions of the cad/mech_figs.py figures used on the appendix slides.
 
   fig_section_en.png (cantilever)   fig_fea_{c1,beam,house,rail}_en.png (nextsteps)   fig_side_en.png / fig_top_en.png (parts)
+  The fea_* PNGs are slide versions (1440 x 1024, few large labels) -- see SLIDE below.
 
 Usage: python3 presentation/assets_en/make_cad_figs_en.py        (writes into presentation/assets_en/)
 
@@ -138,11 +139,77 @@ const { chromium } = require('playwright'); const fs = require('fs');
   for (const j of jobs) {
     const p = await b.newPage({ viewport: { width: j.w, height: j.h }, deviceScaleFactor: 1 });
     await p.goto('file://' + j.html); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(300);
-    await p.screenshot({ path: j.png }); await p.close(); console.log('wrote', j.png);
+    try { await p.screenshot({ path: j.png }); }
+    catch (e) { await p.waitForTimeout(1000); await p.screenshot({ path: j.png, clip: { x: 0, y: 0, width: j.w, height: j.h } }); }
+    await p.close(); console.log('wrote', j.png);
   }
   await b.close();
 })();
 """
+
+
+# --- slide versions of the four FEA sketches (appendix slide "nextsteps", shown in a 360 x 256 px box) -------------
+# The full-page figures carry many small labels; on the slide they shrank to ~6 px. For the slide the four fea_* PNGs
+# are re-drawn at 1440 x 1024 (4x the box, same aspect): the geometry of the mech_figs SVG is kept (its <text> labels
+# removed, cropped by a custom viewBox) and only a few large labels (80 px here = 20 px on the slide) are overlaid.
+SW, SH, FS = 1440, 1024, 80          # canvas, label font size (px at 1440 wide; /4 on the slide)
+
+# name -> (crop viewBox in the figure's own SVG units [x, y, w, h], placement [x, y, w, h] on the canvas, overlay fn)
+def _slide_labels():
+    def T(x, y, t, anchor="start", cls="sl"):
+        lines = t if isinstance(t, list) else [t]
+        sp = "".join(f'<tspan x="{x}" dy="{0 if i == 0 else round(FS * 1.08)}">{l}</tspan>' for i, l in enumerate(lines))
+        return f'<text class="{cls}" x="{x}" y="{y}" text-anchor="{anchor}">{sp}</text>'
+    L = lambda x1, y1, x2, y2: f'<line class="sldr" x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}"/>'
+    return T, L
+
+def slide_overlay(name, M):
+    """M(X, Y) maps the figure's own SVG units to canvas px. Returns overlay SVG (labels, leaders)."""
+    T, L = _slide_labels(); o = []
+    if name == "fig_fea_c1":            # own units: X = u - 120, Y = 140 - v
+        o.append(T(M(85, 0)[0] - 30, 130, "F₁", "end", "sl slr"))
+        o.append(T(20, M(0, 190)[1] + 40, ["M₁", "586 N·m"], "start", "sl slr"))
+        o.append(T(M(230, 0)[0], M(0, 75)[1], "Fixed"))
+        w = M(166, 177); o.append(T(1100, 870, "▲ weld", "start", "sl sla")); o.append(L(1090, 845, w[0] + 10, w[1]))
+        o.append(T(M(131.5, 0)[0] + 24, 1000, "80° window"))
+    elif name == "fig_fea_beam":        # own units: X = u + 250, Y = 112 - v
+        o.append(T(M(150, 0)[0] + 30, 170, "1471 N", "start", "sl slr"))
+        o.append(T(1430, 110, "Fixed", "end"))
+        o.append(T(20, 760, "Outer edge sag ≈ 1.6 mm", "start", "sl slr"))
+        w = M(455, 130); o.append(T(1420, 950, "▲ weld (max. moment)", "end", "sl sla")); o.append(L(1300, 885, w[0], w[1] + 12))
+    elif name == "fig_fea_house":       # own units: X = u + 30, Y = 860 - v
+        o.append(T(700, 110, ["⊙ Carriage forces", "out of plane", "(≤ 3.8 kN each)"], "start", "sl slr"))
+        a = M(230, 560); o.append(T(700, 560, "Slot (87 wide)")); o.append(L(690, 535, a[0], a[1]))
+        o.append(T(700, 900, ["Bottom edge", "fixed"]))
+    elif name == "fig_fea_rail":        # own units: X = u + 160, Y = 1080 - v
+        o.append(T(M(110, 0)[0] - 30, 110, "1668 N", "end", "sl slr"))
+        o.append(T(1420, 470, ["Root moment", "1.53 kN·m"], "end", "sl slr"))
+        w = M(500, 1035); o.append(T(1420, 800, ["▲ weld +", "base tube"], "end", "sl sla")); o.append(L(1130, 760, w[0] + 8, w[1] - 10))
+    return "".join(o)
+
+SLIDE = {  # crop [x, y, w, h] in figure units ; placement [x, y, w, h] on canvas ; extra CSS (strokes for small-scale figures)
+    "fig_fea_c1": ((0, 25, 300, 225), (0, 0, SW, SH), ""),
+    "fig_fea_beam": ((20, 50, 590, 150), (0, 160, SW, 470), " svg .farr { stroke-width:5 } svg .defl { stroke-width:5 }"),
+    "fig_fea_house": ((20, 0, 580, 920), (10, 10, 660, 1004), " svg .house { stroke-width:5 } svg .slot { stroke-width:4 } svg .oop { stroke-width:6 } svg .fixl { stroke-width:6 } svg .fixh { stroke-width:3 }"),
+    "fig_fea_rail": ((0, 0, 780, 1120), (240, 10, 700, 1004), " svg .farr { stroke-width:8 } svg .fixl { stroke-width:6 } svg .fixh { stroke-width:3 } svg .oop { stroke-width:6 }"),
+}
+
+SLIDE_CSS = (".sl { font:500 %dpx 'Inter', 'DejaVu Sans', Arial, sans-serif; fill:#1A2430; paint-order:stroke; stroke:#fff;"
+             " stroke-width:14px; stroke-linejoin:round } .slr { fill:#B3261E; font-weight:700 } .sla { fill:#9A5408; font-weight:700 }"
+             " .sldr { stroke:#1A2430; stroke-width:4 }" % FS)
+
+
+def slide_svg(name, svg):
+    (cx, cy, cw, ch), (px, py, pw, ph), _ = SLIDE[name]
+    s = min(pw / cw, ph / ch); ox = px + (pw - cw * s) / 2; oy = py + (ph - ch * s) / 2
+    M = lambda X, Y: (round(ox + (X - cx) * s), round(oy + (Y - cy) * s))
+    inner = re.sub(r"<text[^>]*>.*?</text>", "", svg, flags=re.S)
+    if s < 2:   # small-scale figures: enlarge the out-of-plane markers
+        inner = re.sub(r'(class="oop"[^>]*?) r="[\d.]+"', r'\1 r="22"', inner)
+        inner = re.sub(r'(class="oopd"[^>]*?) r="[\d.]+"', r'\1 r="8"', inner)
+    inner = re.sub(r'<svg class="[^"]*" viewBox="[^"]*"', f'<svg x="{px}" y="{py}" width="{pw}" height="{ph}" viewBox="{cx} {cy} {cw} {ch}"', inner, count=1)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {SW} {SH}" width="{SW}" height="{SH}" style="display:block">'
+            f'<rect width="{SW}" height="{SH}" fill="#fff"/>{inner}{slide_overlay(name, M)}</svg>')
 
 
 def main():
@@ -151,6 +218,11 @@ def main():
     try:
         for fn, (name, (W, H)) in FIGS.items():
             svg = translate(S[fn])
+            if name in SLIDE:      # slide version: large labels, 1440 x 1024
+                html = (f'<!doctype html><meta charset="utf-8">{fonts}<style>{css}\n{SLIDE_CSS}{SLIDE[name][2]}\n'
+                        f'html, body {{ margin:0; background:#fff }}</style>{S["DEFS"]}{slide_svg(name, svg)}')
+                hp = os.path.join(tmp, name + ".html"); open(hp, "w", encoding="utf-8").write(html)
+                jobs.append(dict(html=hp, png=os.path.join(HERE, name + "_en.png"), w=SW, h=SH)); continue
             html = (f'<!doctype html><meta charset="utf-8">{fonts}<style>{css}\n'
                     f'html, body {{ margin:0; background:#fff }} body {{ padding:48px; width:{W - 96}px; height:{H - 96}px }}\n'
                     f'svg.fig {{ display:block; width:{W - 96}px; height:{H - 96}px; min-width:0 }}</style>'
