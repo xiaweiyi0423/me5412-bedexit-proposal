@@ -14,12 +14,12 @@ const C = { ink: '#07090D', ink2: '#0E131A', paper: '#F2F4F7', acc: '#19D3F0', a
 const TX = {}, txt = document.getElementById('txt');
 // language: ?lang=en (or window.LANG = 'en') makes English the main caption everywhere; default zh keeps the original film
 const LANG = window.LANG || new URLSearchParams(location.search).get('lang') || 'zh', EN_ON = LANG === 'en';
-if (EN_ON) { txt.style.fontFamily = "'Inter Tight','Inter',sans-serif"; txt.style.letterSpacing = '-0.01em'; document.documentElement.lang = 'en'; }
+if (EN_ON) { txt.style.fontFamily = "'Inter Tight','Inter',sans-serif"; document.documentElement.lang = 'en'; }
 const L = (zh, en) => EN_ON ? en : zh;
 const ACC = w => `<span style="color:#19D3F0">${w}</span>`, SUBL = (w, px = 44, col = '#A8B4C4') => `<br><span style="font-size:${px}px;font-weight:700;color:${col}">${w}</span>`;
 const ENT = {   // id: {h: html, s: style overrides} used when EN_ON
   a_h: { h: 'Night. An older adult<br>gets up from the bed edge.', s: { fontSize: '80px' } }, a_s: { h: `Every rise draws a ${ACC('line')}` },
-  b_l1: { h: 'Bed too low', s: { fontSize: '150px' } }, b_l2: { h: '→ can’t stand up' }, b_h1: { h: 'Bed too high', s: { fontSize: '150px' } }, b_h2: { h: '→ feet don’t reach the floor' },
+  b_l1: { h: 'Bed too low', s: { fontSize: '150px' } }, b_l2: { h: '→ can’t stand up', s: { fontSize: '64px' } }, b_h1: { h: 'Bed too high', s: { fontSize: '150px' } }, b_h2: { h: '→ feet don’t reach the floor', s: { fontSize: '64px' } },
   b_tag: { h: 'PROBLEM' }, b_sum: { h: 'A fixed-height bed can’t do both' },
   c_1: { h: `Normally,<br>${ACC('as low as the bed.')}`, s: { fontSize: '64px', lineHeight: 1.12 } }, c_2: { h: `When you rise,<br>${ACC('it rises with you.')}`, s: { fontSize: '64px', lineHeight: 1.12 } },
   d_t: { h: 'Bed-Exit Seat', s: { fontSize: '196px' } }, d_e: { h: 'SIT-TO-STAND AT THE BEDSIDE', s: { fontSize: '40px', fontWeight: 700 } },
@@ -41,7 +41,7 @@ const ENT = {   // id: {h: html, s: style overrides} used when EN_ON
   x_v: { h: `Not straight up: ${ACC('it stays with the thigh')}` },
   x_c0: { h: `Straight up<br><span style="font-size:30px;font-weight:700;color:#8A96A6">Seat soon leaves the thigh</span>` }, x_c1: { h: 'Inclined guide + tilt link' },
   x_fb: { h: 'Four-bar layouts also tried: hit the shin, block the legs, or overload' }, x_ok: { h: `One four-bar link, swapped for a ${ACC('guide')}` },
-  k_1: { h: `Mechanism on the ${ACC('bed-head side')}` }, k_2: { h: `Foot end ${ACC('open')}<br><span style="font-size:28px;font-weight:700;color:#A8B4C4">Legs swing through, out of bed and back</span>` },
+  k_1: { h: `Mechanism on the<br>${ACC('bed-head side')}`, s: { lineHeight: 1.12 } }, k_2: { h: `Foot end ${ACC('open')}<br><span style="font-size:28px;font-weight:700;color:#A8B4C4">Legs swing through,<br>out of bed and back</span>`, s: { lineHeight: 1.12 } },
   k_tag: { h: 'IN THE ROOM' }, m_tag: { h: 'HOW IT MOVES' },
 };
 const ENP = {   // id: o -> o, position tweaks where English is wider (EN_ON only)
