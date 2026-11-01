@@ -13,6 +13,7 @@ usage: pptx_embed_videos.py IN.pptx OUT.pptx [--film F] [--motion F] [--sensing 
 import argparse, copy, hashlib, io, struct, sys
 from pathlib import Path
 
+from lxml import etree
 from PIL import Image, ImageChops, ImageStat
 from pptx import Presentation
 from pptx.oxml import parse_xml
@@ -27,6 +28,13 @@ TARGETS = {
     "motion": (A6 / "clip_motion.mp4", A6 / "still_motion.jpg", 10, True),
     "sensing": (A6 / "clip_sensing.mp4", A6 / "still_sensing.jpg", 12, True),
 }
+NS = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main"}
+
+
+def xp(el, path):  # works on python-pptx oxml and plain lxml elements alike
+    return etree.XPath(path, namespaces=NS)(el)
+
+
 MAX_DIFF = 12.0  # mean abs diff (0-255) on a 64x36 thumbnail; same frame re-encoded is ~1
 
 
@@ -80,7 +88,7 @@ def find_targets(prs):
 def timing_root(sld):
     """tmRoot childTnLst and its mainSeq childTnLst (created if missing; existing timing kept)."""
     root = sld.get_or_add_childTnLst()  # python-pptx: keeps an existing standard p:timing
-    seqs = root.xpath("./p:seq/p:cTn[@nodeType='mainSeq']")
+    seqs = xp(root, "./p:seq/p:cTn[@nodeType='mainSeq']")
     if seqs:
         main = seqs[0].find(qn("p:childTnLst"))
     else:
@@ -97,14 +105,14 @@ def timing_root(sld):
 def number_new_nodes(sld):
     """New p:cTn nodes are created with id=0; give them fresh ids (existing ids are left alone,
     since p:tn/@val elsewhere in the timing tree may refer to them)."""
-    ctns = sld.xpath("./p:timing//p:cTn")
+    ctns = xp(sld, "./p:timing//p:cTn")
     next_id = max(int(c.get("id")) for c in ctns) + 1
     for c in ctns:
         if c.get("id") == "0":
             c.set("id", str(next_id))
             next_id += 1
-    main_id = sld.xpath("./p:timing//p:cTn[@nodeType='mainSeq']/@id")[0]
-    for tn in sld.xpath("./p:timing//p:tn[@val='MAINSEQ']"):
+    main_id = xp(sld, "./p:timing//p:cTn[@nodeType='mainSeq']/@id")[0]
+    for tn in xp(sld, "./p:timing//p:tn[@val='MAINSEQ']"):
         tn.set("val", main_id)
 
 
@@ -112,7 +120,7 @@ def add_playback(sld, spid, auto, dur_ms):
     root, main = timing_root(sld)
     dur = str(dur_ms) if dur_ms else "indefinite"
     # media node python-pptx just added: loop = repeatCount on its cTn, mute on cMediaNode
-    node = root.xpath(f"./p:video/p:cMediaNode[p:tgtEl/p:spTgt/@spid='{spid}']")[0]
+    node = xp(root, f"./p:video/p:cMediaNode[p:tgtEl/p:spTgt/@spid='{spid}']")[0]
     if auto:
         node.set("mute", "1")
         node.find(qn("p:cTn")).set("repeatCount", "indefinite")
@@ -123,9 +131,9 @@ def add_playback(sld, spid, auto, dur_ms):
         f'<p:childTnLst><p:cmd type="call" cmd="playFrom(0.0)"><p:cBhvr><p:cTn id="0" dur="{dur}" fill="hold"/>'
         f'<p:tgtEl><p:spTgt spid="{spid}"/></p:tgtEl></p:cBhvr></p:cmd></p:childTnLst></p:cTn></p:par>')
     groups = main.findall(qn("p:par"))
-    first_cond = groups[0].xpath("./p:cTn/p:stCondLst/p:cond[@evt='onBegin']") if groups else []
+    first_cond = xp(groups[0], "./p:cTn/p:stCondLst/p:cond[@evt='onBegin']") if groups else []
     if auto and first_cond:  # slide already has an auto-start group: join it ("with previous")
-        inner = groups[0].xpath("./p:cTn/p:childTnLst/p:par")[0].find(qn("p:cTn")).find(qn("p:childTnLst"))
+        inner = xp(groups[0], "./p:cTn/p:childTnLst/p:par")[0].find(qn("p:cTn")).find(qn("p:childTnLst"))
         e = parse_xml(effect)
         e[0].set("nodeType", "withEffect")
         inner.append(e)
@@ -137,7 +145,7 @@ def add_playback(sld, spid, auto, dur_ms):
         f'<p:par {nsdecls("p")}><p:cTn id="0" fill="hold"><p:stCondLst><p:cond delay="indefinite"/>{begin}'
         '</p:stCondLst><p:childTnLst><p:par><p:cTn id="0" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst>'
         f'<p:childTnLst/></p:cTn></p:par></p:childTnLst></p:cTn></p:par>')
-    group.xpath(".//p:childTnLst")[-1].append(parse_xml(effect))
+    xp(group, ".//p:childTnLst")[-1].append(parse_xml(effect))
     if auto:
         main.insert(0, group)
     else:
