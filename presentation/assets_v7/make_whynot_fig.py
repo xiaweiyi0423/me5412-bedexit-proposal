@@ -28,12 +28,13 @@ from seat_relative_motion import track
 from seat_1dof_design import path_of, trunk_for, shank_deg, PAD_AMAX
 os.chdir(_cwd)
 import matplotlib.pyplot as plt
+plt.rcParams["font.family"] = ["WenQuanYi Zen Hei", "DejaVu Sans"]
 from matplotlib.patches import Polygon, Rectangle, Circle
 
 U = (1.60, 0.09, 1.0, 0.29); REF = G.REF; RB = U[1]; F_PICK = 0.70
 A = G.D["anim"][REF]                                        # segment lengths + foot length of the REF user
 PX_W, PX_H = 660, 600                                       # 330 x 300 px on the slide, exported 2x
-Z0, Z1, X0 = -0.035, 1.50, -0.58                            # world window (m), same scale in every panel
+Z0, Z1, X0 = -0.035, 1.50, -0.62                            # world window (m), same scale in every panel
 X1 = X0 + (Z1 - Z0) * PX_W / PX_H
 WHITE = "#FFFFFF"
 
@@ -80,7 +81,7 @@ def draw(key, d, path):
         ax.add_patch(Polygon([(x0, z), (x1, z), (x1, z - 0.05), (x0, z - 0.05)], closed=True, color=G.FOAM_R, zorder=5))
         land_z = 0.035 if xb < Q[0] + 0.12 else 0.0
     elif key == "ours":
-        ax.add_patch(Rectangle((0.03, 0), 0.75, 0.04, color=G.DEV, zorder=2)); G.housing(ax); G.mechanism(ax, d["Q"], d["phi"])
+        ax.add_patch(Rectangle((0.03, 0), 0.75, 0.04, color=G.DEV, zorder=2)); G.housing(ax); G.mechanism(ax, d["Q"], d["phi"], show_inside=False)
         land_z = None
     else:
         land_z = 0.0
@@ -119,5 +120,8 @@ if __name__ == "__main__":
         print(f"{k:9s} f={d['fr']['f']:.3f} hip=({d['fr']['Hp'][0]:.3f},{d['fr']['Hp'][1]:.3f}) tr={d['fr']['tr']:.0f} edge={d['edge']:.3f} "
               f"top={d['top']:.3f} landing x={d['xb']:.3f} catch={100 * d['catch']:+.1f} cm" + (f" Q={d['Q']} phi={d['phi']:.1f} contact={d['contact']}" if 'Q' in d else ""))
         draw(k, d, os.path.join(HERE, f"whynot_{k}.png"))
+    FCJ = json.load(open(os.path.join(CALC, "seat_1dof", "fall_catch.json")))["users"][REF]     # cross-check (stored every 3rd sample)
+    for k, src in (("lowbed", "bed042"), ("highbed", "bed058"), ("vertical", "vertical"), ("ours", "seat")):
+        r = min(FCJ[src], key=lambda x: abs(x[0] - F_PICK)); print(f"fall_catch.json {src:8s} f={r[0]:.3f} catch={100 * r[1]:+.1f} cm")
     json.dump({k: dict(f=d["fr"]["f"], hip=d["fr"]["Hp"], trunk_deg=d["fr"]["tr"], support_edge_x=d["edge"], support_top=d["top"], landing_x=d["xb"],
                        catch_cm=round(100 * d["catch"], 1)) for k, d in DD.items()}, open(os.path.join(HERE, "whynot_fig.json"), "w"), indent=1)

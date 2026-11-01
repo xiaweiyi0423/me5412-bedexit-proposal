@@ -45,5 +45,15 @@
  "still_sensing": "/_blob/d1a7c20cadc9371c21641845ceae9374",
  "video_film": "/_blob/03d3d867bfe660a1c60c18578bfcd346",
  "video_clip_motion": "/_blob/064a931e9e94e9f1ae57b6a737f45a14",
- "video_clip_sensing": "/_blob/cbead0e4db1fdfa37dc854f5a0e8c07a"
+ "video_clip_sensing": "/_blob/cbead0e4db1fdfa37dc854f5a0e8c07a",
+ "v7_fig_loadpath": "/_blob/7908cbe7876e4c667c5658118fb7d287",
+ "v7_risk_anatomy": "/_blob/04ab201affefc6d64ecffd7c30fca2f8",
+ "v7_stability_top": "/_blob/adf94fd8b2009c42d59fcc95e9500b83",
+ "v7_team_roles": "/_blob/e34e2e150bb2aea97fc6f623844537d7",
+ "v7_whynot_highbed": "/_blob/a2100d1d5f7be02d0c52501c961d5416",
+ "v7_whynot_lowbed": "/_blob/78a064d274562d6e97710158ee9fc28a",
+ "v7_whynot_ours": "/_blob/02fcec413c2cbe4c26c7fd9f681d8328",
+ "v7_whynot_vertical": "/_blob/7b67e31faa08ca3e5bf83d219ba56f60",
+ "v7_fig_loadpath_en": "/_blob/7d3c1332bbb257afbbaff5d16ad6618b",
+ "v7_stability_top_en": "/_blob/625944e4ca44411ea1402b1b955148dd"
 }

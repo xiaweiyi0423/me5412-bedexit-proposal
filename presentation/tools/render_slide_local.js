@@ -15,7 +15,7 @@ const ALT = { cad_3d_shell: 'assets_v57/3d_a_shell.png', cad_3d_open: 'assets_v5
 const MAP = {};
 for (const [n, u] of Object.entries(bj)) {
   const id = u.split('/').pop();
-  const c = [ALT[n] && P + '/' + ALT[n], P + '/assets_v6/icons/' + n + '.svg', P + '/animations/' + n + '.png', P + '/animations/' + n + '.gif'].filter(Boolean);
+  const c = [ALT[n] && P + '/' + ALT[n], n.startsWith('v7_') && P + '/assets_v7/' + n.slice(3) + '.png', P + '/assets_v6/icons/' + n + '.svg', P + '/animations/' + n + '.png', P + '/animations/' + n + '.gif'].filter(Boolean);
   MAP[id] = c.find(f => fs.existsSync(f));
 }
 (async () => {
