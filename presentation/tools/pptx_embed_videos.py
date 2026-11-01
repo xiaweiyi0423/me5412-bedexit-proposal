@@ -10,7 +10,7 @@ given playback timing:
 
 usage: pptx_embed_videos.py IN.pptx OUT.pptx [--film F] [--motion F] [--sensing F]
 """
-import argparse, copy, hashlib, io, struct, sys
+import argparse, copy, io, struct, sys
 from pathlib import Path
 
 from lxml import etree
@@ -65,7 +65,8 @@ def find_targets(prs):
     thumbs = {id(sh): thumb(sh.image.blob) for _, _, sh in pics}
     found, used = {}, set()
     for name, (_, still, slide_no, _) in TARGETS.items():
-        ref, ref_bytes = thumb(still.read_bytes()), still.read_bytes()
+        ref_bytes = still.read_bytes()
+        ref = thumb(ref_bytes)
         scored = sorted((diff(thumbs[id(sh)], ref), n, s, sh) for n, s, sh in pics if id(sh) not in used)
         if scored and scored[0][0] <= MAX_DIFF:
             d, n, s, sh = scored[0]
@@ -80,7 +81,7 @@ def find_targets(prs):
                 sys.exit(f"{name}: no matching picture and no picture on slide {slide_no}")
             n, sh = slide_no, max(cands, key=lambda p: p.width * p.height)
             how = f"FALLBACK largest picture on slide {n} (best diff {scored[0][0]:.1f})" if scored else "FALLBACK"
-        same = hashlib.sha1(sh.image.blob).digest() == hashlib.sha1(ref_bytes).digest()
+        same = sh.image.blob == ref_bytes
         print(f"  {name:8s} -> slide {n:2d} '{sh.name}' {sh.image.size[0]}x{sh.image.size[1]} "
               f"[{how}; bytes {'identical' if same else 'differ'} to {still.name}]")
         used.add(id(sh))

@@ -136,7 +136,7 @@ def draw(lang, out):
     H = [Line2D([], [], ls="", marker="o", ms=12, mfc=GOOD, mec="#FFFFFF"), Line2D([], [], ls="", marker="o", ms=12, mfc=RED, mec="#FFFFFF"),
          Line2D([], [], ls="", marker="o", ms=12, mfc="#FFFFFF", mec=INK, mew=2), Rectangle((0, 0), 1, 1, facecolor="#EEF3EF", edgecolor=INK, lw=2),
          Line2D([], [], ls="", marker="s", ms=10, mfc=ACC, mec="#FFFFFF")]
-    lg = ax.legend(handles=H, labels=S["lg"], loc="lower right", bbox_to_anchor=(1.0, 0.0), fontsize=FS - 3.5, frameon=True, framealpha=0.95,
+    lg = ax.legend(handles=H, labels=S["lg"], loc="lower right", bbox_to_anchor=(1.0, 0.0), fontsize=FS - (3.5 if en else 2.5), frameon=True, framealpha=0.95,
                    edgecolor="#E2DED5", handletextpad=0.5, borderpad=0.5, labelspacing=0.4)
     lg.set_zorder(10)
     fig.savefig(out, facecolor=BG); plt.close(fig)

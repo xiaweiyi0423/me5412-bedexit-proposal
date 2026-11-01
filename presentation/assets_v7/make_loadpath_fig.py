@@ -106,7 +106,7 @@ def label(u, v, lines, size=30, gap=38, first_bold=True, anchor="start"):
 def build(lang):
     T = TXT[lang]
     # canvas in original (u, v) mm: u -255..760, v -160..222; parts above v=140 are clipped to free a label band
-    u_lo, u_hi, v_lo, v_hi, v_clip = -255, 760, -152, 230, 140
+    u_lo, u_hi, v_lo, v_hi, v_clip = -270, 770, -158, 238, 140
     vb = f"{X(u_lo)} {Y(v_hi)} {u_hi - u_lo} {v_hi - v_lo}"
     c = 69.7  # seat top (same constant as section_view)
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" style="width:100%;height:auto;display:block;font-family:{FONT}">',
@@ -119,11 +119,11 @@ def build(lang):
     o.append(f'<text x="{X(-248)}" y="{Y(80)}" font-size="22" fill="{MUTED}">{html.escape(T["open"])}</text>')
     # ① load: down onto the seat, 10 cm toward the open side (u = -100)
     o.append(arrow([(-100, 132), (-100, c + 2)], w=13, head=38, hw=36))
-    o.append(label(-245, 200, T["l1"]))
+    o.append(label(-250, 205, T["l1"]))
     # ② seat -> beam/knuckle/shaft -> bearing pair, along the c1 axis
     o.append(arrow([(-60, 0), (224, 0)]))
     o.append(badge(-60, 0, "②"))
-    o.append(label(-245, -100, T["l2"]))
+    o.append(label(-250, -102, T["l2"]))
     # ③ bearing pair -> cartridge welded to the carriage plate -> carriages -> rails
     o.append(arrow([(296, 0), (348, 0)], head=30, hw=30))
     o.append(arrow([(298, 34), (298, 105), (348, 105)], head=30, hw=30))

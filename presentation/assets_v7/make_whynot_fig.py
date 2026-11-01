@@ -32,8 +32,9 @@ from matplotlib.patches import Polygon, Rectangle, Circle
 
 U = (1.60, 0.09, 1.0, 0.29); REF = G.REF; RB = U[1]; F_PICK = 0.70
 A = G.D["anim"][REF]                                        # segment lengths + foot length of the REF user
-X0, X1, Z0, Z1 = -0.62, 1.10, -0.035, 1.43                  # world window (m); 330 x 280 px on the slide, exported 2x
-PX_W, PX_H = 660, 560
+PX_W, PX_H = 660, 600                                       # 330 x 300 px on the slide, exported 2x
+Z0, Z1, X0 = -0.035, 1.50, -0.58                            # world window (m), same scale in every panel
+X1 = X0 + (Z1 - Z0) * PX_W / PX_H
 WHITE = "#FFFFFF"
 
 def pick(path, f=F_PICK):
@@ -68,12 +69,6 @@ def base(ax, bed_h):
     ax.plot([X0, X1], [0, 0], color=G.MUTED, lw=1.5, zorder=1)
     ax.add_patch(Rectangle((X0, 0), -X0, bed_h - 0.06, color=G.BED, zorder=1)); ax.add_patch(Rectangle((X0, bed_h - 0.06), -X0, 0.06, color=G.MAT, zorder=1))
 
-def seat_top_z(d, x):
-    """height of the support's top surface at x (seat: along the tilted board)."""
-    if "Q" not in d: return d["top"]
-    Q, phi = np.array(d["Q"]), d["phi"]; a = math.radians(phi)
-    return float(Q[1] - math.tan(a) * (x - Q[0]))          # rotv(phi, (s, 0)) = (cos s, -sin s): front goes down? see check below
-
 def draw(key, d, path):
     fig = plt.figure(figsize=(PX_W / 200, PX_H / 200), dpi=200); ax = fig.add_axes([0, 0, 1, 1])
     base(ax, d["bed"]); G.handrail(ax)
@@ -90,6 +85,10 @@ def draw(key, d, path):
     else:
         land_z = 0.0
     G.person(ax, A, fr, bar=True, rb=RB)
+    if key == "ours":                                       # redraw the board's foam over the body outline so the seat reads
+        Q, phi, H_ = d["Q"], d["phi"], G.HALF
+        ax.add_patch(Polygon([G.W(Q, phi, p) for p in ((-H_, 0), (-0.02, 0), (-0.02, -0.05), (-H_, -0.05))], closed=True, color=G.FOAM_R, zorder=9))
+        ax.add_patch(Polygon([G.W(Q, phi, p) for p in ((-0.02, 0), (H_, 0), (H_, -0.08), (-0.02, -0.08))], closed=True, color=G.FOAM_F, zorder=9))
     caught = d["catch"] >= 0
     if key == "ours":                                       # landing point on the tilted board top (board frame y = 0)
         Q = np.array(d["Q"]); e = G.rotv(d["phi"], (1.0, 0.0)); s = (xb - Q[0]) / e[0]; land = Q + s * e
@@ -110,7 +109,7 @@ def draw(key, d, path):
         ax.plot([ex, ex], [ez - 0.05, ez + 0.05], color=G.RED, lw=2.0, zorder=13)
         lab = f"{abs(100 * d['catch']):.0f} cm"
         tx = max((ex + xb) / 2, X0 + 0.20); ty = ez - 0.10
-        ax.text(tx, ty, lab, ha="center", va="top", fontsize=17, fontweight="bold", color=G.RED, zorder=14,
+        ax.text(tx, ty, lab, ha="center", va="top", fontsize=19, fontweight="bold", color=G.RED, zorder=14,
                 bbox=dict(boxstyle="round,pad=0.15", facecolor=WHITE, edgecolor="none", alpha=0.9))
     fig.savefig(path, facecolor=WHITE); plt.close(fig)
 

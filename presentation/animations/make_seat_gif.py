@@ -295,7 +295,8 @@ def render_top(path):
     R(Y["base_open"], Y["base_head"], 0.03, 0.78, facecolor="none", edgecolor=STEEL, lw=1.4, ls="--", zorder=3)
     ax.text(Y["base_open"] - 0.02, 0.12, "底座边缘\n做斜坡", fontsize=12, color=INK, ha="right", va="center")
     R(Y["wall_in"], Y["wall_out"], min(Hx), max(Hx), facecolor=STEEL2, edgecolor=STEEL, lw=1.4, zorder=4)
-    ax.annotate("机构箱\n（顶高 0.80 m）", xy=(Y["wall_out"], 0.30), xytext=(0.48, 0.55), fontsize=12, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED))
+    top_z = json.load(open(os.path.join(ROOT, "model/calc_v13/seat_1dof/parts.json")))["housing"]["top_z"]
+    ax.annotate(f"机构箱\n（顶高 {top_z:.2f} m）", xy=(Y["wall_out"], 0.30), xytext=(0.48, 0.55), fontsize=12, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED))
     sx = D["consts"]["seat_x"]; dx = M["travel"]["dx"]
     R(-Y["seat"], Y["seat"], sx[0], sx[1], facecolor=FOAM_R, edgecolor=ACC, lw=1.4, zorder=5, alpha=0.9)
     R(-Y["seat"], Y["seat"], sx[0] + dx, sx[1] + dx, facecolor="none", edgecolor=ACC, lw=1.4, ls=":", zorder=5)

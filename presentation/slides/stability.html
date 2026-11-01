@@ -1,20 +1,17 @@
-<section id="stability" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<section id="stability" data-transition="fade" style="background:#FCFBF8;color:#18202A;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:26px;color:#9A5408;letter-spacing:2px">3 · 稳定性</p>
 <h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.2">人在台上不会翻；人在地上扶一下会翻，所以和床固定</h2>
 </div>
-<div style="display:grid;grid-template-columns:1fr 690px;gap:40px;align-items:start">
-<table style="font-size:24px;color:#3F4A57">
-<tr><th style="width:55%;text-align:left">工况</th><th style="width:45%;text-align:left">结果</th></tr>
-<tr><td>100 kg 猛坐座板后缘（1.5 倍体重）</td><td>离后 / 前 / 侧边缘还有 9 / 66 / 31 cm</td></tr>
-<tr><td>100 kg 整个挂在扶手横杆上（人在台上）</td><td>离后 / 前 / 侧边缘还有 50 / 25 / 23 cm</td></tr>
-<tr><td>45 kg 猛坐后缘</td><td>离后 / 前 / 侧边缘还有 16 / 60 / 27 cm</td></tr>
-<tr><td><b>人站在地上</b>，在横杆高度拉或推台架（台架只有自重，按零件估约 85 kg）</td><td>往床头方向推 <b style="color:#A2431F">156 N 就翻</b>（约 16 kg 力）</td></tr>
-<tr><td>和床固定后，固定件需要的拉力（扶手设计载荷 1112 N × 1.5）</td><td>2211 N</td></tr>
-</table>
-<img src="/_blob/98e4b9b0ff77c8e05effd749c72af2e3" alt="俯视示意：床、台架底座、床头一侧的机构箱、座板、L 形扶手、站起后走向床尾的路线和回床路线" style="width:690px;height:495px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:grid;grid-template-columns:1010px 1fr;gap:40px;align-items:start">
+<img src="ASSET:presentation/assets_v7/stability_top.png" alt="俯视图：底座即支撑多边形；三种人在台上的工况，地面合力作用点都在底座内（绿点）；人站在地上往床头推横杆 156 N 时，合力作用点压到床头侧边上（红点），台架开始翻；底座靠床一边两端和床固定" style="width:1010px;height:622px;object-fit:contain;background:#FBFAF6;border-radius:20px;border:1px solid #E2DED5">
+<div style="display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;gap:16px;align-items:flex-start"><div style="flex:none;padding-top:11px"><span style="display:block;width:22px;height:22px;border-radius:11px;background:#2F7A55"></span></div><p style="font-size:28px;line-height:1.45;color:#3F4A57"><b style="color:#18202A">人在台上</b>：手拉扶手是人和台架之间的内力，合力作用点都留在底座内</p></div>
+<div style="display:flex;gap:16px;align-items:flex-start"><div style="flex:none;padding-top:11px"><span style="display:block;width:22px;height:22px;border-radius:11px;background:#C2412D"></span></div><p style="font-size:28px;line-height:1.45;color:#3F4A57"><b style="color:#18202A">人在地上</b>：推横杆是外力，往床头推 <b style="color:#A2431F">156 N</b>（约 16 kg 力）合力就压到边上，开始翻</p></div>
+<div style="border-left:6px solid #B4620A;padding:6px 0 6px 20px"><p style="font-size:30px;line-height:1.4;color:#18202A;font-weight:700">台架和床固定，固定件按 <span style="color:#9A5408">2211 N</span> 设计</p><p style="font-size:24px;line-height:1.4;color:#66707C">扶手设计载荷 1112 N × 1.5 推在横杆上</p></div>
+<div style="border:2px dashed #C98A3E;border-radius:16px;padding:18px 24px;background:#FBF3E8"><p style="font-size:24px;line-height:1.5;color:#3F4A57"><b style="color:#9A5408">待补：</b>用 CAD 模型的质量和质心复核（目前按零件尺寸估算）；固定件锁在床架或床腿上（床垫下的压板拉不住 2.3 kN，不用）</p></div>
 </div>
-<div style="border:2px dashed #C98A3E;border-radius:16px;padding:20px 28px;background:#FBF3E8"><p style="font-size:26px;line-height:1.5;color:#3F4A57"><b style="color:#9A5408">待补：</b>用 CAD 模型的质量和质心复核（目前按零件尺寸估算）；固定件锁在床架或床腿上（床垫下的压板拉不住 2.3 kN，不用）</p></div>
+</div>
 <p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#66707C">底座 x 3–78 cm（离床方向）、y -27 … +38 cm（沿床长 65 cm）；机构箱在床头一侧，台架质心偏床头一侧 20 cm（按零件尺寸估算）</p>
-<aside>台架会不会翻？人在台上时，手拉扶手是人和台架之间的内力，翻不了，表里最不利的几种情况合力离边缘都有余量。真正的危险是人不在台上，比如夜里走回床边扶了一下横杆：台架只有约 85 公斤，往床头方向推 156 牛就翻。所以台架必须和床固定，固定件按扶手设计载荷的 1.5 倍、约 2200 牛设计，锁在床架或床腿上。</aside>
+<aside>这是台架的俯视图，黑框是底座，也就是支撑多边形；圆点是地面合力作用点，不是重心。人在台上时，手拉扶手是人和台架之间的内力：100 公斤猛坐座板后缘，合力离后边还有 9 厘米；45 公斤猛坐离后边 16 厘米；整个人挂在横杆上，离床头侧边 23 厘米，都在框内。危险的是人站在地上扶横杆：台架只有约 85 公斤，往床头推 156 牛，约 16 公斤力，合力就压到床头侧边上，开始翻。所以台架和床固定，按扶手设计载荷 1112 牛乘 1.5 推在横杆上算，固定件拉力 2211 牛，锁在床架或床腿上。</aside>
 </section>
