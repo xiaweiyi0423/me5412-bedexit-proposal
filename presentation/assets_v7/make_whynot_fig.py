@@ -93,14 +93,14 @@ def draw(key, d, path):
     if key == "ours":                                       # landing point on the tilted board top (board frame y = 0)
         Q = np.array(d["Q"]); e = G.rotv(d["phi"], (1.0, 0.0)); s = (xb - Q[0]) / e[0]; land = Q + s * e
         p0, p1 = G.W(Q, d["phi"], (-G.HALF, 0)), G.W(Q, d["phi"], (G.HALF, 0))
-        ax.plot([p0[0], p1[0]], [p0[1], p1[1]], color=G.GOOD, lw=6, solid_capstyle="round", zorder=11)
+        ax.plot([p0[0], p1[0]], [p0[1], p1[1]], color=G.GOOD, lw=5, solid_capstyle="round", zorder=10)
         lz = float(land[1])
     else:
         lz = land_z
     ax.plot([xb, xb], [Hp[1], lz], color=G.INK if caught else G.RED, lw=2.2, ls=(0, (4, 3)), zorder=12)
     ax.add_patch(Circle((xb, Hp[1]), 0.016, color=G.INK, zorder=13))
     if caught:
-        ax.add_patch(Circle((xb, lz), 0.024, color=G.GOOD, zorder=13))
+        ax.add_patch(Circle((xb, lz), 0.028, facecolor=G.GOOD, edgecolor=WHITE, lw=1.5, zorder=13))
     else:                                                   # miss: red cross on the floor, red gap at the support's top
         c = 0.028; ax.plot([xb - c, xb + c], [lz + c, lz - c], color=G.RED, lw=3, zorder=13); ax.plot([xb - c, xb + c], [lz - c, lz + c], color=G.RED, lw=3, zorder=13)
         ez = d["top"]; ex = d["edge"]
