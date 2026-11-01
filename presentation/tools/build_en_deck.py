@@ -50,11 +50,16 @@ def plan():
         for bid in re.findall(r'(?:src|data-video)="/_blob/([0-9a-f]{32})"', h):
             if bid in m: continue
             n = by_id.get(bid); zh = zh_local(n) if n else None
+            if not n and os.path.exists(P + "/slides_en/direct_blobs.json") and bid in json.load(open(P + "/slides_en/direct_blobs.json")): continue
             if not zh or not os.path.exists(zh): unknown.append((sid, bid, n)); continue
             en = en_variant(zh); rel = os.path.relpath(en or zh, R)
             ov = json.load(open(OVR)) if os.path.exists(OVR) else {}
             m[bid] = ov.get(rel, rel)
             if not en: no_en.append((sid, n, os.path.relpath(zh, R)))
+    # assets uploaded straight to the English deck (no Chinese original): {blob id: repo-relative file}
+    DB = P + "/slides_en/direct_blobs.json"
+    if os.path.exists(DB):
+        for bid, rel in json.load(open(DB)).items(): m[bid] = rel
     os.makedirs(OUT, exist_ok=True)
     json.dump({"map": m, "upload": sorted(set(m.values()))}, open(OUT + "/plan.json", "w"), indent=1)
     print("slides:", len(ids), "missing EN slides:", missing_slides)
@@ -68,7 +73,7 @@ def build():
     ids, _ = order(); os.makedirs(OUT + "/project/slides", exist_ok=True)
     for sid in ids:
         h = open(f"{P}/slides_en/{sid}.html").read()
-        h = re.sub(r'/_blob/([0-9a-f]{32})', lambda mm: up[pl["map"][mm.group(1)]], h)
+        h = re.sub(r'/_blob/([0-9a-f]{32})', lambda mm: up.get(pl["map"][mm.group(1)], mm.group(0)), h)
         open(f"{OUT}/project/slides/{sid}.html", "w").write(h)
     zh = json.load(open(P + "/deck.json"))
     deck = {"v": 4, "createdOnFiles": {"v": 1, "at": "2026-11-01T06:00:00Z"}, "lists": "css", "title": "Bed-Exit Seat", "order": ids,
