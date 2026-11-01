@@ -35,7 +35,9 @@ def xp(el, path):  # works on python-pptx oxml and plain lxml elements alike
     return etree.XPath(path, namespaces=NS)(el)
 
 
-MAX_DIFF = 12.0  # mean abs diff (0-255) on a 64x36 thumbnail; same frame re-encoded is ~1
+# mean abs diff (0-255) of 64x36 thumbnails: the same frame re-encoded/resized scores ~1,
+# the closest *other* picture in the deck (motion vs sensing still) ~12
+MAX_DIFF = 4.0
 
 
 def thumb(blob):
@@ -72,7 +74,8 @@ def find_targets(prs):
             if slide_no > len(prs.slides):
                 sys.exit(f"{name}: no matching picture and slide {slide_no} does not exist")
             s = prs.slides[slide_no - 1]
-            cands = [sh for sh in s.shapes if isinstance(sh, Picture) and id(sh) not in used]
+            cands = [sh for sh in s.shapes  # GIFs are the deck's animations, never a video poster
+                     if isinstance(sh, Picture) and sh.image.ext != "gif" and id(sh) not in used]
             if not cands:
                 sys.exit(f"{name}: no matching picture and no picture on slide {slide_no}")
             n, sh = slide_no, max(cands, key=lambda p: p.width * p.height)
@@ -130,6 +133,19 @@ def add_playback(sld, spid, auto, dur_ms):
         f'nodeType="{"afterEffect" if auto else "clickEffect"}"><p:stCondLst><p:cond delay="0"/></p:stCondLst>'
         f'<p:childTnLst><p:cmd type="call" cmd="playFrom(0.0)"><p:cBhvr><p:cTn id="0" dur="{dur}" fill="hold"/>'
         f'<p:tgtEl><p:spTgt spid="{spid}"/></p:tgtEl></p:cBhvr></p:cmd></p:childTnLst></p:cTn></p:par>')
+    # clicking the movie itself toggles pause (PowerPoint adds this interactive trigger too)
+    root.append(parse_xml(
+        f'<p:seq {nsdecls("p")} concurrent="1" nextAc="seek"><p:cTn id="0" restart="whenNotActive" fill="hold" '
+        f'evtFilter="cancelBubble" nodeType="interactiveSeq"><p:stCondLst><p:cond evt="onClick" delay="0"><p:tgtEl>'
+        f'<p:spTgt spid="{spid}"/></p:tgtEl></p:cond></p:stCondLst><p:endSync evt="end" delay="0"><p:rtn val="all"/>'
+        '</p:endSync><p:childTnLst><p:par><p:cTn id="0" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst>'
+        '<p:childTnLst><p:par><p:cTn id="0" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>'
+        '<p:par><p:cTn id="0" presetID="2" presetClass="mediacall" presetSubtype="0" fill="hold" nodeType="clickEffect">'
+        '<p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst><p:cmd type="call" cmd="togglePause"><p:cBhvr>'
+        f'<p:cTn id="0" dur="1" fill="hold"/><p:tgtEl><p:spTgt spid="{spid}"/></p:tgtEl></p:cBhvr></p:cmd>'
+        '</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par></p:childTnLst>'
+        '</p:cTn><p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst>'
+        '</p:seq>'))
     groups = main.findall(qn("p:par"))
     first_cond = xp(groups[0], "./p:cTn/p:stCondLst/p:cond[@evt='onBegin']") if groups else []
     if auto and first_cond:  # slide already has an auto-start group: join it ("with previous")
@@ -150,19 +166,6 @@ def add_playback(sld, spid, auto, dur_ms):
         main.insert(0, group)
     else:
         main.append(group)
-    # clicking the movie itself toggles pause (PowerPoint adds this interactive trigger too)
-    root.append(parse_xml(
-        f'<p:seq {nsdecls("p")} concurrent="1" nextAc="seek"><p:cTn id="0" restart="whenNotActive" fill="hold" '
-        f'evtFilter="cancelBubble" nodeType="interactiveSeq"><p:stCondLst><p:cond evt="onClick" delay="0"><p:tgtEl>'
-        f'<p:spTgt spid="{spid}"/></p:tgtEl></p:cond></p:stCondLst><p:endSync evt="end" delay="0"><p:rtn val="all"/>'
-        '</p:endSync><p:childTnLst><p:par><p:cTn id="0" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst>'
-        '<p:childTnLst><p:par><p:cTn id="0" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>'
-        '<p:par><p:cTn id="0" presetID="2" presetClass="mediacall" presetSubtype="0" fill="hold" nodeType="clickEffect">'
-        '<p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst><p:cmd type="call" cmd="togglePause"><p:cBhvr>'
-        f'<p:cTn id="0" dur="1" fill="hold"/><p:tgtEl><p:spTgt spid="{spid}"/></p:tgtEl></p:cBhvr></p:cmd>'
-        '</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par></p:childTnLst>'
-        '</p:cTn><p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst>'
-        '</p:seq>'))
 
 
 def replace_with_movie(slide, pic, video, auto):
