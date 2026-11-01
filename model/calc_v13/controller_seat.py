@@ -25,6 +25,8 @@ Rules (v5.3, after the deck audit; differences from controller_v13 marked *):
     footplate force is low-pass filtered like the seat force before it enters the speed rule
   power loss: brake holds; held DOWN lowers on the battery at half speed.
 Output: controller_seat.json, controller_seat_all.png (all scenarios), controller_seat_main.png (three for the slide).
+`--lang en [--out PATH]` writes ONLY the English slide figure (default presentation/assets_en/ctrl_seat_main_en.png);
+the JSON and the Chinese images are not touched.
 """
 import json, os
 import numpy as np
@@ -235,11 +237,32 @@ def run(s):
 
 STATES = ["IDLE", "SEATED", "LIFTING", "STOPPED", "STANDING_HOLD", "LOWERING", "EMPTY_HOLD", "EMPTY_MOVE", "LOCKED"]
 CN = dict(IDLE="待机", SEATED="已坐上", LIFTING="抬升", STOPPED="停住", STANDING_HOLD="站立保持", LOWERING="下降", EMPTY_HOLD="空座板停住", EMPTY_MOVE="空座板移动", LOCKED="锁定")
+EN = dict(IDLE="Standby", SEATED="Seated", LIFTING="Lifting", STOPPED="Stopped", STANDING_HOLD="Standing hold", LOWERING="Lowering", EMPTY_HOLD="Empty seat held", EMPTY_MOVE="Empty seat moving", LOCKED="Locked")
+SCEN_EN = dict(typical="Typical user (max effort 0.28)",
+               weakest="User who can just stand up (0.27)",
+               strong="Stronger user (0.32)",
+               tooweak="User who cannot stand (0.24): stops; hold \u201cDown\u201d back to bed level",
+               sitback="Sits back while lifting: seat stops and catches",
+               faint="Faints mid-lift: seat holds, alert after 17 s, no auto-lowering",
+               mattress="Thighs still on the mattress when seated (0.2 BW)",
+               stepoff="After standing, one foot on the floor first, then leaves",
+               pullup="Pulls up on the grab bar while rising (0.2 BW)",
+               hang="Hangs on the grab bar (0.4 BW): lifts at 30 % speed only",
+               cop="Off-centre for 1 s while lifting; re-grips and continues",
+               ret="Return to bed (default return height 0.50 m)",
+               return_flush="Return height set to bed level",
+               leanback="Holds the switch but leans back onto the mattress: no lift",
+               stuck="Footplate sensor stuck high: lock-out; hold \u201cDown\u201d to lower",
+               power="Power loss while lifting: hold \u201cDown\u201d to lower slowly on battery")
+SCEN_EN["return"] = SCEN_EN.pop("ret")
+LANG = "zh"
+TXT = dict(zh=dict(alert="提醒、呼叫家属", h="座高 (m)", f="座板受力（×体重）", t="时间 (s)"),
+           en=dict(alert="Alert: call family", h="Seat height (m)", f="Seat force (× BW)", t="Time (s)"))
 COL = dict(IDLE="#c3c9d1", SEATED="#3f6fc4", LIFTING="#1f9e6e", STOPPED="#c8780c", STANDING_HOLD="#7a56c2", LOWERING="#b39400",
            EMPTY_HOLD="#6b7a8f", EMPTY_MOVE="#9aa6b8", LOCKED="#c0392b")
 
 def panel(ax, s, lg, big=False):
-    t = np.array(lg["t"]); fs = 21 if big else 11
+    t = np.array(lg["t"]); fs = 21 if big else 11; X = TXT[LANG]
     ax.plot(t, lg["h"], color="#18202a", lw=2.6 if big else 2)
     ax2 = ax.twinx(); ax2.plot(t, lg["seat"], color="#c8602a", lw=2 if big else 1.4); ax2.set_ylim(0, 1.05); ax2.axhline(0.5, ls=":", color="#c8602a", lw=1)
     ax2.tick_params(labelsize=fs - 2, colors="#c8602a")
@@ -247,16 +270,33 @@ def panel(ax, s, lg, big=False):
     for j in range(1, len(st) + 1):
         if j == len(st) or st[j] != st[j0]: ax.axvspan(t[j0], t[j - 1], ymin=0, ymax=0.07, color=COL[st[j0]], lw=0); j0 = j
     al = [x for x, a in zip(t, lg["alert"]) if a]
-    if al: ax.axvspan(al[0], al[-1], ymin=0.93, ymax=1.0, color="#c0392b", alpha=0.35, lw=0); ax.text(al[0] + 0.3, 0.685, "提醒、呼叫家属", fontsize=fs - 2, color="#c0392b", va="top")
-    ax.set_title(s["name"], fontsize=fs, loc="left"); ax.set_ylim(0.38, 0.71); ax.tick_params(labelsize=fs - 2); ax.grid(alpha=0.25)
-    if big: ax.set_ylabel("座高 (m)", fontsize=fs - 2); ax2.set_ylabel("座板受力（×体重）", fontsize=fs - 3, color="#c8602a")
+    if al: ax.axvspan(al[0], al[-1], ymin=0.93, ymax=1.0, color="#c0392b", alpha=0.35, lw=0); ax.text(al[0] + 0.3, 0.685, X["alert"], fontsize=fs - 2, color="#c0392b", va="top")
+    ax.set_title(SCEN_EN[s["key"]] if LANG == "en" else s["name"], fontsize=fs, loc="left"); ax.set_ylim(0.38, 0.71); ax.tick_params(labelsize=fs - 2); ax.grid(alpha=0.25)
+    if big: ax.set_ylabel(X["h"], fontsize=fs - 2); ax2.set_ylabel(X["f"], fontsize=fs - 3, color="#c8602a")
 
 def legend(fig, fs, y):
     from matplotlib.patches import Patch
-    hs = [Patch(color=COL[k], label=CN[k]) for k in STATES if k != "EMPTY_MOVE"]
+    hs = [Patch(color=COL[k], label=(EN if LANG == "en" else CN)[k]) for k in STATES if k != "EMPTY_MOVE"]
     fig.legend(handles=hs, loc="lower center", ncol=4, fontsize=fs, frameon=False, bbox_to_anchor=(0.5, y))
 
+def main_en(path):
+    """English slide figure only (three scenarios); writes nothing else."""
+    global LANG
+    LANG = "en"
+    plt.rcParams["font.family"] = ["Inter", "DejaVu Sans"]
+    logs = {s["key"]: (s, run(s)[0]) for s in SCEN if s["key"] in ("typical", "faint", "power")}
+    fig, axs = plt.subplots(3, 1, figsize=(10.5, 11.5))
+    for ax, k in zip(axs, ("typical", "faint", "power")): panel(ax, *logs[k], big=True)
+    axs[-1].set_xlabel(TXT["en"]["t"], fontsize=19); legend(fig, 18, 0.0); fig.tight_layout(rect=(0, 0.09, 1, 1))
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    fig.savefig(path, dpi=120); plt.close(fig); print("wrote", path)
+
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(); ap.add_argument("--lang", choices=("zh", "en"), default="zh")
+    ap.add_argument("--out", default=os.path.join(HERE, "..", "..", "presentation", "assets_en", "ctrl_seat_main_en.png"))
+    a = ap.parse_args()
+    if a.lang == "en": main_en(os.path.normpath(a.out)); raise SystemExit
     out = dict(note=__doc__.strip().split("\n")[0], user=SS["user"], release_h=HREL, E_free_release=EFREE_REL, top=H1,
                params=dict(cap_BW=0.5, vmax_cm_s=3.0, k="vmax / (0.35 BW)", hang_limit_BW=0.30, sum_tol=0.15, sum_persist_s=0.5, alert_s=17,
                            v_down=0.02, v_empty=0.015, occupied_enter_BW=0.40, occupied_stay_BW=0.10), scenarios=[])
