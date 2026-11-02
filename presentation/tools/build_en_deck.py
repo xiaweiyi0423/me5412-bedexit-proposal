@@ -82,7 +82,7 @@ def build():
                          "s2": {"description": "Existing solutions and how ways of rising compare", "start": "prior"},
                          "s3": {"description": "Mechanism design, motion and stability", "start": "mech_path"},
                          "s4": {"description": "Sensing, control and safety", "start": "sensing"},
-                         "s5": {"description": "Results, limits, conclusion and team", "start": "verify"},
+                         "s5": {"description": "Comparison with products, advantages, limits, team and conclusion", "start": "compare"},
                          "s6": {"description": "Appendix for Q&A", "start": "appendix"}},
             "faces": {"inter": {"family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"},
                       "source-serif-4": {"family": "Source Serif 4", "href": "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap"}},
