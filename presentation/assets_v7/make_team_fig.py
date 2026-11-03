@@ -3,7 +3,8 @@ switch, footplate, sensors) with a user mid-rise, and five numbered markers for 
 Reuses the drawing functions and data of presentation/animations/make_seat_gif.py (model/calc_v13/seat_1dof/page.json).
 Usage: python3 presentation/assets_v7/make_team_fig.py [--lang zh|en|both] [--frame N]
   ->  presentation/assets_v7/team_roles.png (zh, label 床) and team_roles_en.png (en, label Bed), 1200 x 1012
-Only text in the image: the bed label and the digits 1-5.
+Only text in the image: the bed label, the digits 1-5 and (en) two corner labels.
+en numbers follow the five speakers: 1 whole system, 2 rising model, 3 mechanism + structure, 4 sensing + control, 5 products + next version.
 """
 import os, sys
 import numpy as np
@@ -50,15 +51,22 @@ def main(path, k=None, lang="zh"):
     th = (Hp + K) / 2; mark(2, th[0] - 0.02, th[1] + 0.11)                 # hip / thigh: the rising model
     lk = np.array(G.M["B"]) * 0.45 + np.array(G.W(Q, phi, G.M["c2"])) * 0.55
     mark(3, lk[0] + 0.07, lk[1] - 0.05)                                    # rail + link + seat
-    mark(4, 0.60, 0.29)                                                    # base / housing / bed fixing / post
+    if lang == "zh":
+        mark(4, 0.60, 0.29)                                                # base / housing / bed fixing / post
+    else:                                                                  # en (by speaker): 3 = mechanism + structure
+        mark(3, 0.60, 0.29)
+        cx, cz = x0 + 0.075, z1 - 0.075 - 2.4 * R                          # 5 = products and next version
+        mark(5, cx, cz)
+        ax.text(cx + R + 0.025, cz - 0.002, "products, next version", ha="left", va="center", color=G.INK, fontsize=13,
+                fontfamily="DejaVu Sans", zorder=21)
     if lang == "zh":
         mark(5, BAR["x"] + 0.11, BAR["z"] + 0.05)                          # grip switch + bar sensor
         mark(5, foot_s[0] + 0.16, 0.075, r=0.036, fs=15)                    # footplate sensor
         mark(5, 0.035, 0.475, r=0.036, fs=15)       # seat sensor
     else:                                                                  # en: each 5 sits right next to its sensor
-        mark(5, grip_s[0] + 0.026 + R + 0.012, grip_s[1])                  # grip switch (bar top)
-        mark(5, foot_s[0] + 0.018 + 0.036 + 0.012, foot_s[1] + 0.012, r=0.036, fs=15)   # footplate sensor
-        mark(5, seat_s[0] - 0.018 - 0.036 - 0.012, seat_s[1], r=0.036, fs=15)            # seat sensor
+        mark(4, grip_s[0] + 0.026 + R + 0.012, grip_s[1])                  # 4 = sensing and control: grip switch
+        mark(4, foot_s[0] + 0.018 + 0.036 + 0.012, foot_s[1] + 0.012, r=0.036, fs=15)   # footplate sensor
+        mark(4, seat_s[0] - 0.018 - 0.036 - 0.012, seat_s[1], r=0.036, fs=15)            # seat sensor
     fig.savefig(path, facecolor=G.BG); plt.close(fig)
     print(path, "frame", k, "seat Q", Q, "phi", round(phi, 1))
 
