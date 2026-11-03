@@ -4,7 +4,7 @@ The base deck keeps our pages (cover, film, agenda, problem, existing solutions,
 conclusion, appendix). Pages that a teammate redesigned are dropped from the base and their own slides are copied
 in at the same place, XML as is (shapes, morph transitions, timing, videos, charts, pictures), with every related
 part copied and every relationship id remapped. Speaker notes are copied as text; a copied slide without notes
-gets ours from presentation/slides_en/<id>.html (<aside>).
+gets ours from presentation/slides_en/<id>.html (<aside>). Slides without a transition get a quick fade.
 
 usage: merge_team_pptx.py BASE.pptx OUT.pptx --p2 6-8.pptx --p3 p9-12.pptx --p4 control.pptx --p5 summary.pptx
 """
@@ -15,6 +15,7 @@ from pptx.opc.constants import RELATIONSHIP_TYPE as RT
 from pptx.opc.package import Part
 from pptx.opc.packuri import PackURI
 from lxml import etree
+from pptx.oxml.ns import qn
 
 REPO = Path(__file__).resolve().parents[2]
 RNS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -90,6 +91,24 @@ def remap(el, m):
                 e.set(a, m[v])
 
 
+def add_fade(prs):
+    """A quick fade (spd="fast", about 0.5 s) on every slide that has no transition of its own; morphs and
+    auto-advancing slides from the team keep theirs."""
+    n, prev_auto = 0, False
+    for s in prs.slides:
+        sld = s.part._element                    # copied slides: the part holds the new element
+        after_auto, prev_auto = prev_auto, "advTm" in etree.tostring(sld).decode()
+        if after_auto:                           # follows an auto-advancing video whose last frame it continues
+            continue
+        if sld.find(qn("p:transition")) is not None or sld.find("{http://schemas.openxmlformats.org/markup-compatibility/2006}AlternateContent") is not None:
+            continue
+        tr = etree.SubElement(sld, qn("p:transition")); tr.set("spd", "fast"); etree.SubElement(tr, qn("p:fade"))
+        after = sld.find(qn("p:clrMapOvr")) if sld.find(qn("p:clrMapOvr")) is not None else sld.find(qn("p:cSld"))
+        after.addnext(tr)
+        n += 1
+    return n
+
+
 def notes_text(slide):
     if slide.has_notes_slide and slide.notes_slide.notes_text_frame is not None:
         return slide.notes_slide.notes_text_frame.text.strip()
@@ -129,6 +148,7 @@ def main():
             lst.remove(sid_el)
     for e in keep:                                # final order
         lst.remove(e); lst.append(e)
+    print("fade added to", add_fade(dest), "slides")
     dest.save(a.out)
     print("wrote", a.out, len(dest.slides), "slides")
 
