@@ -6,7 +6,7 @@ in at the same place, XML as is (shapes, morph transitions, timing, videos, char
 part copied and every relationship id remapped. Speaker notes are copied as text; a copied slide without notes
 gets ours from presentation/slides_en/<id>.html (<aside>). Slides without a transition get a quick fade.
 
-usage: merge_team_pptx.py BASE.pptx OUT.pptx --p2 6-8.pptx --p3 p9-12.pptx --p4 control.pptx --p5 summary.pptx
+usage: merge_team_pptx.py BASE.pptx OUT.pptx --p2 6-8_relayout.pptx (relayout_p2_compare.py output) --p3 p9-12.pptx --p4 control.pptx --p5 summary.pptx
 """
 import argparse, copy, re
 from pathlib import Path
