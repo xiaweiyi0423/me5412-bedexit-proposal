@@ -21,7 +21,7 @@ REPO = Path(__file__).resolve().parents[2]
 RNS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
 # final order: ("base", slide id in the base deck) or (source key, 1-based slide number in that file)
-ORDER = [("base", "cover"), ("base", "film"), ("base", "agenda"), ("base", "problem"), ("base", "prior"),
+ORDER = [("base", "cover"), ("base", "film"), ("base", "agenda"), ("base", "problem"), ("base", "prior_photos"), ("base", "prior"),
          ("p2", 1), ("p2", 2), ("p2", 3),
          *[("p3", i) for i in range(1, 11)],
          ("p4", 1), ("p4", 2), ("p4", 3),
@@ -122,7 +122,9 @@ def main():
         ap.add_argument("--" + k, required=True)
     a = ap.parse_args()
     dest = Presentation(a.base)
-    meta = __import__("json").load(open(REPO / "presentation/deck.json"))["order"]
+    import json
+    bo = Path(a.base).with_suffix(".order.json")          # slide ids of the base deck, if not deck.json's order
+    meta = json.load(open(bo)) if bo.exists() else json.load(open(REPO / "presentation/deck.json"))["order"]
     base_ids = {sid: dest.slides._sldIdLst[i] for i, sid in enumerate(meta)}   # base deck = deck.json order
     srcs = {k: Presentation(getattr(a, k)) for k in ("p2", "p3", "p4", "p5")}
     cp = Copier(dest)
