@@ -96,7 +96,7 @@ mark{background:var(--hl-bg);color:var(--hl-fg);padding:0 .18em;border-radius:2p
 .scene-tag{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
 .scene-tag .tc{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .scene-tag h3{font-size:20px}
-.frame{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:8px}
+.frame{position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px);display:flex;flex-direction:column;gap:8px}
 .shot{position:relative;container-type:inline-size;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--sunk);line-height:0}
 .shot img{width:100%;height:auto;display:block}
 .pin{position:absolute;transform:translate(-50%,-50%);width:clamp(14px,4.6cqw,24px);height:clamp(14px,4.6cqw,24px);border-radius:50%;background:var(--pin);color:#FFFFFF;font-family:var(--mono);font-size:clamp(9px,2.8cqw,13px);font-weight:500;line-height:clamp(14px,4.6cqw,24px);text-align:center;box-shadow:0 0 0 2px #FFFFFF}
@@ -121,6 +121,39 @@ mark{background:var(--hl-bg);color:var(--hl-fg);padding:0 .18em;border-radius:2p
   .scene{grid-template-columns:1fr}
   .frame{position:static}
 }
+
+/* script modes */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.modes{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);padding-block:8px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px}
+.modes button{font:inherit;font-size:14px;font-weight:600;padding:7px 12px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.modes button.ghost{margin-left:auto;border-color:var(--pencil);color:var(--pencil);background:transparent}
+.modes button:disabled{opacity:.4;cursor:default}
+.modes button:focus-visible,.swap:focus-visible{outline:2px solid var(--pencil);outline-offset:2px}
+.keys{font-size:14px;line-height:1.5;background:var(--sunk);border-radius:4px;padding:6px 10px}
+.keys .kl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);margin-right:8px}
+.keys .fix{background:var(--hl-bg);color:var(--hl-fg);padding:0 .3em;border-radius:2px;font-weight:600}
+.vars{display:flex;flex-direction:column;gap:8px}
+.vars .say{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:18px}
+.vars .say::before{content:attr(data-v);font-family:var(--mono);font-size:12px;color:var(--muted);line-height:27px}
+.swap{display:none;align-self:flex-start;font:inherit;font-size:13px;padding:3px 10px;border-radius:4px;border:1px solid var(--line);background:transparent;color:var(--pencil);cursor:pointer}
+#script[data-mode="one"] .vars .say:not(.on){display:none}
+#script[data-mode="one"] .swap{display:inline-block}
+#script[data-mode="keys"] .vars,#script[data-mode="keys"] .zh{display:none}
+#script[data-mode="keys"] .keys{font-size:17px;padding:10px 12px}
+.chain.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.chain.two > div{display:flex;flex-direction:column;gap:4px}
+.ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.ladder li{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:2px}
+.ladder .st{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ladder b{font-size:16px}
+.ladder span:last-child{font-size:14px;color:var(--muted)}
+.rescue{display:flex;flex-direction:column;gap:14px;max-width:50em;counter-reset:r}
+.rescue li{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:10px;counter-increment:r}
+.rescue li::before{content:counter(r);grid-row:1 / span 2;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:13px;line-height:26px;text-align:center;margin-top:2px}
+.rescue b{font-size:16px}
+.rescue span{font-size:15px}
+@media (max-width:640px){.chain.two{grid-template-columns:1fr}.chain.two .hd{display:block}}
 
 /* changes, cautions, tables */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
@@ -227,6 +260,27 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 
 <section>
   <div class="sec-head">
+    <p class="eyebrow">怎么练</p>
+    <h2>不背词，背“这一拍要送到什么”</h2>
+  </div>
+  <p class="lead">背词容易在台上断，是因为背下来的句子是一条链：每个词靠前一个词勾出来。台上一紧张丢了一个词，后面整串都出不来。背得越熟，链越长，断的时候越彻底。</p>
+  <p class="lead">换一种记法就没有这个问题：每一拍只记<b>要送到的东西</b>（一个数字，加上它意味着什么），句子每次现组。下面每句都给了三种说法，不是让你背三套，而是让你看到同一个意思可以怎么换着说。每遍抽到的说法不一样，脑子就只能去记意思。</p>
+  <div class="chain two">
+    <div class="hd">必须原样说对</div><div class="hd">每次可以不一样</div>
+    <div><p>四个数：<b>Half of twelve</b>、<b>38 cm</b>、<b>0.58 m</b>、<b>22%</b></p><p>限定词：without <b>clear</b> help</p><p>产品名：<b>Bed-Exit Seat</b></p><p>落点句：<b>No fixed bed height does both.</b></p></div>
+    <div><p>句子怎么开头、用哪个动词、先说数字还是先说结论、一句说完还是拆成两句。</p><p>这些说错了、说得不漂亮都没关系，观众听的是数字和结论。</p></div>
+  </div>
+  <ol class="ladder">
+    <li><span class="st">第 1–2 遍</span><b>全部说法</b><span>三种都出声读一遍，感觉哪种顺口。不用选定。</span></li>
+    <li><span class="st">第 3–4 遍</span><b>随机一种</b><span>每遍先点“换一组”再讲。抽到不顺口的也照说，这正是在练换说法。</span></li>
+    <li><span class="st">第 5 遍起</span><b>只看要点</b><span>句子全部藏起来，只剩每拍的要点，自己组句。</span></li>
+    <li><span class="st">最后两遍</span><b>只看幻灯片</b><span>关掉这一页，对着 PPT 讲，用底部计时条掐表或手机录音。</span></li>
+  </ol>
+  <p class="note">练到什么程度算够：连续三遍，每遍用词都不完全一样，但四个数字、限定词和落点句都说对了。到这里就停。继续练到一字不差，反而又变回背词。</p>
+</section>
+
+<section>
+  <div class="sec-head">
     <p class="eyebrow">怎么读台本</p>
     <h2>记号和三条规矩</h2>
   </div>
@@ -243,10 +297,16 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   </ul>
 </section>
 
-<section>
+<section id="script" data-mode="all">
   <div class="sec-head">
     <p class="eyebrow">台本</p>
-    <h2>四个镜头，逐句</h2>
+    <h2>四个镜头，每句三种说法</h2>
+  </div>
+  <div class="modes" role="group" aria-label="台本显示方式">
+    <button type="button" id="mAll" data-m="all" aria-pressed="true">全部说法</button>
+    <button type="button" id="mOne" data-m="one" aria-pressed="false">随机一种</button>
+    <button type="button" id="mKeys" data-m="keys" aria-pressed="false">只看要点</button>
+    <button type="button" id="mShuffle" class="ghost" disabled>换一组</button>
   </div>
 
   <!-- Scene 1 -->
@@ -262,22 +322,46 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         <p class="dir">站在屏幕左侧，身体正对观众。等全场安静，和后排的人对上一眼，再开口。开口太急，第一句会被噪声吃掉。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">Hello everyone, <i class="pz">/</i> we are <mark>Group 16</mark>. <i class="pz">//</i></p>
-        <p class="zh">大家好，我们是第 16 组。</p>
+        <p class="keys"><span class="kl">必到</span><b>Group 16</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Hello everyone, <i class="pz">/</i> we are <mark>Group 16</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>Hi everyone. <i class="pz">/</i> This is <mark>Group 16</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Hello, and welcome. <i class="pz">/</i> We are <mark>Group 16</mark>. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：大家好，我们是第 16 组。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">Our project is the <mark>Bed-Exit Seat</mark>. <i class="pz">//</i></p>
-        <p class="zh">我们的项目是床边起身台。</p>
-        <p class="dir">三个词分开说：<b>Bed · Exit · Seat</b>。这是全场第一次听到这个名字，后面二十几页都在用它。说完停一秒，让名字落地。</p>
+        <p class="keys"><span class="kl">必到</span><b>Bed-Exit Seat</b>，三个词分开说</p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Our project is the <mark>Bed-Exit Seat</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>Today we present the <mark>Bed-Exit Seat</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>We designed a device called the <mark>Bed-Exit Seat</mark>. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：我们的项目是床边起身台。</p>
+        <p class="dir">这是全场第一次听到这个名字，后面二十几页都在用它。说完停一秒，让名字落地。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">It helps older adults with <mark>weaker legs</mark> <i class="pz">/</i> stand up from the <mark>bed edge</mark> <i class="pz">/</i> at night. <i class="pz">//</i></p>
-        <p class="zh">它帮腿力变弱的老人，夜里从床沿站起来。</p>
-        <p class="dir">这是整场的一句话简介：谁、做什么、什么时候。不要再补充幻灯片上那段副标题。</p>
+        <p class="keys"><span class="kl">必到</span><b>older adults</b> · <b>weaker legs</b> · <b>bed edge</b> · <b>at night</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>It helps older adults with <mark>weaker legs</mark> <i class="pz">/</i> stand up from the <mark>bed edge</mark> <i class="pz">/</i> at night. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>It is for older adults whose legs are <mark>getting weaker</mark>. <i class="pz">/</i> It helps them stand up from the <mark>bed edge</mark> at night. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>At night, <i class="pz">/</i> standing up from the <mark>bed edge</mark> is hard for older adults with <mark>weak legs</mark>. <i class="pz">/</i> Our seat helps them do it. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：它帮腿力变弱的老人，夜里从床沿站起来。</p>
+        <p class="dir">整场的一句话简介：谁、做什么、什么时候。四个要点到了就行，顺序随你。不要再补充幻灯片上那段副标题。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">First, <i class="pz">/</i> please watch a <mark>46-second</mark> film.</p>
-        <p class="zh">先请看一段 46 秒的短片。</p>
+        <p class="keys"><span class="kl">必到</span><b>46-second film</b>，说完再点播放</p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>First, <i class="pz">/</i> please watch a <mark>46-second</mark> film.</span></p>
+          <p class="say" data-v="B"><span>Let’s start with a short film. <i class="pz">/</i> It takes <mark>46 seconds</mark>.</span></p>
+          <p class="say" data-v="C"><span>Before the details, <i class="pz">/</i> here is a <mark>46-second</mark> film.</span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：先请看一段 46 秒的短片。</p>
         <p class="dir">说完这句<b>再</b>点播放。边说边点，片头的声音会盖住你最后几个词。</p>
       </div></li>
     </ol>
@@ -301,20 +385,26 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="silent">0:05 和 0:07 · 记住这两幅画面</p>
-        <p class="dir">“Bed too low → can’t stand up” 和 “Bed too high → feet don’t reach the floor”。你 Problem 页的第一句 “Behind the film…” 接的就是它们。</p>
+        <p class="dir">“Bed too low → can’t stand up” 和 “Bed too high → feet don’t reach the floor”。你 Problem 页的第一句接的就是它们。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="silent">0:40 · 雨停，人站起来</p>
         <p class="dir">这是收尾的信号。手回到翻页器上，重心移回正对观众的位置。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">Now <i class="pz">/</i> let’s go through <mark>each step</mark>.</p>
-        <p class="zh">下面我们一步一步讲。</p>
-        <p class="dir">等音乐收完，再多等 1 秒，然后转回观众说这句，说完翻页。抢在音乐里说话，观众还没从片子里出来。</p>
+        <p class="keys"><span class="kl">必到</span>一句过渡，把观众从片子里带回来</p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Now <i class="pz">/</i> let’s go through <mark>each step</mark>.</span></p>
+          <p class="say" data-v="B"><span>That was the whole idea. <i class="pz">/</i> Now, the <mark>details</mark>.</span></p>
+          <p class="say" data-v="C"><span>So that is the idea in 46 seconds. <i class="pz">/</i> Let’s look at it <mark>step by step</mark>.</span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：下面我们一步一步讲。</p>
+        <p class="dir">等音乐收完，再多等 1 秒，然后转回观众说，说完翻页。抢在音乐里说话，观众还没从片子里出来。</p>
       </div></li>
       <li class="backup">
         <p class="lab">兜底 · 片子放不出来</p>
-        <p class="dir" style="border-left-color:var(--stop);color:var(--ink)">黑屏或没声音超过 5 秒就不等了，不道歉，直接说下面两句，然后翻页。这两句是我写的备用词，内容和片子开头、结尾的字幕一致。</p>
+        <p class="dir" style="border-left-color:var(--stop);color:var(--ink)">黑屏或没声音超过 5 秒就不等了，不道歉，用自己的话说出下面这个意思，然后翻页。内容和片子开头、结尾的字幕一致。</p>
         <p class="say">The film shows one thing: a bed that is <mark>too low</mark> is hard to stand up from, and a bed that is <mark>too high</mark> leaves the feet off the floor. Our seat stays as low as the bed, and rises with the user.</p>
       </li>
     </ol>
@@ -329,18 +419,26 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     </figure>
     <ol class="beats">
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">The talk has <mark>five parts</mark>: <i class="pz">/</i> the problem and users, <i class="pz">/</i> a comparison of solutions, <i class="pz">/</i> the mechanism, <i class="pz">/</i> then control and safety. <i class="pz">//</i></p>
-        <p class="zh">共五部分：问题和用户、方案比较、机构、控制与安全。</p>
-        <p class="dir">手从左往右划过五个框，每说一项手停在对应的框上。只是划过，不要逐个点着念。</p>
+        <p class="keys"><span class="kl">必到</span><b>five parts</b>：problem → comparison → mechanism → control &amp; safety → results</p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>The talk has <mark>five parts</mark>: <i class="pz">/</i> the problem and users, <i class="pz">/</i> a comparison of solutions, <i class="pz">/</i> the mechanism, <i class="pz">/</i> then control and safety. <i class="pz">//</i> We finish with <mark>results</mark> and a short wrap-up. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>We have <mark>five parts</mark>. <i class="pz">/</i> First, the problem and the users. <i class="pz">/</i> Then we compare existing solutions. <i class="pz">/</i> Then the mechanism, <i class="pz">/</i> and control and safety. <i class="pz">//</i> Last, <mark>results</mark> and a short wrap-up. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Here is our plan, in <mark>five parts</mark>: <i class="pz">/</i> who has the problem, <i class="pz">/</i> how others solve it, <i class="pz">/</i> how our mechanism works, <i class="pz">/</i> how we keep it safe, <i class="pz">//</i> and what <mark>results</mark> we got. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：共五部分：问题和用户、方案比较、机构、控制与安全，最后是结果和总结。</p>
+        <p class="dir">手从左往右划过五个框，每说一项手停在对应的框上。框上的标题就是你的提词，照着顺序说，不用背。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">We finish with <mark>results</mark> and a short wrap-up. <i class="pz">//</i></p>
-        <p class="zh">最后是结果和简短总结。</p>
-      </div></li>
-      <li class="beat"><span class="n none">·</span><div>
-        <p class="say">I’ll start with the <mark>problem</mark>.</p>
-        <p class="zh">我先讲问题。</p>
-        <p class="dir">这半句是我加的，原备注没有。作用是告诉观众“现在轮到第一格了”。全场时间紧就删掉它，直接翻页。</p>
+        <p class="keys"><span class="kl">必到</span>可选：告诉观众现在从第一格开始</p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>I’ll start with the <mark>problem</mark>.</span></p>
+          <p class="say" data-v="B"><span>Let me begin with the <mark>problem</mark>.</span></p>
+          <p class="say" data-v="C"><span>Part one: <i class="pz">/</i> the <mark>problem</mark>.</span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：我先讲问题。</p>
+        <p class="dir">这半句是我加的，原备注没有。全场时间紧就删掉它，直接翻页。</p>
       </div></li>
     </ol>
   </div>
@@ -358,50 +456,115 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         <span class="pin" style="left:42.2%;top:59.4%">5</span>
         <span class="pin" style="left:91.3%;top:59.4%">6</span>
       </div>
-      <figcaption>蓝点是手指的顺序：上排三个数字从左到右，然后橙色横幅，最后下排两个框。整页只指这六下。</figcaption>
+      <figcaption>蓝点是手指的顺序，也是你的提词顺序：上排三个数字从左到右，然后橙色横幅，最后下排两个框。手指到哪，就讲那一块。</figcaption>
     </figure>
     <ol class="beats">
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">Behind the film <i class="pz">/</i> are <mark>three numbers</mark>. <i class="pz">//</i></p>
-        <p class="zh">片子背后有三个数。</p>
+        <p class="keys"><span class="kl">必到</span><b>three numbers</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Behind the film <i class="pz">/</i> are <mark>three numbers</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>The film showed the problem. <i class="pz">/</i> <mark>Three numbers</mark> explain it. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Why is this a real problem? <i class="pz">/</i> <mark>Three numbers</mark>. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：片子背后有三个数。</p>
         <p class="dir">对着观众说，先不指屏幕。这句是承诺：接下来正好三个，观众会跟着数。</p>
       </div></li>
       <li class="beat"><span class="n">1</span><div>
-        <p class="say"><mark>Half</mark> of twelve older adults <i class="pz">/</i> could not stand from a <mark>38-centimetre</mark> bed <i class="pz">/</i> without clear help. <i class="pz">//</i></p>
-        <p class="zh">12 位老人里，一半人从 38 厘米高的床上，不靠明显的帮助站不起来。</p>
-        <p class="dir">“Half” 单独一拍。说 “twelve” 要说清，这是主动交代样本小，比被人追问时再承认好得多。</p>
+        <p class="keys"><span class="kl">必到</span><b>Half</b> · of <b>twelve</b> · <b>38 cm</b> bed · without <b>clear</b> help</p>
+        <div class="vars">
+          <p class="say" data-v="A"><span><mark>Half</mark> of twelve older adults <i class="pz">/</i> could not stand from a <mark>38-centimetre</mark> bed <i class="pz">/</i> without clear help. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>In one study, <i class="pz">/</i> twelve older adults tried to stand up from a <mark>38-centimetre</mark> bed. <i class="pz">/</i> <mark>Half</mark> of them could not do it without clear help. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Number one: <i class="pz">/</i> <mark>half</mark>. <i class="pz">//</i> From a bed <mark>38 centimetres</mark> high, <i class="pz">/</i> half of twelve older adults needed clear help to stand up. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：12 位老人里，一半人从 38 厘米高的床上，不靠明显的帮助站不起来。</p>
+        <p class="dir">“Half” 单独一拍。“twelve” 要说清，这是主动交代样本小，比被人追问时再承认好得多。</p>
       </div></li>
       <li class="beat"><span class="n">2</span><div>
-        <p class="say">Fall-prevention advice says <i class="pz">/</i> a bed should be at most about <mark>0.58 metres</mark>; <i class="pz">/</i> any higher, <i class="pz">/</i> and the feet are <mark>not flat</mark> when seated. <i class="pz">//</i></p>
-        <p class="zh">防跌建议说床高最多约 0.58 米；再高，坐着时脚就踩不平。</p>
-        <p class="dir">读作 “zero point five eight metres”。“any higher” 之后顿一下，把后果单独送出去。</p>
+        <p class="keys"><span class="kl">必到</span><b>0.58 m</b> · 是<b>建议</b>的上限 · 再高 → feet <b>not flat</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Fall-prevention advice says <i class="pz">/</i> a bed should be at most about <mark>0.58 metres</mark>; <i class="pz">/</i> any higher, <i class="pz">/</i> and the feet are <mark>not flat</mark> when seated. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>So should we just raise the bed? <i class="pz">/</i> Only up to a point. <i class="pz">//</i> Fall-prevention advice puts the limit at about <mark>0.58 metres</mark>. <i class="pz">/</i> Above that, the feet are <mark>not flat</mark> on the floor when you sit. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Number two: <i class="pz">/</i> <mark>0.58 metres</mark>. <i class="pz">//</i> That is the highest bed that fall-prevention advice recommends. <i class="pz">/</i> Go higher, <i class="pz">/</i> and the feet are <mark>not flat</mark> when seated. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：防跌建议说床高最多约 0.58 米；再高，坐着时脚就踩不平。</p>
+        <p class="dir">读作 “zero point five eight metres”。数字和后果之间顿一下，把后果单独送出去。</p>
       </div></li>
       <li class="beat"><span class="n">3</span><div>
-        <p class="say">And about <mark>22%</mark> of older adults at home <i class="pz">/</i> have orthostatic hypotension: <i class="pz">/</i> they may feel <mark>dizzy</mark> after standing, <i class="pz">/</i> so support must stay <mark>at hand</mark>. <i class="pz">//</i></p>
-        <p class="zh">约 22% 的居家老人有体位性低血压：站起来后可能头晕，所以手边一直要有支撑。</p>
-        <p class="dir">“orthostatic hypotension” 提前练熟（见下面读音表）。观众真正要听懂的是 “dizzy after standing”，术语可以轻轻带过。</p>
+        <p class="keys"><span class="kl">必到</span><b>22%</b> · older adults <b>at home</b> · <b>dizzy</b> after standing · support <b>at hand</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>And about <mark>22%</mark> of older adults at home <i class="pz">/</i> have orthostatic hypotension: <i class="pz">/</i> they may feel <mark>dizzy</mark> after standing, <i class="pz">/</i> so support must stay <mark>at hand</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>The third number is about what happens <mark>after</mark> standing. <i class="pz">//</i> About <mark>22%</mark> of older adults at home have orthostatic hypotension. <i class="pz">/</i> They may feel <mark>dizzy</mark>, <i class="pz">/</i> so they need something to hold. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Number three: <i class="pz">/</i> <mark>22 percent</mark>. <i class="pz">//</i> That is the share of older adults at home whose blood pressure drops when they stand: <i class="pz">/</i> orthostatic hypotension. <i class="pz">/</i> They may feel <mark>dizzy</mark>, <i class="pz">/</i> so support must be within reach. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：约 22% 的居家老人有体位性低血压：站起来后可能头晕，所以手边一直要有支撑。</p>
+        <p class="dir">观众真正要听懂的是 “dizzy after standing”。术语卡住了就用说法 C 里的解释 “blood pressure drops when they stand”，意思不丢。</p>
       </div></li>
       <li class="beat"><span class="n">4</span><div>
-        <p class="say">Put the first two together: <i class="pz">//</i> <mark>low</mark> is hard to rise from, <i class="pz">/</i> <mark>high</mark> leaves the feet unsupported. <i class="pz">//</i> <mark>No fixed bed height does both.</mark> <i class="pz">//</i></p>
-        <p class="zh">把前两条放在一起：低了难站起来，高了脚没支撑。没有哪个固定床高能两头兼顾。</p>
-        <p class="dir"><b>全段的落点。</b>手落在橙色横幅上，转回观众，语速降到一半。说 “low” 手往下压一点，说 “high” 手抬一点。最后一句说完，手放下，安静 1 秒再往下走。这一秒是整段最有用的一秒。</p>
+        <p class="keys"><span class="kl">必到</span>前两条合起来 · <b>low</b> 难站 · <b>high</b> 脚没支撑 · <span class="fix">原句：No fixed bed height does both.</span></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Put the first two together: <i class="pz">//</i> <mark>low</mark> is hard to rise from, <i class="pz">/</i> <mark>high</mark> leaves the feet unsupported. <i class="pz">//</i> <mark>No fixed bed height does both.</mark> <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>Now look at the first two numbers. <i class="pz">//</i> A <mark>low</mark> bed is hard to stand up from. <i class="pz">/</i> A <mark>high</mark> bed leaves the feet unsupported. <i class="pz">//</i> <mark>No fixed bed height does both.</mark> <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>So here is the conflict. <i class="pz">//</i> To stand up, <i class="pz">/</i> you want a <mark>high</mark> bed. <i class="pz">/</i> To sit with your feet flat, <i class="pz">/</i> you want a <mark>low</mark> one. <i class="pz">//</i> <mark>No fixed bed height does both.</mark> <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：把前两条放在一起：低了难站起来，高了脚没支撑。没有哪个固定床高能两头兼顾。</p>
+        <p class="dir"><b>全段的落点，也是全场唯一要原样背下来的一句。</b>它就印在橙色横幅上，忘了就照着念。手落在横幅上，转回观众，语速降到一半。说完手放下，安静 1 秒再往下走。</p>
       </div></li>
       <li class="beat"><span class="n">5</span><div>
-        <p class="say">Our users can <mark>still walk</mark>, <i class="pz">/</i> alone or with a walker, <i class="pz">/</i> but find rising from a normal bed <mark>hard</mark>. <i class="pz">//</i></p>
-        <p class="zh">我们的用户还能走路，自己走或用助行器，但从普通床上站起来很吃力。</p>
+        <p class="keys"><span class="kl">必到</span><b>still walk</b>（alone / walker）· 从普通床站起来 <b>hard</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Our users can <mark>still walk</mark>, <i class="pz">/</i> alone or with a walker, <i class="pz">/</i> but find rising from a normal bed <mark>hard</mark>. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>Who is this for? <i class="pz">//</i> People who can <mark>still walk</mark>, <i class="pz">/</i> alone or with a walker. <i class="pz">/</i> Their problem is <mark>standing up</mark> from a normal bed. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>Our users are not bedridden. <i class="pz">/</i> They <mark>walk</mark>, some with a walker. <i class="pz">//</i> What they cannot do easily <i class="pz">/</i> is <mark>rise</mark> from a normal bed. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：我们的用户还能走路，自己走或用助行器，但从普通床上站起来很吃力。</p>
         <p class="dir">只指一下左下框。“不适用人群”那一行不讲，有人问再答。</p>
       </div></li>
       <li class="beat"><span class="n">6</span><div>
-        <p class="say">Results for the <mark>six requirements</mark> <i class="pz">/</i> come at the end. <i class="pz">//</i></p>
-        <p class="zh">这六条要求的结果，最后会给。</p>
+        <p class="keys"><span class="kl">必到</span><b>six requirements</b> · 结果 <b>at the end</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Results for the <mark>six requirements</mark> <i class="pz">/</i> come at the end. <i class="pz">//</i></span></p>
+          <p class="say" data-v="B"><span>From this we set <mark>six requirements</mark>. <i class="pz">/</i> We will check each one at the end. <i class="pz">//</i></span></p>
+          <p class="say" data-v="C"><span>These are our <mark>six requirements</mark>. <i class="pz">/</i> Keep them in mind: <i class="pz">/</i> the results come at the end. <i class="pz">//</i></span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：这六条要求的结果，最后会给。</p>
         <p class="dir">手在右下框上划一下即可，一条都不念。这句是给第五部分埋的钩子：结果页会逐条对回这六条。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
-        <p class="say">Next, <i class="pz">/</i> <mark>〔队友名字〕</mark> compares existing solutions.</p>
-        <p class="zh">接下来，〔第二位同学〕比较现有方案。</p>
-        <p class="dir">交棒句是我加的，原备注没有。说完看向队友，由对方翻页。你往侧后退一步，不要挡屏幕，也不要马上低头看手机。</p>
+        <p class="keys"><span class="kl">必到</span>队友名字 · <b>existing solutions</b></p>
+        <div class="vars">
+          <p class="say" data-v="A"><span>Next, <i class="pz">/</i> <mark>〔队友名字〕</mark> compares existing solutions.</span></p>
+          <p class="say" data-v="B"><span>Now over to <mark>〔队友名字〕</mark>, <i class="pz">/</i> who looks at existing solutions.</span></p>
+          <p class="say" data-v="C"><span>So what solutions already exist? <i class="pz">/</i> <mark>〔队友名字〕</mark> will show you.</span></p>
+        </div>
+        <button type="button" class="swap">换一句</button>
+        <p class="zh">意思：接下来，〔第二位同学〕讲现有方案。</p>
+        <p class="dir">交棒句是我加的，原备注没有。说完看向队友，由对方翻页。你往侧后退一步，不要挡屏幕。</p>
       </div></li>
     </ol>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">台上</p>
+    <h2>真的忘词了，按这个顺序救</h2>
+  </div>
+  <ol class="rescue">
+    <li><b>看屏幕，念那个大数字</b><span>Half、0.58 m、22% 都印在幻灯片上，橙色横幅上印着落点句。转头看一眼屏幕在观众眼里是正常动作。先把数字念出来，嘴动起来，后半句通常就跟着出来了。</span></li>
+    <li><b>用一个桥句接上</b><span>“What this means is…”、“The point is…”、“In other words…”。这三个短语能接在任何一个数字后面，给你两秒钟想下一句。</span></li>
+    <li><b>丢了就丢了，往下走</b><span>观众没有你的稿子，不知道你少说了什么。只要三个数字和落点句到了，其他句子少一句没有人会发现。不要回头补，不要说 sorry。</span></li>
+  </ol>
+  <div class="job">
+    <p class="k" style="font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted)">脑子全空时的 20 秒版 PROBLEM 页</p>
+    <p class="say">Three numbers. <mark>Half</mark> of twelve older adults could not stand up from a low bed. <mark>0.58 metres</mark> is the highest a bed should be. <mark>22%</mark> feel dizzy after standing. So: low is hard to rise from, high leaves the feet unsupported. <mark>No fixed bed height does both.</mark></p>
+    <p class="note">这一版丢掉了用户和六条要求，但全场必须记住的东西都在。它只是保底，正常情况下不用。</p>
   </div>
 </section>
 
@@ -410,7 +573,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <p class="eyebrow">和 PPT 备注的差别</p>
     <h2>我改了三处词，原因如下</h2>
   </div>
-  <p class="note">封面和目录的词基本就是 PPT 备注原文。Problem 页我动了下面三处，所有数字都没变。仓库里的幻灯片和 PPT 备注我没有改。</p>
+  <p class="note">每句的说法 A 最接近 PPT 备注原文，B 和 C 是我另写的换法，数字和结论都一样。相对原备注，Problem 页的说法 A 动了下面三处。仓库里的幻灯片和 PPT 备注我没有改。</p>
   <div class="cards">
     <div class="card">
       <p class="k">改动 1 · 补上断掉的因果</p>
@@ -523,7 +686,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <p class="eyebrow">排练</p>
     <h2>掐表：每个镜头用了多久</h2>
   </div>
-  <p class="note">点底部的“开始排练”，照台本出声讲；每翻一页点一次“下一镜”。结束后这里显示每段和目标差多少。短片那段可以直接等 50 秒，或者真的放一遍。</p>
+  <p class="note">点底部的“开始排练”，出声讲；每翻一页点一次“下一镜”。结束后这里显示每段和目标差多少。短片那段可以直接等 50 秒，或者真的放一遍。说法 B、C 比 A 多几个词，每段多出三五秒属于正常。</p>
   <div class="tbl"><table id="laps">
     <tr><th>镜头</th><th>目标</th><th>你的用时</th><th>差</th></tr>
     <tr><td>1 封面</td><td class="num">0:15</td><td class="num" data-lap="0">—</td><td class="num" data-diff="0">—</td></tr>
@@ -612,5 +775,20 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     });
   }catch(e){}
   idle();
+
+  (function(){
+    var root=document.getElementById('script'); if(!root) return;
+    var groups=[].slice.call(root.querySelectorAll('.vars'));
+    var btns=[].slice.call(root.querySelectorAll('.modes [data-m]'));
+    var shuffle=document.getElementById('mShuffle');
+    function pick(g,k){ var v=g.querySelectorAll('.say'); for(var j=0;j<v.length;j++){ v[j].classList.toggle('on',j===k); } g.setAttribute('data-k',k); }
+    function reshuffle(){ groups.forEach(function(g){ var n=g.querySelectorAll('.say').length, prev=parseInt(g.getAttribute('data-k'),10), k; do{ k=Math.floor(Math.random()*n); }while(n>1&&k===prev); pick(g,k); }); }
+    function setMode(m){ root.setAttribute('data-mode',m); btns.forEach(function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-m')===m?'true':'false'); }); shuffle.disabled=(m!=='one'); if(m==='one') reshuffle(); try{ localStorage.setItem('p1dir-mode',m); }catch(e){} }
+    btns.forEach(function(b){ b.addEventListener('click',function(){ setMode(b.getAttribute('data-m')); }); });
+    shuffle.addEventListener('click',reshuffle);
+    [].slice.call(root.querySelectorAll('.swap')).forEach(function(b){ b.addEventListener('click',function(){ var g=b.previousElementSibling; var n=g.querySelectorAll('.say').length; pick(g,((parseInt(g.getAttribute('data-k'),10)||0)+1)%n); }); });
+    groups.forEach(function(g){ pick(g,0); });
+    try{ var saved=localStorage.getItem('p1dir-mode'); if(saved==='one'||saved==='keys') setMode(saved); }catch(e){}
+  })();
 })();
 </script>
