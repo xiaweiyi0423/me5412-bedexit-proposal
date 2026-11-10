@@ -1,0 +1,616 @@
+<title>Part 1 导演台本</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a shooting script. One column; each scene = slide frame on the left, beats on the right.
+   Yellow highlighter = words to stress, blue pencil = direction that is never spoken. */
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --sunk:#E3E7EC;
+  --ink:#131A22; --muted:#566373; --line:#D2D9E1;
+  --pencil:#1D4FCB; --pencil-soft:#E4EBFB;
+  --hl-bg:#FFE65A; --hl-fg:#1A1600;
+  --stop:#C0322B; --stop-soft:#FBE9E7;
+  --go:#1B7A4E;
+  --slate:#131A22; --slate-fg:#F1F4F7; --slate-muted:#A9B4C1; --pin:#1D4FCB;
+  --sans:"IBM Plex Sans","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1319; --surface:#171E27; --sunk:#1F2833;
+    --ink:#E7ECF1; --muted:#9BA7B5; --line:#2B3542;
+    --pencil:#86A9FF; --pencil-soft:#1B2740;
+    --hl-bg:#5E5200; --hl-fg:#FFF3A6;
+    --stop:#FF8177; --stop-soft:#3A1D1B;
+    --go:#62CE99;
+    --slate:#060A0E; --slate-fg:#F1F4F7; --slate-muted:#9BA7B5;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1319; --surface:#171E27; --sunk:#1F2833;
+  --ink:#E7ECF1; --muted:#9BA7B5; --line:#2B3542;
+  --pencil:#86A9FF; --pencil-soft:#1B2740;
+  --hl-bg:#5E5200; --hl-fg:#FFF3A6;
+  --stop:#FF8177; --stop-soft:#3A1D1B;
+  --go:#62CE99;
+  --slate:#060A0E; --slate-fg:#F1F4F7; --slate-muted:#9BA7B5;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:44px}
+h1,h2,h3,p,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+h2{font-size:22px;font-weight:700;line-height:1.3;text-wrap:balance}
+h3{font-size:17px;font-weight:700;line-height:1.35}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lead{max-width:44em;color:var(--ink)}
+.note{font-size:14px;color:var(--muted);max-width:48em}
+section{display:flex;flex-direction:column;gap:16px}
+.sec-head{display:flex;flex-direction:column;gap:4px}
+
+/* slate header */
+.slate{background:var(--slate);color:var(--slate-fg);border-radius:6px;padding:24px;display:flex;flex-direction:column;gap:18px}
+.slate h1{font-size:clamp(28px,5vw,40px);font-weight:700;line-height:1.15;letter-spacing:-.01em}
+.slate .eyebrow{color:var(--slate-muted)}
+.slate dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:0;background:#3A4654;border:1px solid #3A4654}
+.slate dl div{background:var(--slate);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.slate dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate-muted)}
+.slate dd{margin:0;font-size:15px;font-weight:500}
+
+/* whole-talk bar */
+.run{display:flex;gap:2px;height:34px;font-family:var(--mono);font-size:12px}
+.run span{display:flex;align-items:center;justify-content:center;background:var(--sunk);color:var(--muted);min-width:0;white-space:nowrap;overflow:hidden}
+.run .me{background:var(--hl-bg);color:var(--hl-fg);font-weight:500}
+
+/* the job */
+.job{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.job .en{font-size:clamp(20px,3.2vw,26px);font-weight:600;line-height:1.35;text-wrap:balance}
+.chain{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) minmax(0,1fr);border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--line);gap:1px}
+.chain > div{background:var(--surface);padding:12px 14px;min-width:0}
+.chain .hd{background:var(--sunk);font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);padding-block:8px}
+.chain .num{font-size:24px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
+.chain .src{font-size:12px;color:var(--muted)}
+.chain p{font-size:15px}
+.chain .join{grid-column:1/-1;background:var(--pencil-soft);color:var(--ink);font-size:15px}
+.chain .join b{color:var(--pencil)}
+@media (max-width:640px){
+  .chain{grid-template-columns:1fr}
+  .chain .hd{display:none}
+  .chain .num{padding-top:4px}
+}
+
+/* legend + rules */
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+mark{background:var(--hl-bg);color:var(--hl-fg);padding:0 .18em;border-radius:2px}
+.pz{font-family:var(--mono);font-style:normal;color:var(--pencil);font-weight:500;padding:0 .15em}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.rules li{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.rules b{font-size:16px}
+.rules span{font-size:14px;color:var(--muted)}
+
+/* scenes */
+.scene{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px;align-items:start;border-top:1px solid var(--line);padding-top:20px}
+.scene-tag{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.scene-tag .tc{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.scene-tag h3{font-size:20px}
+.frame{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:8px}
+.shot{position:relative;container-type:inline-size;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--sunk);line-height:0}
+.shot img{width:100%;height:auto;display:block}
+.pin{position:absolute;transform:translate(-50%,-50%);width:clamp(14px,4.6cqw,24px);height:clamp(14px,4.6cqw,24px);border-radius:50%;background:var(--pin);color:#FFFFFF;font-family:var(--mono);font-size:clamp(9px,2.8cqw,13px);font-weight:500;line-height:clamp(14px,4.6cqw,24px);text-align:center;box-shadow:0 0 0 2px #FFFFFF}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.strip figure{display:flex;flex-direction:column;gap:4px}
+.strip figcaption,.frame > figcaption,.cap{font-size:12px;color:var(--muted);line-height:1.45}
+.strip .tc{font-family:var(--mono)}
+.beats{display:flex;flex-direction:column;gap:16px;min-width:0}
+.beat{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px}
+.beat .n{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--pencil);color:var(--pencil);font-family:var(--mono);font-size:13px;line-height:23px;text-align:center;margin-top:3px}
+.beat .n.none{border-style:dashed;color:var(--muted);border-color:var(--muted)}
+.beat > div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.say{font-size:19px;line-height:1.5;font-weight:500}
+.zh{font-size:13px;color:var(--muted)}
+.dir{font-size:14px;color:var(--pencil);border-left:2px solid var(--pencil);padding-left:10px}
+.dir b{font-weight:600}
+.silent{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.backup{background:var(--stop-soft);border-radius:4px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.backup .lab{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--stop)}
+.backup .say{font-size:16px}
+@media (max-width:760px){
+  .scene{grid-template-columns:1fr}
+  .frame{position:static}
+}
+
+/* changes, cautions, tables */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card .k{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.card p{font-size:15px}
+.was{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--stop)}
+.now{font-weight:600}
+.dont li{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;border-left:3px solid var(--stop);padding:2px 0 2px 14px}
+.dont{display:flex;flex-direction:column;gap:14px;max-width:50em}
+.dont b{font-size:16px}
+.dont span{font-size:15px;color:var(--ink)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500;background:var(--sunk)}
+td.w{font-weight:600;white-space:nowrap}
+td.ph{font-family:var(--mono);font-size:14px;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.qa{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.qa li{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.qa li:last-child{border-bottom:0}
+.qa .q{font-weight:600;font-size:16px}
+.qa .a{font-size:16px}
+.qa .a::before{content:"A  ";font-family:var(--mono);color:var(--go);font-weight:500}
+.qa .q::before{content:"Q  ";font-family:var(--mono);color:var(--muted);font-weight:500}
+.qa .why{font-size:13px;color:var(--muted)}
+.check{display:flex;flex-direction:column;gap:10px;max-width:50em}
+.check label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;font-size:15px;cursor:pointer}
+.check input{width:18px;height:18px;margin:4px 0 0;accent-color:var(--pencil)}
+.check input:focus-visible,.bar button:focus-visible{outline:2px solid var(--pencil);outline-offset:2px}
+.flag{color:var(--stop);font-weight:600}
+
+/* rehearsal bar */
+.bar{position:sticky;bottom:0;z-index:5;background:var(--slate);color:var(--slate-fg);border-top:1px solid #3A4654}
+.bar-in{max-width:1080px;margin:0 auto;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+.bar .now-seg{font-size:14px;font-weight:600;min-width:9em}
+.bar .clock{font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums;font-weight:500}
+.bar .clock small{font-size:13px;color:var(--slate-muted);font-weight:400}
+.bar .clock.over{color:#FF8177}
+.bar .tot{font-family:var(--mono);font-size:13px;color:var(--slate-muted);font-variant-numeric:tabular-nums}
+.bar .sp{flex:1 1 0;min-width:0}
+.bar button{font:inherit;font-size:14px;font-weight:600;border-radius:4px;padding:8px 14px;cursor:pointer;border:1px solid #55626F;background:transparent;color:var(--slate-fg)}
+.bar button.primary{background:#FFE65A;color:#1A1600;border-color:#FFE65A}
+.bar button:disabled{opacity:.45;cursor:default}
+</style>
+
+<div class="wrap">
+
+<header class="slate">
+  <p class="eyebrow">ME5412 · Group 16 · Bed-Exit Seat</p>
+  <h1>第一部分 · 导演台本</h1>
+  <dl>
+    <div><dt>你讲的页</dt><dd>封面 → 短片 → 目录 → Problem &amp; users</dd></div>
+    <div><dt>时长</dt><dd>约 2 分 20 秒（含 46 秒短片）</dd></div>
+    <div><dt>语言</dt><dd>台词英文，导演提示中文</dd></div>
+    <div><dt>交给</dt><dd>第二部分 · Existing solutions</dd></div>
+  </dl>
+  <div>
+    <div class="run" aria-label="全场五部分的时间比例，第一部分在最前">
+      <span class="me" style="flex:2.3">1 你</span>
+      <span style="flex:1.9">2</span>
+      <span style="flex:3.9">3 机构</span>
+      <span style="flex:3.2">4 控制</span>
+      <span style="flex:2.0">5</span>
+    </div>
+    <p class="cap" style="color:var(--slate-muted);margin-top:6px">全场 15 分钟。各段比例按仓库里英文讲稿的字数估算（每分钟 130 词），第五部分已由队友另改，仅供参考。</p>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">先想清楚</p>
+    <h2>这两分钟只办成一件事</h2>
+  </div>
+  <div class="job">
+    <p class="en">“No fixed bed height does both.”</p>
+    <p class="lead">床低了，站不起来；床高了，坐着时脚踩不实。一张床只有一个高度，所以两头顾不全。你下台的时候，全场要记住的就是这一句。</p>
+    <p class="lead">原因很直接：后面四位讲的机构、控制、结果，全都是在回答这个矛盾。听众记住了它，后面每一页都有地方挂；没记住，后面讲得再好，也像在解一道没人出的题。</p>
+  </div>
+
+  <h3>Problem 页的三个数字，各自管一件事</h3>
+  <p class="note">这页最容易讲成“念三个数”。其实每个数字都在逼出一条设计要求，你心里要有这条线，停顿和重音才会落在对的地方。</p>
+  <div class="chain">
+    <div class="hd">数字</div><div class="hd">它说明什么</div><div class="hd">所以设计必须</div>
+
+    <div><p class="num">Half</p><p class="src">12 人，38 cm 的床<br>Merryweather 2015</p></div>
+    <div><p>床低的时候，腿要出的力更大；一半人不靠明显的帮助就站不起来。</p></div>
+    <div><p>起身那几秒，身下的支撑要<b>更高</b>。</p></div>
+
+    <div><p class="num">0.58 m</p><p class="src">NCOA 建议 20–23 英寸</p></div>
+    <div><p>床再高，坐在床沿时脚就踩不平，坐不稳。</p></div>
+    <div><p>坐着的时候，床面要<b>够低</b>。</p></div>
+
+    <div class="join">前两条一个要高、一个要低，同一张床给不出两个高度。<b>这就是矛盾。</b>我们的做法是把两个高度拆开：平时座板和床一样低，只在起身那几秒升起来。</div>
+
+    <div><p class="num">22%</p><p class="src">居家老人，体位性低血压<br>Saedon 2020</p></div>
+    <div><p>站起来以后血压会掉一下，人可能头晕。这件事和床高无关，发生在站起来<b>之后</b>。</p></div>
+    <div><p>手边一直有东西扶，身后一直有东西接：横杆、松手就停、座板停在原处。</p></div>
+  </div>
+  <p class="note">表中前两列是幻灯片上的内容。第三列和中间那条“拆开两个高度”，是我按整套设计归纳的讲法，和封面那句 “As low as the bed at rest; while rising, the seat moves…” 一致。</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">怎么读台本</p>
+    <h2>记号和三条规矩</h2>
+  </div>
+  <p class="legend">
+    <span><mark>高亮</mark> 重读，放慢</span>
+    <span><i class="pz">/</i> 短停，半拍</span>
+    <span><i class="pz">//</i> 长停，约 1 秒，看观众</span>
+    <span style="color:var(--pencil)">蓝字 = 导演提示，不出声</span>
+  </p>
+  <ul class="rules">
+    <li><b>先指，再转身，再说</b><span>手指到位、看屏幕 1 秒，然后转回来对着观众说。背对观众说话，声音会打在屏幕上。</span></li>
+    <li><b>一句只送一个数字</b><span>数字前停半拍，数字后停半拍。听众没有字幕，数字是靠停顿听清的。</span></li>
+    <li><b>不念幻灯片</b><span>封面那段副标题、目录的小字、六条设计要求，一个字都不念。屏幕负责给人看，你负责把它们连起来。</span></li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">台本</p>
+    <h2>四个镜头，逐句</h2>
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="scene">
+    <div class="scene-tag"><span class="tc">镜头 1 · 0:00–0:15</span><h3>封面</h3></div>
+    <figure class="frame">
+      <div class="shot"><img src="img/cover.jpg" alt="封面页：Bed-Exit Seat，右侧为 CAD 模型" width="1280" height="720"></div>
+      <figcaption>现在的 PPT 封面上还写着 <span class="flag">[Team member names]</span>，上台前要换成真名。</figcaption>
+    </figure>
+    <ol class="beats">
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="silent">（不出声，2 秒）</p>
+        <p class="dir">站在屏幕左侧，身体正对观众。等全场安静，和后排的人对上一眼，再开口。开口太急，第一句会被噪声吃掉。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">Hello everyone, <i class="pz">/</i> we are <mark>Group 16</mark>. <i class="pz">//</i></p>
+        <p class="zh">大家好，我们是第 16 组。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">Our project is the <mark>Bed-Exit Seat</mark>. <i class="pz">//</i></p>
+        <p class="zh">我们的项目是床边起身台。</p>
+        <p class="dir">三个词分开说：<b>Bed · Exit · Seat</b>。这是全场第一次听到这个名字，后面二十几页都在用它。说完停一秒，让名字落地。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">It helps older adults with <mark>weaker legs</mark> <i class="pz">/</i> stand up from the <mark>bed edge</mark> <i class="pz">/</i> at night. <i class="pz">//</i></p>
+        <p class="zh">它帮腿力变弱的老人，夜里从床沿站起来。</p>
+        <p class="dir">这是整场的一句话简介：谁、做什么、什么时候。不要再补充幻灯片上那段副标题。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">First, <i class="pz">/</i> please watch a <mark>46-second</mark> film.</p>
+        <p class="zh">先请看一段 46 秒的短片。</p>
+        <p class="dir">说完这句<b>再</b>点播放。边说边点，片头的声音会盖住你最后几个词。</p>
+      </div></li>
+    </ol>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="scene">
+    <div class="scene-tag"><span class="tc">镜头 2 · 0:15–1:05</span><h3>46 秒短片</h3></div>
+    <figure class="frame">
+      <div class="strip">
+        <figure><div class="shot"><img src="img/film_low.jpg" alt="短片画面：Bed too low → can't stand up" width="640" height="360"></div><figcaption><span class="tc">0:05</span> 床低，站不起来</figcaption></figure>
+        <figure><div class="shot"><img src="img/film_high.jpg" alt="短片画面：Bed too high → feet don't reach the floor" width="640" height="360"></div><figcaption><span class="tc">0:07</span> 床高，脚够不着地</figcaption></figure>
+        <figure><div class="shot"><img src="img/film_end.jpg" alt="短片结尾：Bed-Exit Seat，样机在旋转" width="640" height="360"></div><figcaption><span class="tc">0:44</span> 片名定格</figcaption></figure>
+      </div>
+      <figcaption>短片没有旁白，只有字幕、配乐和音效。前两幅画面就是你下一页要讲的矛盾。</figcaption>
+    </figure>
+    <ol class="beats">
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="silent">（点一下播放，然后 46 秒不出声）</p>
+        <p class="dir">往屏幕侧面退半步，<b>身体转向屏幕，自己也看片子</b>。你看哪里，观众就看哪里；你低头看稿，观众会跟着走神。不碰电脑，不小声解说。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="silent">0:05 和 0:07 · 记住这两幅画面</p>
+        <p class="dir">“Bed too low → can’t stand up” 和 “Bed too high → feet don’t reach the floor”。你 Problem 页的第一句 “Behind the film…” 接的就是它们。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="silent">0:40 · 雨停，人站起来</p>
+        <p class="dir">这是收尾的信号。手回到翻页器上，重心移回正对观众的位置。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">Now <i class="pz">/</i> let’s go through <mark>each step</mark>.</p>
+        <p class="zh">下面我们一步一步讲。</p>
+        <p class="dir">等音乐收完，再多等 1 秒，然后转回观众说这句，说完翻页。抢在音乐里说话，观众还没从片子里出来。</p>
+      </div></li>
+      <li class="backup">
+        <p class="lab">兜底 · 片子放不出来</p>
+        <p class="dir" style="border-left-color:var(--stop);color:var(--ink)">黑屏或没声音超过 5 秒就不等了，不道歉，直接说下面两句，然后翻页。这两句是我写的备用词，内容和片子开头、结尾的字幕一致。</p>
+        <p class="say">The film shows one thing: a bed that is <mark>too low</mark> is hard to stand up from, and a bed that is <mark>too high</mark> leaves the feet off the floor. Our seat stays as low as the bed, and rises with the user.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="scene">
+    <div class="scene-tag"><span class="tc">镜头 3 · 1:05–1:20</span><h3>目录</h3></div>
+    <figure class="frame">
+      <div class="shot"><img src="img/agenda.jpg" alt="目录页：五个部分，从问题到结果" width="1280" height="720"></div>
+      <figcaption>这页只是路标，15 秒过完。五个框里的小字都不念。</figcaption>
+    </figure>
+    <ol class="beats">
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">The talk has <mark>five parts</mark>: <i class="pz">/</i> the problem and users, <i class="pz">/</i> a comparison of solutions, <i class="pz">/</i> the mechanism, <i class="pz">/</i> then control and safety. <i class="pz">//</i></p>
+        <p class="zh">共五部分：问题和用户、方案比较、机构、控制与安全。</p>
+        <p class="dir">手从左往右划过五个框，每说一项手停在对应的框上。只是划过，不要逐个点着念。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">We finish with <mark>results</mark> and a short wrap-up. <i class="pz">//</i></p>
+        <p class="zh">最后是结果和简短总结。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">I’ll start with the <mark>problem</mark>.</p>
+        <p class="zh">我先讲问题。</p>
+        <p class="dir">这半句是我加的，原备注没有。作用是告诉观众“现在轮到第一格了”。全场时间紧就删掉它，直接翻页。</p>
+      </div></li>
+    </ol>
+  </div>
+
+  <!-- Scene 4 -->
+  <div class="scene">
+    <div class="scene-tag"><span class="tc">镜头 4 · 1:20–2:20</span><h3>Problem &amp; users（你的主戏）</h3></div>
+    <figure class="frame">
+      <div class="shot">
+        <img src="img/problem.jpg" alt="Problem 页：三个数字卡片、橙色矛盾横幅、目标用户和六条设计要求" width="1280" height="720">
+        <span class="pin" style="left:32.8%;top:25.7%">1</span>
+        <span class="pin" style="left:62.1%;top:25.7%">2</span>
+        <span class="pin" style="left:91.3%;top:25.7%">3</span>
+        <span class="pin" style="left:91.3%;top:50.3%">4</span>
+        <span class="pin" style="left:42.2%;top:59.4%">5</span>
+        <span class="pin" style="left:91.3%;top:59.4%">6</span>
+      </div>
+      <figcaption>蓝点是手指的顺序：上排三个数字从左到右，然后橙色横幅，最后下排两个框。整页只指这六下。</figcaption>
+    </figure>
+    <ol class="beats">
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">Behind the film <i class="pz">/</i> are <mark>three numbers</mark>. <i class="pz">//</i></p>
+        <p class="zh">片子背后有三个数。</p>
+        <p class="dir">对着观众说，先不指屏幕。这句是承诺：接下来正好三个，观众会跟着数。</p>
+      </div></li>
+      <li class="beat"><span class="n">1</span><div>
+        <p class="say"><mark>Half</mark> of twelve older adults <i class="pz">/</i> could not stand from a <mark>38-centimetre</mark> bed <i class="pz">/</i> without clear help. <i class="pz">//</i></p>
+        <p class="zh">12 位老人里，一半人从 38 厘米高的床上，不靠明显的帮助站不起来。</p>
+        <p class="dir">“Half” 单独一拍。说 “twelve” 要说清，这是主动交代样本小，比被人追问时再承认好得多。</p>
+      </div></li>
+      <li class="beat"><span class="n">2</span><div>
+        <p class="say">Fall-prevention advice says <i class="pz">/</i> a bed should be at most about <mark>0.58 metres</mark>; <i class="pz">/</i> any higher, <i class="pz">/</i> and the feet are <mark>not flat</mark> when seated. <i class="pz">//</i></p>
+        <p class="zh">防跌建议说床高最多约 0.58 米；再高，坐着时脚就踩不平。</p>
+        <p class="dir">读作 “zero point five eight metres”。“any higher” 之后顿一下，把后果单独送出去。</p>
+      </div></li>
+      <li class="beat"><span class="n">3</span><div>
+        <p class="say">And about <mark>22%</mark> of older adults at home <i class="pz">/</i> have orthostatic hypotension: <i class="pz">/</i> they may feel <mark>dizzy</mark> after standing, <i class="pz">/</i> so support must stay <mark>at hand</mark>. <i class="pz">//</i></p>
+        <p class="zh">约 22% 的居家老人有体位性低血压：站起来后可能头晕，所以手边一直要有支撑。</p>
+        <p class="dir">“orthostatic hypotension” 提前练熟（见下面读音表）。观众真正要听懂的是 “dizzy after standing”，术语可以轻轻带过。</p>
+      </div></li>
+      <li class="beat"><span class="n">4</span><div>
+        <p class="say">Put the first two together: <i class="pz">//</i> <mark>low</mark> is hard to rise from, <i class="pz">/</i> <mark>high</mark> leaves the feet unsupported. <i class="pz">//</i> <mark>No fixed bed height does both.</mark> <i class="pz">//</i></p>
+        <p class="zh">把前两条放在一起：低了难站起来，高了脚没支撑。没有哪个固定床高能两头兼顾。</p>
+        <p class="dir"><b>全段的落点。</b>手落在橙色横幅上，转回观众，语速降到一半。说 “low” 手往下压一点，说 “high” 手抬一点。最后一句说完，手放下，安静 1 秒再往下走。这一秒是整段最有用的一秒。</p>
+      </div></li>
+      <li class="beat"><span class="n">5</span><div>
+        <p class="say">Our users can <mark>still walk</mark>, <i class="pz">/</i> alone or with a walker, <i class="pz">/</i> but find rising from a normal bed <mark>hard</mark>. <i class="pz">//</i></p>
+        <p class="zh">我们的用户还能走路，自己走或用助行器，但从普通床上站起来很吃力。</p>
+        <p class="dir">只指一下左下框。“不适用人群”那一行不讲，有人问再答。</p>
+      </div></li>
+      <li class="beat"><span class="n">6</span><div>
+        <p class="say">Results for the <mark>six requirements</mark> <i class="pz">/</i> come at the end. <i class="pz">//</i></p>
+        <p class="zh">这六条要求的结果，最后会给。</p>
+        <p class="dir">手在右下框上划一下即可，一条都不念。这句是给第五部分埋的钩子：结果页会逐条对回这六条。</p>
+      </div></li>
+      <li class="beat"><span class="n none">·</span><div>
+        <p class="say">Next, <i class="pz">/</i> <mark>〔队友名字〕</mark> compares existing solutions.</p>
+        <p class="zh">接下来，〔第二位同学〕比较现有方案。</p>
+        <p class="dir">交棒句是我加的，原备注没有。说完看向队友，由对方翻页。你往侧后退一步，不要挡屏幕，也不要马上低头看手机。</p>
+      </div></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">和 PPT 备注的差别</p>
+    <h2>我改了三处词，原因如下</h2>
+  </div>
+  <p class="note">封面和目录的词基本就是 PPT 备注原文。Problem 页我动了下面三处，所有数字都没变。仓库里的幻灯片和 PPT 备注我没有改。</p>
+  <div class="cards">
+    <div class="card">
+      <p class="k">改动 1 · 补上断掉的因果</p>
+      <p class="was">…dizzy after standing. So one fixed bed height cannot do both.</p>
+      <p class="now">Put the first two together: low is hard to rise from, high leaves the feet unsupported. No fixed bed height does both.</p>
+      <p>原词在“头晕”后面直接接“所以固定床高两头顾不全”。头晕推不出床高的矛盾，而且只听不看的人不知道 “both” 指哪两样。矛盾来自第 1、2 个数字，所以明说“把前两条放在一起”，并把两头各说一遍。</p>
+    </div>
+    <div class="card">
+      <p class="k">改动 2 · 给第 3 个数字一个去处</p>
+      <p class="was">…so they may feel dizzy after standing.</p>
+      <p class="now">…they may feel dizzy after standing, so support must stay at hand.</p>
+      <p>原词只说了会头晕，没说这对设计意味着什么，听起来像多出来的一个数。加半句，它就对上了幻灯片卡片上的 “need support at hand”，也对上后面的横杆和“松手就停”。</p>
+    </div>
+    <div class="card">
+      <p class="k">改动 3 · 和出处对齐</p>
+      <p class="was">…without help.</p>
+      <p class="now">…without clear help.</p>
+      <p>幻灯片和原始文献写的都是“不借助明显协助”。少一个 clear，意思就变成“完全没人帮就站不起来”，比研究的结论说得重。</p>
+    </div>
+  </div>
+  <p class="note">代价是时间：Problem 页原备注约 44 秒，改后约 58 秒，再加停顿按 1 分钟算。第一部分合计约 2 分 20 秒，比原估计多 20 秒左右。全场如果超时，先删目录页的 “I’ll start with the problem.”，不要删停顿。</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">边界</p>
+    <h2>三处不要说过头</h2>
+  </div>
+  <ul class="dont">
+    <li><b>不要把 “Half” 说成“一半的老人”</b><span>那项研究只有 12 个人，年龄 56–90 岁，多数本来就行动受限。它能说明的是方向：床越低越难站。它不能说明人群里有多大比例站不起来。台词里的 “of twelve” 就是在守这条线，别省。</span></li>
+    <li><b>不要说“抬高床不行”或“抬高床不安全”</b><span>下一位同学的关键页会坦白讲：只比省力，抬高到 0.58 m 的床加扶手和我们差不多（模型指标 0.29 对 0.26），真正的差别在腿一软时接不接得住。你在这里把抬高床说死，一分钟后就被自己人推翻。你只需要说到 “no fixed bed height does both” 为止。</span></li>
+    <li><b>不要把 “22%” 说成“22% 的人会摔”</b><span>它是体位性低血压的患病比例，说的是“站起来后可能头晕”。头晕到摔倒之间还隔着很多条件，幻灯片没有给这个数，你也不要替它补。</span></li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">读音</p>
+    <h2>这几个词提前练</h2>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>词</th><th>怎么读</th><th>注意</th></tr>
+    <tr><td class="w">Bed-Exit Seat</td><td class="ph">BED · EK-sit · SEET</td><td>三个词分开；Exit 重音在前。</td></tr>
+    <tr><td class="w">orthostatic hypotension</td><td class="ph">or-thuh-STA-tik · hy-poh-TEN-shun</td><td>重音在 STA 和 TEN。hypo- 是“低”，别读成 hyper-（高）。实在卡壳就说 “a drop in blood pressure on standing”。</td></tr>
+    <tr><td class="w">0.58 metres</td><td class="ph">zero point five eight</td><td>小数点后逐位读，不读 “fifty-eight”。</td></tr>
+    <tr><td class="w">38-centimetre bed</td><td class="ph">thirty-eight SEN-ti-mee-ter</td><td>作定语，centimetre 不加 s。</td></tr>
+    <tr><td class="w">46-second film</td><td class="ph">forty-six SEK-und</td><td>同理，second 不加 s。</td></tr>
+    <tr><td class="w">22%</td><td class="ph">twenty-two per-SENT</td><td>percent 重音在后。</td></tr>
+    <tr><td class="w">walker</td><td class="ph">WAW-ker</td><td>l 不发音。</td></tr>
+    <tr><td class="w">requirements</td><td class="ph">ri-KWY-er-ments</td><td>重音在第二个音节。</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">问答</p>
+    <h2>第一部分最可能被问到的</h2>
+  </div>
+  <p class="note">前四条的依据都在仓库里的幻灯片和文献表中。第五条没有数据支撑，照实说。</p>
+  <ul class="qa">
+    <li>
+      <p class="q">A 0.58 m bed is within the advice. Why not just raise the bed?</p>
+      <p class="a">That is our strongest competitor, and on effort it is about equal. Two differences. First, 0.58 metres is the top of the advised range, so for shorter users the feet are not flat. Second, if the legs give way, a bed catches you only at the very start of the rise. The next part shows this.</p>
+      <p class="why">这是最该准备的一问，因为它正好戳在你的矛盾上。“省力差不多”“床只在起身最初约 15% 接得住”来自比较页。“矮个子在 0.58 m 脚踩不平”是按人体尺寸的推断，没有实测，被追问就照实说，然后把问题交给第二部分。</p>
+    </li>
+    <li>
+      <p class="q">Twelve people — is that enough?</p>
+      <p class="a">No. It is a small sample, and most of them had mobility limits. We use it as a direction — lower beds are harder — not as a prevalence figure.</p>
+      <p class="why">先说 No 再解释，比辩解更可信。</p>
+    </li>
+    <li>
+      <p class="q">Where does 0.58 m come from?</p>
+      <p class="a">From NCOA home-safety advice: 20 to 23 inches, with the rule that the feet are flat and the knees at about 90 degrees when sitting on the bed edge. It is guidance, not a hard limit.</p>
+      <p class="why">20–23 英寸即 0.51–0.58 m，幻灯片取的是上限。</p>
+    </li>
+    <li>
+      <p class="q">Who cannot use it?</p>
+      <p class="a">People who need a full transfer, and people with moderate to severe cognitive impairment. The user has to sit steadily, grip the bar and hold a switch.</p>
+      <p class="why">幻灯片左下框最后一行。</p>
+    </li>
+    <li>
+      <p class="q">Why night in particular?</p>
+      <p class="a">At night the user has just woken up, it is dark, and often nobody is there to help. The device works the same way in the daytime.</p>
+      <p class="why">这是常理，幻灯片上没有夜间跌倒的数据。不要现场编比例。</p>
+    </li>
+    <li>
+      <p class="q">（问到机构、控制、安全的细节）</p>
+      <p class="a">That is in part three / part four — my teammate will show it in a moment.</p>
+      <p class="why">不是你的页就不要硬答。把问题接住、交出去，本身就是好的台风。</p>
+    </li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head">
+    <p class="eyebrow">上台前</p>
+    <h2>检查五件事</h2>
+  </div>
+  <div class="check">
+    <label><input type="checkbox" id="c1"><span>封面的 <span class="flag">[Team member names]</span> 换成组员姓名。仓库里的 PPT 现在还是占位符。</span></label>
+    <label><input type="checkbox" id="c2"><span>在教室那台电脑上放一遍短片：点一下能播，有声音，音量后排听得见。</span></label>
+    <label><input type="checkbox" id="c3"><span>确认翻页器能用，知道片子放完后按哪个键到目录页。</span></label>
+    <label><input type="checkbox" id="c4"><span>和第二位同学对好交棒：你说完 “compares existing solutions”，谁来翻页。</span></label>
+    <label><input type="checkbox" id="c5"><span>出声、站着、掐表完整排两遍，第一部分落在 2:10–2:30 之间。</span></label>
+  </div>
+</section>
+
+<section id="rehearse">
+  <div class="sec-head">
+    <p class="eyebrow">排练</p>
+    <h2>掐表：每个镜头用了多久</h2>
+  </div>
+  <p class="note">点底部的“开始排练”，照台本出声讲；每翻一页点一次“下一镜”。结束后这里显示每段和目标差多少。短片那段可以直接等 50 秒，或者真的放一遍。</p>
+  <div class="tbl"><table id="laps">
+    <tr><th>镜头</th><th>目标</th><th>你的用时</th><th>差</th></tr>
+    <tr><td>1 封面</td><td class="num">0:15</td><td class="num" data-lap="0">—</td><td class="num" data-diff="0">—</td></tr>
+    <tr><td>2 短片 + 一句</td><td class="num">0:50</td><td class="num" data-lap="1">—</td><td class="num" data-diff="1">—</td></tr>
+    <tr><td>3 目录</td><td class="num">0:15</td><td class="num" data-lap="2">—</td><td class="num" data-diff="2">—</td></tr>
+    <tr><td>4 Problem + 交棒</td><td class="num">1:00</td><td class="num" data-lap="3">—</td><td class="num" data-diff="3">—</td></tr>
+    <tr><td><b>合计</b></td><td class="num"><b>2:20</b></td><td class="num" data-lap="t">—</td><td class="num" data-diff="t">—</td></tr>
+  </table></div>
+</section>
+
+</div>
+
+<div class="bar" role="region" aria-label="排练计时">
+  <div class="bar-in">
+    <span class="now-seg" id="segName">排练计时</span>
+    <span class="clock" id="segClock">0:00 <small>/ 0:15</small></span>
+    <span class="tot" id="totClock">合计 0:00 / 2:20</span>
+    <span class="sp"></span>
+    <button type="button" class="primary" id="btnGo">开始排练</button>
+    <button type="button" id="btnReset" disabled>重置</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var SEG=[{n:'镜头 1 · 封面',t:15},{n:'镜头 2 · 短片',t:50},{n:'镜头 3 · 目录',t:15},{n:'镜头 4 · Problem',t:60}];
+  var TOTAL=SEG.reduce(function(a,s){return a+s.t},0);
+  var i=-1,t0=0,s0=0,laps=[],timer=null;
+  var $=function(id){return document.getElementById(id)};
+  var segName=$('segName'),segClock=$('segClock'),totClock=$('totClock'),go=$('btnGo'),reset=$('btnReset');
+  function fmt(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+  function diff(d){d=Math.round(d);return (d>0?'+':d<0?'−':'±')+Math.abs(d)+' s'}
+  function cell(k,v){return document.querySelector('[data-'+k+'="'+v+'"]')}
+  function paintLap(k,used,target){
+    var a=cell('lap',k),b=cell('diff',k);
+    a.textContent=fmt(used); b.textContent=diff(used-target);
+    b.style.color=Math.abs(used-target)<=Math.max(3,target*0.15)?'var(--go)':'var(--stop)';
+  }
+  function tick(){
+    var now=performance.now(),seg=(now-s0)/1000,tot=(now-t0)/1000;
+    segClock.innerHTML=fmt(seg)+' <small>/ '+fmt(SEG[i].t)+'</small>';
+    segClock.classList.toggle('over',seg>SEG[i].t+1);
+    totClock.textContent='合计 '+fmt(tot)+' / '+fmt(TOTAL);
+  }
+  function idle(){
+    segName.textContent='排练计时';
+    segClock.innerHTML='0:00 <small>/ '+fmt(SEG[0].t)+'</small>';
+    segClock.classList.remove('over');
+    totClock.textContent='合计 0:00 / '+fmt(TOTAL);
+    go.textContent='开始排练'; go.disabled=false; reset.disabled=true;
+  }
+  function clearTable(){
+    ['0','1','2','3','t'].forEach(function(k){
+      var a=cell('lap',k),b=cell('diff',k); a.textContent='—'; b.textContent='—'; b.style.color='';
+    });
+  }
+  go.addEventListener('click',function(){
+    var now=performance.now();
+    if(i<0){ clearTable(); laps=[]; i=0; t0=s0=now; reset.disabled=false; timer=setInterval(tick,200); }
+    else{
+      var used=(now-s0)/1000; laps.push(used); paintLap(String(i),used,SEG[i].t); i++; s0=now;
+      if(i>=SEG.length){
+        clearInterval(timer); timer=null;
+        var tot=(now-t0)/1000; paintLap('t',tot,TOTAL);
+        segName.textContent='排完了'; segClock.innerHTML=fmt(tot)+' <small>/ '+fmt(TOTAL)+'</small>';
+        segClock.classList.toggle('over',tot>TOTAL+10);
+        totClock.textContent='每段用时见上方表格';
+        go.textContent='再排一遍'; i=-1;
+        var sec=$('rehearse'); if(sec&&sec.scrollIntoView){sec.scrollIntoView({behavior:'smooth',block:'center'})}
+        return;
+      }
+    }
+    segName.textContent=SEG[i].n;
+    go.textContent=i===SEG.length-1?'讲完了':'下一镜';
+    tick();
+  });
+  reset.addEventListener('click',function(){
+    if(timer){clearInterval(timer);timer=null}
+    i=-1; laps=[]; clearTable(); idle();
+  });
+  try{
+    document.querySelectorAll('.check input').forEach(function(c){
+      var k='p1dir-'+c.id;
+      try{ if(localStorage.getItem(k)==='1') c.checked=true; }catch(e){}
+      c.addEventListener('change',function(){ try{ localStorage.setItem(k,c.checked?'1':'0'); }catch(e){} });
+    });
+  }catch(e){}
+  idle();
+})();
+</script>

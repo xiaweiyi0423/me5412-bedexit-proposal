@@ -9,3 +9,5 @@
 - `tools/talk_guide.html`: interactive speaker guide (to-do list, pick slides, time estimate, per-slide script and Q&A), built by `build_guide2.py`.
 
 Images in the slides reference uploaded blobs (`/_blob/<id>`); the calculation figures come from `model/calc_v12/` and the schematic drawings from `plan/figs.py`.
+
+**Part 1 director script (11/10):** `director/part1.html` + `director/img/` — per-line English script, pointing order, pronunciation, Q&A and a rehearsal timer for the opening four slides (cover, film, agenda, problem). Published: https://claude.ai/artifact/UmDtUo2vqn7F6bBr2WEDUR. The file is an Artifact fragment (no doctype/head); the slide notes in `slides_en/` and the PPTX are unchanged.
