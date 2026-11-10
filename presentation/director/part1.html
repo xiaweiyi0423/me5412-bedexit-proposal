@@ -155,6 +155,34 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .rescue span{font-size:15px}
 @media (max-width:640px){.chain.two{grid-template-columns:1fr}.chain.two .hd{display:block}}
 
+/* gestures */
+.act{font-size:14px;border-left:2px solid var(--ink);padding-left:10px}
+.act::before{content:"动作";font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);margin-right:8px}
+.gest{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;grid-template-columns:128px minmax(0,1fr);gap:14px;align-items:start;min-width:0}
+.gfig{color:var(--ink);background:var(--sunk);border-radius:4px;line-height:0}
+.gfig svg,.stagefig svg{width:100%;height:auto;display:block}
+.gcard > div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gname{font-size:16px;font-weight:700}
+.gopt{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-left:8px}
+.gwhen{font-size:13px;color:var(--pencil)}
+.ghow{font-size:14px}
+.gb{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.gh{fill:none;stroke:var(--pencil);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.gg{fill:none;stroke:var(--pencil);stroke-width:3;stroke-linecap:round;stroke-dasharray:3 7}
+.gdot{fill:var(--pencil);stroke:none}
+.gm{fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.gpos{fill:var(--surface);stroke:var(--pencil);stroke-width:2}
+.gt{fill:currentColor;font-family:var(--sans);font-size:13px}
+.stage{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:20px;align-items:start}
+.stagefig{color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.stagefig figcaption{font-size:12px;color:var(--muted);line-height:1.45}
+.pos{display:flex;flex-direction:column;gap:12px}
+.pos li{display:flex;flex-direction:column;gap:2px}
+.pos b{font-size:16px}
+.pos span{font-size:15px}
+@media (max-width:700px){.stage{grid-template-columns:1fr}}
+
 /* changes, cautions, tables */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -272,11 +300,55 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   </div>
   <ol class="ladder">
     <li><span class="st">第 1–2 遍</span><b>全部说法</b><span>三种都出声读一遍，感觉哪种顺口。不用选定。</span></li>
-    <li><span class="st">第 3–4 遍</span><b>随机一种</b><span>每遍先点“换一组”再讲。抽到不顺口的也照说，这正是在练换说法。</span></li>
+    <li><span class="st">第 3–4 遍</span><b>随机一种</b><span>每遍先点“换一组”再讲。抽到不顺口的也照说，这正是在练换说法。从这几遍开始加手势。</span></li>
     <li><span class="st">第 5 遍起</span><b>只看要点</b><span>句子全部藏起来，只剩每拍的要点，自己组句。</span></li>
     <li><span class="st">最后两遍</span><b>只看幻灯片</b><span>关掉这一页，对着 PPT 讲，用底部计时条掐表或手机录音。</span></li>
   </ol>
   <p class="note">练到什么程度算够：连续三遍，每遍用词都不完全一样，但四个数字、限定词和落点句都说对了。到这里就停。继续练到一字不差，反而又变回背词。</p>
+</section>
+
+<section id="gestures">
+  <div class="sec-head">
+    <p class="eyebrow">手和脚</p>
+    <h2>手势和动作：把这句话的意思比划出来</h2>
+  </div>
+  <p class="lead">手势有用，是因为观众同时听到和看到同一个意思，尤其在你用第二语言讲的时候，听漏一个词还能从手上补回来。对你自己也有用：手一到位，那句话就跟着出来，动作本身是提词。</p>
+  <p class="lead">反过来，手没有事做的时候会自己找事做：摸翻页器、插兜、搓手。所以先给它一个固定的待机位，再给它五个有意义的动作，其余时间不动。动作编多了和背词一样，又是一样要记的东西。</p>
+
+  <h3>五个要练的动作，加三个顺手的</h3>
+  <ul class="gest">
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="待机位：两手在肚脐前轻轻搭着"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gh" points="44,44 40,64 55,74"/><polyline class="gh" points="76,44 80,64 65,74"/><circle class="gdot" cx="60" cy="75" r="5"/></svg></figure><div><p class="gname">待机位</p><p class="gwhen">没有动作的时候</p><p class="ghow">双脚与肩同宽，重心在两脚中间。两手在肚脐前轻轻搭着，手肘离开身体。每做完一个动作，手回到这里。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="数三：一只手举到肩高，伸出三根手指"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gb" points="44,44 40,66 42,86"/><polyline class="gh" points="76,44 92,56 92,36"/><line class="gh" x1="89" y1="33" x2="85" y2="22"/><line class="gh" x1="92" y1="32" x2="92" y2="20"/><line class="gh" x1="95" y1="33" x2="99" y2="22"/></svg></figure><div><p class="gname">数三</p><p class="gwhen">“three numbers”</p><p class="ghow">一只手举到肩高，三根手指，停 1 秒，眼睛看观众。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="手掌指屏：靠屏幕的手整只手掌指向屏幕"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gb" points="44,44 40,66 42,86"/><polyline class="gh" points="76,44 92,44 106,40"/><circle class="gdot" cx="106" cy="40" r="4"/><rect class="gm" x="114" y="12" width="20" height="56" rx="2"/><text class="gt" x="124" y="82" text-anchor="middle">屏幕</text></svg></figure><div><p class="gname">手掌指屏</p><p class="gwhen">Problem 页的六个蓝点、封面、目录</p><p class="ghow">用靠屏幕的那只手，五指并拢，整只手掌指过去，手臂伸直。脚不动，只转头看屏幕 1 秒，再转回来说。用手掌，不用一根手指。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="低和高：手掌朝下，说低时压到胯的高度，说高时抬到胸口"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gb" points="44,44 40,66 42,86"/><polyline class="gh" points="76,44 86,62 98,76"/><line class="gh" x1="91" y1="76" x2="107" y2="76"/><polyline class="gg" points="76,44 92,44 100,36"/><line class="gg" x1="93" y1="36" x2="109" y2="36"/><text class="gt" x="112" y="92" text-anchor="start">low</text><text class="gt" x="110" y="30" text-anchor="start">high</text></svg></figure><div><p class="gname">低和高</p><p class="gwhen">“38-centimetre bed”、“0.58 metres… any higher”</p><p class="ghow">手掌朝下。说低床时手压到胯的高度。说 0.58 时手平放在胸口高度，说 higher 时再往上抬一点。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="两头，一条线：左手低、右手高，然后两手收到同一个中间高度"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><defs><marker id="gab" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse"><path class="gdot" d="M0,0 L8,4 L0,8 z"/></marker></defs><polyline class="gh" points="44,44 34,62 22,76"/><line class="gh" x1="13" y1="76" x2="29" y2="76"/><polyline class="gh" points="76,44 92,44 100,36"/><line class="gh" x1="93" y1="36" x2="109" y2="36"/><line class="gg" x1="13" y1="56" x2="29" y2="56"/><line class="gg" x1="93" y1="56" x2="109" y2="56"/><line class="gg" x1="8" y1="72" x2="8" y2="60" marker-end="url(#gab)"/><line class="gg" x1="116" y1="40" x2="116" y2="52" marker-end="url(#gab)"/><text class="gt" x="21" y="94" text-anchor="middle">low</text><text class="gt" x="101" y="26" text-anchor="middle">high</text></svg></figure><div><p class="gname">两头，一条线</p><p class="gwhen">落点句</p><p class="ghow">左手留在低处说 low，右手抬到高处说 high，两只手都停住。说 “No fixed bed height does both” 时，两手收到同一个中间高度，停住 1 秒。一个高度，哪一头都够不着。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="握杆：一只手在身前腰的高度虚握成拳"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gb" points="44,44 40,66 42,86"/><line class="gm" x1="52" y1="72" x2="100" y2="72" style="stroke-width:5"/><polyline class="gh" points="76,44 86,60 76,72"/><circle class="gdot" cx="76" cy="72" r="6"/></svg></figure><div><p class="gname">握杆</p><p class="gwhen">“support must stay at hand”</p><p class="ghow">一只手在身前腰的高度虚握成拳，像握住一根横杆。这就是产品上那根扶手横杆，后面的同学会讲到它。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="托起：掌心朝上，从腰抬到胸口"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gb" points="44,44 40,66 42,86"/><defs><marker id="gal" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse"><path class="gdot" d="M0,0 L8,4 L0,8 z"/></marker></defs><polyline class="gh" points="76,44 86,64 98,70"/><line class="gh" x1="91" y1="70" x2="107" y2="70"/><line class="gg" x1="99" y1="62" x2="99" y2="44" marker-end="url(#gal)"/></svg></figure><div><p class="gname">托起<span class="gopt">可选</span></p><p class="gwhen">封面 “stand up from the bed edge”</p><p class="ghow">掌心朝上，从腰抬到胸口。产品做的就是这件事：从下面托着人起来。</p></div></li>
+    <li class="gcard"><figure class="gfig"><svg viewBox="0 0 140 146" role="img" aria-label="交棒：手掌摊开朝向队友"><circle class="gb" cx="60" cy="22" r="10"/><line class="gb" x1="60" y1="32" x2="60" y2="86"/><line class="gb" x1="44" y1="44" x2="76" y2="44"/><polyline class="gb" points="43,136 50,136 60,86 70,136 77,136"/><polyline class="gb" points="76,44 80,66 78,86"/><polyline class="gh" points="44,44 30,50 16,46"/><circle class="gdot" cx="16" cy="46" r="4"/><text class="gt" x="16" y="34" text-anchor="middle">队友</text></svg></figure><div><p class="gname">交棒<span class="gopt">可选</span></p><p class="gwhen">最后一句</p><p class="ghow">手掌摊开朝向队友，眼睛看着队友，然后往侧后退一步。</p></div></li>
+  </ul>
+  <p class="note">图里的小人面朝你，也就是观众看到的样子。蓝色是要动的手，虚线是动作的第二步。屏幕画在右边，是按你站在屏幕左侧（观众视角）画的；教室里如果要站另一侧，左右手对调即可。</p>
+
+  <h3>站在哪，什么时候挪</h3>
+  <div class="stage">
+    <figure class="stagefig"><svg viewBox="0 0 360 206" role="img" aria-label="俯视站位图：A 位在屏幕一侧靠前，B 位再往外半步并转向屏幕，C 位朝观众走一步"><defs><marker id="gas" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse"><path class="gdot" d="M0,0 L8,4 L0,8 z"/></marker></defs><line class="gb" x1="130" y1="26" x2="310" y2="26" style="stroke-width:5"/><text class="gt" x="220" y="16" text-anchor="middle">屏幕</text><circle class="gm" cx="70" cy="176" r="6"/><circle class="gm" cx="100" cy="176" r="6"/><circle class="gm" cx="130" cy="176" r="6"/><circle class="gm" cx="160" cy="176" r="6"/><circle class="gm" cx="190" cy="176" r="6"/><circle class="gm" cx="220" cy="176" r="6"/><circle class="gm" cx="250" cy="176" r="6"/><circle class="gm" cx="280" cy="176" r="6"/><circle class="gm" cx="310" cy="176" r="6"/><text class="gt" x="190" y="200" text-anchor="middle">观众</text><line class="gg" x1="92" y1="60" x2="68" y2="50" marker-end="url(#gas)"/><line class="gg" x1="106" y1="72" x2="126" y2="96" marker-end="url(#gas)"/><circle class="gpos" cx="100" cy="62" r="11"/><text class="gt" x="100" y="66" text-anchor="middle">A</text><circle class="gpos" cx="56" cy="46" r="11"/><text class="gt" x="56" y="50" text-anchor="middle">B</text><circle class="gpos" cx="134" cy="106" r="11"/><text class="gt" x="134" y="110" text-anchor="middle">C</text><line class="gh" x1="100" y1="73" x2="100" y2="84"/><line class="gh" x1="67" y1="44" x2="78" y2="40"/><line class="gh" x1="134" y1="117" x2="134" y2="128"/><text class="gt" x="84" y="92" text-anchor="end">讲话</text><text class="gt" x="56" y="26" text-anchor="middle">看片</text><text class="gt" x="152" y="111" text-anchor="start">落点</text></svg><figcaption>俯视图。整段只有三个位置，两次移动。短线表示身体朝向。</figcaption></figure>
+    <ul class="pos">
+      <li><b>A · 讲话位</b><span>屏幕一侧，往前一步，不挡投影。全程的默认位置，脚钉在这里，不踱步。翻页器握在离屏幕远的那只手里。</span></li>
+      <li><b>B · 看片位</b><span>放短片时往外退半步，身体转向屏幕，和观众一起看。片子收尾时回 A。</span></li>
+      <li><b>C · 落点位</b><span>说矛盾那句之前，朝观众走一步。往前走等于告诉全场“这句重要”。说完停 1 秒，退回 A 讲用户。</span></li>
+    </ul>
+  </div>
+
+  <h3>眼睛</h3>
+  <p class="lead">把观众分成左、中、右三块，一句话只看一块，说完再换。数字出口的那一刻要看着观众。指屏幕时可以看屏幕，但只看 1 秒。</p>
+
+  <h3>这几个小动作会抢戏</h3>
+  <ul class="dont">
+    <li><b>手插兜、背在身后、抱在胸前</b><span>手一藏起来，后面该做手势时就拿不出来了。没事就回待机位。</span></li>
+    <li><b>身体左右晃，或者来回走</b><span>观众的眼睛会跟着你晃，听不进数字。整段只有 A→B→A→C→A 这几步是有意义的移动。</span></li>
+    <li><b>说 “dizzy” 时演头晕</b><span>晃头、扶额在讲老人安全的场合显得轻浮。这一拍的手势是“握杆”，放在后半句。</span></li>
+    <li><b>手一直在按翻页器，或者拿激光笔在屏幕上画圈</b><span>翻页器只在翻页的那一下抬起来。指屏幕用手掌，位置比激光点好找。</span></li>
+  </ul>
+  <p class="note">练的顺序：先练嘴，嘴顺了再加手。从“随机一种”那几遍开始加动作，用手机录一遍像，只检查两件事：手有没有回待机位，落点句时两只手有没有停住。台本每一拍下面的“动作”一行写了这一拍用哪个。</p>
 </section>
 
 <section>
@@ -289,6 +361,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <span><i class="pz">/</i> 短停，半拍</span>
     <span><i class="pz">//</i> 长停，约 1 秒，看观众</span>
     <span style="color:var(--pencil)">蓝字 = 导演提示，不出声</span>
+    <span><span style="border-left:2px solid var(--ink);padding-left:8px;color:var(--ink)">动作</span> 这一拍手和脚怎么动</span>
   </p>
   <ul class="rules">
     <li><b>先指，再转身，再说</b><span>手指到位、看屏幕 1 秒，然后转回来对着观众说。背对观众说话，声音会打在屏幕上。</span></li>
@@ -319,7 +392,8 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <ol class="beats">
       <li class="beat"><span class="n none">·</span><div>
         <p class="silent">（不出声，2 秒）</p>
-        <p class="dir">站在屏幕左侧，身体正对观众。等全场安静，和后排的人对上一眼，再开口。开口太急，第一句会被噪声吃掉。</p>
+        <p class="act"><b>待机位。</b>翻页器握在离屏幕远的那只手里，靠屏幕的手空出来，留着指屏幕。</p>
+        <p class="dir">站在 A 位，身体正对观众。等全场安静，和后排的人对上一眼，再开口。开口太急，第一句会被噪声吃掉。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="keys"><span class="kl">必到</span><b>Group 16</b></p>
@@ -330,6 +404,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：大家好，我们是第 16 组。</p>
+        <p class="act">两手从待机位向两侧打开一下，掌心朝上，停在腰的高度，再收回。队友站在旁边的话，手往他们那边带一下。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="keys"><span class="kl">必到</span><b>Bed-Exit Seat</b>，三个词分开说</p>
@@ -340,6 +415,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：我们的项目是床边起身台。</p>
+        <p class="act"><b>手掌指屏。</b>手掌指向封面右边的 CAD 图，停在那里把名字说完，再收回。</p>
         <p class="dir">这是全场第一次听到这个名字，后面二十几页都在用它。说完停一秒，让名字落地。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
@@ -351,6 +427,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：它帮腿力变弱的老人，夜里从床沿站起来。</p>
+        <p class="act"><b>托起</b>（可选）。说到 “stand up” 时，一只手掌心朝上，从腰抬到胸口。</p>
         <p class="dir">整场的一句话简介：谁、做什么、什么时候。四个要点到了就行，顺序随你。不要再补充幻灯片上那段副标题。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
@@ -362,6 +439,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：先请看一段 46 秒的短片。</p>
+        <p class="act">手回待机位。话说完，再按翻页器。</p>
         <p class="dir">说完这句<b>再</b>点播放。边说边点，片头的声音会盖住你最后几个词。</p>
       </div></li>
     </ol>
@@ -381,7 +459,8 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <ol class="beats">
       <li class="beat"><span class="n none">·</span><div>
         <p class="silent">（点一下播放，然后 46 秒不出声）</p>
-        <p class="dir">往屏幕侧面退半步，<b>身体转向屏幕，自己也看片子</b>。你看哪里，观众就看哪里；你低头看稿，观众会跟着走神。不碰电脑，不小声解说。</p>
+        <p class="act">从 A 位退到 <b>B 位</b>：往外半步，身体转向屏幕。两手自然垂下，不碰电脑。</p>
+        <p class="dir"><b>自己也看片子。</b>你看哪里，观众就看哪里；你低头看稿，观众会跟着走神。不小声解说。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="silent">0:05 和 0:07 · 记住这两幅画面</p>
@@ -389,7 +468,8 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="silent">0:40 · 雨停，人站起来</p>
-        <p class="dir">这是收尾的信号。手回到翻页器上，重心移回正对观众的位置。</p>
+        <p class="act">回到 <b>A 位</b>，身体转回正对观众，手回待机位。</p>
+        <p class="dir">这是收尾的信号。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="keys"><span class="kl">必到</span>一句过渡，把观众从片子里带回来</p>
@@ -400,6 +480,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：下面我们一步一步讲。</p>
+        <p class="act">不做手势。站稳，看观众，说完再翻页。</p>
         <p class="dir">等音乐收完，再多等 1 秒，然后转回观众说，说完翻页。抢在音乐里说话，观众还没从片子里出来。</p>
       </div></li>
       <li class="backup">
@@ -427,7 +508,8 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：共五部分：问题和用户、方案比较、机构、控制与安全，最后是结果和总结。</p>
-        <p class="dir">手从左往右划过五个框，每说一项手停在对应的框上。框上的标题就是你的提词，照着顺序说，不用背。</p>
+        <p class="act"><b>手掌指屏</b>，从第 1 个框划到第 5 个框，每说一项手停一下，说到 “results” 时手停在第 5 个框上。</p>
+        <p class="dir">框上的标题就是你的提词，照着顺序说，不用背。只是划过，不要逐个点着念小字。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
         <p class="keys"><span class="kl">必到</span>可选：告诉观众现在从第一格开始</p>
@@ -438,6 +520,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：我先讲问题。</p>
+        <p class="act">手回到第 1 个框上点一下，然后翻页。</p>
         <p class="dir">这半句是我加的，原备注没有。全场时间紧就删掉它，直接翻页。</p>
       </div></li>
     </ol>
@@ -468,6 +551,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：片子背后有三个数。</p>
+        <p class="act"><b>数三。</b>三根手指举到肩高，停 1 秒。</p>
         <p class="dir">对着观众说，先不指屏幕。这句是承诺：接下来正好三个，观众会跟着数。</p>
       </div></li>
       <li class="beat"><span class="n">1</span><div>
@@ -479,6 +563,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：12 位老人里，一半人从 38 厘米高的床上，不靠明显的帮助站不起来。</p>
+        <p class="act"><b>手掌指屏</b> ① → 转回观众 → 说到 “38-centimetre bed” 时<b>手压低</b>到胯的高度。</p>
         <p class="dir">“Half” 单独一拍。“twelve” 要说清，这是主动交代样本小，比被人追问时再承认好得多。</p>
       </div></li>
       <li class="beat"><span class="n">2</span><div>
@@ -490,6 +575,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：防跌建议说床高最多约 0.58 米；再高，坐着时脚就踩不平。</p>
+        <p class="act"><b>手掌指屏</b> ② → 转回观众 → 说 “0.58 metres” 时手平放在胸口高度，说到 “higher” 时再<b>往上抬</b>一点。</p>
         <p class="dir">读作 “zero point five eight metres”。数字和后果之间顿一下，把后果单独送出去。</p>
       </div></li>
       <li class="beat"><span class="n">3</span><div>
@@ -501,6 +587,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：约 22% 的居家老人有体位性低血压：站起来后可能头晕，所以手边一直要有支撑。</p>
+        <p class="act"><b>手掌指屏</b> ③ → 转回观众 → 说到最后半句（at hand / something to hold / within reach）时<b>握杆</b>。说 “dizzy” 时不要演头晕。</p>
         <p class="dir">观众真正要听懂的是 “dizzy after standing”。术语卡住了就用说法 C 里的解释 “blood pressure drops when they stand”，意思不丢。</p>
       </div></li>
       <li class="beat"><span class="n">4</span><div>
@@ -512,7 +599,8 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：把前两条放在一起：低了难站起来，高了脚没支撑。没有哪个固定床高能两头兼顾。</p>
-        <p class="dir"><b>全段的落点，也是全场唯一要原样背下来的一句。</b>它就印在橙色横幅上，忘了就照着念。手落在横幅上，转回观众，语速降到一半。说完手放下，安静 1 秒再往下走。</p>
+        <p class="act"><b>手掌指屏</b> ④，然后朝观众走一步到 <b>C 位</b>。<b>两头，一条线：</b>左手压低说 “low”，右手抬高说 “high”，两只手都停住；说落点句时两手收到同一个中间高度，停住 1 秒。</p>
+        <p class="dir"><b>全段的落点，也是全场唯一要原样背下来的一句。</b>它就印在橙色横幅上，忘了就照着念。语速降到一半。第 ①、② 拍已经各做过一次“低”和“高”，这里是把它们同时摆出来，观众会认出来。</p>
       </div></li>
       <li class="beat"><span class="n">5</span><div>
         <p class="keys"><span class="kl">必到</span><b>still walk</b>（alone / walker）· 从普通床站起来 <b>hard</b></p>
@@ -523,6 +611,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：我们的用户还能走路，自己走或用助行器，但从普通床上站起来很吃力。</p>
+        <p class="act">退回 <b>A 位</b>。<b>手掌指屏</b> ⑤，说完收回。</p>
         <p class="dir">只指一下左下框。“不适用人群”那一行不讲，有人问再答。</p>
       </div></li>
       <li class="beat"><span class="n">6</span><div>
@@ -534,6 +623,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：这六条要求的结果，最后会给。</p>
+        <p class="act"><b>手掌指屏</b> ⑥，在右下框上从上往下划一下。</p>
         <p class="dir">手在右下框上划一下即可，一条都不念。这句是给第五部分埋的钩子：结果页会逐条对回这六条。</p>
       </div></li>
       <li class="beat"><span class="n none">·</span><div>
@@ -545,7 +635,8 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         </div>
         <button type="button" class="swap">换一句</button>
         <p class="zh">意思：接下来，〔第二位同学〕讲现有方案。</p>
-        <p class="dir">交棒句是我加的，原备注没有。说完看向队友，由对方翻页。你往侧后退一步，不要挡屏幕。</p>
+        <p class="act"><b>交棒。</b>手掌摊开朝向队友，看着队友，然后往侧后退一步，把 A 位让出来。</p>
+        <p class="dir">交棒句是我加的，原备注没有。说完由对方翻页。退下来以后不要马上低头看手机，你还在观众视线里。</p>
       </div></li>
     </ol>
   </div>
